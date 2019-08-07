@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<Tables>
+		<table name="GSInfo">
+			<field name="user" type="char(32)" constraint="primary key"/>
+			<field name="pswd" type="char(32)" />
+		</table>
+		<table name="OwnerInfo">
+			<field name="id" type="BIGINT" constraint="primary key;not null;auto_increment"/>
+			<field name="name"  type="char(64)" />
+			<field name="birthdate"  type="BIGINT" />
+			<field name="address"  type="char(64)" />
+			<field name="mobileno"  type="char(24)" />
+			<field name="phoneno" type="char(24)" />
+			<field name="weixin" type="char(32)" />
+		</table>
+		<table name="LandInfo">
+			<field name="id" type="BIGINT" constraint="primary key;not null;auto_increment"/>
+			<field name="name"  type="char(64)" />
+			<field name="gsuser"  type="char(32)" />
+			<field name="ownerID" type="BIGINT" />
+			<field name="lat"  type="double" />
+			<field name="lon"  type="double" />
+			<field name="acreage" type="float" />
+			<field name="boundary" type="VARBINARY(32768)" />
+			<!-- foreign name="gsuser" foreign="user" ref="GSInfo" />
+			<foreign name="ownerID" foreign="id" ref="OwnerInfo" /-->
+		</table>
+	</Tables>
+	<SQLs>
+		<SQL name="insertGSInfo" table="GSInfo" type="Insert" >
+			<item name="user" ref="GSInfo" type="Write" />
+			<item name="pswd" ref="GSInfo" type="Write" />
+		</SQL>
+		<SQL name="queryGSInfo" table="GSInfo" type="Select" >
+			<item name="pswd" ref="GSInfo" type="Read" />
+			<item name="user" ref="GSInfo" type="Condition" />
+		</SQL>
+		<SQL name="changePswd" table="GSInfo" type="Update" >
+			<item name="pswd" ref="GSInfo" type="Write" />
+			<item name="user" ref="GSInfo" type="Condition" />
+		</SQL>
+		<SQL name="insertLand" table="LandInfo" type="Insert" >
+			<item name="name" ref="LandInfo" type="Write" />
+			<item name="gsuser" ref="LandInfo" type="Write" />
+			<item name="ownerID" ref="LandInfo" type="Write" />
+			<item name="lat" ref="LandInfo" type="Write" />
+			<item name="lon" ref="LandInfo" type="Write" />
+			<item name="precs" ref="LandInfo" type="Write" />
+			<item name="acreage" ref="LandInfo" type="Write" />
+			<item name="description" ref="LandInfo" type="Write" />
+			<item name="boundary" ref="LandInfo" type="Write" />
+			<item type="AutoIncrement" />
+		</SQL>
+		<SQL name="updateLand" table="LandInfo" type="Update" >
+			<item name="name" ref="LandInfo" type="Write" />
+			<item name="gsuser" ref="LandInfo" type="Write" />
+			<item name="ownerID" ref="LandInfo" type="Write" />
+			<item name="lat" ref="LandInfo" type="Write" />
+			<item name="lon" ref="LandInfo" type="Write" />
+			<item name="acreage" ref="LandInfo" type="Write" />
+			<item name="boundary" ref="LandInfo" type="Write" />
+			<item name="id" ref="LandInfo" type="Condition" />
+		</SQL>
+		<SQL name="insertOwner" table="OwnerInfo" type="Insert" >
+			<item name="name" ref="OwnerInfo" type="Write" />
+			<item name="birthdate" ref="OwnerInfo" type="Write" />
+			<item name="address" ref="OwnerInfo" type="Write" />
+			<item name="mobileno" ref="OwnerInfo" type="Write" />
+			<item name="weixin" ref="OwnerInfo" type="Write" />
+			<item type="AutoIncrement" />
+		</SQL>
+		<SQL name="updateOwner" table="OwnerInfo" type="Update" >
+			<item name="name" ref="OwnerInfo" type="Write" />
+			<item name="birthdate" ref="OwnerInfo" type="Write" />
+			<item name="address" ref="OwnerInfo" type="Write" />
+			<item name="phoneno" ref="OwnerInfo" type="Write" />
+			<item name="mobileno" ref="OwnerInfo" type="Write" />
+			<item name="weixin" ref="OwnerInfo" type="Write" />
+			<item name="id" ref="OwnerInfo" type="Condition" />
+		</SQL>
+		<SQL name="queryLand" table="LandInfo;OwnerInfo" type="Select" >
+			<item name="id" ref="LandInfo" type="Read" />
+			<item name="name" ref="LandInfo" type="Read" />
+			<item name="gsuser" ref="LandInfo" type="Read" />
+			<item name="ownerID" ref="LandInfo" type="Read" />
+			<item name="lat" ref="LandInfo" type="Read" />
+			<item name="lon" ref="LandInfo" type="Read" />
+			<item name="acreage" ref="LandInfo" type="Read" />
+			<item name="boundary" ref="LandInfo" type="Read" />	
+			<item name="name" ref="OwnerInfo" type="Read" />
+			<item name="birthdate" ref="OwnerInfo" type="Read" />
+			<item name="address"  ref="OwnerInfo" type="Read" />
+			<item name="mobileno"  ref="OwnerInfo" type="Read"/>
+			<item name="phoneno" ref="OwnerInfo" type="Read" />
+			<item name="weixin" ref="OwnerInfo" type="Read" />
+			<item name="gsuser" ref="LandInfo" type="Condition" />
+			<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
+		</SQL>
+		<SQL name="deleteLand" table="LandInfo;OwnerInfo" type="Delete" >
+			<item name="id" ref="LandInfo" type="Condition" />
+			<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
+		</SQL>
+	</SQLs>
+</document>

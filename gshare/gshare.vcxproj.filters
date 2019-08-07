@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{901c7199-43a4-45b9-a8a9-32d38f68bc1f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Mutex.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Thread.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utility.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\socket_include.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Parse.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Base64.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ipv4Address.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Ipv6Address.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectManagers.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseBuff.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectBase.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gsocket.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gsocketmanager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GOutLog.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lock.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GLibrary.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\SocketAddress.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mutex.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Thread.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utility.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\socket_include.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Parse.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Base64.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ipv4Address.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Ipv6Address.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectManagers.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseBuff.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\socketBase.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectBase.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gsocket.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gsocketmanager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ILog.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GOutLog.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lock.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GLibrary.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
