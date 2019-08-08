@@ -8,7 +8,7 @@
 #include "VGDBManager.h"
 #include "DBExecItem.h"
 #include "Utility.h"
-#include "Lock.h"
+#include "IMutex.h"
 
 using namespace das::proto;
 using namespace google::protobuf;
@@ -147,7 +147,7 @@ int ObjectGS::ProcessReceive(void *buf, int len)
 int ObjectGS::GetSenLength() const
 {
     if (m_p)
-        return m_p->UnsendLength();
+        return m_p->RemaimedLength();
 
     return 0;
 }
@@ -164,8 +164,9 @@ void ObjectGS::SetSended(int sended /*= -1*/)
 {
     if (m_p)
     {
-        Lock l(*m_mtx);
+        m_mtxSend->Lock();
         m_p->SetSended(sended);
+        m_mtxSend->Unlock();
     }
 }
 
@@ -415,8 +416,9 @@ void ObjectGS::_send(const google::protobuf::Message &msg)
 {
     if (m_p)
     {
-        Lock l(*m_mtx);
+        m_mtxSend->Lock();
         m_p->SendProto(msg, m_sock);
+        m_mtxSend->Unlock();
     }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -500,7 +502,7 @@ IObject *GSManager::_checkLogin(ISocket *s, const das::proto::RequestGSIdentityA
         if (m_sqlEng->Execut(item))
         {
             res = -1;
-            FiledValueItem *fd = item->GetItem("pswd", ExecutItem::Read);
+            FiledValueItem *fd = item->GetReadItem("pswd");
             if (fd && string((char*)fd->GetBuff(), fd->GetValidLen())==pswd)
             {
                 o = new ObjectGS(usr);

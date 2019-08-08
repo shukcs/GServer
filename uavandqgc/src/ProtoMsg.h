@@ -29,7 +29,7 @@ public:
     bool Parse(const char *buff, int &len);
 
     bool SendProto(const google::protobuf::Message &msg, ISocket *s);
-    int UnsendLength()const;
+    int RemaimedLength()const;
     int CopySend(char *buff, int len, unsigned from)const;
     void SetSended(int n);
     void InitSize(uint16_t sz = 2048);

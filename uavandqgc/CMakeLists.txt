@@ -30,8 +30,8 @@ set_target_properties(
 	${PACKAGE_NAME}
 )
 target_link_libraries(${PACKAGE_NAME} protobuf)
-target_link_libraries(${PACKAGE_NAME} gshare)
 target_link_libraries(${PACKAGE_NAME} vgmysql)
+target_link_libraries(${PACKAGE_NAME} gshare)
 
 #install(
 #	TARGETS

@@ -7,10 +7,6 @@
 #include <map>
 #include <string.h>
 
-#if !defined _WIN32 && !defined _WIN64
-#include <strings.h>
-#define strnicmp strncasecmp
-#endif
 #include "VGDBManager.h"
 #include <tinyxml.h>
 
@@ -20,13 +16,9 @@
 class VGForeignKey
 {
 public:
-    bool IsValid()const
+    const string &GetGetForeignTable()const
     {
-        return m_bValid;
-    }
-    string GetForeignStr()const
-    {
-        return m_tableForeign + "(" + m_keyForeign + ")";
+        return m_tableForeign;
     }
     string ToString() const
     {
@@ -76,6 +68,14 @@ public:
     }
 protected:
     VGForeignKey() :m_bValid(false){}
+    bool IsValid()const
+    {
+        return m_bValid;
+    }
+    string GetForeignStr()const
+    {
+        return m_tableForeign + "(" + m_keyForeign + ")";
+    }
 private:
     bool    m_bValid;
     string  m_keyForeign;
@@ -257,13 +257,19 @@ void VGTableField::_parseVarBinary(const string &n)
 //VGTableField
 ////////////////////////////////////////////////////////////////////////////////
 VGTable::VGTable(const string &n/*=string()*/) : m_name(n)
+, m_bForeignRef(false)
 {
 }
 
 void VGTable::AddForeign(VGForeignKey *f)
 {
     if (f)
+    {
+        if (VGTable *tb = VGDBManager::Instance().GetTableByName(f->GetGetForeignTable()))
+            tb->m_bForeignRef = true;
+
         m_foreigns.push_back(f);
+    }
 }
 
 const string &VGTable::GetName() const
@@ -317,6 +323,11 @@ void VGTable::AddField(VGTableField *fd)
     m_fields.push_back(fd);
 }
 
+bool VGTable::IsForeignRef() const
+{
+    return m_bForeignRef;
+}
+
 VGTable *VGTable::ParseTable(TiXmlElement &e)
 {
     const char *tmp = e.Attribute("name");
@@ -325,22 +336,22 @@ VGTable *VGTable::ParseTable(TiXmlElement &e)
         return NULL;
 
     VGTable *tb = new VGTable(name);
-    TiXmlNode *field = e.FirstChild("field");
-    while (field)
+    TiXmlNode *node = e.FirstChild("field");
+    while (node)
     {
-        if(VGTableField *fd = VGTableField::ParseFiled(*field->ToElement(), tb))
+        if(VGTableField *fd = VGTableField::ParseFiled(*node->ToElement(), tb))
             tb->AddField(fd);
 
-        field = field->NextSibling("field");
+        node = node->NextSibling("field");
     }
 
-    field = e.FirstChild("foreign");
-    while (field)
+    node = e.FirstChild("foreign");
+    while (node)
     {
-        if(VGForeignKey *fk = VGForeignKey::ParseForeignKey(*field->ToElement(), tb))
+        if(VGForeignKey *fk = VGForeignKey::ParseForeignKey(*node->ToElement(), tb))
             tb->AddForeign(fk);
 
-        field = field->NextSibling("foreign");
+        node = node->NextSibling("foreign");
     }
     return tb;
 }

@@ -123,9 +123,9 @@ void IMessage::Release()
 //IObject
 //////////////////////////////////////////////////////////////////
 IObject::IObject(ISocket *sock, const string &id)
-    : m_sock(sock), m_id(id), m_bRelease(false)
-    , m_mtx(new Mutex), m_mtxMsg(new Mutex)
-    , m_idThread(-1)
+: m_sock(sock), m_id(id), m_bRelease(false)
+, m_mtx(new Mutex), m_mtxMsg(new Mutex)
+, m_mtxSend(new Mutex), m_idThread(-1)
 {
     SetBuffSize(1024 * 4);
 }
@@ -167,7 +167,7 @@ int IObject::GetSenLength() const
     return 0;
 }
 
-int IObject::CopySend(char *buf, int sz, unsigned form)
+int IObject::CopySend(char *, int, unsigned)
 {
     return 0;
 }

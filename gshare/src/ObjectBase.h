@@ -110,6 +110,7 @@ protected:
     BaseBuff                m_buff;
     IMutex                  *m_mtx;
     IMutex                  *m_mtxMsg;
+    IMutex                  *m_mtxSend;
     std::list<IMessage*>    m_lsMsg;
     std::list<IMessage*>    m_lsMsgRelease;
     int                     m_idThread;

@@ -4,6 +4,10 @@
 #include "sqlconfig.h"
 #include <string>
 #include <list>
+#if !defined _WIN32 && !defined _WIN64
+#include <strings.h>
+#define strnicmp strncasecmp
+#endif
 
 using namespace std;
 
@@ -49,6 +53,7 @@ public:
     VGTableField *FindFieldByName(const string &n);
     string ToCreateSQL()const;
     void AddField(VGTableField *);
+    bool IsForeignRef()const;
 public:
     static VGTable *ParseTable(TiXmlElement &e);
 protected:
@@ -56,6 +61,7 @@ protected:
     void AddForeign(VGForeignKey *f);
 private:
     string                  m_name;
+    bool                    m_bForeignRef;
     list<VGTableField *>    m_fields;
     list<VGForeignKey *>    m_foreigns;
 };

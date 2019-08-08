@@ -25,6 +25,7 @@ const string & GLibrary::GetPath() const
 
 bool GLibrary::Load(const string &nameLib, const string &path)
 {
+    m_strPath.clear();
     if (nameLib.size() <= 0)
         return false;
 
@@ -40,8 +41,6 @@ bool GLibrary::Load(const string &nameLib, const string &path)
     m_module = LoadLibrary(file.c_str());
     if (NULL != m_module)
         m_strPath = file;
-    else
-        m_strPath.clear();
 #else
     if (last != '/')
         file = path + "/";
@@ -52,8 +51,9 @@ bool GLibrary::Load(const string &nameLib, const string &path)
     if (NULL != m_module)
         m_strPath = file;
     else
-        m_strPath.clear();
+        fprintf(stderr, "%s\n", dlerror());
 #endif
+    printf("load library \"%s\" handle:%X\n", file.c_str(), m_module);
     return m_module != NULL;
 }
 

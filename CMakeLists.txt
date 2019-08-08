@@ -12,8 +12,7 @@ set(CMAKE_SHARED_LIBRARY_PREFIX ${PROJECT_BINARY_DIR})
 #set (PACKAGE_NAME_ZLIB zlib)
 #set (PACKAGE_NAME_PUBLIC public)
 
-set (PACKAGE_NAME gsock)
-project (${PACKAGE_NAME})
+project (GServer)
 
 add_subdirectory(tinyxml)
 add_subdirectory(protobuf)

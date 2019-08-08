@@ -12,8 +12,9 @@ namespace SOCKETS_NAMESPACE {
 #endif
 
 GSocket::GSocket(ISocketManager *handle): m_manager(handle)
-, m_object(NULL), m_fd(-1), m_bListen(false), m_stat(UnConnected)
-, m_address(NULL), m_mtx(new Mutex),m_mgrPrcs(NULL)
+,m_mgrPrcs(NULL), m_object(NULL), m_fd(-1), m_bListen(false)
+, m_bAccept(false), m_stat(UnConnected)
+, m_address(NULL), m_mtx(new Mutex)
 {
 }
 

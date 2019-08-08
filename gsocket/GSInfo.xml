@@ -23,8 +23,8 @@
 			<field name="lon"  type="double" />
 			<field name="acreage" type="float" />
 			<field name="boundary" type="VARBINARY(32768)" />
-			<!-- foreign name="gsuser" foreign="user" ref="GSInfo" />
-			<foreign name="ownerID" foreign="id" ref="OwnerInfo" /-->
+			<foreign name="gsuser" foreign="user" ref="GSInfo" />
+			<foreign name="ownerID" foreign="id" ref="OwnerInfo" />
 		</table>
 	</Tables>
 	<SQLs>
@@ -102,4 +102,8 @@
 			<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
 		</SQL>
 	</SQLs>
+	<Triggers>
+		<Trigger name="trigger" ref="LandInfo" type="Condition" />
+		<Trigger name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
+	</Triggers>
 </document>

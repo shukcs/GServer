@@ -25,6 +25,7 @@ protected:
         bool ret = ms.PrcsMangerData();
         if(ms.PrcsRcvBuff())
             ret = true;
+
         return ret;
     }
 private:
@@ -101,7 +102,7 @@ void ObjectManagers::processReceive(ISocket *sock, void const *buf, int len)
         return;
 
     sock->ResetSendBuff(256);
-    Lock l(*m_mtx);
+    m_mtx->Lock();
     map<ISocket *, BaseBuff*>::iterator itr = m_socksRcv.find(sock);
     BaseBuff *bb = NULL;
     if (itr == m_socksRcv.end())
@@ -127,6 +128,7 @@ void ObjectManagers::processReceive(ISocket *sock, void const *buf, int len)
             bb->Add(buf, bb->ReMained());
         }
     }
+    m_mtx->Unlock();
 }
 
 bool ObjectManagers::SendMsg(IMessage *msg)
@@ -179,6 +181,7 @@ bool ObjectManagers::PrcsRcvBuff()
         BaseBuff *buff = itr.second;
         if (buff->IsChanged())
         {
+            printf("ObjectManagers::%s: managers size %d\n", __FUNCTION__, (int)m_managersMap.size());
             for (const pair<int, IObjectManager*> &mgr : m_managersMap)
             {
                 if (mgr.second->Receive(itr.first, *buff))

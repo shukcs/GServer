@@ -8,7 +8,7 @@
 #include "DBExecItem.h"
 #include "Utility.h"
 #include "socketBase.h"
-#include "Lock.h"
+#include "IMutex.h"
 
 #define PROTOFLAG "das.proto."
 
@@ -40,17 +40,17 @@ bool ObjectUav::IsConnect() const
 
 void ObjectUav::InitBySqlResult(const ExecutItem &sql)
 {
-    if (FiledValueItem *fd = sql.GetItem("binded", ExecutItem::Read))
+    if (FiledValueItem *fd = sql.GetReadItem("binded"))
         m_bBind = fd->GetValue<char>()==1;
-    if (FiledValueItem *fd = sql.GetItem("binder", ExecutItem::Read))
+    if (FiledValueItem *fd = sql.GetReadItem("binder"))
         m_lastBinder = string((char*)fd->GetBuff(), fd->GetValidLen());
-    if (FiledValueItem *fd = sql.GetItem("lat", ExecutItem::Read))
+    if (FiledValueItem *fd = sql.GetReadItem("lat"))
         m_lat = fd->GetValue<double>();
-    if (FiledValueItem *fd = sql.GetItem("lon", ExecutItem::Read))
+    if (FiledValueItem *fd = sql.GetReadItem("lon"))
         m_lon = fd->GetValue<double>();
-    if (FiledValueItem *fd = sql.GetItem("timeBind", ExecutItem::Read))
+    if (FiledValueItem *fd = sql.GetReadItem("timeBind"))
         m_tmLastBind = fd->GetValue<int64_t>();
-    if (FiledValueItem *fd = sql.GetItem("timePos", ExecutItem::Read))
+    if (FiledValueItem *fd = sql.GetReadItem("timePos"))
         m_tmLastInfo = fd->GetValue<int64_t>();
 }
 
@@ -95,7 +95,7 @@ void ObjectUav::RespondLogin(int seq, int res)
         AckUavIdentityAuthentication ack;
         ack.set_seqno(seq);
         ack.set_result(res);
-        m_p->SendProto(ack, m_sock);
+        _send(ack);
     }
 }
 
@@ -129,7 +129,7 @@ int ObjectUav::ProcessReceive(void *buf, int len)
 int ObjectUav::GetSenLength() const
 {
     if (m_p)
-        return m_p->UnsendLength();
+        return m_p->RemaimedLength();
 
     return 0;
 }
@@ -146,8 +146,9 @@ void ObjectUav::SetSended(int sended /*= -1*/)
 {
     if (m_p)
     {
-        Lock l(*m_mtx);
+        m_mtx->Lock();
         m_p->SetSended(sended);
+        m_mtx->Unlock();
     }
 }
 
@@ -211,8 +212,9 @@ void ObjectUav::_send(const google::protobuf::Message &msg)
 {
     if (m_p && m_sock)
     {
-        Lock l(*m_mtx);
+        m_mtx->Lock();
         m_p->SendProto(msg, m_sock);
+        m_mtx->Unlock();
     }
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -257,9 +259,9 @@ int UavManager::PrcsBind(const RequestBindUav *msg, const std::string &gsOld)
             if (FiledValueItem *fd = item->GetConditionItem("id"))
                 fd->SetParam(uav);
 
-            if (FiledValueItem *fd = item->GetItem("binded", ExecutItem::Write))
+            if (FiledValueItem *fd = item->GetWriteItem("binded"))
                 fd->InitOf<char>(1 == op);
-            if (FiledValueItem *fd = item->GetItem("binder", ExecutItem::Write))
+            if (FiledValueItem *fd = item->GetWriteItem("binder"))
                 fd->SetParam(binder);
             m_sqlEng->Execut(item);
             printf("%s %s %s\n", binder.c_str(), 1 == op ? "bind" : "unbind", uav.c_str());

@@ -49,11 +49,15 @@ private:
     int _connect(ISocket *sock);
     void _accept(int fd);
     bool _recv(ISocket *sock);
-    bool _send(ISocket *sock);
+    void _send(ISocket *sock);
     void _remove(int h);
     void _addSocketHandle(int h, bool bListen=false);
     int _createSocket(int tp=SOCK_STREAM);
-    bool _containsSocketPrcs(ISocket *sock)const;
+#if !defined _WIN32 && !defined _WIN64
+    bool _isCloseEvent(uint32_t e)const;
+#endif
+protected:
+    static bool _contains(std::list<ISocket*> ls, ISocket *sock);
 private:
     std::map<int, ISocket*>     m_sockets;
     std::list<ISocket*>         m_socketsPrcs;

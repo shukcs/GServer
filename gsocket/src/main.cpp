@@ -9,7 +9,8 @@
 
 int main()
 {
-    GLibrary l("uavandqgc", GLibrary::CurrentPath());
+    //GLibrary l("vgmysql", GLibrary::CurrentPath());
+    GLibrary l2("uavandqgc", GLibrary::CurrentPath());
     GSocket s(NULL);
     GSocketManager m(1);
     s.Bind(1003, "");
@@ -19,7 +20,7 @@ int main()
     /*if (ExecutItem *item = VGDBManager::Instance().GetSqlByName("insertLand"))
     {
         item->ClearData();
-        if (FiledValueItem *fd = item->GetItem(ExecutItem::Write, "gsuser"))
+        if (FiledValueItem *fd = item->GetWriteItem(ExecutItem::Write, "gsuser"))
             fd->SetParam("huangsj");
 
         mysql.Execut(item);

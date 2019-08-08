@@ -159,7 +159,13 @@ bool VGMySql::_changeItem(ExecutItem *item)
 
     bool ret = false;
     if (sql.length() > 0)
+    {
+        if (item->HasForeignRefTable())
+            _query("SET FOREIGN_KEY_CHECKS=0");
         ret = _executChange(sql, binds, item->GetIncrement());
+        if (item->HasForeignRefTable())
+            _query("SET FOREIGN_KEY_CHECKS=1");
+    }
 
     delete binds;
     return ret;

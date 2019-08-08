@@ -137,9 +137,6 @@ void GSocketManager::AddProcessThread()
 
 bool GSocketManager::AddSocketWaitPrcs(ISocket *s)
 {
-    if (_containsSocketPrcs(s))
-        return false;
-
     m_mtx->Lock();
     m_socketsPrcs.push_back(s);
     m_mtx->Unlock();
@@ -218,6 +215,9 @@ void GSocketManager::PrcsSockets()
     for (ISocket *s : m_socketsPrcs)
     {
         ISocket::SocketStat st = s->GetSocketStat();
+        if(_contains(lsPrcsed, s))
+            continue;
+
         if (ISocket::Closing == st)
         {
             _remove(s->GetHandle());
@@ -227,8 +227,12 @@ void GSocketManager::PrcsSockets()
         if (ISocket::Connected != st)
             continue;
 
-        if (!s->IsListenSocket() && _send(s))
-            lsPrcsed.push_back(s);
+        if (!s->IsListenSocket())
+        {
+            _send(s);
+            if (s->GetSendLength() == 0)
+                lsPrcsed.push_back(s);
+        }
     }
 
     if (lsPrcsed.size() > 0)
@@ -300,7 +304,7 @@ void GSocketManager::SokectPoll(unsigned ms)
     }
 #else
     struct epoll_event events[MAX_EVENT] = { {0} };
-    int nfds = epoll_wait(m_ep_fd, events, 20, 500);
+    int nfds = epoll_wait(m_ep_fd, events, 20, ms);
     for (int i = 0; i < nfds; ++i)
     {
         struct epoll_event *ev = events + i;
@@ -310,14 +314,13 @@ void GSocketManager::SokectPoll(unsigned ms)
             _remove(ev->data.fd);
             continue;
         }
-
         if (sock->IsListenSocket()) //有新的连接
             _accept(ev->data.fd);
-        else if ((ev->events&EPOLLERR) || (ev->events&EPOLLRDHUP) || (ev->events&EPOLLHUP)) //socket断开，这些消息不定有
+        else if (_isCloseEvent(ev->events))
             lsRm.push_back(sock);
-        else if ((ev->events & EPOLLIN) && !_recv(sock))            //接收到数据，读socket
+        else if ((ev->events & EPOLLIN) && !_recv(sock))  //接收到数据，读socket
             lsRm.push_back(sock);
-        else if (ev->events&EPOLLOUT)                               //数据发送就绪
+        else if (ev->events&EPOLLOUT)                      //数据发送就绪
             sock->EnableWrite(true);
     }
 #endif
@@ -420,9 +423,9 @@ int GSocketManager::_createSocket(int tp)
     return socket(AF_INET, tp, IPPROTO_TCP);
 }
 
-bool GSocketManager::_containsSocketPrcs(ISocket *sock) const
+bool GSocketManager::_contains(std::list<ISocket*> ls, ISocket *sock)
 {
-    for (ISocket *itr :m_socketsPrcs)
+    for (ISocket *itr : ls)
     {
         if (itr == sock)
             return true;
@@ -435,6 +438,12 @@ void GSocketManager::_checkMaxSock()
 {
     map<int, ISocket*>::iterator itr = m_sockets.end();
     m_maxsock = itr == m_sockets.begin() ? 0 : (--itr)->first;
+}
+#else
+bool GSocketManager::_isCloseEvent(uint32_t evt) const
+{
+    //socket断开，这些消息不定有
+    return (evt&EPOLLERR) || (evt&EPOLLRDHUP) || (evt&EPOLLHUP);
 }
 #endif
 
@@ -533,28 +542,30 @@ void GSocketManager::_accept(int listenfd)
     return true;
 }
 
-bool GSocketManager::_send(ISocket *sock)
+void GSocketManager::_send(ISocket *sock)
 {
     int fd = sock ? sock->GetHandle() : -1;
     int len = sock->GetSendLength();
     if (-1 == fd)
-        return true;
+        return;
 
     int count = 0;
     while (len>count)
     {
         int res = sock->CopySend(m_buff, sizeof(m_buff), count);
+        printf("%s: %d byte will be send!\n", __FUNCTION__, res);
 #if defined _WIN32 ||  defined _WIN64
         res = send(fd, m_buff, res, 0);
 #else
+        printf("%s: %d byte will be send!\n", __FUNCTION__, res);
         res = write(fd, m_buff, res);
 #endif
         count += res;
-        if(res < sizeof(m_buff))
+        if(res < (int)sizeof(m_buff))
             break;
     }
-    sock->OnWrite(count);
-    return count >= len;
+    if (count>0)
+        sock->OnWrite(count);
 }
 
 #ifdef SOCKETS_NAMESPACE

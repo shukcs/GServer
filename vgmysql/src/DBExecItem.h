@@ -5,25 +5,23 @@
 typedef struct st_mysql_bind MYSQL_BIND;
 class TiXmlElement;
 class ExecutItem;
-class FiledValueItem {
+class FiledValueItem
+{
 public:
-    SHARED_SQL FiledValueItem(int tp, const string &name = "", int len = 0);
-    SHARED_SQL FiledValueItem(VGTableField *fild, bool bOth=false);
-    SHARED_SQL ~FiledValueItem();
-
-    SHARED_SQL void SetFieldName(const string &name);
-    SHARED_SQL const string &GetFieldName()const;
     SHARED_SQL void SetParam(const string &param, bool=true, bool =false);
-    SHARED_SQL const string &GetParam()const;
-    SHARED_SQL void InitBuff(unsigned len, const void *buf = NULL);
     SHARED_SQL unsigned GetMaxLen()const;
     SHARED_SQL unsigned GetValidLen()const;
     SHARED_SQL void *GetBuff()const;
-    SHARED_SQL int GetType()const;
-    SHARED_SQL unsigned long &ReadLength();
-    SHARED_SQL bool IsStaticParam()const;
-    SHARED_SQL bool IsEmpty()const;
-    SHARED_SQL void SetEmpty();
+    SHARED_SQL void InitBuff(unsigned len, const void *buf = NULL);
+
+    int GetType()const;
+    void SetFieldName(const string &name);
+    bool IsStaticParam()const;
+    bool IsEmpty()const;
+    void SetEmpty();
+    const string &GetFieldName()const;
+    const string &GetParam()const;
+    unsigned long &ReadLength();
 public:
     template<class T>
     void InitOf(const T &t)
@@ -50,9 +48,14 @@ public:
     }
 public:
     static void parse(TiXmlElement *e, ExecutItem *tb);
+protected:
+    FiledValueItem(int tp, const string &name = "", int len = 0);
+    FiledValueItem(VGTableField *fild, bool bOth = false);
+    ~FiledValueItem();
 private:
     static int _transToType(const char *pro);
 private:
+    friend class ExecutItem;
     int             m_type;
     bool            m_bEmpty;
     bool            m_bStatic;
@@ -63,7 +66,8 @@ private:
     string          m_param;
 };
 
-class ExecutItem {
+class ExecutItem
+{
 public:
     enum ExecutType {
         Unknown=0,
@@ -79,30 +83,33 @@ public:
         AutoIncrement,
     };
 public:
-    SHARED_SQL ExecutItem(ExecutType tp, const std::string &name);
-    SHARED_SQL ~ExecutItem();
+    ~ExecutItem();
 
-    SHARED_SQL ExecutType GetType()const;
-    SHARED_SQL const std::string &GetName()const;
-    SHARED_SQL const StringList &ExecutTables()const;
-    SHARED_SQL void AddExecutTable(const std::string &t);
-
-    SHARED_SQL void AddItem(FiledValueItem *item, int tp);
-    SHARED_SQL void SetIncrement(FiledValueItem *item);
     SHARED_SQL FiledValueItem *GetReadItem(const string &name)const;
     SHARED_SQL FiledValueItem *GetWriteItem(const string &name)const;
     SHARED_SQL FiledValueItem *GetConditionItem(const string &name)const;
     SHARED_SQL FiledValueItem *GetIncrement()const;
     SHARED_SQL bool IsValid()const;
-    SHARED_SQL FiledValueItem *GetItem(const string &name, int tp)const;
     SHARED_SQL int CountParam()const;
     SHARED_SQL int CountRead()const;
     SHARED_SQL string GetSqlString(MYSQL_BIND *bind, int &pos)const;
     SHARED_SQL void ClearData();
+    SHARED_SQL ExecutType GetType()const;
+
+    const std::string &GetName()const;
+    const StringList &ExecutTables()const;
+    void AddItem(FiledValueItem *item, int tp);
+    void SetIncrement(FiledValueItem *item);
+    FiledValueItem *GetItem(const string &name, int tp)const;
     MYSQL_BIND *TransformRead();
+    bool HasForeignRefTable()const;
 public:
     static void transformBind(FiledValueItem *item, MYSQL_BIND &bind, bool=false);
     static ExecutItem *parse(TiXmlElement *e);
+protected:
+    ExecutItem(ExecutType tp, const std::string &name);
+    void SetExecutTables(const StringList &tbs);
+    void AddExecutTable(const std::string &t);
 private:
     void _parseItems(TiXmlElement *e);
     void _addCondition(FiledValueItem *item);
@@ -120,6 +127,7 @@ private:
     ExecutType              m_type;
     string                  m_name;
     FiledValueItem*         m_autoIncrement;
+    bool                    m_bHasForeignRefTable;
     StringList              m_tables;
     list<FiledValueItem*>   m_itemsRead;
     list<FiledValueItem*>   m_itemsWrite;

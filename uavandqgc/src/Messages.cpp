@@ -40,27 +40,26 @@ void UAVMessage::SetContent(const google::protobuf::Message &msg)
     if (name == d_p_ClassName(RequestBindUav))
     {
         m_msg = new RequestBindUav;
-        m_msg->CopyFrom(msg);
         m_tpMsg = BindUav;
     }
     else if (name == d_p_ClassName(PostControl2Uav))
     {
         m_msg = new PostControl2Uav;
-        m_msg->CopyFrom(msg);
         m_tpMsg = ControlUav;
     }
     else if (name == d_p_ClassName(RequestUploadOperationRoutes))
     {
         m_msg = new RequestUploadOperationRoutes;
-        m_msg->CopyFrom(msg);
         m_tpMsg = SychMission;
     }
     else if (name == d_p_ClassName(RequestUavStatus))
     {
         m_msg = new RequestUavStatus;
-        m_msg->CopyFrom(msg);
         m_tpMsg = QueryUav;
     }
+
+    if (m_tpMsg != Unknown)
+        m_msg->CopyFrom(msg);
 }
 
 void UAVMessage::AttachProto(google::protobuf::Message *msg)
@@ -121,39 +120,36 @@ void GSMessage::SetContent(const google::protobuf::Message &msg)
     if (name == d_p_ClassName(AckRequestBindUav))
     {
         m_msg = new AckRequestBindUav;
-        m_msg->CopyFrom(msg);
         m_tpMsg = BindUavRes;
     }
     else if (name == d_p_ClassName(AckPostControl2Uav))
     {
         m_msg = new AckPostControl2Uav;
-        m_msg->CopyFrom(msg);
         m_tpMsg = ControlUavRes;
     }
     else if (name == d_p_ClassName(AckRequestUploadOperationRoutes))
     {
         m_msg = new AckRequestUploadOperationRoutes;
-        m_msg->CopyFrom(msg);
         m_tpMsg = SychMissionRes;
     }
     else if (name == d_p_ClassName(OperationInformation))
     {
         m_msg = new OperationInformation;
-        m_msg->CopyFrom(msg);
         m_tpMsg = PushUavSndInfo;
     }
     else if (name == d_p_ClassName(PostStatus2GroundStation))
     {
         m_msg = new OperationInformation;
-        m_msg->CopyFrom(msg);
         m_tpMsg = ControlGs;
     }
     else if (name == d_p_ClassName(AckRequestUavStatus))
     {
         m_msg = new AckRequestUavStatus;
-        m_msg->CopyFrom(msg);
         m_tpMsg = QueryUavRes;
     }
+
+    if (m_tpMsg != Unknown)
+        m_msg->CopyFrom(msg);
 }
 
 void GSMessage::AttachProto(google::protobuf::Message *msg)

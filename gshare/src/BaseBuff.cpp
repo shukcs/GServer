@@ -15,19 +15,19 @@ BaseBuff::~BaseBuff()
 
 bool BaseBuff::InitBuff(uint16_t sz)
 {
-    uint8_t *buff = NULL;
     if (sz > m_lens[0])
     {
-        buff = m_buff;
-        if (m_buff = new uint8_t[sz])
+        uint8_t *buff = m_buff;
+        m_buff = new uint8_t[sz];
+        if (m_buff)
         {
             memset(m_buff, 0, sz);
             m_lens[0] = sz;
             if (m_lens[1] > 0)
                 memcpy(m_buff, buff, m_lens[1]);
         }
+        delete buff;
     }
-    delete buff;
     return m_buff != NULL;
 }
 

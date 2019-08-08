@@ -170,8 +170,8 @@ void FiledValueItem::parse(TiXmlElement *e, ExecutItem *sql)
         FiledValueItem *vf = new FiledValueItem(-1, name, 0);
         if (tmp)
             vf->SetParam(tmp, false, true);
-        else if (tmp = e->Attribute("paramVal"))
-            vf->SetParam(tmp, true, true);
+        else if (const char *val = e->Attribute("paramVal"))
+            vf->SetParam(val, true, true);
 
         sql->AddItem(vf, tp);
     }
@@ -200,6 +200,7 @@ int FiledValueItem::_transToType(const char *pro)
 ///////////////////////////////////////////////////////////////////////////////////////
 ExecutItem::ExecutItem(ExecutType tp, const std::string &name)
 : m_type(tp), m_name(name), m_autoIncrement(NULL)
+, m_bHasForeignRefTable(false)
 {
 }
 
@@ -232,12 +233,26 @@ const StringList &ExecutItem::ExecutTables() const
     return m_tables;
 }
 
+void ExecutItem::SetExecutTables(const StringList &tbs)
+{
+    for (const std::string &itr : tbs)
+    {
+        AddExecutTable(itr);
+    }
+}
+
 void ExecutItem::AddExecutTable(const std::string &t)
 {
     for (const std::string &itr:m_tables)
     {
         if (itr == t)
             return;
+    }
+    if (!m_bHasForeignRefTable)
+    {
+        VGTable *tb = VGDBManager::Instance().GetTableByName(t);
+        if (tb && tb->IsForeignRef())
+            m_bHasForeignRefTable = true;
     }
     m_tables.push_back(t);
 }
@@ -324,12 +339,12 @@ int ExecutItem::CountParam()const
     int ret = 0;
     for (FiledValueItem *itr : m_itemsWrite)
     {
-        if (!itr->IsStaticParam())
+        if (!itr->IsEmpty() && !itr->IsStaticParam())
             ret++;
     }
     for (FiledValueItem *itr : m_itemsCondition)
     {
-        if (!itr->IsStaticParam())
+        if (!itr->IsEmpty() && !itr->IsStaticParam())
             ret++;
     }
     return ret;
@@ -394,6 +409,11 @@ MYSQL_BIND *ExecutItem::TransformRead()
     return binds;
 }
 
+bool ExecutItem::HasForeignRefTable() const
+{
+    return m_bHasForeignRefTable;
+}
+
 void ExecutItem::transformBind(FiledValueItem *item, MYSQL_BIND &bind, bool bRead)
 {
     if (item)
@@ -427,7 +447,7 @@ ExecutItem *ExecutItem::parse(TiXmlElement *e)
         return sql;
     tmp = e->Attribute("all");
     bool bAll = tmp && VGDBManager::str2int(tmp) != 0;
-    sql->m_tables = VGDBManager::SplitString(table, ";");
+    sql->SetExecutTables(VGDBManager::SplitString(table, ";"));
     for (const string &itr : sql->m_tables)
     {
         if (!bAll)

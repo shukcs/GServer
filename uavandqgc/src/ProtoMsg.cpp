@@ -83,7 +83,7 @@ bool ProtoMsg::Parse(const char *buff, int &len)
 
 bool ProtoMsg::SendProto(const google::protobuf::Message &msg, ISocket *s)
 {
-    if (UnsendLength() <= 0)
+    if (RemaimedLength() <= 0)
         _reset();
 
     string name = msg.GetTypeName();
@@ -104,7 +104,7 @@ bool ProtoMsg::SendProto(const google::protobuf::Message &msg, ISocket *s)
     int crc = Utility::Crc32(buf+4, len-4);
     Utility::toBigendian(crc, buf+len);
     m_len += len+4;
-    s->Send(len+4);
+    s->Send(len + 4);
 
     return true;
 }
@@ -128,11 +128,11 @@ bool ProtoMsg::SendProtoTo(const google::protobuf::Message &msg, ISocket *s)
     msg.SerializeToArray(buf + nameLen + 8, proroLen);
     int crc = Utility::Crc32(buf + 4, len - 4);
     Utility::toBigendian(crc, buf + len);
-    s->Send(len+4, buf);
+    s->Send(len + 4, buf);
     return true;
 }
 
-int ProtoMsg::UnsendLength() const
+int ProtoMsg::RemaimedLength() const
 {
     if (m_buff && m_len > 0 && m_sended >= 0 && m_len > m_sended)
         return m_len - m_sended;
@@ -157,7 +157,7 @@ int ProtoMsg::CopySend(char *buff, int len, unsigned from) const
 void ProtoMsg::SetSended(int n)
 {
     if (n < 0)
-        m_sended = m_len;
+        _reset();
     else
         m_sended += n;
 }
