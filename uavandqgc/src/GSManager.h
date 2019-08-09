@@ -22,7 +22,7 @@ class VGMySql;
 class ExecutItem;
 
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE;
 #endif
 
 class ProtoMsg;
@@ -79,8 +79,5 @@ private:
     ProtoMsg        *m_p;
 };
 
-#ifdef SOCKETS_NAMESPACE
-}
-#endif
 #endif // __OBJECT_UAV_H__
 

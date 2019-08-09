@@ -137,6 +137,9 @@ void GSocketManager::AddProcessThread()
 
 bool GSocketManager::AddSocketWaitPrcs(ISocket *s)
 {
+    if (_contains(m_socketsPrcs, s))
+        return false;
+
     m_mtx->Lock();
     m_socketsPrcs.push_back(s);
     m_mtx->Unlock();
@@ -215,9 +218,6 @@ void GSocketManager::PrcsSockets()
     for (ISocket *s : m_socketsPrcs)
     {
         ISocket::SocketStat st = s->GetSocketStat();
-        if(_contains(lsPrcsed, s))
-            continue;
-
         if (ISocket::Closing == st)
         {
             _remove(s->GetHandle());
@@ -553,11 +553,9 @@ void GSocketManager::_send(ISocket *sock)
     while (len>count)
     {
         int res = sock->CopySend(m_buff, sizeof(m_buff), count);
-        printf("%s: %d byte will be send!\n", __FUNCTION__, res);
 #if defined _WIN32 ||  defined _WIN64
         res = send(fd, m_buff, res, 0);
 #else
-        printf("%s: %d byte will be send!\n", __FUNCTION__, res);
         res = write(fd, m_buff, res);
 #endif
         count += res;

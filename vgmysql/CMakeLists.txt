@@ -1,8 +1,7 @@
 package(vgmysql)
 SET(CMAKE_C_FLAGS "-fPIC -O0 -Wall")  #c  
-SET(CMAKE_CXX_FLAGS "-fPIC -O2 -Wall")  #c++
+SET(CMAKE_CXX_FLAGS "-fPIC -O2 -Wall -g")  #c++
 
-add_definitions(-D TIXML_USE_STL)
 add_definitions(-D SHARE_LIBRARY)
 
 INCLUDE_DIRECTORIES(
@@ -22,8 +21,6 @@ set(SRC_LIST
 
 add_library(${PACKAGE_NAME} SHARED ${SRC_LIST})
 
-target_link_libraries(${PACKAGE_NAME} tinyxml)
-target_link_libraries(${PACKAGE_NAME} mysqlclient)
 set_target_properties(
 	${PACKAGE_NAME}
 	PROPERTIES
@@ -31,6 +28,8 @@ set_target_properties(
 	${PACKAGE_NAME}
 )
 
+target_link_libraries(${PACKAGE_NAME} tinyxml)
+target_link_libraries(${PACKAGE_NAME} mysqlclient)
 #install(
 #	TARGETS
 #	${PACKAGE_NAME}

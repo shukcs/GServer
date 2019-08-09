@@ -3,7 +3,6 @@ SET(CMAKE_C_FLAGS "-fPIC -O0 -Wall")  #c
 SET(CMAKE_CXX_FLAGS "-fPIC -O2 -Wall")  #c++
 
 add_definitions(-D _LIB)
-add_definitions(-D TIXML_USE_STL)
 
 INCLUDE_DIRECTORIES(
 	.

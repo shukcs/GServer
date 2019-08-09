@@ -10,7 +10,6 @@
 int main()
 {
     //GLibrary l("vgmysql", GLibrary::CurrentPath());
-    GLibrary l2("uavandqgc", GLibrary::CurrentPath());
     GSocket s(NULL);
     GSocketManager m(1);
     s.Bind(1003, "");
@@ -25,7 +24,7 @@ int main()
 
         mysql.Execut(item);
     }*/
-
+    GLibrary l2("uavandqgc", GLibrary::CurrentPath());
     while (1)
         m.Poll(50);
     return 0;

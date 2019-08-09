@@ -1,8 +1,6 @@
 package(uavandqgc)
 SET(CMAKE_C_FLAGS "-fPIC -O0 -Wall")  #c  
-SET(CMAKE_CXX_FLAGS "-fPIC -O2 -Wall")  #c++
-
-add_definitions(-D SHARE_LIBRARY)
+SET(CMAKE_CXX_FLAGS "-fPIC -O2 -Wall -g")  #c++
 
 INCLUDE_DIRECTORIES(
 	.
@@ -29,9 +27,10 @@ set_target_properties(
 	OUTPUT_NAME
 	${PACKAGE_NAME}
 )
+
+target_link_libraries(${PACKAGE_NAME} gshare)
 target_link_libraries(${PACKAGE_NAME} protobuf)
 target_link_libraries(${PACKAGE_NAME} vgmysql)
-target_link_libraries(${PACKAGE_NAME} gshare)
 
 #install(
 #	TARGETS

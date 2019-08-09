@@ -15,9 +15,92 @@
 using namespace std;
 using namespace das::proto;
 
-#ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
-#endif
+class GSMessage : public IMessage
+{
+public:
+    GSMessage(IObject *sender, const std::string &idRcv)
+        :IMessage(sender, idRcv, IObject::GroundStation, Unknown), m_msg(NULL)
+    {
+    }
+    ~GSMessage()
+    {
+        delete m_msg;
+    }
+    void *GetContent() const
+    {
+        return m_msg;
+    }
+    void SetGSContent(const google::protobuf::Message &msg)
+    {
+        delete m_msg;
+        m_msg = NULL;
+        m_tpMsg = Unknown;
+        const string &name = msg.GetTypeName();
+        if (name == d_p_ClassName(AckRequestBindUav))
+        {
+            m_msg = new AckRequestBindUav;
+            m_tpMsg = BindUavRes;
+        }
+        else if (name == d_p_ClassName(AckPostControl2Uav))
+        {
+            m_msg = new AckPostControl2Uav;
+            m_tpMsg = ControlUavRes;
+        }
+        else if (name == d_p_ClassName(AckRequestUploadOperationRoutes))
+        {
+            m_msg = new AckRequestUploadOperationRoutes;
+            m_tpMsg = SychMissionRes;
+        }
+        else if (name == d_p_ClassName(OperationInformation))
+        {
+            m_msg = new OperationInformation;
+            m_tpMsg = PushUavSndInfo;
+        }
+        else if (name == d_p_ClassName(PostStatus2GroundStation))
+        {
+            m_msg = new OperationInformation;
+            m_tpMsg = ControlGs;
+        }
+        else if (name == d_p_ClassName(AckRequestUavStatus))
+        {
+            m_msg = new AckRequestUavStatus;
+            m_tpMsg = QueryUavRes;
+        }
+
+        if (m_tpMsg != Unknown)
+            m_msg->CopyFrom(msg);
+    }
+    void AttachProto(google::protobuf::Message *msg)
+    {
+        delete m_msg;
+        m_msg = NULL;
+        if (!msg)
+            return;
+        const string &name = msg->GetTypeName();
+        if (name == d_p_ClassName(AckRequestBindUav))
+            m_tpMsg = BindUavRes;
+        else if (name == d_p_ClassName(AckPostControl2Uav))
+            m_tpMsg = ControlUavRes;
+        else if (name == d_p_ClassName(AckRequestUploadOperationRoutes))
+            m_tpMsg = SychMissionRes;
+        else if (name == d_p_ClassName(OperationInformation))
+            m_tpMsg = PushUavSndInfo;
+        else if (name == d_p_ClassName(PostStatus2GroundStation))
+            m_tpMsg = ControlGs;
+        else if (name == d_p_ClassName(AckRequestUavStatus))
+            m_tpMsg = QueryUavRes;
+        else
+            m_tpMsg = Unknown;
+
+        m_msg = msg;
+    }
+    int GetContentLength() const
+    {
+        return m_msg ? m_msg->ByteSize() : 0;
+    }
+private:
+    google::protobuf::Message  *m_msg;
+};
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
@@ -173,7 +256,7 @@ void ObjectUav::prcsRcvPostOperationInfo(das::proto::PostOperationInformation *m
             GSMessage *ms = new GSMessage(this, m_lastBinder);
             if (!ms)
                 continue;
-            ms->SetContent(*oi);       
+            ms->SetGSContent(*oi);
             ObjectManagers::Instance().SendMsg(ms);
         }
     }
@@ -191,7 +274,7 @@ void ObjectUav::prcsRcvPost2Gs(das::proto::PostStatus2GroundStation *msg)
 
     if (GSMessage *ms = new GSMessage(this, m_lastBinder))
     {
-        ms->SetContent(*msg);
+        ms->SetGSContent(*msg);
         ObjectManagers::Instance().SendMsg(ms);
     }
 }
@@ -334,8 +417,9 @@ bool UavManager::PrcsRemainMsg(const IMessage &msg)
 
 void UavManager::sendBindRes(const das::proto::RequestBindUav &msg, int res, bool bind)
 {
-    if (GSMessage *ms = new GSMessage(this, msg.binder()))
+    if (GSMessage *ms = new GSMessage(NULL, msg.binder()))
     {
+        ms->SetSenderType(IObject::Plant);
         AckRequestBindUav *proto = new AckRequestBindUav();
         if (!proto)
             return;
@@ -450,15 +534,12 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, const std::string &g
         }
     }
 
-    if (GSMessage *ms = new GSMessage(this, gs))
+    if (GSMessage *ms = new GSMessage(NULL, gs))
     {
-        ms->SetContent(as);
+        ms->SetSenderType(IObject::Plant);
+        ms->SetGSContent(as);
         ObjectManagers::Instance().SendMsg(ms);
     }
 }
-
-#ifdef SOCKETS_NAMESPACE
-}
-#endif
 
 DECLARE_MANAGER_ITEM(UavManager)

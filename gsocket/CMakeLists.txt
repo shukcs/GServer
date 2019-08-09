@@ -1,3 +1,4 @@
+
 package(gsocket)
 SET(CMAKE_C_FLAGS "-fPIC -O0 -Wall")  #c  
 SET(CMAKE_CXX_FLAGS "-fPIC -O2 -Wall")  #c++
@@ -21,7 +22,6 @@ set_target_properties(
 	${PACKAGE_NAME}
 )
 target_link_libraries(${PACKAGE_NAME} gshare)
-target_link_libraries(${PACKAGE_NAME} vgmysql)
 #install(
 #	TARGETS
 #	${PACKAGE_NAME}

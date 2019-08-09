@@ -96,7 +96,10 @@ void ObjectManagers::RemoveManager(int type)
 void ObjectManagers::processReceive(ISocket *sock, void const *buf, int len)
 {
     if (!m_thread->IsRunning())
+    {
         m_thread->SetRunning();
+        printf("ObjectManagers::%s: managers size %d\n", __FUNCTION__, (int)m_managersMap.size());
+    }
 
     if (!sock)
         return;
@@ -181,7 +184,6 @@ bool ObjectManagers::PrcsRcvBuff()
         BaseBuff *buff = itr.second;
         if (buff->IsChanged())
         {
-            printf("ObjectManagers::%s: managers size %d\n", __FUNCTION__, (int)m_managersMap.size());
             for (const pair<int, IObjectManager*> &mgr : m_managersMap)
             {
                 if (mgr.second->Receive(itr.first, *buff))

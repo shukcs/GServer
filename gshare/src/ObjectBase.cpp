@@ -56,14 +56,6 @@ IMessage::IMessage(IObject *sender, const std::string &id, int rcv, int tpMsg)
         m_tpSender = m_sender->GetObjectType();
 }
 
-IMessage::IMessage(IObjectManager *sender, const std::string &id, int rcv, int tpMsg)
-: m_idRcv(id), m_tpRcv(rcv), m_tpMsg(tpMsg), m_tpSender(IObject::UnKnow), m_sender(NULL)
-, m_bRelease(false)
-{
-    if (sender)
-        m_tpSender = sender->GetObjectType();
-}
-
 int IMessage::GetReceiverType() const
 {
     return m_tpRcv;
@@ -79,9 +71,15 @@ const std::string &IMessage::GetReceiverID() const
     return m_idRcv;
 }
 
+void IMessage::SetSenderType(int tp)
+{
+    if (!m_sender && ObjectManagers::Instance().GetManagerByType(tp))
+        m_tpSender = tp;
+}
+
 int IMessage::GetSenderType() const
 {
-    return  m_sender ? m_sender->GetObjectType() : IObject::UnKnow;
+    return  m_sender ? m_sender->GetObjectType() : m_tpSender;
 }
 
 const std::string &IMessage::GetSenderID() const

@@ -92,7 +92,7 @@ list<string> VGDBManager::SplitString(const std::string &str, const std::string 
 bool VGDBManager::Load(const std::string &fileName)
 {
     TiXmlDocument myDocument;
-    myDocument.LoadFile(fileName);
+    myDocument.LoadFile(fileName.c_str());
     TiXmlElement *rootElement = myDocument.RootElement();
     if (!rootElement)
         return false;

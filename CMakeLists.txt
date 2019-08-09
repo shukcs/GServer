@@ -1,16 +1,10 @@
-﻿######## Project settings
-cmake_minimum_required(VERSION 2.8.9)
-
+﻿cmake_minimum_required(VERSION 2.8.9)
 set (USE_32BITS 1)
-
 include(precheck.cmake)
 
 SET(PROJECT_BINARY_DIR ${CMAKE_BINARY_DIR}/bin/})
 set(CMAKE_SHARED_LIBRARY_PREFIX ${PROJECT_BINARY_DIR})
 
-#set (PACKAGE_NAME_gshare gshare)
-#set (PACKAGE_NAME_ZLIB zlib)
-#set (PACKAGE_NAME_PUBLIC public)
 
 project (GServer)
 

@@ -189,6 +189,7 @@ void GSocket::OnClose()
 
     if (m_manager)
         m_manager->ReleaseSocket(this);
+    m_object = NULL;
 }
 
 void GSocket::OnConnect(bool b)

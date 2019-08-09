@@ -95,7 +95,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>gshare.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gshare.lib;vgmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

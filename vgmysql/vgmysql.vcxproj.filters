@@ -18,6 +18,9 @@
     <ClCompile Include="src\VGTable.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\VGTrigger.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DBExecItem.h">
@@ -30,6 +33,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\VGTable.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VGTrigger.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

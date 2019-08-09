@@ -39,8 +39,8 @@ bool GLibrary::Load(const string &nameLib, const string &path)
 
     file += nameLib + ".dll";
     m_module = LoadLibrary(file.c_str());
-    if (NULL != m_module)
-        m_strPath = file;
+    if (NULL == m_module)
+        fprintf(stderr, "error numb %d\n", errno);
 #else
     if (last != '/')
         file = path + "/";
@@ -48,12 +48,11 @@ bool GLibrary::Load(const string &nameLib, const string &path)
     file += "lib";
     file += nameLib + ".so";
     m_module = dlopen(file.c_str(), RTLD_NOW);
-    if (NULL != m_module)
-        m_strPath = file;
-    else
-        fprintf(stderr, "%s\n", dlerror());
+    if (NULL == m_module)
+        fprintf(stderr, "(Load library fail):%s\n", dlerror());
 #endif
-    printf("load library \"%s\" handle:%X\n", file.c_str(), m_module);
+    else
+        m_strPath = file;
     return m_module != NULL;
 }
 

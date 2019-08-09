@@ -15,12 +15,14 @@
     <ClCompile Include="src\VGDBManager.cpp" />
     <ClCompile Include="src\VGMysql.cpp" />
     <ClCompile Include="src\VGTable.cpp" />
+    <ClCompile Include="src\VGTrigger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DBExecItem.h" />
     <ClInclude Include="src\VGDBManager.h" />
     <ClInclude Include="src\VGMysql.h" />
     <ClInclude Include="src\VGTable.h" />
+    <ClInclude Include="src\VGTrigger.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{1163E206-E3E4-4DEF-9298-43CCC05B669F}</ProjectGuid>
@@ -69,12 +71,12 @@
   <PropertyGroup>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\bin</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\$(ProjectName)</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">share</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\bin</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\$(ProjectName)</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">share</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</IgnoreImportLibrary>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -88,7 +90,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>TIXML_USE_STL;_WIN32;SHARE_LIBRARY;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32;SHARE_LIBRARY;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -120,7 +122,7 @@
     </ResourceCompile>
     <QtMoc>
       <IncludePath>./src;C:\Program Files (x86)\MySQL\MySQL Connector C 6.1\include;../tinyxml;%(AdditionalIncludeDirectories)</IncludePath>
-      <Define>TIXML_USE_STL;_WIN32;SHARE_LIBRARY;NDEBUG;%(PreprocessorDefinitions)</Define>
+      <Define>_WIN32;SHARE_LIBRARY;NDEBUG;%(PreprocessorDefinitions)</Define>
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -134,7 +136,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>TIXML_USE_STL;_WIN32;SHARE_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32;SHARE_LIBRARY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -166,7 +168,7 @@
     </ResourceCompile>
     <QtMoc>
       <IncludePath>./src;C:\Program Files (x86)\MySQL\MySQL Connector C 6.1\include;../tinyxml;%(AdditionalIncludeDirectories)</IncludePath>
-      <Define>TIXML_USE_STL;_WIN32;SHARE_LIBRARY;%(PreprocessorDefinitions)</Define>
+      <Define>_WIN32;SHARE_LIBRARY;%(PreprocessorDefinitions)</Define>
     </QtMoc>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

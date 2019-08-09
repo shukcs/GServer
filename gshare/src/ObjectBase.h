@@ -29,7 +29,6 @@ class IMessage
 {
 public:
     SHARED_DECL IMessage(IObject *sender, const std::string &id, int rcv, int tpMsg);
-    SHARED_DECL IMessage(IObjectManager *sender, const std::string &id, int rcv, int tpMsg);
 
     virtual ~IMessage() {}
     virtual void *GetContent()const = 0;
@@ -38,6 +37,7 @@ public:
     SHARED_DECL int GetReceiverType()const;
     SHARED_DECL int GetMessgeType()const;
     SHARED_DECL const std::string &GetReceiverID()const;
+    SHARED_DECL void SetSenderType(int tp);
     SHARED_DECL int GetSenderType()const;
     SHARED_DECL const std::string &GetSenderID()const;
     SHARED_DECL IObject *GetSender()const;
