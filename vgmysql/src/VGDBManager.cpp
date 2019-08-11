@@ -97,7 +97,13 @@ bool VGDBManager::Load(const std::string &fileName)
     if (!rootElement)
         return false;
 
-    TiXmlNode *node = rootElement->FirstChild("Tables");
+    TiXmlNode *node = rootElement->FirstChild("Mysql");
+    if (!node)
+        return false;
+
+    parseMysql(node->ToElement());
+
+    node = rootElement->FirstChild("Tables");
     TiXmlElement *tables = node ? node->ToElement():NULL;
     TiXmlNode *table = tables ? tables->FirstChild("table"):NULL;
     while (table)
@@ -148,6 +154,72 @@ const std::list<VGTable*> &VGDBManager::Tables() const
     return m_tables;
 }
 
+const char *VGDBManager::GetMysqlHost(const std::string &db) const
+{
+    for (const MySqlStruct &itr : m_mysqls)
+    {
+        if (db.empty() || db == itr.m_database)
+            return itr.m_host.c_str();
+    }
+    static string sDef = "127.0.0.1";
+    return sDef.c_str();
+}
+
+int VGDBManager::GetMysqlPort(const std::string &db/*=""*/) const
+{
+    for (const MySqlStruct &itr : m_mysqls)
+    {
+        if (db.empty() || db == itr.m_database)
+            return itr.m_port;
+    }
+
+    return 3306;
+}
+
+const char * VGDBManager::GetMysqlUser(const std::string &db/*=""*/) const
+{
+    for (const MySqlStruct &itr : m_mysqls)
+    {
+        if (db.empty() || db == itr.m_database)
+            return itr.m_user.c_str();
+    }
+
+    static string sDef = "root";
+    return sDef.c_str();
+}
+
+const char *VGDBManager::GetMysqlPswd(const std::string &db/*=""*/) const
+{
+    for (const MySqlStruct &itr : m_mysqls)
+    {
+        if (db.empty() || db == itr.m_database)
+            return itr.m_pswd.c_str();
+    }
+    return NULL;
+}
+
+const char *VGDBManager::GetDatabase(const std::string &db/*=""*/) const
+{
+    for (const MySqlStruct &itr : m_mysqls)
+    {
+        if (db.empty() || db == itr.m_database)
+            return itr.m_database.c_str();
+    }
+
+    return NULL;
+}
+
+list<string> VGDBManager::GetDatabases() const
+{
+    list<string> ret;
+    for (const MySqlStruct &itr : m_mysqls)
+    {
+        ret.push_back(itr.m_database);
+    }
+
+    return ret;
+}
+
 void VGDBManager::parseTable(TiXmlElement *e)
 {
     if (!e)
@@ -166,4 +238,36 @@ void VGDBManager::parseSql(TiXmlElement *e)
         else
             delete item;
     }
+}
+
+void VGDBManager::parseMysql(TiXmlElement *e)
+{
+    if (!e)
+        return;
+    MySqlStruct sqlSrv;
+
+    const char *tmp = e->Attribute("user");
+    if (!tmp)
+        return;
+    sqlSrv.m_user = tmp;
+    tmp = e->Attribute("pswd");
+    if(tmp)
+        sqlSrv.m_pswd = tmp;
+
+    tmp = e->Attribute("host");
+    if (!tmp)
+        return;
+    sqlSrv.m_host = tmp;
+
+    tmp = e->Attribute("port");
+    if (!tmp)
+        return;
+    sqlSrv.m_port = str2int(tmp);
+
+    tmp = e->Attribute("database");
+    if (!tmp)
+        return;
+    sqlSrv.m_database = tmp;
+
+    m_mysqls.push_back(sqlSrv);
 }

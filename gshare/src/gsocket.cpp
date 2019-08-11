@@ -218,7 +218,7 @@ int GSocket::CopySend(char *buf, int sz, unsigned from) const
     }
 
     if (ret < sz && m_object)
-        ret += m_object->CopySend(buf + ret, sz - ret, from - ret);
+        ret += m_object->CopySend(buf + ret, sz - ret, from);
 
     return ret;
 }

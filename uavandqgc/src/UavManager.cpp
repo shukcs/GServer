@@ -306,12 +306,6 @@ void ObjectUav::_send(const google::protobuf::Message &msg)
 UavManager::UavManager():m_sqlEng(new VGMySql)
 , m_p(new ProtoMsg)
 {
-    if (m_sqlEng)
-        m_sqlEng->ConnectMySql("127.0.0.1", 3306, "root", "", "gsuav");
-
-    VGDBManager::Instance().Load("UavInfo.xml");
-    if(VGTable *tb = VGDBManager::Instance().GetTableByName("UavInfo"))
-        m_sqlEng->CreateTable(tb);
 }
 
 UavManager::~UavManager()
@@ -381,6 +375,7 @@ IObject *UavManager::ProcessReceive(ISocket *s, const char *buf, int &len)
     int pos = 0;
     int l = len;
     IObject *o = NULL;
+    _ensureDBValid();
     while (m_p->Parse(buf+pos, l))
     {
         pos += l;
@@ -413,6 +408,18 @@ bool UavManager::PrcsRemainMsg(const IMessage &msg)
         return true;
     }
     return false;
+}
+
+void UavManager::_ensureDBValid()
+{
+    if (m_sqlEng && !m_sqlEng->IsValid())
+    {
+        m_sqlEng->ConnectMySql(VGDBManager::Instance().GetMysqlHost(),
+            VGDBManager::Instance().GetMysqlPort(),
+            VGDBManager::Instance().GetMysqlUser(),
+            VGDBManager::Instance().GetMysqlPswd(),
+            VGDBManager::Instance().GetDatabase());
+    }
 }
 
 void UavManager::sendBindRes(const das::proto::RequestBindUav &msg, int res, bool bind)

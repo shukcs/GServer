@@ -182,7 +182,7 @@ bool ObjectManagers::PrcsRcvBuff()
     for (const pair<ISocket *, BaseBuff*> &itr : m_socksRcv)
     {
         BaseBuff *buff = itr.second;
-        if (buff->IsChanged())
+        if (buff && buff->IsChanged())
         {
             for (const pair<int, IObjectManager*> &mgr : m_managersMap)
             {

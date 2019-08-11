@@ -113,11 +113,11 @@ bool VGMySql::ConnectMySql( const char *host, int port, const char *user, const 
 
 	if (mysql_real_connect(m_mysql, host, user, pswd, db, port, NULL, 0))
 	{
-		m_host = host;
+        m_host = host ? host : string();
 		m_nPort = port;
-		m_user = user;
-		m_pswd = pswd;
-		m_db = db;
+        m_user = user ? user : string();
+        m_pswd = pswd ? pswd : string();
+        m_db = db ? db : string();
 		return m_bValid = true;
 	}
 

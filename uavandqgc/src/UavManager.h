@@ -77,6 +77,8 @@ protected:
     IObject *ProcessReceive(ISocket *s, const char *buf, int &len);
     bool PrcsRemainMsg(const IMessage &msg);
 private:
+    void _ensureDBValid();
+
     void sendBindRes(const das::proto::RequestBindUav &msg, int res, bool bind);
     IObject *_checkLogin(ISocket *s, const das::proto::RequestUavIdentityAuthentication &uia);
     void _checkBindUav(const das::proto::RequestBindUav &rbu);

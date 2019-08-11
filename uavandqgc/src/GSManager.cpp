@@ -501,16 +501,20 @@ void ObjectGS::_send(const google::protobuf::Message &msg)
 ////////////////////////////////////////////////////////////////////////////////
 GSManager::GSManager() : m_sqlEng(new VGMySql), m_p(new ProtoMsg)
 {
-    if (m_sqlEng)
-        m_sqlEng->ConnectMySql("127.0.0.1", 3306, "root", "", "gsuav");
+    VGDBManager::Instance().Load("GSUavInfo.xml");
+    if (!m_sqlEng)
+        return;
 
-    VGDBManager::Instance().Load("GSInfo.xml");
-    if (VGTable *tb = VGDBManager::Instance().GetTableByName("GSInfo"))
+    m_sqlEng->ConnectMySql(VGDBManager::Instance().GetMysqlHost(),
+        VGDBManager::Instance().GetMysqlPort(),
+        VGDBManager::Instance().GetMysqlUser(),
+        VGDBManager::Instance().GetMysqlPswd(),
+        VGDBManager::Instance().GetDatabase()  );
+
+    for (VGTable *tb : VGDBManager::Instance().Tables())
+    {
         m_sqlEng->CreateTable(tb);
-    if (VGTable *tb = VGDBManager::Instance().GetTableByName("OwnerInfo"))
-        m_sqlEng->CreateTable(tb);
-    if (VGTable *tb = VGDBManager::Instance().GetTableByName("LandInfo"))
-        m_sqlEng->CreateTable(tb);
+    }
 }
 
 GSManager::~GSManager()
