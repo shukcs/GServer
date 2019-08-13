@@ -74,6 +74,7 @@ protected:
     IObject *ProcessReceive(ISocket *s, const char *buf, int &len);
 private:
     IObject *_checkLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication &rgi);
+    void _ensureDBValid();
 private:
     VGMySql         *m_sqlEng;
     ProtoMsg        *m_p;

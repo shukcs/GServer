@@ -289,7 +289,7 @@ void ObjectGS::_prcsPostLand(const das::proto::ParcelDescription &msg, int ack)
     appd.set_result((nLand > 0 && nCon > 0) ? 1 : 0);
     appd.set_psiid(Utility::bigint2string(nLand));
     appd.set_pcid(Utility::bigint2string(nCon));
-    appd.set_pcid(Utility::bigint2string(nLand));
+    appd.set_pdid(Utility::bigint2string(nLand));
     _send(appd);
 }
 
@@ -501,20 +501,7 @@ void ObjectGS::_send(const google::protobuf::Message &msg)
 ////////////////////////////////////////////////////////////////////////////////
 GSManager::GSManager() : m_sqlEng(new VGMySql), m_p(new ProtoMsg)
 {
-    VGDBManager::Instance().Load("GSUavInfo.xml");
-    if (!m_sqlEng)
-        return;
-
-    m_sqlEng->ConnectMySql(VGDBManager::Instance().GetMysqlHost(),
-        VGDBManager::Instance().GetMysqlPort(),
-        VGDBManager::Instance().GetMysqlUser(),
-        VGDBManager::Instance().GetMysqlPswd(),
-        VGDBManager::Instance().GetDatabase()  );
-
-    for (VGTable *tb : VGDBManager::Instance().Tables())
-    {
-        m_sqlEng->CreateTable(tb);
-    }
+    _ensureDBValid();
 }
 
 GSManager::~GSManager()
@@ -600,6 +587,29 @@ IObject *GSManager::_checkLogin(ISocket *s, const das::proto::RequestGSIdentityA
     ProtoMsg::SendProtoTo(msg, s);
 
     return o;
+}
+
+void GSManager::_ensureDBValid()
+{
+    StringList tables;
+    string db = VGDBManager::Instance().Load("GSInfo.xml", tables);
+    if (!m_sqlEng)
+        return;
+
+    m_sqlEng->ConnectMySql(VGDBManager::Instance().GetMysqlHost(db),
+        VGDBManager::Instance().GetMysqlPort(db),
+        VGDBManager::Instance().GetMysqlUser(db),
+        VGDBManager::Instance().GetMysqlPswd(db));
+
+    m_sqlEng->EnterDatabase(db);
+    for (const string &tb : tables)
+    {
+        m_sqlEng->CreateTable(VGDBManager::Instance().GetTableByName(tb));
+    }
+    for (const string &trigger : VGDBManager::Instance().GetTriggers())
+    {
+        m_sqlEng->CreateTrigger(VGDBManager::Instance().GetTriggerByName(trigger));
+    }
 }
 
 DECLARE_MANAGER_ITEM(GSManager)

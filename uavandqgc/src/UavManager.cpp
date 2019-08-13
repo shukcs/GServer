@@ -306,6 +306,7 @@ void ObjectUav::_send(const google::protobuf::Message &msg)
 UavManager::UavManager():m_sqlEng(new VGMySql)
 , m_p(new ProtoMsg)
 {
+    _ensureDBValid();
 }
 
 UavManager::~UavManager()
@@ -375,7 +376,6 @@ IObject *UavManager::ProcessReceive(ISocket *s, const char *buf, int &len)
     int pos = 0;
     int l = len;
     IObject *o = NULL;
-    _ensureDBValid();
     while (m_p->Parse(buf+pos, l))
     {
         pos += l;
@@ -412,13 +412,23 @@ bool UavManager::PrcsRemainMsg(const IMessage &msg)
 
 void UavManager::_ensureDBValid()
 {
-    if (m_sqlEng && !m_sqlEng->IsValid())
+    StringList tables;
+    string db = VGDBManager::Instance().Load("UavInfo.xml", tables);
+    if (!m_sqlEng)
+        return;
+
+    m_sqlEng->ConnectMySql(VGDBManager::Instance().GetMysqlHost(db),
+        VGDBManager::Instance().GetMysqlPort(db),
+        VGDBManager::Instance().GetMysqlUser(db),
+        VGDBManager::Instance().GetMysqlPswd(db));
+    m_sqlEng->EnterDatabase(db);
+    for (const string &tb : tables)
     {
-        m_sqlEng->ConnectMySql(VGDBManager::Instance().GetMysqlHost(),
-            VGDBManager::Instance().GetMysqlPort(),
-            VGDBManager::Instance().GetMysqlUser(),
-            VGDBManager::Instance().GetMysqlPswd(),
-            VGDBManager::Instance().GetDatabase());
+        m_sqlEng->CreateTable(VGDBManager::Instance().GetTableByName(tb));
+    }
+    for (const string &trigger : VGDBManager::Instance().GetTriggers())
+    {
+        m_sqlEng->CreateTrigger(VGDBManager::Instance().GetTriggerByName(trigger));
     }
 }
 

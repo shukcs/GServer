@@ -56,8 +56,6 @@ private:
 #if !defined _WIN32 && !defined _WIN64
     bool _isCloseEvent(uint32_t e)const;
 #endif
-protected:
-    static bool _contains(std::list<ISocket*> ls, ISocket *sock);
 private:
     std::map<int, ISocket*>     m_sockets;
     std::list<ISocket*>         m_socketsPrcs;

@@ -44,6 +44,17 @@ public:
 
     SHARED_DECL bool IsValid()const;
     SHARED_DECL void Release();
+public:
+    template<typename T, typename Contianer = std::list<T> >
+    static bool IsContainsInList(const Contianer ls, const T &e)
+    {
+        for (const T &itr : ls)
+        {
+            if (itr == e)
+                return true;
+        }
+        return false;
+    }
 protected:
     std::string m_idRcv;
     int         m_tpRcv;

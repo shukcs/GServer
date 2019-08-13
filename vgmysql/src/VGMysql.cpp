@@ -8,6 +8,8 @@
 #include <mysql.h>
 #endif
 #include "DBExecItem.h"
+#include "VGDBManager.h"
+#include "VGTrigger.h"
 
 using namespace std;
 
@@ -19,14 +21,14 @@ VGMySql::VGMySql() : m_bValid(false)
 		return;
 }
 
-VGMySql::VGMySql( const char *host, int port, const char *user, const char *pswd, const char *db)
+VGMySql::VGMySql( const char *host, int port, const char *user, const char *pswd)
 : m_bValid(false), m_binds(NULL), m_stmt(NULL)
 {
 	m_mysql = mysql_init(NULL);
 	if(!m_mysql)
 		return;
 
-	ConnectMySql(host, port, user, pswd, db);
+	ConnectMySql(host, port, user, pswd);
 }
 
 bool VGMySql::IsValid() const
@@ -68,16 +70,36 @@ ExecutItem *VGMySql::GetResult()
     return m_execItem;
 }
 
-bool VGMySql::ExitTable(const std::string &name)
+bool VGMySql::EnterDatabase(const std::string &db)
 {
-    if (!_canOperaterDB())
+    string sql = string("create database if not exists ")+db;
+    bool ret = false;
+    if (sql.empty())
+        return ret;
+
+    if (MYSQL_RES *res = Query(sql))
+    {
+        my_ulonglong nNum = mysql_num_rows(res);
+        mysql_free_result(res);
+        ret = nNum > 0;
+    }
+
+    if (MYSQL_RES *res = Query(string("use ") + db))
+        mysql_free_result(res);
+
+    return ret;
+}
+
+bool VGMySql::ExistTable(const std::string &name)
+{
+    if (!_canOperaterDB() || name.empty())
         return false;
 
     string sql;
     sql.resize(name.length()+20);
     sprintf(&sql.at(0), "show tables like \'%s\'", name.c_str());
 
-    if (MYSQL_RES *res = _query(sql))
+    if (MYSQL_RES *res = Query(sql.c_str()))
     {
         my_ulonglong nNum = mysql_num_rows(res);
         mysql_free_result(res);
@@ -91,33 +113,64 @@ bool VGMySql::CreateTable(VGTable *tb)
     if (!tb || !_canOperaterDB())
         return false;
 
-    _query(tb->ToCreateSQL());
     
-    return ExitTable(tb->GetName());
+    if (MYSQL_RES *res = Query(tb->ToCreateSQL()))
+        mysql_free_result(res);
+
+    return ExistTable(tb->GetName());
+}
+
+bool VGMySql::ExistTrigger(const std::string &name)
+{
+    if (!_canOperaterDB() || name.empty())
+        return false;
+
+    static string sTrigExFmt = "SELECT TRIGGER_NAME FROM information_schema.triggers ";
+    string sql= sTrigExFmt+"where TRIGGER_NAME='" + name+"'";
+
+    if (MYSQL_RES *res = Query(sql))
+    {
+        my_ulonglong nNum = mysql_num_rows(res);
+        mysql_free_result(res);
+        return nNum > 0;
+    }
+    return false;
+}
+
+bool VGMySql::CreateTrigger(VGTrigger *trigger)
+{
+    if (!trigger || ExistTrigger(trigger->GetName()))
+        return false;
+
+    if (MYSQL_RES *res = Query(trigger->ToSqlString()))
+    {
+        mysql_free_result(res);
+        return true;
+    }
+    return false;
 }
 
 bool VGMySql::_canOperaterDB()
 {
 	if (m_bValid && mysql_ping(m_mysql))
 	{
-		if (mysql_real_connect(m_mysql, m_host.c_str(), m_user.c_str(), m_pswd.c_str(), m_db.c_str(), m_nPort, NULL, 0))
+		if (mysql_real_connect(m_mysql, m_host.c_str(), m_user.c_str(), m_pswd.c_str(), NULL, m_nPort, NULL, 0))
 			return false;
 	}
 	return m_bValid;
 }
 
-bool VGMySql::ConnectMySql( const char *host, int port, const char *user, const char *pswd, const char *db )
+bool VGMySql::ConnectMySql( const char *host, int port, const char *user, const char *pswd)
 {
 	if (!m_mysql)
 		return m_bValid = false;
 
-	if (mysql_real_connect(m_mysql, host, user, pswd, db, port, NULL, 0))
+	if (mysql_real_connect(m_mysql, host, user, pswd, NULL, port, NULL, 0))
 	{
         m_host = host ? host : string();
 		m_nPort = port;
         m_user = user ? user : string();
         m_pswd = pswd ? pswd : string();
-        m_db = db ? db : string();
 		return m_bValid = true;
 	}
 
@@ -153,18 +206,23 @@ bool VGMySql::_changeItem(ExecutItem *item)
     if (!_canOperaterDB())
         return false;
 
-    MYSQL_BIND *binds  = _getParamBind(*item);
-    int pos = 0;
-    string sql = item->GetSqlString(binds, pos);
+    MYSQL_BIND *binds  = item->GetParamBinds();
+    string sql = item->GetSqlString();
 
     bool ret = false;
     if (sql.length() > 0)
     {
         if (item->HasForeignRefTable())
-            _query("SET FOREIGN_KEY_CHECKS=0");
+        {
+            if (MYSQL_RES *res = Query("SET FOREIGN_KEY_CHECKS=0"))
+                mysql_free_result(res);
+        }
         ret = _executChange(sql, binds, item->GetIncrement());
         if (item->HasForeignRefTable())
-            _query("SET FOREIGN_KEY_CHECKS=1");
+        {
+            if (MYSQL_RES *res = Query("SET FOREIGN_KEY_CHECKS=1"))
+                mysql_free_result(res);
+        }
     }
 
     delete binds;
@@ -180,9 +238,8 @@ bool VGMySql::_selectItem(ExecutItem *item)
     if (!_canOperaterDB())
         return false;
 
-    MYSQL_BIND *params = _getParamBind(*item);
-    int pos = 0;
-    string sql = item->GetSqlString(params, pos);
+    MYSQL_BIND *params = item->GetParamBinds();
+    string sql = item->GetSqlString(params);
     MYSQL_STMT *stmt = _prepareMySql(sql, params);
     if (!stmt)
     {
@@ -282,7 +339,7 @@ std::string VGMySql::_getTablesString(const ExecutItem &item)
     return ret;
 }
 
-MYSQL_RES *VGMySql::_query(const std::string &sql)
+MYSQL_RES *VGMySql::Query(const std::string &sql)
 {
     if (mysql_real_query(m_mysql, sql.c_str(), sql.length()))
     {
@@ -291,16 +348,4 @@ MYSQL_RES *VGMySql::_query(const std::string &sql)
     }
 
     return mysql_store_result(m_mysql);
-}
-
-MYSQL_BIND *VGMySql::_getParamBind(const ExecutItem &item)
-{
-    int count = item.CountParam();
-    if(count>0)
-    {
-        MYSQL_BIND *binds = new MYSQL_BIND[count];
-        memset(binds, 0, count * sizeof(MYSQL_BIND));
-        return binds;
-    }
-    return NULL;
 }

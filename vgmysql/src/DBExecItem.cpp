@@ -130,12 +130,12 @@ void FiledValueItem::SetEmpty()
         m_bEmpty = true;
 }
 
-void FiledValueItem::parse(TiXmlElement *e, ExecutItem *sql)
+void FiledValueItem::parse(const TiXmlElement *e, ExecutItem *sql)
 {
     if (!e || !sql)
         return;
 
-    int tp = _transToType(e->Attribute("type"));
+    int tp = transToType(e->Attribute("type"));
     if (tp == ExecutItem::AutoIncrement)
     {
         if(!sql->GetIncrement())
@@ -177,7 +177,7 @@ void FiledValueItem::parse(TiXmlElement *e, ExecutItem *sql)
     }
 }
 
-int FiledValueItem::_transToType(const char *pro)
+int FiledValueItem::transToType(const char *pro)
 {
     int ret = -1;
 
@@ -200,7 +200,7 @@ int FiledValueItem::_transToType(const char *pro)
 ///////////////////////////////////////////////////////////////////////////////////////
 ExecutItem::ExecutItem(ExecutType tp, const std::string &name)
 : m_type(tp), m_name(name), m_autoIncrement(NULL)
-, m_bHasForeignRefTable(false)
+, m_bHasForeignRefTable(false), m_bRef(false)
 {
 }
 
@@ -334,20 +334,26 @@ bool ExecutItem::IsValid() const
      return NULL;
 }
 
-int ExecutItem::CountParam()const
+MYSQL_BIND *ExecutItem::GetParamBinds()
 {
-    int ret = 0;
+    int count = 0;
     for (FiledValueItem *itr : m_itemsWrite)
     {
         if (!itr->IsEmpty() && !itr->IsStaticParam())
-            ret++;
+            count++;
     }
     for (FiledValueItem *itr : m_itemsCondition)
     {
         if (!itr->IsEmpty() && !itr->IsStaticParam())
-            ret++;
+            count++;
     }
-    return ret;
+    if (count > 0)
+    {
+        MYSQL_BIND *paramBinds = new MYSQL_BIND[count];
+        memset(paramBinds, 0, count * sizeof(MYSQL_BIND));
+        return paramBinds;
+    }
+    return NULL;
 }
 
 int ExecutItem::CountRead() const
@@ -355,18 +361,19 @@ int ExecutItem::CountRead() const
     return m_itemsRead.size();
 }
 
-string ExecutItem::GetSqlString(MYSQL_BIND *bind, int &pos) const
+string ExecutItem::GetSqlString(MYSQL_BIND *paramBinds) const
 {
+    int pos = 0;
     switch (m_type)
     {
     case ExecutItem::Insert:
-        return _toInsert(bind, pos);
+        return _toInsert(paramBinds, pos);
     case ExecutItem::Delete:
-        return _toDelete(bind, pos);
+        return _toDelete(paramBinds, pos);
     case ExecutItem::Update:
-        return _toUpdate(bind, pos);
+        return _toUpdate(paramBinds, pos);
     case ExecutItem::Select:
-        return _toSelect(bind, pos);
+        return _toSelect(paramBinds, pos);
     default:
         break;
     }
@@ -414,6 +421,16 @@ bool ExecutItem::HasForeignRefTable() const
     return m_bHasForeignRefTable;
 }
 
+void ExecutItem::SetRef(bool b)
+{
+    m_bRef = b;
+}
+
+bool ExecutItem::IsRef() const
+{
+    return m_bRef;
+}
+
 void ExecutItem::transformBind(FiledValueItem *item, MYSQL_BIND &bind, bool bRead)
 {
     if (item)
@@ -429,7 +446,7 @@ void ExecutItem::transformBind(FiledValueItem *item, MYSQL_BIND &bind, bool bRea
     }
 }
 
-ExecutItem *ExecutItem::parse(TiXmlElement *e)
+ExecutItem *ExecutItem::parse(const TiXmlElement *e)
 {
     if (!e)
         return NULL;
@@ -438,46 +455,50 @@ ExecutItem *ExecutItem::parse(TiXmlElement *e)
     string name = tmp ? tmp : string();
     tmp = e->Attribute("table");
     string table = tmp ? tmp : string();
-    ExecutType tp = _transToType(e->Attribute("type"));
+    ExecutType tp = transToSqlType(e->Attribute("type"));
     if (name.length() < 1 || table.length() < 0 || tp==ExecutItem::Unknown)
         return NULL;
 
     ExecutItem *sql = new ExecutItem(tp, name);
     if (!sql)
         return sql;
-    tmp = e->Attribute("all");
-    bool bAll = tmp && VGDBManager::str2int(tmp) != 0;
-    sql->SetExecutTables(VGDBManager::SplitString(table, ";"));
-    for (const string &itr : sql->m_tables)
-    {
-        if (!bAll)
-            continue;
 
-        if (VGTable *tb = VGDBManager::Instance().GetTableByName(itr.c_str()))
-        {
-            for (VGTableField *f : tb->Fields())
-            {
-                sql->AddItem(new FiledValueItem(f, sql->m_tables.size() > 1), tp == ExecutItem::Select ? ExecutItem::Read : ExecutItem::Write);
-            }
-        }
-    }
-    if (!bAll)
-        sql->_parseItems(e);
+    sql->SetExecutTables(VGDBManager::SplitString(table, ";"));
+    sql->_parseItems(e);
 
     return sql;
 }
 
-void ExecutItem::_parseItems(TiXmlElement *e)
+void ExecutItem::_parseItems(const TiXmlElement *e)
 {
     if (!e)
         return;
-
-    TiXmlNode *node = e->FirstChild("item");
-    while (node)
+    
+    const char *tmp = e->Attribute("all");
+    if (tmp && VGDBManager::str2int(tmp) != 0)
     {
-        FiledValueItem::parse(node->ToElement(), this);
-        node = node->NextSibling("item");
+        for (const string &itr : m_tables)
+        {
+            if (VGTable *tb = VGDBManager::Instance().GetTableByName(itr.c_str()))
+            {
+                for (VGTableField *f : tb->Fields())
+                {
+                    int tp = m_type == ExecutItem::Select ? ExecutItem::Read : ExecutItem::Write;
+                    AddItem(new FiledValueItem(f, m_tables.size() > 1), tp);
+                }
+            }
+        }
     }
+    else
+    {
+        const TiXmlNode *node = e->FirstChild("item");
+        while (node)
+        {
+            FiledValueItem::parse(node->ToElement(), this);
+            node = node->NextSibling("item");
+        }
+    }
+
 }
 
 void ExecutItem::_addCondition(FiledValueItem *item)
@@ -646,7 +667,7 @@ std::string ExecutItem::_deleteBegin() const
     return ret + " from";
 }
 
-ExecutItem::ExecutType ExecutItem::_transToType(const char *pro)
+ExecutItem::ExecutType ExecutItem::transToSqlType(const char *pro)
 {
     if (!pro)
         return ExecutItem::Unknown;

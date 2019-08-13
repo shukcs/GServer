@@ -6,6 +6,7 @@
 #include "Ipv4Address.h"
 #include "GOutLog.h"
 #include "Lock.h"
+#include "ObjectBase.h"
 #include "socket_include.h"
 #include <stdarg.h>
 #include <stdio.h>
@@ -137,7 +138,7 @@ void GSocketManager::AddProcessThread()
 
 bool GSocketManager::AddSocketWaitPrcs(ISocket *s)
 {
-    if (_contains(m_socketsPrcs, s))
+    if (IMessage::IsContainsInList(m_socketsPrcs, s))
         return false;
 
     m_mtx->Lock();
@@ -421,16 +422,6 @@ void GSocketManager::_addSocketHandle(int h, bool bListen)
 int GSocketManager::_createSocket(int tp)
 {
     return socket(AF_INET, tp, IPPROTO_TCP);
-}
-
-bool GSocketManager::_contains(std::list<ISocket*> ls, ISocket *sock)
-{
-    for (ISocket *itr : ls)
-    {
-        if (itr == sock)
-            return true;
-    }
-    return false;
 }
 
 #if defined _WIN32 || defined _WIN64 

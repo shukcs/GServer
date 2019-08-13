@@ -14,21 +14,27 @@ typedef struct st_mysql_res MYSQL_RES;
 class FiledValueItem;
 class ExecutItem;
 class VGTable;
+class VGTrigger;
 
 class VGMySql
 {
 public:
     SHARED_SQL VGMySql();
-    SHARED_SQL VGMySql(const char *host, int port, const char *user, const char *pswd, const char *db);
+    SHARED_SQL VGMySql(const char *host, int port, const char *user, const char *pswd);
     SHARED_SQL virtual ~VGMySql();
 
-    SHARED_SQL bool ConnectMySql(const char *host, int port, const char *user, const char *pswd, const char *db);
+    SHARED_SQL bool ConnectMySql(const char *host, int port, const char *user, const char *pswd);
     SHARED_SQL bool IsValid() const;
 
     SHARED_SQL bool Execut(ExecutItem *item);
     SHARED_SQL ExecutItem *GetResult();
-    SHARED_SQL bool ExitTable(const std::string &name);
+    SHARED_SQL bool EnterDatabase(const std::string &db);
+    SHARED_SQL bool ExistTable(const std::string &name);
     SHARED_SQL bool CreateTable(VGTable *tb);
+    SHARED_SQL bool ExistTrigger(const std::string &name);
+    SHARED_SQL bool CreateTrigger(VGTrigger *trigger);
+
+    MYSQL_RES *Query(const std::string &sql);
 protected:
 	bool _canOperaterDB();
 	bool _executChange(const std::string &sql, MYSQL_BIND *binds, FiledValueItem *i=NULL);
@@ -37,15 +43,12 @@ protected:
     std::string _getTablesString(const ExecutItem &item);
     MYSQL_STMT *_prepareMySql(const std::string &fmt, MYSQL_BIND *binds, int nRead=0);
     void _checkPrepare();
-    MYSQL_RES *_query(const std::string &sql);
-    MYSQL_BIND *_getParamBind(const ExecutItem &item);
 private:
 	MYSQL				*m_mysql;
 	std::string			m_host;
 	int					m_nPort;
 	std::string			m_user;
 	std::string			m_pswd;
-	std::string			m_db;
 	bool				m_bValid;
     ExecutItem          *m_execItem;
     MYSQL_BIND          *m_binds;

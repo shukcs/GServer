@@ -47,13 +47,12 @@ public:
         return ret;
     }
 public:
-    static void parse(TiXmlElement *e, ExecutItem *tb);
+    static void parse(const TiXmlElement *e, ExecutItem *tb);
+    static int transToType(const char *pro);
 protected:
     FiledValueItem(int tp, const string &name = "", int len = 0);
     FiledValueItem(VGTableField *fild, bool bOth = false);
     ~FiledValueItem();
-private:
-    static int _transToType(const char *pro);
 private:
     friend class ExecutItem;
     int             m_type;
@@ -90,12 +89,12 @@ public:
     SHARED_SQL FiledValueItem *GetConditionItem(const string &name)const;
     SHARED_SQL FiledValueItem *GetIncrement()const;
     SHARED_SQL bool IsValid()const;
-    SHARED_SQL int CountParam()const;
     SHARED_SQL int CountRead()const;
-    SHARED_SQL string GetSqlString(MYSQL_BIND *bind, int &pos)const;
     SHARED_SQL void ClearData();
     SHARED_SQL ExecutType GetType()const;
 
+    string GetSqlString(MYSQL_BIND *paramBinds=NULL)const;
+    MYSQL_BIND *GetParamBinds();
     const std::string &GetName()const;
     const StringList &ExecutTables()const;
     void AddItem(FiledValueItem *item, int tp);
@@ -103,15 +102,18 @@ public:
     FiledValueItem *GetItem(const string &name, int tp)const;
     MYSQL_BIND *TransformRead();
     bool HasForeignRefTable()const;
+    void SetRef(bool b);
+    bool IsRef()const;
 public:
     static void transformBind(FiledValueItem *item, MYSQL_BIND &bind, bool=false);
-    static ExecutItem *parse(TiXmlElement *e);
+    static ExecutItem *parse(const TiXmlElement *e);
+    static ExecutType transToSqlType(const char *pro);
 protected:
     ExecutItem(ExecutType tp, const std::string &name);
     void SetExecutTables(const StringList &tbs);
     void AddExecutTable(const std::string &t);
 private:
-    void _parseItems(TiXmlElement *e);
+    void _parseItems(const TiXmlElement *e);
     void _addCondition(FiledValueItem *item);
     string _getTablesString()const;
     string _toInsert(MYSQL_BIND *bind, int &pos)const;
@@ -122,12 +124,11 @@ private:
     string _conditionsString(MYSQL_BIND *bind, int &pos)const;
     string _deleteBegin()const;
 private:
-    static ExecutType _transToType(const char *pro);
-private:
     ExecutType              m_type;
     string                  m_name;
     FiledValueItem*         m_autoIncrement;
     bool                    m_bHasForeignRefTable;
+    bool                    m_bRef;
     StringList              m_tables;
     list<FiledValueItem*>   m_itemsRead;
     list<FiledValueItem*>   m_itemsWrite;
