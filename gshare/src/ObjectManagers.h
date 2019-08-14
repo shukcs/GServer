@@ -49,17 +49,16 @@ protected:
 class ObjectManagers
 {
 public:
-    SHARED_DECL static ObjectManagers &Instance();
-
-    SHARED_DECL bool SendMsg(IMessage *msg);
+    static ObjectManagers &Instance();
 public:
+    bool SendMsg(IMessage *msg);
     void AddManager(IObjectManager *m);
     void RemoveManager(int type);
-
-    void processReceive(ISocket *sock, void const *buf, int len);
     IObjectManager *GetManagerByType(int tp)const;
+
     void Destroy(IObject *o);
     void OnSocketClose(ISocket *sock);
+    void ProcessReceive(ISocket *sock, void const *buf, int len);
 protected:
     bool PrcsRcvBuff();
     void PrcsCloseSocket();

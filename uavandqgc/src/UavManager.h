@@ -14,6 +14,7 @@ namespace das {
         class RequestBindUav;
         class PostOperationInformation;
         class PostStatus2GroundStation;
+        class PostControl2Uav;
         class RequestUavIdentityAuthentication;
         class RequestUavStatus;
         class UavStatus;
@@ -46,10 +47,13 @@ protected:
     virtual int CopySend(char *buf, int sz, unsigned form = 0);
     virtual void SetSended(int sended = -1);//-1,·¢ËÍÍê
     void RespondLogin(int seq, int res);
+protected:
+    static void AckControl2Uav(const das::proto::PostControl2Uav &msg, ObjectUav *obj, int res);
 private:
     void prcsRcvPostOperationInfo(das::proto::PostOperationInformation *msg);
     void prcsRcvPost2Gs(das::proto::PostStatus2GroundStation *msg);
     void processBind(das::proto::RequestBindUav *msg);
+    void processControl2Uav(das::proto::PostControl2Uav *msg);
 
     void _send(const google::protobuf::Message &msg);
 private:

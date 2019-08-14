@@ -481,7 +481,7 @@ void IObjectManager::ReceiveMessage(IMessage *msg)
 
 bool IObjectManager::SendMsg(IMessage *msg)
 {
-    return ObjectManagers::Instance().SendMsg(msg);
+    return IObject::SendMsg(msg);
 }
 
 void IObjectManager::InitThread(uint16_t nThread /*= 1*/)

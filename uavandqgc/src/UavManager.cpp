@@ -182,10 +182,32 @@ void ObjectUav::RespondLogin(int seq, int res)
     }
 }
 
+void ObjectUav::AckControl2Uav(const das::proto::PostControl2Uav &msg, ObjectUav *obj, int res)
+{
+    if (GSMessage *ms = new GSMessage(obj, msg.userid()))
+    {
+        AckPostControl2Uav *ack = new AckPostControl2Uav;
+        if (!ack)
+        {
+            delete ms;
+            return;
+        }
+        ms->SetSenderType(IObject::Plant);
+        ack->set_seqno(msg.seqno());
+        ack->set_result(0);
+        ack->set_uavid(msg.uavid());
+        ack->set_userid(msg.userid());
+        ms->AttachProto(ack);
+        SendMsg(ms);
+    }
+}
+
 void ObjectUav::ProcessMassage(const IMessage &msg)
 {
     if (msg.GetMessgeType() == BindUav)
         processBind((RequestBindUav*)msg.GetContent());
+    if (msg.GetMessgeType() == ControlUav)
+        processControl2Uav((PostControl2Uav*)msg.GetContent());
 }
 
 int ObjectUav::ProcessReceive(void *buf, int len)
@@ -257,7 +279,7 @@ void ObjectUav::prcsRcvPostOperationInfo(das::proto::PostOperationInformation *m
             if (!ms)
                 continue;
             ms->SetGSContent(*oi);
-            ObjectManagers::Instance().SendMsg(ms);
+            SendMsg(ms);
         }
     }
    
@@ -275,7 +297,7 @@ void ObjectUav::prcsRcvPost2Gs(das::proto::PostStatus2GroundStation *msg)
     if (GSMessage *ms = new GSMessage(this, m_lastBinder))
     {
         ms->SetGSContent(*msg);
-        ObjectManagers::Instance().SendMsg(ms);
+        SendMsg(ms);
     }
 }
 
@@ -289,6 +311,21 @@ void ObjectUav::processBind(RequestBindUav *msg)
             m_lastBinder = msg->binder();
         }
     }
+}
+
+void ObjectUav::processControl2Uav(das::proto::PostControl2Uav *msg)
+{
+    if (!msg)
+        return;
+
+    int res = 0;
+    if (m_lastBinder == msg->userid() && m_bBind)
+    {
+        res = 1;
+        _send(*msg);
+    }
+    
+    AckControl2Uav(*msg, this, res);
 }
 
 void ObjectUav::_send(const google::protobuf::Message &msg)
@@ -401,10 +438,16 @@ bool UavManager::PrcsRemainMsg(const IMessage &msg)
         _checkBindUav(*rb);
         return true;
     }
-    if (QueryUav == msg.GetMessgeType())
+    else if (QueryUav == msg.GetMessgeType())
     {
         RequestUavStatus *rus = ((RequestUavStatus *)msg.GetContent());
         _checkUavInfo(*rus, msg.GetSenderID());
+        return true;
+    }
+    else if (ControlUav == msg.GetMessgeType())
+    {
+        PostControl2Uav *ctrlUav = ((PostControl2Uav *)msg.GetContent());
+        ObjectUav::AckControl2Uav(*ctrlUav, NULL, 0);
         return true;
     }
     return false;
@@ -458,7 +501,7 @@ void UavManager::sendBindRes(const das::proto::RequestBindUav &msg, int res, boo
         proto->set_result(res);
         proto->set_allocated_status(s);
         ms->AttachProto(proto);
-        ObjectManagers::Instance().SendMsg(ms);
+        SendMsg(ms);
     }
 }
 
@@ -555,7 +598,7 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, const std::string &g
     {
         ms->SetSenderType(IObject::Plant);
         ms->SetGSContent(as);
-        ObjectManagers::Instance().SendMsg(ms);
+        SendMsg(ms);
     }
 }
 

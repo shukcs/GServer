@@ -176,7 +176,7 @@ void GSocket::OnRead(void *buf, int len)
     if (m_object)
         m_object->Receive(buf, len);
     else
-        ObjectManagers::Instance().processReceive(this, buf, len);
+        ObjectManagers::Instance().ProcessReceive(this, buf, len);
 }
 
 void GSocket::OnClose()

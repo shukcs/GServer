@@ -82,7 +82,6 @@ public:
     SHARED_DECL bool IsRealse();
     SHARED_DECL void SetBuffSize(uint16_t sz);
     SHARED_DECL IObjectManager *GetManager()const;
-    SHARED_DECL bool SendMsg(IMessage *msg);
     SHARED_DECL bool Receive(const void *buf, int len);
     bool RcvMassage(IMessage *msg);
     void RemoveRcvMsg(IMessage *);
@@ -98,6 +97,8 @@ public:
     SHARED_DECL virtual int GetSenLength()const;
     SHARED_DECL virtual int CopySend(char *buf, int sz, unsigned form = 0);
     SHARED_DECL virtual void SetSended(int sended=-1);//-1,·¢ËÍÍê
+public:
+    SHARED_DECL static bool SendMsg(IMessage *msg);
 protected:
     virtual void ProcessMassage(const IMessage &msg) = 0;
     virtual int ProcessReceive(void *buf, int len) = 0;
@@ -134,7 +135,6 @@ public:
     virtual int GetObjectType()const = 0;
     SHARED_DECL bool AddObject(IObject *obj);
     SHARED_DECL IObject *GetObjectByID(const std::string &id)const;
-    SHARED_DECL bool SendMsg(IMessage *msg);
     SHARED_DECL bool Receive(ISocket *s, const BaseBuff &buff);
     void ReceiveMessage(IMessage *);
     void RemoveRcvMsg(IMessage *);
@@ -143,6 +143,8 @@ public:
     bool ProcessBussiness();
     void RemoveObject(IObject *);
     const std::list<IObject*> &GetThreadObject(int t)const;
+public:
+    SHARED_DECL static bool SendMsg(IMessage *msg);
 protected:
     SHARED_DECL IObjectManager(uint16_t nThread = 1);
     SHARED_DECL virtual ~IObjectManager();

@@ -93,7 +93,7 @@ void ObjectManagers::RemoveManager(int type)
     }
 }
 
-void ObjectManagers::processReceive(ISocket *sock, void const *buf, int len)
+void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
 {
     if (!m_thread->IsRunning())
     {
@@ -144,6 +144,7 @@ bool ObjectManagers::SendMsg(IMessage *msg)
         mgr->ReceiveMessage(msg);
         return true;
     }
+    msg->Release();
     return false;
 }
 

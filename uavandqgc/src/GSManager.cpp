@@ -191,7 +191,7 @@ int ObjectGS::ProcessReceive(void *buf, int len)
             if (UAVMessage *ms = new UAVMessage(this, msg->uavid()))
             {
                 ms->SetContent(*msg);
-                ObjectManagers::Instance().SendMsg(ms);
+                SendMsg(ms);
             }
         }
         else if (strMsg == d_p_ClassName(RequestUavStatus))
@@ -213,6 +213,15 @@ int ObjectGS::ProcessReceive(void *buf, int len)
         {
             DeleteParcelDescription *msg = (DeleteParcelDescription *)m_p->GetProtoMessage();
             _prcsDeleteLand(msg->pdid(), msg->delpc()&&msg->delpsi(), msg->seqno());
+        }
+        else if (strMsg == d_p_ClassName(PostControl2Uav))
+        {
+            PostControl2Uav *msg = (PostControl2Uav *)m_p->GetProtoMessage();
+            if (UAVMessage *ms = new UAVMessage(this, msg->uavid()))
+            {
+                ms->SetContent(*msg);
+                SendMsg(ms);
+            }
         }
     }
     pos += l;
@@ -250,7 +259,7 @@ void ObjectGS::_prcsReqUavs(const RequestUavStatus &msg)
     if (UAVMessage *ms = new UAVMessage(this, string()))
     {
         ms->SetContent(msg);
-        ObjectManagers::Instance().SendMsg(ms);
+        SendMsg(ms);
     }
 }
 
