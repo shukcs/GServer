@@ -16,6 +16,7 @@
     <ClCompile Include="src\GOutLog.cpp" />
     <ClCompile Include="src\gsocket.cpp" />
     <ClCompile Include="src\gsocketmanager.cpp" />
+    <ClCompile Include="src\IMessage.cpp" />
     <ClCompile Include="src\Lock.cpp" />
     <ClCompile Include="src\ObjectBase.cpp" />
     <ClCompile Include="src\Ipv4Address.cpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="src\gsocket.h" />
     <ClInclude Include="src\gsocketmanager.h" />
     <ClInclude Include="src\ILog.h" />
+    <ClInclude Include="src\IMessage.h" />
     <ClInclude Include="src\Lock.h" />
     <ClInclude Include="src\ObjectBase.h" />
     <ClInclude Include="src\Ipv4Address.h" />
@@ -134,6 +136,7 @@
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <SubSystem>Windows</SubSystem>
       <SuppressStartupBanner>true</SuppressStartupBanner>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <DefaultCharType>Unsigned</DefaultCharType>
@@ -169,7 +172,7 @@
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreImportLibrary>true</IgnoreImportLibrary>

@@ -30,7 +30,7 @@ public:
     bool IsValid()const;
     string ToString()const;
 public:
-    static VGTableField *ParseFiled(TiXmlElement &e, VGTable *parent);
+    static VGTableField *ParseFiled(const TiXmlElement &e, VGTable *parent);
 protected:
     VGTableField(VGTable *tb, const string &n = string());
 private:
@@ -55,7 +55,7 @@ public:
     void AddField(VGTableField *);
     bool IsForeignRef()const;
 public:
-    static VGTable *ParseTable(TiXmlElement &e);
+    static VGTable *ParseTable(const TiXmlElement &e);
 protected:
     VGTable(const string &n = string());
     void AddForeign(VGForeignKey *f);

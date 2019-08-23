@@ -32,6 +32,8 @@ set(SRC_LIST
 	src/Lock.h
 	src/Mutex.cpp
 	src/Mutex.h
+	src/IMessage.cpp
+	src/IMessage.h
 	src/ObjectBase.cpp
 	src/ObjectBase.h
 	src/ObjectManagers.cpp

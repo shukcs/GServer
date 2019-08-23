@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <document>
-	<Mysql user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav"/>
+	<GSManager thread="1" />
+	<Database user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav"/>
 	<Tables>
 		<table name="GSInfo">
 			<field name="user" type="char(32)" constraint="primary key"/>

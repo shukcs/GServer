@@ -34,7 +34,7 @@ public:
         return string(ret.c_str());
     }
 public:
-    static VGForeignKey *ParseForeignKey(TiXmlElement &e, VGTable *parent)
+    static VGForeignKey *ParseForeignKey(const TiXmlElement &e, VGTable *parent)
     {
         const char *tmp = e.Attribute("name");
         if (!tmp || !parent)
@@ -192,7 +192,7 @@ string VGTableField::ToString() const
     return ret;
 }
 
-VGTableField *VGTableField::ParseFiled(TiXmlElement &e, VGTable *parent)
+VGTableField *VGTableField::ParseFiled(const TiXmlElement &e, VGTable *parent)
 {
     const char *tmp = e.Attribute("name");
     if (!tmp || !parent)
@@ -328,7 +328,7 @@ bool VGTable::IsForeignRef() const
     return m_bForeignRef;
 }
 
-VGTable *VGTable::ParseTable(TiXmlElement &e)
+VGTable *VGTable::ParseTable(const TiXmlElement &e)
 {
     const char *tmp = e.Attribute("name");
     string name = tmp ? tmp : string();
@@ -336,7 +336,7 @@ VGTable *VGTable::ParseTable(TiXmlElement &e)
         return NULL;
 
     VGTable *tb = new VGTable(name);
-    TiXmlNode *node = e.FirstChild("field");
+    const TiXmlNode *node = e.FirstChild("field");
     while (node)
     {
         if(VGTableField *fd = VGTableField::ParseFiled(*node->ToElement(), tb))

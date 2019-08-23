@@ -48,26 +48,14 @@ namespace SOCKETS_NAMESPACE {
 
 /** Base64 encode/decode. 
 	\ingroup util */
-class Base64
+namespace Base64
 {
-public:
-	Base64();
-
 	void encode(FILE *, std::string& , bool add_crlf = true);
-	void encode(const std::string&, std::string& , bool add_crlf = true);
-	void encode(const char *, size_t, std::string& , bool add_crlf = true);
-	void encode(const unsigned char *, size_t, std::string& , bool add_crlf = true);
+	std::string encode(const unsigned char *, size_t);
+    size_t decode(const std::string&, unsigned char *, size_t);
 
-	void decode(const std::string&, std::string& );
-	void decode(const std::string&, unsigned char *, size_t&);
-
-	size_t decode_length(const std::string& );
-
-private:
-	Base64(const Base64& ) {}
-	Base64& operator=(const Base64& ) { return *this; }
-static	const char *bstr;
-static	const char rstr[128];
+    size_t decode_length(const std::string &);
+    size_t encode_length(size_t sz);
 };
 
 

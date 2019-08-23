@@ -9,6 +9,7 @@ INCLUDE_DIRECTORIES(
 	../protobuf
 	../gshare/src
 	../vgmysql/src
+	../tinyxml
 )
 set(SRC_LIST
 	src/GSManager.cpp
@@ -29,6 +30,7 @@ set_target_properties(
 )
 
 target_link_libraries(${PACKAGE_NAME} gshare)
+target_link_libraries(${PACKAGE_NAME} tinyxml)
 target_link_libraries(${PACKAGE_NAME} protobuf)
 target_link_libraries(${PACKAGE_NAME} vgmysql)
 

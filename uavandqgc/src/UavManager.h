@@ -8,7 +8,7 @@ namespace google {
         class Message;
     }
 }
-
+class TiXmlDocument;
 namespace das {
     namespace proto {
         class RequestBindUav;
@@ -81,7 +81,8 @@ protected:
     IObject *ProcessReceive(ISocket *s, const char *buf, int &len);
     bool PrcsRemainMsg(const IMessage &msg);
 private:
-    void _ensureDBValid();
+    void _parseConfig();
+    void _parseMySql(const TiXmlDocument &doc);
 
     void sendBindRes(const das::proto::RequestBindUav &msg, int res, bool bind);
     IObject *_checkLogin(ISocket *s, const das::proto::RequestUavIdentityAuthentication &uia);

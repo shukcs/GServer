@@ -9,6 +9,8 @@
 #include "DBExecItem.h"
 #include "Utility.h"
 #include "IMutex.h"
+#include "IMessage.h"
+#include "tinyxml.h"
 
 using namespace das::proto;
 using namespace google::protobuf;
@@ -508,9 +510,10 @@ void ObjectGS::_send(const google::protobuf::Message &msg)
 ////////////////////////////////////////////////////////////////////////////////
 //GSManager
 ////////////////////////////////////////////////////////////////////////////////
-GSManager::GSManager() : m_sqlEng(new VGMySql), m_p(new ProtoMsg)
+GSManager::GSManager() : IObjectManager(0)
+    ,m_sqlEng(new VGMySql), m_p(new ProtoMsg)
 {
-    _ensureDBValid();
+    _parseConfig();
 }
 
 GSManager::~GSManager()
@@ -598,10 +601,27 @@ IObject *GSManager::_checkLogin(ISocket *s, const das::proto::RequestGSIdentityA
     return o;
 }
 
-void GSManager::_ensureDBValid()
+void GSManager::_parseConfig()
+{
+    TiXmlDocument doc;
+    doc.LoadFile("GSInfo.xml");
+    _parseMySql(doc);
+
+    const TiXmlElement *rootElement = doc.RootElement();
+    const TiXmlNode *node = rootElement ? rootElement->FirstChild("GSManager") : NULL;
+    const TiXmlElement *cfg = node ? node->ToElement() : NULL;
+    if (cfg)
+    {
+        const char *tmp = cfg->Attribute("thread");
+        int n = tmp ? (int)Utility::str2int(tmp) : 1;
+        InitThread(n);
+    }
+}
+
+void GSManager::_parseMySql(const TiXmlDocument &doc)
 {
     StringList tables;
-    string db = VGDBManager::Instance().Load("GSInfo.xml", tables);
+    string db = VGDBManager::Instance().Load(doc, tables);
     if (!m_sqlEng)
         return;
 

@@ -9,6 +9,8 @@
 #include "Utility.h"
 #include "socketBase.h"
 #include "IMutex.h"
+#include "IMessage.h"
+#include "tinyxml.h"
 
 #define PROTOFLAG "das.proto."
 
@@ -194,7 +196,7 @@ void ObjectUav::AckControl2Uav(const das::proto::PostControl2Uav &msg, ObjectUav
         }
         ms->SetSenderType(IObject::Plant);
         ack->set_seqno(msg.seqno());
-        ack->set_result(0);
+        ack->set_result(res);
         ack->set_uavid(msg.uavid());
         ack->set_userid(msg.userid());
         ms->AttachProto(ack);
@@ -340,10 +342,10 @@ void ObjectUav::_send(const google::protobuf::Message &msg)
 ////////////////////////////////////////////////////////////////////////////////
 //UavManager
 ////////////////////////////////////////////////////////////////////////////////
-UavManager::UavManager():m_sqlEng(new VGMySql)
-, m_p(new ProtoMsg)
+UavManager::UavManager() : IObjectManager(0)
+,m_sqlEng(new VGMySql), m_p(new ProtoMsg)
 {
-    _ensureDBValid();
+    _parseConfig();
 }
 
 UavManager::~UavManager()
@@ -453,10 +455,26 @@ bool UavManager::PrcsRemainMsg(const IMessage &msg)
     return false;
 }
 
-void UavManager::_ensureDBValid()
+void UavManager::_parseConfig()
+{
+    TiXmlDocument doc;
+    doc.LoadFile("UavInfo.xml");
+    _parseMySql(doc);
+    const TiXmlElement *rootElement = doc.RootElement();
+    const TiXmlNode *node = rootElement ? rootElement->FirstChild("UavManager") : NULL;
+    const TiXmlElement *cfg = node ? node->ToElement():NULL;
+    if (cfg)
+    {
+        const char *tmp = cfg->Attribute("thread");
+        int n = tmp ? (int)Utility::str2int(tmp) : 1;
+        InitThread(n);
+    }
+}
+
+void UavManager::_parseMySql(const TiXmlDocument &doc)
 {
     StringList tables;
-    string db = VGDBManager::Instance().Load("UavInfo.xml", tables);
+    string db = VGDBManager::Instance().Load(doc, tables);
     if (!m_sqlEng)
         return;
 

@@ -54,6 +54,9 @@
     <ClCompile Include="src\GLibrary.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\IMessage.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\SocketAddress.h">
@@ -111,6 +114,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\GLibrary.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IMessage.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

@@ -4,6 +4,7 @@
 #include "Mutex.h"
 #include "Lock.h"
 #include "socketBase.h"
+#include "IMessage.h"
 
 using namespace std;
 

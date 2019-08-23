@@ -47,7 +47,7 @@ public:
     SHARED_DECL static std::list<std::string> SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty=true);
     SHARED_DECL static uint32_t Crc32(const char *src, int len);
     SHARED_DECL static std::string base64(const char *str_in, int len);
-    SHARED_DECL static std::string base64d(const std::string& str_in);
+    SHARED_DECL static size_t base64d(const std::string &str_in, char *buf, size_t len);
     SHARED_DECL static std::string l2string(long l);
     SHARED_DECL static std::string bigint2string(int64_t l);
     SHARED_DECL static std::string bigint2string(uint64_t l);

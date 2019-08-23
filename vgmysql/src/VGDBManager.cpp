@@ -117,13 +117,11 @@ list<string> VGDBManager::SplitString(const std::string &str, const std::string 
     return strLsRet;
 }
 
-string VGDBManager::Load(const std::string &fileName, StringList &tbs)
+string VGDBManager::Load(const TiXmlDocument &doc, StringList &tbs)
 {
-    TiXmlDocument myDocument;
-    myDocument.LoadFile(fileName.c_str());
-    if (TiXmlElement *rootElement = myDocument.RootElement())
+    if (const TiXmlElement *rootElement = doc.RootElement())
     {
-        TiXmlNode *node = rootElement->FirstChild("Mysql");
+        const TiXmlNode *node = rootElement->FirstChild("Database");
         if (!node)
             return string();
 
@@ -131,7 +129,7 @@ string VGDBManager::Load(const std::string &fileName, StringList &tbs)
         parseSqls(rootElement->FirstChild("SQLs"));
         parseTriggers(rootElement->FirstChild("Triggers"));
 
-        return parseMysql(node->ToElement());
+        return parseDatabase(node->ToElement());
     }
 
     return string();
@@ -233,13 +231,13 @@ StringList VGDBManager::GetTriggers() const
     return ret;
 }
 
-StringList VGDBManager::parseTables(TiXmlNode *node)
+StringList VGDBManager::parseTables(const TiXmlNode *node)
 {
     StringList ret;
     if (!node)
         return ret;
 
-    TiXmlNode *table = node ? node->FirstChild("table") : NULL;
+    const TiXmlNode *table = node ? node->FirstChild("table") : NULL;
     while (table)
     {
         if (VGTable *tb = VGTable::ParseTable(*table->ToElement()))
@@ -254,9 +252,9 @@ StringList VGDBManager::parseTables(TiXmlNode *node)
     return ret;
 }
 
-void VGDBManager::parseSqls(TiXmlNode *node)
+void VGDBManager::parseSqls(const TiXmlNode *node)
 {
-    TiXmlNode *sql = node ? node->FirstChild("SQL") : NULL;
+    const TiXmlNode *sql = node ? node->FirstChild("SQL") : NULL;
     while (sql)
     {
         if (ExecutItem *item = ExecutItem::parse(sql->ToElement()))
@@ -271,9 +269,9 @@ void VGDBManager::parseSqls(TiXmlNode *node)
     }
 }
 
-void VGDBManager::parseTriggers(TiXmlNode *node)
+void VGDBManager::parseTriggers(const TiXmlNode *node)
 {
-    TiXmlNode *tgNode = node ? node->FirstChild("Trigger") : NULL;
+    const TiXmlNode *tgNode = node ? node->FirstChild("Trigger") : NULL;
     while (tgNode)
     {
         if (VGTrigger *trg = VGTrigger::Parse(*tgNode->ToElement()))
@@ -283,7 +281,7 @@ void VGDBManager::parseTriggers(TiXmlNode *node)
     }
 }
 
-string VGDBManager::parseMysql(TiXmlElement *e)
+string VGDBManager::parseDatabase(const TiXmlElement *e)
 {
     if (!e)
         return string();

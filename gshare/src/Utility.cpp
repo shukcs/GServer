@@ -152,18 +152,12 @@ uint32_t Utility::Crc32(const char *src, int len)
 
 string Utility::base64(const char *str_in, int len)
 {
-	string str;
-	Base64 m_b;
-	m_b.encode(str_in, len, str, false); // , false == do not add cr/lf
-	return str;
+	return Base64::encode((uint8_t*)str_in, len);
 }
 
-string Utility::base64d(const string& str_in)
+size_t Utility::base64d(const std::string &str_in, char *buf, size_t len)
 {
-	string str;
-	Base64 m_b;
-	m_b.decode(str_in, str);
-	return str;
+    return Base64::decode(str_in, (uint8_t*)buf, len);
 }
 
 string Utility::l2string(long l)

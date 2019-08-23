@@ -10,6 +10,7 @@ class VGTable;
 class VGTrigger;
 class TiXmlElement;
 class TiXmlNode;
+class TiXmlDocument;
 class MySqlStruct;
 
 class VGDBManager
@@ -19,7 +20,7 @@ public:
 public:
     ~VGDBManager();
 
-    SHARED_SQL std::string Load(const std::string &fileName, StringList &tbs);
+    SHARED_SQL std::string Load(const TiXmlDocument &doc, StringList &tbs);
     SHARED_SQL VGTable *GetTableByName(const std::string &name)const;
     SHARED_SQL ExecutItem *GetSqlByName(const std::string &name)const;
     SHARED_SQL VGTrigger *GetTriggerByName(const std::string &name)const;
@@ -46,10 +47,10 @@ public:
 private:
     VGDBManager();
 
-    std::string parseMysql(TiXmlElement *e);
-    StringList parseTables(TiXmlNode *node);
-    void parseSqls(TiXmlNode *node);
-    void parseTriggers(TiXmlNode *node);
+    std::string parseDatabase(const TiXmlElement *e);
+    StringList parseTables(const TiXmlNode *node);
+    void parseSqls(const TiXmlNode *node);
+    void parseTriggers(const TiXmlNode *node);
     MySqlStruct *_getDbStruct(const std::string &)const;
 private:
     std::list<VGTable*>     m_tables;

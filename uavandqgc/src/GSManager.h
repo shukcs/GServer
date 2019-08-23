@@ -20,6 +20,7 @@ namespace google {
 
 class VGMySql;
 class ExecutItem;
+class TiXmlDocument;
 
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
@@ -74,7 +75,8 @@ protected:
     IObject *ProcessReceive(ISocket *s, const char *buf, int &len);
 private:
     IObject *_checkLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication &rgi);
-    void _ensureDBValid();
+    void _parseConfig();
+    void _parseMySql(const TiXmlDocument &doc);
 private:
     VGMySql         *m_sqlEng;
     ProtoMsg        *m_p;

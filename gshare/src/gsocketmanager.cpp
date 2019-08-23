@@ -138,7 +138,7 @@ void GSocketManager::AddProcessThread()
 
 bool GSocketManager::AddSocketWaitPrcs(ISocket *s)
 {
-    if (IMessage::IsContainsInList(m_socketsPrcs, s))
+    if (IObject::IsContainsInList(m_socketsPrcs, s))
         return false;
 
     m_mtx->Lock();
