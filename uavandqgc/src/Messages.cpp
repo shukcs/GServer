@@ -15,6 +15,11 @@ GSMessage::GSMessage(IObject *sender, const std::string &idRcv)
 {
 }
 
+GSMessage::GSMessage(IObjectManager *sender, const std::string &idRcv)
+    : IMessage(sender, idRcv, IObject::GroundStation, Unknown), m_msg(NULL)
+{
+}
+
 GSMessage::~GSMessage()
 {
     delete m_msg;
@@ -103,6 +108,11 @@ MessageType GSMessage::getMessageType(const Message &msg)
 /////////////////////////////////////////////////////////////////////////////
 UAVMessage::UAVMessage(IObject *sender, const std::string &idRcv)
     :IMessage(sender, idRcv, IObject::Plant, Unknown), m_msg(NULL)
+{
+}
+
+UAVMessage::UAVMessage(IObjectManager *sender, const std::string &idRcv)
+    : IMessage(sender, idRcv, IObject::Plant, Unknown), m_msg(NULL)
 {
 }
 

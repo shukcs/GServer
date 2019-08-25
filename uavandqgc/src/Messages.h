@@ -30,6 +30,7 @@ class GSMessage : public IMessage
 {
 public:
     GSMessage(IObject *sender, const std::string &idRcv);
+    GSMessage(IObjectManager *sender, const std::string &idRcv);
     ~GSMessage();
     void *GetContent() const;
     void SetGSContent(const google::protobuf::Message &msg);
@@ -45,6 +46,7 @@ class UAVMessage : public IMessage
 {
 public:
     UAVMessage(IObject *sender, const std::string &idRcv);
+    UAVMessage(IObjectManager *sender, const std::string &idRcv);
     ~UAVMessage();
     void *GetContent() const;
     void SetContent(const google::protobuf::Message &msg);

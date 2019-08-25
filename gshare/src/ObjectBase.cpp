@@ -201,12 +201,17 @@ void IObject::SetBuffSize(uint16_t sz)
 
 IObjectManager *IObject::GetManager() const
 {
-    return ObjectManagers::Instance().GetManagerByType(GetObjectType());
+    return GetManagerByType(GetObjectType());
 }
 
 bool IObject::SendMsg(IMessage *msg)
 {
     return ObjectManagers::Instance().SendMsg(msg);
+}
+
+IObjectManager *IObject::GetManagerByType(int tp)
+{
+    return ObjectManagers::Instance().GetManagerByType(tp);
 }
 
 bool IObject::Receive(const void *buf, int len)

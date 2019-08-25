@@ -55,6 +55,7 @@ public:
     SHARED_DECL virtual void SetSended(int sended=-1);//-1,·¢ËÍÍê
 public:
     SHARED_DECL static bool SendMsg(IMessage *msg);
+    SHARED_DECL static IObjectManager *GetManagerByType(int);
 public:
 public:
     template<typename T, typename Contianer = std::list<T> >

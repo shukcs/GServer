@@ -48,7 +48,7 @@ protected:
     virtual void SetSended(int sended = -1);//-1,·¢ËÍÍê
     void RespondLogin(int seq, int res);
 protected:
-    static void AckControl2Uav(const das::proto::PostControl2Uav &msg, ObjectUav *obj, int res);
+    static void AckControl2Uav(const das::proto::PostControl2Uav &msg, int res, ObjectUav *obj=NULL);
 private:
     void prcsRcvPostOperationInfo(das::proto::PostOperationInformation *msg);
     void prcsRcvPost2Gs(das::proto::PostStatus2GroundStation *msg);
@@ -90,6 +90,7 @@ private:
     IObject *_checkLogin(ISocket *s, const das::proto::RequestUavIdentityAuthentication &uia);
     void _checkBindUav(const das::proto::RequestBindUav &rbu);
     void _checkUavInfo(const das::proto::RequestUavStatus &uia, const std::string &gs);
+    void processAllocationUav(int seqno, const std::string &id);
 private:
     VGMySql *m_sqlEng;
     ProtoMsg *m_p;

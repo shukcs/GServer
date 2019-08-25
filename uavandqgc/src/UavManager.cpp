@@ -97,9 +97,15 @@ void ObjectUav::RespondLogin(int seq, int res)
     }
 }
 
-void ObjectUav::AckControl2Uav(const PostControl2Uav &msg, ObjectUav *obj, int res)
+void ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *obj)
 {
-    if (GSMessage *ms = new GSMessage(obj, msg.userid()))
+    GSMessage *ms = NULL;
+    if (obj)
+        ms = new GSMessage(obj, msg.userid());
+    else
+        ms = new GSMessage(GetManagerByType(IObject::Plant), msg.userid());
+
+    if (ms)
     {
         AckPostControl2Uav *ack = new AckPostControl2Uav;
         if (!ack)
@@ -107,7 +113,6 @@ void ObjectUav::AckControl2Uav(const PostControl2Uav &msg, ObjectUav *obj, int r
             delete ms;
             return;
         }
-        ms->SetSenderType(IObject::Plant);
         ack->set_seqno(msg.seqno());
         ack->set_result(res);
         ack->set_uavid(msg.uavid());
@@ -121,7 +126,7 @@ void ObjectUav::ProcessMassage(const IMessage &msg)
 {
     if (msg.GetMessgeType() == BindUav)
         processBind((RequestBindUav*)msg.GetContent());
-    if (msg.GetMessgeType() == ControlUav)
+    else if (msg.GetMessgeType() == ControlUav)
         processControl2Uav((PostControl2Uav*)msg.GetContent());
 }
 
@@ -240,7 +245,7 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
         _send(*msg);
     }
     
-    AckControl2Uav(*msg, this, res);
+    AckControl2Uav(*msg, res, this);
 }
 
 void ObjectUav::_send(const google::protobuf::Message &msg)
@@ -321,7 +326,7 @@ void UavManager::UpdatePos(const std::string &uav, double lat, double lon)
 uint32_t UavManager::toIntID(const std::string &uavid)
 {
     if (0 == uavid.compare("VIGAU:"))
-        return Utility::str2int(uavid.substr(6 + 1));
+        return (uint32_t)Utility::str2int(uavid.substr(6 + 1));
     
     return 0;
 }
@@ -370,7 +375,13 @@ bool UavManager::PrcsRemainMsg(const IMessage &msg)
     else if (ControlUav == msg.GetMessgeType())
     {
         PostControl2Uav *ctrlUav = ((PostControl2Uav *)msg.GetContent());
-        ObjectUav::AckControl2Uav(*ctrlUav, NULL, 0);
+        ObjectUav::AckControl2Uav(*ctrlUav, 0);
+        return true;
+    }
+    else if (UavAllocation == msg.GetMessgeType())
+    {
+        RequestIdentityAllocation *ms = (RequestIdentityAllocation *)msg.GetContent();
+        processAllocationUav(ms->seqno(), msg.GetSenderID());
         return true;
     }
     return false;
@@ -416,9 +427,8 @@ void UavManager::_parseMySql(const TiXmlDocument &doc)
 
 void UavManager::sendBindRes(const RequestBindUav &msg, int res, bool bind)
 {
-    if (GSMessage *ms = new GSMessage(NULL, msg.binder()))
+    if (GSMessage *ms = new GSMessage(this, msg.binder()))
     {
-        ms->SetSenderType(IObject::Plant);
         AckRequestBindUav *proto = new AckRequestBindUav();
         if (!proto)
             return;
@@ -533,10 +543,23 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, const std::string &g
         }
     }
 
-    if (GSMessage *ms = new GSMessage(NULL, gs))
+    if (GSMessage *ms = new GSMessage(this, gs))
     {
-        ms->SetSenderType(IObject::Plant);
         ms->SetGSContent(as);
+        SendMsg(ms);
+    }
+}
+
+void UavManager::processAllocationUav(int seqno, const string &id)
+{
+    if (UAVMessage *ms = new UAVMessage(this, id))
+    {
+        int res = 0;
+
+        AckIdentityAllocation *ack = new AckIdentityAllocation;
+        ack->set_seqno(seqno);
+        ack->set_result(res);
+        ms->AttachProto(ack);
         SendMsg(ms);
     }
 }
