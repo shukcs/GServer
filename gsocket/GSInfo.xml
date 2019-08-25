@@ -37,6 +37,7 @@
 		</SQL>
 		<SQL name="queryGSInfo" table="GSInfo" type="Select" >
 			<item name="pswd" ref="GSInfo" type="Read" />
+			<item name="auth" ref="GSInfo" type="Read" />
 			<item name="user" ref="GSInfo" type="Condition" />
 		</SQL>
 		<SQL name="changePswd" table="GSInfo" type="Update" >

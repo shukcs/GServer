@@ -15,91 +15,19 @@
 using namespace das::proto;
 using namespace google::protobuf;
 using namespace std;
-////////////////////////////////////////////////////////////////////////////////
-//ObjectUav
-////////////////////////////////////////////////////////////////////////////////
 
-class UAVMessage : public IMessage
+enum GSAuthorizeType
 {
-public:
-    UAVMessage(IObject *sender, const std::string &idRcv)
-        :IMessage(sender, idRcv, IObject::Plant, Unknown), m_msg(NULL)
-    {
-    }
-    ~UAVMessage()
-    {
-        delete m_msg;
-    }
-    void *GetContent() const
-    {
-        return m_msg;
-    }
-
-    void SetContent(const google::protobuf::Message &msg)
-    {
-        delete m_msg;
-        m_msg = NULL;
-        m_tpMsg = Unknown;
-        const string &name = msg.GetTypeName();
-        if (name == d_p_ClassName(RequestBindUav))
-        {
-            m_msg = new RequestBindUav;
-            m_tpMsg = BindUav;
-        }
-        else if (name == d_p_ClassName(PostControl2Uav))
-        {
-            m_msg = new PostControl2Uav;
-            m_tpMsg = ControlUav;
-        }
-        else if (name == d_p_ClassName(RequestUploadOperationRoutes))
-        {
-            m_msg = new RequestUploadOperationRoutes;
-            m_tpMsg = SychMission;
-        }
-        else if (name == d_p_ClassName(RequestUavStatus))
-        {
-            m_msg = new RequestUavStatus;
-            m_tpMsg = QueryUav;
-        }
-
-        if (m_tpMsg != Unknown)
-            m_msg->CopyFrom(msg);
-    }
-
-    void AttachProto(google::protobuf::Message *msg)
-    {
-        delete m_msg;
-        m_msg = NULL;
-        if (!msg)
-            return;
-        const string &name = msg->GetTypeName();
-        if (name == d_p_ClassName(RequestBindUav))
-            m_tpMsg = BindUav;
-        else if (name == d_p_ClassName(PostControl2Uav))
-            m_tpMsg = ControlUav;
-        else if (name == d_p_ClassName(RequestUploadOperationRoutes))
-            m_tpMsg = SychMission;
-        else if (name == d_p_ClassName(RequestUavStatus))
-            m_tpMsg = QueryUav;
-        else
-            m_tpMsg = Unknown;
-
-        m_msg = msg;
-    }
-
-    int GetContentLength() const
-    {
-        return m_msg ? m_msg->ByteSize() : 0;
-    }
-private:
-    google::protobuf::Message  *m_msg;
+    Type_Common = 1,
+    Type_UavManager = Type_Common << 1,
 };
+
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
 ObjectGS::ObjectGS(const std::string &id)
 : IObject(NULL, id), m_bConnect(false)
-, m_p(new ProtoMsg)
+, m_auth(1), m_p(new ProtoMsg)
 {
     if (m_p)
         m_p->InitSize();
@@ -144,6 +72,11 @@ const std::string &ObjectGS::GetPswd() const
     return m_pswd;
 }
 
+void ObjectGS::SetAuth(int a)
+{
+    m_auth = a;
+}
+
 void ObjectGS::RespondLogin(int seqno, int res)
 {
     if (m_p)
@@ -158,7 +91,7 @@ void ObjectGS::RespondLogin(int seqno, int res)
 void ObjectGS::ProcessMassage(const IMessage &msg)
 {
     int tp = msg.GetMessgeType();
-    if ((tp == BindUavRes || tp == QueryUavRes || ControlUavRes==tp) && m_p)
+    if ((tp == BindUavRes || tp == QueryUavRes || ControlUavRes==tp || UavAllocationRes==tp) && m_p)
     {
         if (Message *ms = (Message *)msg.GetContent())
             _send(*ms);
@@ -189,12 +122,25 @@ int ObjectGS::ProcessReceive(void *buf, int len)
         }
         else if (strMsg == d_p_ClassName(RequestBindUav))
         {
-            RequestBindUav *msg = (RequestBindUav *)m_p->GetProtoMessage();
+            RequestBindUav *msg = (RequestBindUav *)m_p->DeatachProto();
             if (UAVMessage *ms = new UAVMessage(this, msg->uavid()))
             {
-                ms->SetContent(*msg);
+                ms->AttachProto(msg);
                 SendMsg(ms);
             }
+        }
+        else if (strMsg == d_p_ClassName(PostControl2Uav))
+        {
+            PostControl2Uav *msg = (PostControl2Uav *)m_p->DeatachProto();
+            if (UAVMessage *ms = new UAVMessage(this, msg->uavid()))
+            {
+                ms->AttachProto(msg);
+                SendMsg(ms);
+            }
+        }
+        else if (strMsg == d_p_ClassName(RequestIdentityAllocation))
+        {
+            _prcsUavIDAllication((RequestIdentityAllocation *)m_p->DeatachProto());
         }
         else if (strMsg == d_p_ClassName(RequestUavStatus))
         {
@@ -215,15 +161,6 @@ int ObjectGS::ProcessReceive(void *buf, int len)
         {
             DeleteParcelDescription *msg = (DeleteParcelDescription *)m_p->GetProtoMessage();
             _prcsDeleteLand(msg->pdid(), msg->delpc()&&msg->delpsi(), msg->seqno());
-        }
-        else if (strMsg == d_p_ClassName(PostControl2Uav))
-        {
-            PostControl2Uav *msg = (PostControl2Uav *)m_p->GetProtoMessage();
-            if (UAVMessage *ms = new UAVMessage(this, msg->uavid()))
-            {
-                ms->SetContent(*msg);
-                SendMsg(ms);
-            }
         }
     }
     pos += l;
@@ -498,6 +435,27 @@ void ObjectGS::_prcsDeleteLand(const std::string &id, bool del, int ack)
     _send(ackDD);
 }
 
+void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
+{
+    if (!msg)
+        return;
+
+    if (m_auth & Type_UavManager)
+    {
+        if (UAVMessage *ms = new UAVMessage(this, string()))
+        {
+            ms->AttachProto(msg);
+            SendMsg(ms);
+            return;
+        }
+    }
+
+    AckIdentityAllocation ack;
+    ack.set_seqno(msg->seqno());
+    ack.set_result(0);
+    _send(ack);
+}
+
 void ObjectGS::_send(const google::protobuf::Message &msg)
 {
     if (m_p)
@@ -510,8 +468,8 @@ void ObjectGS::_send(const google::protobuf::Message &msg)
 ////////////////////////////////////////////////////////////////////////////////
 //GSManager
 ////////////////////////////////////////////////////////////////////////////////
-GSManager::GSManager() : IObjectManager(0)
-    ,m_sqlEng(new VGMySql), m_p(new ProtoMsg)
+GSManager::GSManager() : IObjectManager(0),m_sqlEng(new VGMySql)
+, m_p(new ProtoMsg)
 {
     _parseConfig();
 }
@@ -586,6 +544,8 @@ IObject *GSManager::_checkLogin(ISocket *s, const das::proto::RequestGSIdentityA
                 o = new ObjectGS(usr);
                 AddObject(o);
                 o->SetPswd(pswd);
+                if (FiledValueItem *fd = item->GetReadItem("auth"))
+                    o->SetAuth(fd->GetValue<int>());
                 res = 1;
             }
 

@@ -9,6 +9,7 @@ namespace das {
         class RequestUavStatus;
         class ParcelDescription;
         class ParcelContracter;
+        class RequestIdentityAllocation;
     }
 }
 
@@ -37,6 +38,7 @@ public:
     virtual void OnConnected(bool bConnected);
     void SetPswd(const std::string &pswd);
     const std::string &GetPswd()const;
+    void SetAuth(int);
     void RespondLogin(int seqno, int res);
 protected:
     virtual int GetObjectType()const;
@@ -48,17 +50,19 @@ protected:
 private:
     void _prcsReqUavs(const das::proto::RequestUavStatus &msg);
     void _prcsPostLand(const das::proto::ParcelDescription &msg, int ack);
-    uint64_t _saveContact(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id);
-    uint64_t _saveLand(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id);
+    void _prcsDeleteLand(const std::string &id, bool del, int ack);
+    void _prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg);
     void _ackLandOfGs(const std::string &user, int ack);
     void _initialParcelDescription(das::proto::ParcelDescription *msg, const ExecutItem &item);
-    das::proto::ParcelContracter *_transPC(const ExecutItem &item);
-    void _prcsDeleteLand(const std::string &id, bool del, int ack);
+    uint64_t _saveContact(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id);
+    uint64_t _saveLand(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id);
 
+    das::proto::ParcelContracter *_transPC(const ExecutItem &item);
     void _send(const google::protobuf::Message &msg);
 protected:
     friend class GSManager;
     bool            m_bConnect;
+    int             m_auth;
     std::string     m_pswd;
     ProtoMsg        *m_p;
 };

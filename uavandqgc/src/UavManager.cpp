@@ -16,93 +16,6 @@
 
 using namespace std;
 using namespace das::proto;
-
-class GSMessage : public IMessage
-{
-public:
-    GSMessage(IObject *sender, const std::string &idRcv)
-        :IMessage(sender, idRcv, IObject::GroundStation, Unknown), m_msg(NULL)
-    {
-    }
-    ~GSMessage()
-    {
-        delete m_msg;
-    }
-    void *GetContent() const
-    {
-        return m_msg;
-    }
-    void SetGSContent(const google::protobuf::Message &msg)
-    {
-        delete m_msg;
-        m_msg = NULL;
-        m_tpMsg = Unknown;
-        const string &name = msg.GetTypeName();
-        if (name == d_p_ClassName(AckRequestBindUav))
-        {
-            m_msg = new AckRequestBindUav;
-            m_tpMsg = BindUavRes;
-        }
-        else if (name == d_p_ClassName(AckPostControl2Uav))
-        {
-            m_msg = new AckPostControl2Uav;
-            m_tpMsg = ControlUavRes;
-        }
-        else if (name == d_p_ClassName(AckRequestUploadOperationRoutes))
-        {
-            m_msg = new AckRequestUploadOperationRoutes;
-            m_tpMsg = SychMissionRes;
-        }
-        else if (name == d_p_ClassName(OperationInformation))
-        {
-            m_msg = new OperationInformation;
-            m_tpMsg = PushUavSndInfo;
-        }
-        else if (name == d_p_ClassName(PostStatus2GroundStation))
-        {
-            m_msg = new OperationInformation;
-            m_tpMsg = ControlGs;
-        }
-        else if (name == d_p_ClassName(AckRequestUavStatus))
-        {
-            m_msg = new AckRequestUavStatus;
-            m_tpMsg = QueryUavRes;
-        }
-
-        if (m_tpMsg != Unknown)
-            m_msg->CopyFrom(msg);
-    }
-    void AttachProto(google::protobuf::Message *msg)
-    {
-        delete m_msg;
-        m_msg = NULL;
-        if (!msg)
-            return;
-        const string &name = msg->GetTypeName();
-        if (name == d_p_ClassName(AckRequestBindUav))
-            m_tpMsg = BindUavRes;
-        else if (name == d_p_ClassName(AckPostControl2Uav))
-            m_tpMsg = ControlUavRes;
-        else if (name == d_p_ClassName(AckRequestUploadOperationRoutes))
-            m_tpMsg = SychMissionRes;
-        else if (name == d_p_ClassName(OperationInformation))
-            m_tpMsg = PushUavSndInfo;
-        else if (name == d_p_ClassName(PostStatus2GroundStation))
-            m_tpMsg = ControlGs;
-        else if (name == d_p_ClassName(AckRequestUavStatus))
-            m_tpMsg = QueryUavRes;
-        else
-            m_tpMsg = Unknown;
-
-        m_msg = msg;
-    }
-    int GetContentLength() const
-    {
-        return m_msg ? m_msg->ByteSize() : 0;
-    }
-private:
-    google::protobuf::Message  *m_msg;
-};
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
@@ -184,7 +97,7 @@ void ObjectUav::RespondLogin(int seq, int res)
     }
 }
 
-void ObjectUav::AckControl2Uav(const das::proto::PostControl2Uav &msg, ObjectUav *obj, int res)
+void ObjectUav::AckControl2Uav(const PostControl2Uav &msg, ObjectUav *obj, int res)
 {
     if (GSMessage *ms = new GSMessage(obj, msg.userid()))
     {
@@ -259,7 +172,7 @@ void ObjectUav::SetSended(int sended /*= -1*/)
     }
 }
 
-void ObjectUav::prcsRcvPostOperationInfo(das::proto::PostOperationInformation *msg)
+void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
 {
     if (!msg)
         return;
@@ -291,7 +204,7 @@ void ObjectUav::prcsRcvPostOperationInfo(das::proto::PostOperationInformation *m
     _send(ack);
 }
 
-void ObjectUav::prcsRcvPost2Gs(das::proto::PostStatus2GroundStation *msg)
+void ObjectUav::prcsRcvPost2Gs(PostStatus2GroundStation *msg)
 {
     if (!msg || !m_bBind || m_lastBinder.length() < 1)
         return;
@@ -315,7 +228,7 @@ void ObjectUav::processBind(RequestBindUav *msg)
     }
 }
 
-void ObjectUav::processControl2Uav(das::proto::PostControl2Uav *msg)
+void ObjectUav::processControl2Uav(PostControl2Uav *msg)
 {
     if (!msg)
         return;
@@ -403,6 +316,14 @@ void UavManager::UpdatePos(const std::string &uav, double lat, double lon)
 
         m_sqlEng->Execut(item);
     }
+}
+
+uint32_t UavManager::toIntID(const std::string &uavid)
+{
+    if (0 == uavid.compare("VIGAU:"))
+        return Utility::str2int(uavid.substr(6 + 1));
+    
+    return 0;
 }
 
 int UavManager::GetObjectType() const
@@ -493,7 +414,7 @@ void UavManager::_parseMySql(const TiXmlDocument &doc)
     }
 }
 
-void UavManager::sendBindRes(const das::proto::RequestBindUav &msg, int res, bool bind)
+void UavManager::sendBindRes(const RequestBindUav &msg, int res, bool bind)
 {
     if (GSMessage *ms = new GSMessage(NULL, msg.binder()))
     {

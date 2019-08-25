@@ -37,6 +37,7 @@ google::protobuf::Message *ProtoMsg::DeatachProto()
 {
     google::protobuf::Message *ret = m_msg;
     m_msg = NULL;
+    m_name.clear();
     return ret;
 }
 
@@ -171,6 +172,8 @@ void ProtoMsg::_parse(const std::string &name, const char *buff, int len)
 {
     if (name == d_p_ClassName(PostHeartBeat))
         m_msg = new PostHeartBeat;                          //ÐÄÌø
+    else if (name == d_p_ClassName(RequestIdentityAllocation))
+        m_msg = new RequestIdentityAllocation;
     else if (name == d_p_ClassName(RequestGSIdentityAuthentication))
         m_msg = new RequestGSIdentityAuthentication;        //µÇÂ½½á¹û
     else if (name == d_p_ClassName(RequestUavIdentityAuthentication))

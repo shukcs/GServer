@@ -18,6 +18,7 @@ set(SRC_LIST
 	src/ProtoMsg.h
 	src/UavManager.cpp
 	src/UavManager.h
+	src/Messages.cpp
 	proto/das.pb.cc
 )
 
