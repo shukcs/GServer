@@ -17,6 +17,8 @@ set(SRC_LIST
 	src/VGMysql.h
 	src/VGTable.cpp
 	src/VGTable.h
+	src/VGTrigger.cpp
+	src/VGTrigger.h
 )
 
 add_library(${PACKAGE_NAME} SHARED ${SRC_LIST})
