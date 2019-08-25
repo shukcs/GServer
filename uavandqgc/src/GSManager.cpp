@@ -158,7 +158,7 @@ void ObjectGS::RespondLogin(int seqno, int res)
 void ObjectGS::ProcessMassage(const IMessage &msg)
 {
     int tp = msg.GetMessgeType();
-    if ((tp == BindUavRes || tp == QueryUavRes) && m_p)
+    if ((tp == BindUavRes || tp == QueryUavRes || ControlUavRes==tp) && m_p)
     {
         if (Message *ms = (Message *)msg.GetContent())
             _send(*ms);
@@ -290,7 +290,7 @@ void ObjectGS::_prcsPostLand(const das::proto::ParcelDescription &msg, int ack)
         if (nCon)
         {
             if (FiledValueItem *fd = itemLand->GetWriteItem("ownerID"))
-                fd->InitOf(uint64_t(nCon));
+                fd->InitOf(nCon);
             nLand = _saveLand(msg, *itemLand, nLand);
         }
     }
@@ -309,13 +309,13 @@ uint64_t ObjectGS::_saveContact(const das::proto::ParcelDescription &msg, Execut
     const ParcelContracter &pc = msg.pc();
     FiledValueItem *fd = item.GetWriteItem("name");
     if (fd && pc.has_name())
-        fd->SetParam(pc.name());
+        fd->InitBuff(pc.name().length()+1, pc.name().c_str());
     fd = item.GetWriteItem("birthdate");
     if (fd && pc.has_birthdate())
         fd->InitOf(pc.birthdate());
     fd = item.GetWriteItem("address");
     if (fd && pc.has_address())
-        fd->SetParam(pc.address());
+        fd->InitBuff(pc.address().length() + 1, pc.address().c_str());
     fd = item.GetWriteItem("mobileno");
     if (fd && pc.has_mobileno())
         fd->SetParam(pc.mobileno());
@@ -324,7 +324,7 @@ uint64_t ObjectGS::_saveContact(const das::proto::ParcelDescription &msg, Execut
         fd->SetParam(pc.phoneno());
     fd = item.GetWriteItem("weixin");
     if (fd && pc.has_weixin())
-        fd->SetParam(pc.weixin());
+        fd->InitBuff(pc.weixin().length() + 1, pc.weixin().c_str());
 
     if (item.GetType()==ExecutItem::Update && (fd=item.GetWriteItem("id")))
         fd->InitOf(uint64_t(id));
@@ -340,7 +340,7 @@ uint64_t ObjectGS::_saveLand(const das::proto::ParcelDescription &msg, ExecutIte
 {
     FiledValueItem *fd = item.GetWriteItem("name");
     if (fd && msg.has_name())
-        fd->SetParam(msg.name());
+        fd->InitBuff(msg.name().length() + 1, msg.name().c_str());
     fd = item.GetWriteItem("gsuser");
     if (fd && msg.has_registerid())
         fd->SetParam(msg.registerid());
@@ -621,16 +621,17 @@ void GSManager::_parseConfig()
 void GSManager::_parseMySql(const TiXmlDocument &doc)
 {
     StringList tables;
-    string db = VGDBManager::Instance().Load(doc, tables);
+    VGDBManager &dbMgr = VGDBManager::Instance();
+    string db = dbMgr.Load(doc, tables);
     if (!m_sqlEng)
         return;
 
-    m_sqlEng->ConnectMySql(VGDBManager::Instance().GetMysqlHost(db),
-        VGDBManager::Instance().GetMysqlPort(db),
-        VGDBManager::Instance().GetMysqlUser(db),
-        VGDBManager::Instance().GetMysqlPswd(db));
+    m_sqlEng->ConnectMySql(dbMgr.GetMysqlHost(db),
+        dbMgr.GetMysqlPort(db),
+        dbMgr.GetMysqlUser(db),
+        dbMgr.GetMysqlPswd(db));
 
-    m_sqlEng->EnterDatabase(db);
+    m_sqlEng->EnterDatabase(db, dbMgr.GetMysqlCharSet(db));
     for (const string &tb : tables)
     {
         m_sqlEng->CreateTable(VGDBManager::Instance().GetTableByName(tb));

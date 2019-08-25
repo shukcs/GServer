@@ -70,13 +70,16 @@ ExecutItem *VGMySql::GetResult()
     return m_execItem;
 }
 
-bool VGMySql::EnterDatabase(const std::string &db)
+bool VGMySql::EnterDatabase(const std::string &db, const char *cset)
 {
-    string sql = string("create database if not exists ")+db;
     bool ret = false;
-    if (sql.empty())
+    if (db.empty())
         return ret;
 
+    char tmp[128];
+    const char *set = cset ? cset : "utf8";
+    sprintf(tmp, "default character set %s collate %s_general_ci", set, set);
+    string sql = string("create database if not exists ") + db + " " + tmp;
     if (MYSQL_RES *res = Query(sql))
     {
         my_ulonglong nNum = mysql_num_rows(res);
@@ -207,7 +210,7 @@ bool VGMySql::_changeItem(ExecutItem *item)
         return false;
 
     MYSQL_BIND *binds  = item->GetParamBinds();
-    string sql = item->GetSqlString();
+    string sql = item->GetSqlString(binds);
 
     bool ret = false;
     if (sql.length() > 0)

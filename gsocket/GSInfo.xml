@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <document>
 	<GSManager thread="1" />
-	<Database user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav"/>
+	<Database user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8"/>
 	<Tables>
 		<table name="GSInfo">
 			<field name="user" type="char(32)" constraint="primary key"/>

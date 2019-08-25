@@ -3,6 +3,13 @@
 #include <tinyxml.h>
 #include <VGTrigger.h>
 
+static const char *sDefualtDb[5] = {
+    "127.0.0.1",
+    "gsuav",
+    "root",
+    "",
+    "utf8"
+};
 //////////////////////////////////////////////////////////////////////
 //VGDBManager
 //////////////////////////////////////////////////////////////////////
@@ -12,12 +19,14 @@ public:
     MySqlStruct() :m_port(3306) {}
     MySqlStruct(const MySqlStruct &oth) :m_port(oth.m_port)
         , m_host(oth.m_host), m_database(oth.m_host)
-        , m_user(oth.m_host), m_pswd(oth.m_host) {}
+        , m_user(oth.m_host), m_pswd(oth.m_host)
+        , m_charSet(oth.m_charSet){ }
     int                     m_port;
     std::string             m_host;
     std::string             m_database;
     std::string             m_user;
     std::string             m_pswd;
+    std::string             m_charSet;
 };
 //////////////////////////////////////////////////////////////////////
 //VGDBManager
@@ -179,8 +188,7 @@ const char *VGDBManager::GetMysqlHost(const std::string &db) const
     if (MySqlStruct *dbs = _getDbStruct(db))
         return dbs->m_host.c_str();
 
-    static string sDef = "127.0.0.1";
-    return sDef.c_str();
+    return sDefualtDb[0];
 }
 
 int VGDBManager::GetMysqlPort(const std::string &db/*=""*/) const
@@ -191,13 +199,12 @@ int VGDBManager::GetMysqlPort(const std::string &db/*=""*/) const
     return 3306;
 }
 
-const char * VGDBManager::GetMysqlUser(const std::string &db/*=""*/) const
+const char *VGDBManager::GetMysqlUser(const std::string &db/*=""*/) const
 {
     if (MySqlStruct *dbs = _getDbStruct(db))
         return dbs->m_user.c_str();
 
-    static string sDef = "root";
-    return sDef.c_str();
+    return sDefualtDb[2];
 }
 
 const char *VGDBManager::GetMysqlPswd(const std::string &db/*=""*/) const
@@ -205,7 +212,15 @@ const char *VGDBManager::GetMysqlPswd(const std::string &db/*=""*/) const
     if (MySqlStruct *dbs = _getDbStruct(db))
         return dbs->m_pswd.c_str();
 
-    return NULL;
+    return sDefualtDb[3];
+}
+
+const char *VGDBManager::GetMysqlCharSet(const std::string &db) const
+{
+    if (MySqlStruct *dbs = _getDbStruct(db))
+        return dbs->m_charSet.c_str();
+
+     return sDefualtDb[4];;
 }
 
 list<string> VGDBManager::GetDatabases() const
@@ -303,6 +318,8 @@ string VGDBManager::parseDatabase(const TiXmlElement *e)
     tmp = e->Attribute("database");
     if (!tmp)
         return string();
+    if (const char *tmpS = e->Attribute("charSet"))
+        sqlSrv.m_charSet = tmpS;
 
     sqlSrv.m_database = tmp;
     m_mysqls.push_back(new MySqlStruct(sqlSrv));

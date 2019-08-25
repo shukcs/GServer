@@ -27,7 +27,8 @@ public:
     SHARED_SQL const char *GetMysqlHost(const std::string &db ="")const;
     SHARED_SQL int GetMysqlPort(const std::string &db="")const;
     SHARED_SQL const char *GetMysqlUser(const std::string &db="")const;
-    SHARED_SQL const char *GetMysqlPswd(const std::string &db="")const;
+    SHARED_SQL const char *GetMysqlPswd(const std::string &db = "")const;
+    SHARED_SQL const char *GetMysqlCharSet(const std::string &db = "")const;
     SHARED_SQL StringList GetDatabases()const;
     SHARED_SQL StringList GetTriggers()const;
 public:
