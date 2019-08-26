@@ -476,7 +476,6 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
         if (m_sqlEng->Execut(item))
         {
             ret = new ObjectUav(uia.uavid());
-            AddObject(ret);
             ret->InitBySqlResult(*item);
             while (m_sqlEng->GetResult());
             res = 1;

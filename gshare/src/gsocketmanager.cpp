@@ -41,13 +41,13 @@ private:
 };
 
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE
 #endif
 
 class ThreadMgr : public Thread
 {
 public:
-    ThreadMgr(GSocketManager *sm):Thread(), m_mgr(sm) {}
+    ThreadMgr(ISocketManager *sm):Thread(), m_mgr(sm) {}
     ~ThreadMgr()
     {
         delete m_mgr;
@@ -55,16 +55,17 @@ public:
 protected:
     bool RunLoop()
     {
-        if (!m_mgr)
+        if (!m_mgr->IsRun())
             return false;
 
         return m_mgr->Poll(50);
     }
 private:
-    GSocketManager *m_mgr;
+    ISocketManager *m_mgr;
 };
 
 static GOutLog s_log;
+bool GSocketManager::s_bRun = true;
 ////////////////////////////////////////////////////////////////////////////
 //GSocketManager
 ////////////////////////////////////////////////////////////////////////////
@@ -385,6 +386,16 @@ void GSocketManager::Log(int err, const std::string &obj, int evT, const char *f
     }
 }
 
+bool GSocketManager::IsRun() const
+{
+    return s_bRun;
+}
+
+void GSocketManager::Exit()
+{
+    s_bRun = false;
+}
+
 void GSocketManager::_remove(int h)
 {
     if (-1==h)
@@ -460,7 +471,7 @@ int GSocketManager::_bind(ISocket *sock)
         sock->SetHandle(listenfd);
         sock->OnBind();
     }
-    Log(errno, "GSocketManager", 0, "bind %s:%d %s", sock->GetHost().c_str(), sock->GetPort(), listenfd>=0?"success":"fail");
+    Log(listenfd>=0?0:errno, "GSocketManager", 0, "bind %s:%d %s", sock->GetHost().c_str(), sock->GetPort(), listenfd>=0?"success":"fail");
     return listenfd;
 }
 
@@ -556,7 +567,3 @@ void GSocketManager::_send(ISocket *sock)
     if (count>0)
         sock->OnWrite(count);
 }
-
-#ifdef SOCKETS_NAMESPACE
-}
-#endif

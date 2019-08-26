@@ -542,7 +542,6 @@ IObject *GSManager::_checkLogin(ISocket *s, const das::proto::RequestGSIdentityA
             if (fd && string((char*)fd->GetBuff(), fd->GetValidLen())==pswd)
             {
                 o = new ObjectGS(usr);
-                AddObject(o);
                 o->SetPswd(pswd);
                 if (FiledValueItem *fd = item->GetReadItem("auth"))
                     o->SetAuth(fd->GetValue<int>());

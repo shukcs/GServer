@@ -71,8 +71,9 @@ public:
     virtual bool IsMainManager() const = 0;
     virtual bool Poll(unsigned ms) = 0;
     virtual void AddProcessThread() = 0;
+    virtual bool IsRun()const = 0;
+    virtual void Exit() = 0;
     virtual void Log(int err, const std::string &obj, int evT, const char *fmt, ...) = 0;
-protected:
     virtual ~ISocketManager() {}
 };
 #ifdef SOCKETS_NAMESPACE

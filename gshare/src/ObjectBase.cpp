@@ -33,9 +33,9 @@ protected:
         if (m_id == 0)
             ret = m_mgr->ProcessBussiness();
 
-        for (IObject *o : m_mgr->GetThreadObject(m_id))
+        for (const pair<string, IObject*> &itrO : m_mgr->GetThreadObject(m_id))
         {
-            if (o->PrcsBussiness())
+            if (itrO.second->PrcsBussiness())
                 return ret = true;
         }
 
@@ -234,11 +234,11 @@ IObjectManager::IObjectManager(uint16_t nThread):m_mtx(new Mutex)
 
 IObjectManager::~IObjectManager()
 {
-    for (const pair<int, std::list<IObject*> > &itr : m_mapThreadObject)
+    for (const pair<int, ThreadObjects> &itr : m_mapThreadObject)
     {
-        for (IObject *o : itr.second)
+        for (const pair<string, IObject*> &itrO : itr.second)
         {
-            o->Release();
+            itrO.second->Release();
         }
     }
     for (IMessage *msg : m_lsMsg)
@@ -261,7 +261,10 @@ bool IObjectManager::Receive(ISocket *s, const BaseBuff &buff)
 
     IObject *o = ProcessReceive(s, (char*)buf, len);
     if (o)
+    {
+        AddObject(o);
         o->SetSocket(s);
+    }
 
     if (o && len < buff.Count())
         o->Receive((char*)buf + len, buff.Count() - len);
@@ -326,11 +329,11 @@ bool IObjectManager::ProcessBussiness()
 
     if(!HasIndependThread())
     {
-        for (const pair<int, std::list<IObject*>> &itr : m_mapThreadObject)
+        for (const pair<int, ThreadObjects> &itr : m_mapThreadObject)
         {
-            for (IObject *o : itr.second)
+            for (const pair<string, IObject*> &itrO : itr.second)
             {
-                o->PrcsBussiness();
+                itrO.second->PrcsBussiness();
                 ret = true;
             }
         }
@@ -344,23 +347,38 @@ void IObjectManager::RemoveObject(IObject *o)
     if (!o)
         return;
 
-    ObjectMap::iterator itr = m_mapThreadObject.find(o->GetThreadId());
+    ObjectsMap::iterator itr = m_mapThreadObject.find(o->GetThreadId());
     if (itr != m_mapThreadObject.end())
     {
         m_mtx->Lock();
-        itr->second.remove(o);
+        itr->second.erase(o->GetObjectID());
         m_mtx->Unlock();
     }
 }
 
-const list<IObject*> &IObjectManager::GetThreadObject(int t) const
+const IObjectManager::ThreadObjects &IObjectManager::GetThreadObject(int t) const
 {
-    static list<IObject*> sLsEmpty;
-    ObjectMap::const_iterator itr = m_mapThreadObject.find(t);
+    static ThreadObjects sLsEmpty;
+    ObjectsMap::const_iterator itr = m_mapThreadObject.find(t);
     if (itr != m_mapThreadObject.end())
         return itr->second;
 
     return sLsEmpty;
+}
+
+bool IObjectManager::Exist(IObject *obj) const
+{
+    if (!obj || obj->GetThreadId()==-1)
+        return false;
+
+    ObjectsMap::const_iterator itr = m_mapThreadObject.find(obj->GetThreadId());
+    if (itr != m_mapThreadObject.end())
+    {
+        ThreadObjects::const_iterator itrO = itr->second.find(obj->GetObjectID());
+        if (itrO != itr->second.end())
+            return true;
+    }
+    return false;
 }
 
 void IObjectManager::ProcessMassage(const IMessage &msg)
@@ -368,23 +386,23 @@ void IObjectManager::ProcessMassage(const IMessage &msg)
     if (PrcsRemainMsg(msg))
         return;
 
-    for (const pair<int, std::list<IObject*>> &itr : m_mapThreadObject)
+    for (const pair<int, ThreadObjects> &itr : m_mapThreadObject)
     {
-        for (IObject *o : itr.second)
+        for (const pair<string, IObject*> &o : itr.second)
         {
-            o->ProcessMassage(msg);
+            o.second->ProcessMassage(msg);
         }
     }
 }
 
 bool IObjectManager::AddObject(IObject *obj)
 {
-    if (!obj)
+    if (!obj || Exist(obj))
         return false;
 
     int n = GetPropertyThread();
     m_mtx->Lock();
-    m_mapThreadObject[n].push_back(obj);
+    m_mapThreadObject[n][obj->GetObjectID()] = obj;
     obj->SetThreadId(n);
     m_mtx->Unlock();
 
@@ -393,13 +411,13 @@ bool IObjectManager::AddObject(IObject *obj)
 
 IObject *IObjectManager::GetObjectByID(const std::string &id) const
 {
-    for (const pair<int, std::list<IObject*>> &itr : m_mapThreadObject)
+    for (const pair<int, ThreadObjects> &itr : m_mapThreadObject)
     {
-        for (IObject *ret : itr.second)
-        {
-            if(id == ret->GetObjectID())
-                return ret;
-        }
+        ThreadObjects::const_iterator itrObj = itr.second.find(id);
+        if(itrObj == itr.second.end())
+            continue;
+
+        return itrObj->second;
     }
     return NULL;
 }
@@ -432,10 +450,10 @@ void IObjectManager::InitThread(uint16_t nThread /*= 1*/)
 int IObjectManager::GetPropertyThread() const
 {
     int nCount = -1;
-    int ret = -1;
+    int ret = 0;
     for (BussinessThread *t : m_lsThread)
     {
-        ObjectMap::const_iterator itr = m_mapThreadObject.find(t->GetId());
+        ObjectsMap::const_iterator itr = m_mapThreadObject.find(t->GetId());
         if (itr == m_mapThreadObject.end())
             return t->GetId();
 

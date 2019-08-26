@@ -31,8 +31,10 @@ maxSock:支持最大连接数
     SHARED_DECL void AddProcessThread();
     SHARED_DECL bool AddSocketWaitPrcs(ISocket *);
     SHARED_DECL void SetLog(ILog *log);
-    void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
+    SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
+    SHARED_DECL bool IsRun()const;
 protected:
+    void Exit();
     void InitThread(int nThread);
     void PrcsAddSockets();
     void PrcsDestroySockets();
@@ -72,8 +74,9 @@ private:
     int                         m_ep_fd;
 #endif
     Thread                      *m_thread;
-    char                        m_buff[1024];
     ILog                        *m_log;
+    char                        m_buff[1024];
+    static bool                 s_bRun;
 };
 
 #ifdef SOCKETS_NAMESPACE

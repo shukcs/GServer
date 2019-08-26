@@ -99,7 +99,9 @@ protected:
 
 class IObjectManager
 {
-    typedef std::map<int, std::list<IObject*> > ObjectMap;
+public:
+    typedef std::map<std::string, IObject*> ThreadObjects;
+    typedef std::map<int, ThreadObjects> ObjectsMap;
 public:
     virtual int GetObjectType()const = 0;
     SHARED_DECL bool AddObject(IObject *obj);
@@ -111,7 +113,8 @@ public:
     bool HasIndependThread()const;
     bool ProcessBussiness();
     void RemoveObject(IObject *);
-    const std::list<IObject*> &GetThreadObject(int t)const;
+    const ThreadObjects &GetThreadObject(int t)const;
+    bool Exist(IObject *obj)const;
 public:
     SHARED_DECL static bool SendMsg(IMessage *msg);
 protected:
@@ -132,7 +135,7 @@ private:
     std::list<IMessage*>            m_lsMsg;
     std::list<IMessage*>            m_lsMsgRelease;
     std::list<BussinessThread*>     m_lsThread;
-    ObjectMap                       m_mapThreadObject;
+    ObjectsMap                      m_mapThreadObject;
     IMutex                          *m_mtx;
 };
 
