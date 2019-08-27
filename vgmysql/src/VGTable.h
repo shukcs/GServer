@@ -34,6 +34,7 @@ public:
 protected:
     VGTableField(VGTable *tb, const string &n = string());
 private:
+    void _parseBits(const string &n);
     void _parseChar(const string &n);
     void _parseVarChar(const string &n);
     void _parseBinary(const string &n);

@@ -12,14 +12,14 @@
   cd ..
   mkdir GServerBuild
   cd GServerBuild
-  cmake _DCMAKE_BUILD_TYPE=Release ../GServer
+  cmake -DCMAKE_BUILD_TYPE=Release ../GServer
   make 
   cp ../GServer/gsock/*.xml .
   sudo bin/gsocket
   
   代码说明: 优化socket生存周期处理，连接对象数据处理与socket线程隔离，线程个数可以自己修改，GSManager/UavManager，通过xml解析实现
   1.gshare 业务逻辑的底层抽象
-    GSocketManager: tcp数据处理
+    GSocketManager: tcp数据处理，做为客户端，构造对象nThread设为0
     GSocket: 通用tcp连接类, 作为服务器不需要再重载了
     IObjectManager: a.连接对象管理抽象类，不同种类的连接需要重载GetObjectType(),ProcessReceive(); PrcsRemainMsg根据需要重载。
         b.ProcessMassage()处理初始数据，判断连接是否属于自己,参考GSManager/UavManager的重载
@@ -34,3 +34,5 @@
   3.vgmysql mysql数据库操作通用库，通过xml解析获取建表、数据库、触发器、操作对象...
   4.protobuf Google的c++ protobuf，根据需要自行下载，可以自行构建需要的protobuf
   5.uavandqgc 飞机及地面站及管理对象GSManager/UavManager；动态库，动态加载
+  
+  使用代码请帮忙点赞，您的支持是我前进的动力

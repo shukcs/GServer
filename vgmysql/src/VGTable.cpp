@@ -127,7 +127,10 @@ const string &VGTableField::GetTypeName()const
 void VGTableField::SetTypeName(const string &type)
 {
     m_type = 0;
-    if (0 == strnicmp(type.c_str(), "TINYINT", 8))
+
+    if (0 == strnicmp(type.c_str(), "BIT", 3))
+        _parseBits(type.substr(3));
+    else if (0 == strnicmp(type.c_str(), "TINYINT", 8))
         m_type = (1 << 16) | MYSQL_TYPE_TINY;
     else if (0 == strnicmp(type.c_str(), "SMALLINT", 9))
         m_type = (2 << 16) | MYSQL_TYPE_SHORT;
@@ -214,6 +217,16 @@ VGTableField *VGTableField::ParseFiled(const TiXmlElement &e, VGTable *parent)
     return NULL;
 }
 
+void VGTableField::_parseBits(const string &n)
+{
+    if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
+        return;
+
+    int nTmp = VGDBManager::str2int(n.substr(1, n.length() - 2));
+    if (nTmp > 0 && nTmp < 256)
+        m_type = (nTmp << 16) | MYSQL_TYPE_BIT;
+}
+
 void VGTableField::_parseChar(const string &n)
 {
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
@@ -230,6 +243,7 @@ void VGTableField::_parseVarChar(const string &n)
         return;
 
     int nTmp = VGDBManager::str2int(n.substr(1, n.length() - 2));
+    nTmp = (nTmp + 7) / 8;
     if (nTmp > 0 && nTmp<0xffff)
         m_type = (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
 }
