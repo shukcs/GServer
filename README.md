@@ -34,3 +34,5 @@
   3.vgmysql mysql数据库操作通用库，通过xml解析获取建表、数据库、触发器、操作对象...
   4.protobuf Google的c++ protobuf，根据需要自行下载，可以自行构建需要的protobuf
   5.uavandqgc 飞机及地面站及管理对象GSManager/UavManager；动态库，动态加载
+  
+  使用代码请帮忙点赞，您的支持是我前进的动力
