@@ -213,7 +213,7 @@ int FiledValueItem::transToType(const char *pro)
 //ExecutItem
 ///////////////////////////////////////////////////////////////////////////////////////
 ExecutItem::ExecutItem(ExecutType tp, const std::string &name)
-: m_type(tp), m_name(name), m_condition("and"), m_autoIncrement(NULL)
+: m_type(tp), m_name(name), m_condition(" and "), m_autoIncrement(NULL)
 , m_bHasForeignRefTable(false), m_bRef(false)
 {
 }
@@ -478,7 +478,7 @@ ExecutItem *ExecutItem::parse(const TiXmlElement *e)
         return sql;
 
     if (const char *tmpC = e->Attribute("condition"))
-        sql->m_condition = tmpC;
+        sql->m_condition = string(" ") + tmpC + " ";
 
     sql->SetExecutTables(VGDBManager::SplitString(table, ";"));
     sql->_parseItems(e);

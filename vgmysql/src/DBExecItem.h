@@ -128,6 +128,7 @@ private:
 private:
     ExecutType              m_type;
     string                  m_name;
+    string                  m_condition;
     FiledValueItem*         m_autoIncrement;
     bool                    m_bHasForeignRefTable;
     bool                    m_bRef;
