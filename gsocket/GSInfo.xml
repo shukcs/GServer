@@ -83,7 +83,7 @@
 			<item name="weixin" ref="OwnerInfo" type="Write" />
 			<item name="id" ref="OwnerInfo" type="Condition" />
 		</SQL>
-		<SQL name="queryLand" table="LandInfo;OwnerInfo" type="Select" >
+		<SQL name="queryLand" table="LandInfo;OwnerInfo" type="Select" condition="">
 			<item name="id" ref="LandInfo" type="Read" />
 			<item name="name" ref="LandInfo" type="Read" />
 			<item name="gsuser" ref="LandInfo" type="Read" />
@@ -98,7 +98,7 @@
 			<item name="mobileno"  ref="OwnerInfo" type="Read"/>
 			<item name="phoneno" ref="OwnerInfo" type="Read" />
 			<item name="weixin" ref="OwnerInfo" type="Read" />
-			<item name="gsuser" ref="LandInfo" type="Condition" />
+			<item name="gsuser" ref="LandInfo" type="Condition" condition="=" />
 			<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
 		</SQL>
 		<SQL name="deleteLand" table="LandInfo;OwnerInfo" type="Delete" >

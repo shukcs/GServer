@@ -13,6 +13,7 @@ public:
     SHARED_SQL unsigned GetValidLen()const;
     SHARED_SQL void *GetBuff()const;
     SHARED_SQL void InitBuff(unsigned len, const void *buf = NULL);
+    SHARED_SQL const string &GetCondition()const;
 
     int GetType()const;
     void SetFieldName(const string &name);
@@ -63,6 +64,7 @@ private:
     unsigned long   m_len;
     string          m_name;
     string          m_param;
+    string          m_condition;
 };
 
 class ExecutItem

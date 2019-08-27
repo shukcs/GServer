@@ -15,14 +15,14 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 FiledValueItem::FiledValueItem(int tp, const std::string &name, int len)
 : m_type(tp), m_bEmpty(true), m_bStatic(false), m_buff(NULL)
-, m_lenMax(0), m_len(0), m_name(name)
+, m_lenMax(0), m_len(0), m_name(name), m_condition("=")
 {
     InitBuff(len);
 }
 
 FiledValueItem::FiledValueItem(VGTableField *fild, bool bOth)
 : m_type(-1), m_bEmpty(true), m_bStatic(false), m_buff(NULL)
-, m_lenMax(0), m_len(0)
+, m_lenMax(0), m_len(0), m_condition("=")
 {
     if (fild)
     {
@@ -89,6 +89,11 @@ void FiledValueItem::InitBuff(unsigned len, const void *buf)
     m_bEmpty = false;
 }
 
+const string &FiledValueItem::GetCondition() const
+{
+    return m_condition;
+}
+
 unsigned FiledValueItem::GetMaxLen() const
 {
     return m_buff ? m_lenMax : 0;
@@ -147,6 +152,7 @@ void FiledValueItem::parse(const TiXmlElement *e, ExecutItem *sql)
     if (!name || tp > ExecutItem::Condition || tp < ExecutItem::Read)
         return;
 
+    FiledValueItem *item = NULL;
     const char *tmp = e->Attribute("ref");
     if (tmp)
     {
@@ -154,7 +160,10 @@ void FiledValueItem::parse(const TiXmlElement *e, ExecutItem *sql)
         if (tb)
         {
             if (VGTableField *fd = tb->FindFieldByName(name))
-                sql->AddItem(new FiledValueItem(fd, sql->ExecutTables().size() > 1), tp);
+            {
+                item = new FiledValueItem(fd, sql->ExecutTables().size() > 1);
+                sql->AddItem(item, tp);
+            }
         }
     }
     else if (const char *tmpTp = e->Attribute("sqlTp"))
@@ -162,19 +171,24 @@ void FiledValueItem::parse(const TiXmlElement *e, ExecutItem *sql)
         int tpSql = tmpTp ? VGDBManager::str2int(tmpTp) : -1;
         tmpTp = e->Attribute("length");
         int len = tmpTp ? VGDBManager::str2int(tmpTp) : 0;
-        sql->AddItem(new FiledValueItem(tpSql, name, len), tp);
+        item = new FiledValueItem(tpSql, name, len);
+        sql->AddItem(item, tp);
     }
     else
     {
         tmp = e->Attribute("param");
-        FiledValueItem *vf = new FiledValueItem(-1, name, 0);
+        item = new FiledValueItem(-1, name, 0);
         if (tmp)
-            vf->SetParam(tmp, false, true);
+            item->SetParam(tmp, false, true);
         else if (const char *val = e->Attribute("paramVal"))
-            vf->SetParam(val, true, true);
+            item->SetParam(val, true, true);
 
-        sql->AddItem(vf, tp);
+        sql->AddItem(item, tp);
     }
+
+    tmp = e->Attribute("condition");
+    if (item && tmp)
+        item->m_condition = tmp;
 }
 
 int FiledValueItem::transToType(const char *pro)
@@ -199,7 +213,7 @@ int FiledValueItem::transToType(const char *pro)
 //ExecutItem
 ///////////////////////////////////////////////////////////////////////////////////////
 ExecutItem::ExecutItem(ExecutType tp, const std::string &name)
-: m_type(tp), m_name(name), m_autoIncrement(NULL)
+: m_type(tp), m_name(name), m_condition("and"), m_autoIncrement(NULL)
 , m_bHasForeignRefTable(false), m_bRef(false)
 {
 }
@@ -463,6 +477,9 @@ ExecutItem *ExecutItem::parse(const TiXmlElement *e)
     if (!sql)
         return sql;
 
+    if (const char *tmpC = e->Attribute("condition"))
+        sql->m_condition = tmpC;
+
     sql->SetExecutTables(VGDBManager::SplitString(table, ";"));
     sql->_parseItems(e);
 
@@ -638,12 +655,12 @@ string ExecutItem::_conditionsString(MYSQL_BIND *bind, int &pos) const
             continue;
 
         bool bStatic = itr->IsStaticParam();
-        string tmp = itr->GetFieldName() + "=" + (bStatic ? itr->GetParam() : "?");
+        string tmp = itr->GetFieldName() + itr->GetCondition() + (bStatic ? itr->GetParam() : "?");
 
         if (conditions.length() < 1)
             conditions = string(" where ")+tmp;
         else
-            conditions += string(" and ")+tmp;
+            conditions += m_condition + tmp;
 
         if(!bStatic && bind)
             transformBind(itr, bind[pos++]);
