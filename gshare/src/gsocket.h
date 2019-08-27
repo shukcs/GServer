@@ -25,9 +25,12 @@ handle:是创建他的线程，如果handle不为空，GSocket调用Close才能安全删除
     SHARED_DECL GSocket(ISocketManager *handle);
     SHARED_DECL ~GSocket();
 
-    //事务处理调用函数
+    //无限制调用函数
     SHARED_DECL virtual bool Bind(int port, const std::string &hostLocal = "");
     SHARED_DECL virtual bool ConnectTo(const std::string &hostRemote, int port);
+    SHARED_DECL int GetPort()const;
+    SHARED_DECL std::string GetHost()const;
+    SHARED_DECL void Close();
 protected:
     //事务处理调用函数
     IObject *GetOwnObject()const;
@@ -37,9 +40,6 @@ protected:
     //无限制调用函数
     SocketStat GetSocketStat()const;
     bool IsListenSocket()const;
-    int GetPort()const;
-    void Close();
-    std::string GetHost()const;
     std::string GetObjectID()const;
 
     //
@@ -51,10 +51,12 @@ protected:
     bool IsReconnectable()const;
     bool IsWriteEnabled()const;
     void EnableWrite(bool);
-    void OnWrite(int);
-    void OnRead(void *buf, int len);
-    void OnClose();
-    void OnConnect(bool);
+
+    SHARED_DECL virtual void OnWrite(int);
+    SHARED_DECL virtual void OnRead(void *buf, int len);
+    SHARED_DECL virtual void OnClose();
+    SHARED_DECL virtual void OnConnect(bool);
+
     void OnBind();
     int CopySend(char *buf, int sz, unsigned from=0)const;
     int GetSendLength()const;

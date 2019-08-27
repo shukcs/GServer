@@ -34,7 +34,7 @@ template<class Item>
 class ManagerItem : public ManagerAbstractItem
 {
 public:
-    ManagerItem() :ManagerAbstractItem()
+    ManagerItem() : ManagerAbstractItem()
     {
         m_type = -1;
         Register();

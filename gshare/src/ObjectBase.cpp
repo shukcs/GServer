@@ -368,7 +368,7 @@ const IObjectManager::ThreadObjects &IObjectManager::GetThreadObject(int t) cons
 
 bool IObjectManager::Exist(IObject *obj) const
 {
-    if (!obj || obj->GetThreadId()==-1)
+    if (!obj || obj->GetThreadId()>=0)
         return false;
 
     ObjectsMap::const_iterator itr = m_mapThreadObject.find(obj->GetThreadId());
