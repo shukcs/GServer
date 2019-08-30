@@ -347,8 +347,7 @@ void ObjectGS::_initialParcelDescription(ParcelDescription *pd, const ExecutItem
     if (fd && fd->GetValidLen() > 0)
         pd->set_registerid((char*)fd->GetBuff());
     fd = item.GetReadItem("LandInfo.acreage");
-    if (fd && fd->GetValidLen() > 0)
-        pd->set_acreage(fd->GetValue<float>());
+    pd->set_acreage((fd && fd->GetValidLen() > 0)?fd->GetValue<float>():0);
     fd = item.GetReadItem("LandInfo.lat");
     FiledValueItem *tdTmp = item.GetReadItem("LandInfo.lon");
     if (fd && fd->GetValidLen() > 0 && tdTmp&&tdTmp->GetValidLen() > 0)
@@ -490,7 +489,7 @@ int GSManager::GetObjectType() const
     return IObject::GroundStation;
 }
 
-IObject *GSManager::ProcessReceive(ISocket *s, const char *buf, int &len)
+IObject *GSManager::PrcsReceiveByMrg(ISocket *s, const char *buf, int &len)
 {
     int pos = 0;
     int l = len;

@@ -80,7 +80,7 @@ public:
     static uint32_t toIntID(const std::string &uavid);
 protected:
     int GetObjectType()const;
-    IObject *ProcessReceive(ISocket *s, const char *buf, int &len);
+    IObject *PrcsReceiveByMrg(ISocket *s, const char *buf, int &len);
     bool PrcsRemainMsg(const IMessage &msg);
 private:
     void _parseConfig();
@@ -92,8 +92,9 @@ private:
     void _checkUavInfo(const das::proto::RequestUavStatus &uia, const std::string &gs);
     void processAllocationUav(int seqno, const std::string &id);
 private:
-    VGMySql *m_sqlEng;
-    ProtoMsg *m_p;
+    VGMySql     *m_sqlEng;
+    ProtoMsg    *m_p;
+    uint32_t    m_lastId;
 };
 
 #endif//__UAV_MANAGER_H__

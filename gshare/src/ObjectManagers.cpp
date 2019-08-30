@@ -163,7 +163,7 @@ void ObjectManagers::Destroy(IObject *o)
     if (!o)
         return;
 
-    Lock l(*m_mtxObj);
+    Lock l(m_mtxObj);
     m_objectsDestroy.push_back(o);
 }
 
@@ -172,7 +172,7 @@ void ObjectManagers::OnSocketClose(ISocket *sock)
     map<ISocket *, BaseBuff*>::iterator itr = m_socksRcv.find(sock);
     if (itr != m_socksRcv.end())
     {
-        Lock l(*m_mtx);
+        Lock l(m_mtx);
         m_keysRemove.push_back(sock);
     }
 }
@@ -227,7 +227,7 @@ void ObjectManagers::PrcsObjectsDestroy()
         delete o;
     }
 
-    Lock l(*m_mtxObj);
+    Lock l(m_mtxObj);
     m_objectsDestroy.clear();
 }
 

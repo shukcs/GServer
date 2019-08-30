@@ -17,6 +17,7 @@ class IObjectManager;
 class BussinessThread;
 class IMutex;
 class IMessage;
+class ObjectMetuxs;
 
 class IObject
 {
@@ -127,16 +128,17 @@ protected:
     void ProcessMassage(const IMessage &msg);
     int GetPropertyThread()const;
     void AddMessage(IMessage *msg);
-    void PrcsRelease();
+    void PrcsReleaseMsg();
 protected:
-    virtual IObject *ProcessReceive(ISocket *s, const char *buf, int &len) = 0;
+    virtual IObject *PrcsReceiveByMrg(ISocket *s, const char *buf, int &len) = 0;
 private:
     friend class ObjectManagers;
+    IMutex                          *m_mtx;
     std::list<IMessage*>            m_lsMsg;
     std::list<IMessage*>            m_lsMsgRelease;
     std::list<BussinessThread*>     m_lsThread;
     ObjectsMap                      m_mapThreadObject;
-    IMutex                          *m_mtx;
+    std::map<int, ObjectMetuxs*>    m_threadMutexts;
 };
 
 #ifdef SOCKETS_NAMESPACE

@@ -70,7 +70,7 @@ bool GSocketManager::s_bRun = true;
 //GSocketManager
 ////////////////////////////////////////////////////////////////////////////
 GSocketManager::GSocketManager(int nThread, int maxSock) : m_mtx(new Mutex)
-,m_openMax(maxSock), m_thread(NULL), m_log(&s_log)
+, m_mtxSock(new Mutex), m_openMax(maxSock), m_thread(NULL), m_log(&s_log)
 {
     InitEpoll();
     InitThread(nThread);
@@ -97,6 +97,7 @@ bool GSocketManager::AddSocket(ISocket *s)
     if (int(m_sockets.size()+1) >= m_openMax)
         return false;
 
+    s->SetMutex(m_mtxSock);
     m_mtx->Lock();
     m_socketsAdd.push_back(s);
     m_mtx->Unlock();

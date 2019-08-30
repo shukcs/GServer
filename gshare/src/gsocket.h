@@ -64,6 +64,7 @@ protected:
     bool IsAccetSock()const;
 
     void SetPrcsManager(ISocketManager *h);
+    void SetMutex(IMutex *mtx);
 protected:
     friend class GSocketManager;
     ISocketManager  *m_manager;

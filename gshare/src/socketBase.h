@@ -7,6 +7,7 @@
 namespace SOCKETS_NAMESPACE {
 #endif
 
+class IMutex;
 class IObject;
 class ISocketManager;
 class SocketAddress;
@@ -60,6 +61,7 @@ public:
     virtual std::string GetHost()const = 0;
     virtual int GetPort()const = 0;
     virtual std::string GetObjectID()const = 0;
+    virtual void SetMutex(IMutex *mtx) = 0;
 };
 
 class ISocketManager

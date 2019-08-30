@@ -261,7 +261,8 @@ void ObjectUav::_send(const google::protobuf::Message &msg)
 //UavManager
 ////////////////////////////////////////////////////////////////////////////////
 UavManager::UavManager() : IObjectManager(0)
-,m_sqlEng(new VGMySql), m_p(new ProtoMsg)
+, m_sqlEng(new VGMySql), m_p(new ProtoMsg)
+, m_lastId(1)
 {
     _parseConfig();
 }
@@ -336,7 +337,7 @@ int UavManager::GetObjectType() const
     return IObject::Plant;
 }
 
-IObject *UavManager::ProcessReceive(ISocket *s, const char *buf, int &len)
+IObject *UavManager::PrcsReceiveByMrg(ISocket *s, const char *buf, int &len)
 {
     int pos = 0;
     int l = len;
@@ -551,13 +552,29 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, const std::string &g
 
 void UavManager::processAllocationUav(int seqno, const string &id)
 {
+    if (id.empty() && !m_sqlEng)
+        return;
     if (UAVMessage *ms = new UAVMessage(this, id))
     {
         int res = 0;
 
+        ExecutItem *sql = VGDBManager::Instance().GetSqlByName("insertUavInfo");
+        FiledValueItem *fd = sql->GetWriteItem("id");
+        char idTmp[24] = {0};
+        while (sql && fd && m_lastId>0)
+        {
+            sql->ClearData();
+            sprintf(idTmp, "VIGAU:%08X", m_lastId);
+            fd->SetParam(idTmp);
+            ++m_lastId;
+            if(m_sqlEng->Execut(sql))
+                break;
+        }
+
         AckIdentityAllocation *ack = new AckIdentityAllocation;
         ack->set_seqno(seqno);
         ack->set_result(res);
+        ack->set_id(idTmp);
         ms->AttachProto(ack);
         SendMsg(ms);
     }

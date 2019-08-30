@@ -76,7 +76,7 @@ public:
     VGMySql *GetMySql()const;
 protected:
     int GetObjectType()const;
-    IObject *ProcessReceive(ISocket *s, const char *buf, int &len);
+    IObject *PrcsReceiveByMrg(ISocket *s, const char *buf, int &len);
 private:
     IObject *_checkLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication &rgi);
     void _parseConfig();

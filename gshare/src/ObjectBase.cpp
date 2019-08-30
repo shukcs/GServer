@@ -10,9 +10,22 @@
 using namespace std;
 
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE;
 #endif
 
+class ObjectMetuxs {
+public:
+    ObjectMetuxs() :
+        m_mtx(new Mutex), m_mtxMsg(new Mutex)
+        , m_mtxSend(new Mutex) {};
+public:
+    IMutex                  *m_mtx;
+    IMutex                  *m_mtxMsg;
+    IMutex                  *m_mtxSend;
+};
+//////////////////////////////////////////////////////////////////
+//BussinessThread
+//////////////////////////////////////////////////////////////////
 class BussinessThread : public Thread
 {
 public:
@@ -50,8 +63,8 @@ private:
 //////////////////////////////////////////////////////////////////
 IObject::IObject(ISocket *sock, const string &id)
 : m_sock(sock), m_id(id), m_bRelease(false)
-, m_mtx(new Mutex), m_mtxMsg(new Mutex)
-, m_mtxSend(new Mutex), m_idThread(-1)
+, m_mtx(NULL), m_mtxMsg(NULL)
+, m_mtxSend(NULL), m_idThread(-1)
 {
     SetBuffSize(1024 * 4);
 }
@@ -104,13 +117,13 @@ void IObject::SetSended(int)
 
 void IObject::RemoveRcvMsg(IMessage *msg)
 {
-    Lock l(*m_mtxMsg);
+    Lock l(m_mtxMsg);
     m_lsMsg.remove(msg);
 }
 
 void IObject::AddRelease(IMessage *msg)
 {
-    Lock l(*m_mtxMsg);
+    Lock l(m_mtxMsg);
     m_lsMsgRelease.push_back(msg);
 }
 
@@ -186,7 +199,7 @@ bool IObject::IsRealse()
 
 bool IObject::RcvMassage(IMessage *msg)
 {
-    Lock l(*m_mtxMsg);
+    Lock l(m_mtxMsg);
     m_lsMsg.push_back(msg);
     return true;
 }
@@ -219,7 +232,7 @@ bool IObject::Receive(const void *buf, int len)
     bool ret = false;
     if (m_mtx && len>0)
     {
-        Lock l(*m_mtx);
+        Lock l(m_mtx);
         ret = m_buff.Add(buf, len);
     }
     return ret;
@@ -259,7 +272,7 @@ bool IObjectManager::Receive(ISocket *s, const BaseBuff &buff)
     if (!s || !buf || len <= 0)
         return false;
 
-    IObject *o = ProcessReceive(s, (char*)buf, len);
+    IObject *o = PrcsReceiveByMrg(s, (char*)buf, len);
     if (o)
     {
         AddObject(o);
@@ -286,7 +299,7 @@ void IObjectManager::AddRelease(IMessage *msg)
     m_mtx->Unlock();
 }
 
-void IObjectManager::PrcsRelease()
+void IObjectManager::PrcsReleaseMsg()
 {
     if (m_lsMsgRelease.size() < 1)
         return;
@@ -338,7 +351,7 @@ bool IObjectManager::ProcessBussiness()
             }
         }
     }
-    PrcsRelease();
+    PrcsReleaseMsg();
     return ret;
 }
 
@@ -401,6 +414,14 @@ bool IObjectManager::AddObject(IObject *obj)
         return false;
 
     int n = GetPropertyThread();
+    std::map<int, ObjectMetuxs*>::iterator itr = m_threadMutexts.find(n);
+    if(itr!=m_threadMutexts.end())
+    {
+        obj->m_mtx = itr->second->m_mtx;
+        obj->m_mtxMsg = itr->second->m_mtxMsg;
+        obj->m_mtxSend = itr->second->m_mtxSend;
+    }
+
     m_mtx->Lock();
     m_mapThreadObject[n][obj->GetObjectID()] = obj;
     obj->SetThreadId(n);
@@ -437,6 +458,8 @@ bool IObjectManager::SendMsg(IMessage *msg)
 
 void IObjectManager::InitThread(uint16_t nThread /*= 1*/)
 {
+    if (m_threadMutexts.find(0) == m_threadMutexts.end())
+        m_threadMutexts[0] = new ObjectMetuxs();
     if (nThread > 255 || nThread < 1 || m_lsThread.size()>0)
         return;
 
@@ -444,6 +467,9 @@ void IObjectManager::InitThread(uint16_t nThread /*= 1*/)
     {
         if(BussinessThread *t = new BussinessThread(i, this))
             m_lsThread.push_back(t);
+
+        if (m_threadMutexts.find(i) == m_threadMutexts.end())
+            m_threadMutexts[i] = new ObjectMetuxs();
     }
 }
 
@@ -473,7 +499,3 @@ void IObjectManager::AddMessage(IMessage *msg)
     m_lsMsg.push_back(msg);
     m_mtx->Unlock();
 }
-
-#ifdef SOCKETS_NAMESPACE
-}
-#endif

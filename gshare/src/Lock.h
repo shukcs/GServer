@@ -12,10 +12,10 @@ class IMutex;
 class SHARED_DECL Lock
 {
 public:
-	Lock(IMutex&);
+	Lock(IMutex *);
 	~Lock();
 private:
-	IMutex& m_mutex;
+	IMutex *m_mutex;
 };
 
 

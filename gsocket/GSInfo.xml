@@ -83,7 +83,7 @@
 			<item name="weixin" ref="OwnerInfo" type="Write" />
 			<item name="id" ref="OwnerInfo" type="Condition" />
 		</SQL>
-		<SQL name="queryLand" table="LandInfo;OwnerInfo" type="Select" condition="">
+		<SQL name="queryLand" table="LandInfo;OwnerInfo" type="Select" condition="AND">
 			<item name="id" ref="LandInfo" type="Read" />
 			<item name="name" ref="LandInfo" type="Read" />
 			<item name="gsuser" ref="LandInfo" type="Read" />

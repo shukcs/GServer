@@ -8,13 +8,13 @@
 #include <string.h>
 
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE
 #endif
 
 GSocket::GSocket(ISocketManager *handle): m_manager(handle)
 ,m_mgrPrcs(NULL), m_object(NULL), m_fd(-1), m_bListen(false)
 , m_bAccept(false), m_stat(UnConnected)
-, m_address(NULL), m_mtx(new Mutex)
+, m_address(NULL), m_mtx(NULL)
 {
 }
 
@@ -63,9 +63,8 @@ int GSocket::Send(int len, void *buff)
     int ret = len;
     if(buff)
     {
-        m_mtx->Lock();
+        Lock l(m_mtx);
         ret = m_buff.Add(buff, len) ? len : 0;
-        m_mtx->Unlock();
     }
 
     if (ret>0 && m_mgrPrcs)
@@ -246,6 +245,7 @@ void GSocket::SetPrcsManager(ISocketManager *h)
     m_mgrPrcs = h;
 }
 
-#ifdef SOCKETS_NAMESPACE
+void GSocket::SetMutex(IMutex *mtx)
+{
+    m_mtx = mtx;
 }
-#endif

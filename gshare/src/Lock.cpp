@@ -37,15 +37,17 @@ namespace SOCKETS_NAMESPACE {
 #endif
 
 
-Lock::Lock(IMutex& m) : m_mutex(m)
+Lock::Lock(IMutex *m) : m_mutex(m)
 {
-	m_mutex.Lock();
+    if(m_mutex)
+	    m_mutex->Lock();
 }
 
 
 Lock::~Lock()
 {
-	m_mutex.Unlock();
+    if (m_mutex)
+        m_mutex->Unlock();
 }
 
 
