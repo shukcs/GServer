@@ -495,7 +495,6 @@ int IObjectManager::GetPropertyThread() const
 
 void IObjectManager::AddMessage(IMessage *msg)
 {
-    m_mtx->Lock();
+    Lock l(m_mtx);
     m_lsMsg.push_back(msg);
-    m_mtx->Unlock();
 }

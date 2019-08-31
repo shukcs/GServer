@@ -91,10 +91,22 @@ void ObjectGS::RespondLogin(int seqno, int res)
 void ObjectGS::ProcessMassage(const IMessage &msg)
 {
     int tp = msg.GetMessgeType();
-    if ((tp == BindUavRes || tp == QueryUavRes || ControlUavRes==tp || UavAllocationRes==tp) && m_p)
+    if(m_p)
     {
-        if (Message *ms = (Message *)msg.GetContent())
-            _send(*ms);
+        switch (tp)
+        {
+        case BindUavRes:
+        case QueryUavRes:
+        case ControlUavRes:
+        case UavAllocationRes:
+        case PushUavSndInfo:
+        case ControlGs:
+            if (Message *ms = (Message *)msg.GetContent())
+                _send(*ms);
+            break;
+        default:
+            break;
+        }
     }
 }
 
@@ -512,6 +524,11 @@ IObject *GSManager::PrcsReceiveByMrg(ISocket *s, const char *buf, int &len)
         }
     }
     return o;
+}
+
+bool GSManager::PrcsRemainMsg(const IMessage &msg)
+{
+    return true;
 }
 
 IObject *GSManager::_checkLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication &rgi)

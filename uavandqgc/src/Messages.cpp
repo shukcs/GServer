@@ -47,7 +47,7 @@ void GSMessage::SetGSContent(const Message &msg)
         m_msg = new AckRequestUploadOperationRoutes;
         break;
     case PushUavSndInfo:
-        m_msg = new OperationInformation;
+        m_msg = new PostOperationInformation;
         break;
     case ControlGs:
         m_msg = new PostStatus2GroundStation;
@@ -92,7 +92,7 @@ MessageType GSMessage::getMessageType(const Message &msg)
         ret = ControlUavRes;
     else if (name == d_p_ClassName(AckRequestUploadOperationRoutes))
         ret = SychMissionRes;
-    else if (name == d_p_ClassName(OperationInformation))
+    else if (name == d_p_ClassName(PostOperationInformation))
         ret = PushUavSndInfo;
     else if (name == d_p_ClassName(PostStatus2GroundStation))
         ret = ControlGs;

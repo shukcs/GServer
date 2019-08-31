@@ -28,7 +28,7 @@ handle:是创建他的线程，如果handle不为空，GSocket调用Close才能安全删除
     //无限制调用函数
     SHARED_DECL virtual bool Bind(int port, const std::string &hostLocal = "");
     SHARED_DECL virtual bool ConnectTo(const std::string &hostRemote, int port);
-    SHARED_DECL int GetPort()const;
+    SHARED_DECL uint16_t GetPort()const;
     SHARED_DECL std::string GetHost()const;
     SHARED_DECL void Close();
 protected:

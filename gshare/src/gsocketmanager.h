@@ -14,6 +14,7 @@ class IMutex;
 class Thread;
 class ILog;
 class GSocketManager : public ISocketManager {
+    typedef std::pair<ISocket*, bool> SocketPrcs;
 public:
 /***********************************************************************
 GSocketManager是个线程池，管理secket整个生存周期
@@ -29,7 +30,7 @@ maxSock:支持最大连接数
     SHARED_DECL bool IsMainManager()const;
     SHARED_DECL bool Poll(unsigned ms);
     SHARED_DECL void AddProcessThread();
-    SHARED_DECL bool AddSocketWaitPrcs(ISocket *);
+    SHARED_DECL bool AddWaitPrcsSocket(ISocket *);
     SHARED_DECL void SetLog(ILog *log);
     SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
     SHARED_DECL bool IsRun()const;
@@ -58,9 +59,10 @@ private:
 #if !defined _WIN32 && !defined _WIN64
     bool _isCloseEvent(uint32_t e)const;
 #endif
+    void setISocketInvalid(ISocket *s);
 private:
     std::map<int, ISocket*>     m_sockets;
-    std::list<ISocket*>         m_socketsPrcs;
+    std::list<SocketPrcs>       m_socketsPrcs;
     std::list<ISocket*>         m_socketsRemove;
     std::list<ISocket*>         m_socketsAdd;
     std::list<GSocketManager*>  m_othManagers;

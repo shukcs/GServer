@@ -77,6 +77,8 @@ public:
 protected:
     int GetObjectType()const;
     IObject *PrcsReceiveByMrg(ISocket *s, const char *buf, int &len);
+
+    bool PrcsRemainMsg(const IMessage &msg);
 private:
     IObject *_checkLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication &rgi);
     void _parseConfig();

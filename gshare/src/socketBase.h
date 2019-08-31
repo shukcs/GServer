@@ -59,7 +59,7 @@ public:
     virtual bool IsListenSocket()const = 0;
     virtual void Close() = 0;
     virtual std::string GetHost()const = 0;
-    virtual int GetPort()const = 0;
+    virtual uint16_t GetPort()const = 0;
     virtual std::string GetObjectID()const = 0;
     virtual void SetMutex(IMutex *mtx) = 0;
 };
@@ -68,7 +68,7 @@ class ISocketManager
 {
 public:
     virtual bool AddSocket(ISocket *) = 0;
-    virtual bool AddSocketWaitPrcs(ISocket *) = 0;
+    virtual bool AddWaitPrcsSocket(ISocket *) = 0;
     virtual void ReleaseSocket(ISocket *) = 0;
     virtual bool IsMainManager() const = 0;
     virtual bool Poll(unsigned ms) = 0;

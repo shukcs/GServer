@@ -138,13 +138,10 @@ void GSocketManager::AddProcessThread()
     }
 }
 
-bool GSocketManager::AddSocketWaitPrcs(ISocket *s)
+bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
 {
-    if (IObject::IsContainsInList(m_socketsPrcs, s))
-        return false;
-
     m_mtx->Lock();
-    m_socketsPrcs.push_back(s);
+    m_socketsPrcs.push_back(SocketPrcs(s,true));
     m_mtx->Unlock();
     return true;
 }
@@ -217,35 +214,37 @@ void GSocketManager::PrcsSockets()
 {
     if (m_socketsPrcs.size() <= 0)
         return;
-    list<ISocket *> lsPrcsed;
-    for (ISocket *s : m_socketsPrcs)
-    {
-        ISocket::SocketStat st = s->GetSocketStat();
-        if (ISocket::Closing == st)
-        {
-            _remove(s->GetHandle());
-            s->OnClose();
-            lsPrcsed.push_back(s);
-        }
-        if (ISocket::Connected != st)
-            continue;
 
-        if (!s->IsListenSocket())
-        {
-            _send(s);
-            if (s->GetSendLength() == 0)
-                lsPrcsed.push_back(s);
-        }
-    }
-
-    if (lsPrcsed.size() > 0)
+    list<SocketPrcs>::iterator itr = m_socketsPrcs.begin();
+    for (; itr != m_socketsPrcs.end(); ++itr)
     {
-        m_mtx->Lock();
-        for (ISocket *s : lsPrcsed)
+        ISocket *s = itr->first;
+        if (itr->second)
         {
-            m_socketsPrcs.remove(s);
+            ISocket::SocketStat st = s->GetSocketStat();
+            if (ISocket::Closing == st)
+            {
+                _remove(s->GetHandle());
+                s->OnClose();
+                itr->second = false;
+            }
+            if (!s->IsListenSocket() && ISocket::Connected == st)
+            {
+                _send(s);
+                if (s->GetSendLength() == 0)
+                    itr->second = false;
+            }
         }
-        m_mtx->Unlock();
+
+        if (!itr->second)
+        {
+            list<SocketPrcs>::iterator itrTmp = itr++;
+            m_mtx->Lock();
+            m_socketsPrcs.erase(itrTmp);
+            m_mtx->Unlock();
+            if (itr == m_socketsPrcs.end())
+                break;
+        }
     }
 }
 
@@ -329,6 +328,7 @@ void GSocketManager::SokectPoll(unsigned ms)
 #endif
     for (ISocket *s : lsRm)
     {
+        setISocketInvalid(s);
         s->OnClose();
         _remove(s->GetHandle());
     }
@@ -492,7 +492,7 @@ int GSocketManager::_connect(ISocket *sock)
     struct sockaddr_in serveraddr = { 0 };
     serveraddr.sin_family = AF_INET;
     serveraddr.sin_addr.s_addr = inet_addr(sock->GetHost().c_str());//htons(portnumber);
-    serveraddr.sin_port = sock->GetPort();
+    serveraddr.sin_port = htons(sock->GetPort());
     sock->OnConnect(0 == connect(listenfd, (sockaddr *)&serveraddr, sizeof(serveraddr)));
     return listenfd;
 }
@@ -567,4 +567,13 @@ void GSocketManager::_send(ISocket *sock)
     }
     if (count>0)
         sock->OnWrite(count);
+}
+
+void GSocketManager::setISocketInvalid(ISocket *s)
+{
+    for (SocketPrcs &itr : m_socketsPrcs)
+    {
+        if (itr.first == s)
+            itr.second = false;
+    }
 }

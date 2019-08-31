@@ -68,7 +68,7 @@ int GSocket::Send(int len, void *buff)
     }
 
     if (ret>0 && m_mgrPrcs)
-        m_mgrPrcs->AddSocketWaitPrcs(this);
+        m_mgrPrcs->AddWaitPrcsSocket(this);
 
     return ret;
 }
@@ -84,7 +84,7 @@ void GSocket::Close()
     {
         m_stat = ISocket::Closing;
         if (m_mgrPrcs)
-            m_mgrPrcs->AddSocketWaitPrcs(this);
+            m_mgrPrcs->AddWaitPrcsSocket(this);
     }
 }
 
@@ -93,7 +93,7 @@ std::string GSocket::GetHost() const
     return m_address ? m_address->Convert(false) : "";
 }
 
-int GSocket::GetPort() const
+uint16_t GSocket::GetPort() const
 {
     return m_address ? m_address->GetPort() : 0;
 }
