@@ -21,6 +21,7 @@
 // ---
 #include <map>
 #include <string.h>
+#include <chrono>
 
 union FlagEnddian
 {
@@ -28,8 +29,9 @@ union FlagEnddian
     char    cData;
 };
 
+using namespace std::chrono;
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE;
 #endif
 
 // defines for the random number generator
@@ -390,16 +392,25 @@ int Utility::fromBigendian(const void *buff)
     return value;
 }
 
-int64_t Utility::msTimeTick()
+int64_t Utility::nsTimeTick()
 {
-    timeval te = {0};
-    GetTime(&te);
-    return te.tv_sec * 1000 + te.tv_sec / 1000;
+    chrono::system_clock::time_point now = chrono::system_clock::now();
+    auto ns = chrono::duration_cast<chrono::microseconds>(now.time_since_epoch());
+    return ns.count();
 }
 
-int64_t Utility::secTimeCount()
+int64_t Utility::msTimeTick()
 {
-    return time(NULL);
+    chrono::system_clock::time_point now = chrono::system_clock::now();
+    auto ms = chrono::duration_cast<chrono::milliseconds>(now.time_since_epoch());
+    return ms.count();
+}
+
+long Utility::secTimeCount()
+{
+    chrono::system_clock::time_point now = chrono::system_clock::now();
+    auto sec = chrono::duration_cast<chrono::seconds>(now.time_since_epoch());
+    return sec.count();
 }
 
 bool Utility::isipv4(const string& str)
@@ -708,21 +719,6 @@ string Utility::Sa2String(struct sockaddr *sa)
 		return tmp + ":" + Utility::l2string(ntohs(sa4 -> sin_port));
 	}
 	return "";
-}
-
-void Utility::GetTime(struct timeval *p)
-{
-#ifdef _WIN32
-	FILETIME ft; // Contains a 64-bit value representing the number of 100-nanosecond intervals since January 1, 1601 (UTC).
-	GetSystemTimeAsFileTime(&ft);
-	uint64_t tt;
-	memcpy(&tt, &ft, sizeof(tt));
-	tt /= 10; // make it usecs
-	p->tv_sec = long(tt / 1000000);
-	p->tv_usec = long(tt % 1000000);
-#else
-	gettimeofday(p, NULL);
-#endif
 }
 
 bool Utility::u2ip(const string& host, struct sockaddr_in& sa, int ai_flags)
@@ -1400,8 +1396,4 @@ void Utility::Sleep(int ms)
 	select(0, NULL, NULL, NULL, &tv);
 #endif
 }
-
-#ifdef SOCKETS_NAMESPACE
-}
-#endif
 

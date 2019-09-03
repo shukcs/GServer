@@ -1,13 +1,10 @@
 ﻿#ifndef _SOCKETS_Utility_H
 #define _SOCKETS_Utility_H
 
-#include <ctype.h>
-#include <memory>
 #include "socket_include.h"
 #include <map>
 #include <list>
 #include <string>
-#include <cstring>
 #include <stdconfig.h>
 
 #ifdef SOCKETS_NAMESPACE
@@ -59,8 +56,9 @@ public:
     SHARED_DECL static bool IsBigEndian(void);
     SHARED_DECL static void toBigendian(int s, void *buff);
     SHARED_DECL static int fromBigendian(const void *buff);
+    SHARED_DECL static int64_t nsTimeTick();
     SHARED_DECL static int64_t msTimeTick();
-    SHARED_DECL static int64_t secTimeCount();
+    SHARED_DECL static long secTimeCount();
 
     //utf8 utf16 local8bit相互转换，linux Unicode为32位
     SHARED_DECL static std::wstring Utf8ToUnicode(const std::string & str);
@@ -134,8 +132,6 @@ public:
 		\param sa Ptr to sockaddr struct */
     SHARED_DECL static std::string Sa2String(struct sockaddr *sa);
 
-	/** Get current time in sec/microseconds. */
-    SHARED_DECL static void GetTime(struct timeval *);
     SHARED_DECL static unsigned long ThreadID();
 
     SHARED_DECL static std::string ToLower(const std::string& str);

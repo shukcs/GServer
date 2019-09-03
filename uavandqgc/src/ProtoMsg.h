@@ -25,7 +25,7 @@ public:
     ~ProtoMsg();
     const std::string &GetMsgName()const;
     google::protobuf::Message *GetProtoMessage()const;
-    google::protobuf::Message *DeatachProto();
+    google::protobuf::Message *DeatachProto(bool clear=true);
     bool Parse(const char *buff, int &len);
 
     bool SendProto(const google::protobuf::Message &msg, ISocket *s);

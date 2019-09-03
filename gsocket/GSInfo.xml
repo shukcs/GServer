@@ -29,6 +29,16 @@
 			<foreign name="gsuser" foreign="user" ref="GSInfo" />
 			<foreign name="ownerID" foreign="id" ref="OwnerInfo" />
 		</table>
+		<table name="PlanInfo">
+			<field name="id" type="BIGINT" constraint="primary key;not null;auto_increment"/>
+			<field name="landId"  type="BIGINT" />
+			<field name="planTime"  type="BIGINT" />
+			<field name="planuser"  type="char(32)" />
+			<field name="planParam" type="VARBINARY(64)" />
+			<field name="notes" type="char(128)" />
+			<foreign name="landId" foreign="id" ref="LandInfo" />
+			<foreign name="planuser" foreign="user" ref="GSInfo" />
+		</table>
 	</Tables>
 	<SQLs>
 		<SQL name="insertGSInfo" table="GSInfo" type="Insert" >
@@ -101,9 +111,29 @@
 			<item name="gsuser" ref="LandInfo" type="Condition" condition="=" />
 			<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
 		</SQL>
-		<SQL name="deleteLand" table="LandInfo;OwnerInfo" type="Delete" >
+		<SQL name="deleteLand" table="LandInfo;OwnerInfo;PlanInfo" type="Delete" >
 			<item name="id" ref="LandInfo" type="Condition" />
 			<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
+			<item name="LandInfo.id" param="PlanInfo.landId" type="Condition" />
+		</SQL>
+		<SQL name="InsertPlan" table="PlanInfo" type="Insert" >
+			<item name="id" ref="PlanInfo" type="Write" />
+			<item name="landId" ref="PlanInfo" type="Write" />
+			<item name="planTime" ref="PlanInfo" type="Write" />
+			<item name="planuser" ref="PlanInfo" type="Write" />
+			<item name="planParam" ref="PlanInfo" type="Write" />
+			<item name="notes" ref="PlanInfo" type="Write" />
+		</SQL>
+		<SQL name="UpdatePlan" table="PlanInfo" type="Update" >
+			<item name="landId" ref="PlanInfo" type="Write" />
+			<item name="planTime" ref="PlanInfo" type="Write" />
+			<item name="planuser" ref="PlanInfo" type="Write" />
+			<item name="planParam" ref="PlanInfo" type="Write" />
+			<item name="notes" ref="PlanInfo" type="Write" />
+			<item name="id" ref="PlanInfo" type="Condition" />
+		</SQL>
+		<SQL name="UpdatePlan" table="PlanInfo" type="Delete" >
+			<item name="id" ref="PlanInfo" type="Condition" />
 		</SQL>
 	</SQLs>
 	<!--Triggers>

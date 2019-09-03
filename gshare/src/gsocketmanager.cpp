@@ -12,7 +12,7 @@
 #include <stdio.h>
 #if !defined _WIN32 && !defined _WIN64
 #include <sys/epoll.h>
-#include <fcntl.h>
+#include <sys/ioctl.h>
 #endif
 
 #define MAX_EVENT 20
@@ -183,9 +183,7 @@ void GSocketManager::PrcsAddSockets()
         }
         if (handle != -1)
         {
-            if(s->IsListenSocket())
-                SetNonblocking(s);
-
+            SetNonblocking(s);
             _addSocketHandle(handle, s->IsListenSocket());
             m_sockets[handle] = s;
         }
@@ -216,7 +214,7 @@ void GSocketManager::PrcsSockets()
         return;
 
     list<SocketPrcs>::iterator itr = m_socketsPrcs.begin();
-    for (; itr != m_socketsPrcs.end(); ++itr)
+    while (itr != m_socketsPrcs.end())
     {
         ISocket *s = itr->first;
         if (itr->second)
@@ -230,7 +228,9 @@ void GSocketManager::PrcsSockets()
             }
             if (!s->IsListenSocket() && ISocket::Connected == st)
             {
+                int64_t tm = Utility::nsTimeTick();
                 _send(s);
+                printf("_send() use us %d\n", int(Utility::nsTimeTick() - tm));
                 if (s->GetSendLength() == 0)
                     itr->second = false;
             }
@@ -242,9 +242,9 @@ void GSocketManager::PrcsSockets()
             m_mtx->Lock();
             m_socketsPrcs.erase(itrTmp);
             m_mtx->Unlock();
-            if (itr == m_socketsPrcs.end())
-                break;
+            continue;
         }
+        ++itr;
     }
 }
 
@@ -341,13 +341,11 @@ bool GSocketManager::SetNonblocking(ISocket *sock)
         return false;
 #if defined _WIN32 || defined _WIN64
     unsigned long ul=1;
-    if(SOCKET_ERROR == ioctlsocket(h, FIONBIO, (unsigned long *)&ul))
-        return false;
+    if(SOCKET_ERROR == ioctlsocket(h, FIONBIO, &ul))
 #else
-    unsigned flags = fcntl(h, F_GETFL, 0);             //获取文件的flags值。
-    if (fcntl(h, F_SETFL, flags | O_NONBLOCK) < 0)     //设置成非阻塞模式；
-        return false;
+    if (0 != ioctl(h, FIONBIO, 1))//设置成非阻塞模式；
 #endif
+        return false;
     return true;
 }
 

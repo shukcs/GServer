@@ -42,36 +42,26 @@ class QueryParameters;
 class AckQueryParameters;
 class ConfigureParameters;
 class AckConfigurParameters;
-class ReportDeviceException;
-class AckReportDeviceException;
 class UpdateDeviceList;
 class AckUpdateDeviceList;
-class SyncDeviceList;
-class AckSyncDeviceList;
-class KickoutDevice;
-class AckKickoutDevice;
 class RequestIdentityAllocation;
 class AckIdentityAllocation;
-class RequestProgramUpgrade;
-class AckProgramUpgrade;
-class RequestProgramDownload;
-class AckProgramDownload;
+class PostProgram;
+class AckPostProgram;
+class NotifyProgram;
+class AckNotifyProgram;
+class RequestProgram;
+class AckRequestProgram;
 class RequestPositionAuthentication;
 class AckPositionAuthentication;
 class Request3rdIdentityAuthentication;
 class Ack3rdIdentityAuthentication;
 class RequestUavIdentityAuthentication;
 class AckUavIdentityAuthentication;
-class RequestTrackerIdentityAuthentication;
-class AckTrackerIdentityAuthentication;
-class RequestGVIdentityAuthentication;
-class AckGVIdentityAuthentication;
+class RequestNewGS;
+class AckNewGS;
 class RequestGSIdentityAuthentication;
 class AckGSIdentityAuthentication;
-class RequestIVIdentityAuthentication;
-class AckIVIdentityAuthentication;
-class RequestQQBotIdentityAuthentication;
-class AckQQBotIdentityAuthentication;
 class GpsInformation;
 class UavAttitude;
 class OperationStatus;
@@ -97,12 +87,10 @@ class RequestParcelDescriptions;
 class AckRequestParcelDescriptions;
 class DeleteParcelDescription;
 class AckDeleteParcelDescription;
-class SyncParcelDescriptions;
-class AckSyncParcelDescriptions;
 class CropInformation;
 class PesticideInformation;
 class BillInformation;
-class DeviceInformation;
+class OperationPlan;
 class OperationDescription;
 class PostOperationDescription;
 class AckPostOperationDescription;
@@ -110,17 +98,12 @@ class RequestOperationDescriptions;
 class AckRequestOperationDescriptions;
 class DeleteOperationDescription;
 class AckDeleteOperationDescription;
-class SyncOperationDescriptions;
-class AckSyncOperationDescriptions;
 class OperationRoute;
 class PostOperationRoute;
 class AckPostOperationRoute;
-class RequestOperationRoutes;
-class AckRequestOperationRoutes;
-class RequestUploadOperationRoutes;
-class AckRequestUploadOperationRoutes;
 class UploadOperationRoutes;
 class AckUploadOperationRoutes;
+class SyscOperationRoutes;
 class RequestRouteMissions;
 class AckRequestRouteMissions;
 class UavStatus;
@@ -131,8 +114,6 @@ class AckRequestBindUav;
 class UavProductInfo;
 class RequestUavProductInfos;
 class AckRequestUavProductInfos;
-class SyncUavProductInfos;
-class AckSyncUavProductInfos;
 class PostUavProductInfos;
 class AckPostUavProductInfos;
 class PostControl2Uav;
@@ -535,6 +516,22 @@ class QueryParameters : public ::google::protobuf::Message {
   inline ::std::string* release_id();
   inline void set_allocated_id(::std::string* id);
 
+  // repeated string pdnames = 3;
+  inline int pdnames_size() const;
+  inline void clear_pdnames();
+  static const int kPdnamesFieldNumber = 3;
+  inline const ::std::string& pdnames(int index) const;
+  inline ::std::string* mutable_pdnames(int index);
+  inline void set_pdnames(int index, const ::std::string& value);
+  inline void set_pdnames(int index, const char* value);
+  inline void set_pdnames(int index, const char* value, size_t size);
+  inline ::std::string* add_pdnames();
+  inline void add_pdnames(const ::std::string& value);
+  inline void add_pdnames(const char* value);
+  inline void add_pdnames(const char* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& pdnames() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_pdnames();
+
   // @@protoc_insertion_point(class_scope:das.proto.QueryParameters)
  private:
   inline void set_has_seqno();
@@ -545,10 +542,11 @@ class QueryParameters : public ::google::protobuf::Message {
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* id_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> pdnames_;
   ::google::protobuf::uint32 seqno_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -896,212 +894,6 @@ class AckConfigurParameters : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class ReportDeviceException : public ::google::protobuf::Message {
- public:
-  ReportDeviceException();
-  virtual ~ReportDeviceException();
-
-  ReportDeviceException(const ReportDeviceException& from);
-
-  inline ReportDeviceException& operator=(const ReportDeviceException& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const ReportDeviceException& default_instance();
-
-  void Swap(ReportDeviceException* other);
-
-  // implements Message ----------------------------------------------
-
-  ReportDeviceException* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const ReportDeviceException& from);
-  void MergeFrom(const ReportDeviceException& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required string id = 2;
-  inline bool has_id() const;
-  inline void clear_id();
-  static const int kIdFieldNumber = 2;
-  inline const ::std::string& id() const;
-  inline void set_id(const ::std::string& value);
-  inline void set_id(const char* value);
-  inline void set_id(const char* value, size_t size);
-  inline ::std::string* mutable_id();
-  inline ::std::string* release_id();
-  inline void set_allocated_id(::std::string* id);
-
-  // repeated string desc = 3;
-  inline int desc_size() const;
-  inline void clear_desc();
-  static const int kDescFieldNumber = 3;
-  inline const ::std::string& desc(int index) const;
-  inline ::std::string* mutable_desc(int index);
-  inline void set_desc(int index, const ::std::string& value);
-  inline void set_desc(int index, const char* value);
-  inline void set_desc(int index, const char* value, size_t size);
-  inline ::std::string* add_desc();
-  inline void add_desc(const ::std::string& value);
-  inline void add_desc(const char* value);
-  inline void add_desc(const char* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& desc() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_desc();
-
-  // @@protoc_insertion_point(class_scope:das.proto.ReportDeviceException)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_id();
-  inline void clear_has_id();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::std::string* id_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> desc_;
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static ReportDeviceException* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class AckReportDeviceException : public ::google::protobuf::Message {
- public:
-  AckReportDeviceException();
-  virtual ~AckReportDeviceException();
-
-  AckReportDeviceException(const AckReportDeviceException& from);
-
-  inline AckReportDeviceException& operator=(const AckReportDeviceException& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const AckReportDeviceException& default_instance();
-
-  void Swap(AckReportDeviceException* other);
-
-  // implements Message ----------------------------------------------
-
-  AckReportDeviceException* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckReportDeviceException& from);
-  void MergeFrom(const AckReportDeviceException& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckReportDeviceException)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static AckReportDeviceException* default_instance_;
-};
-// -------------------------------------------------------------------
-
 class UpdateDeviceList : public ::google::protobuf::Message {
  public:
   UpdateDeviceList();
@@ -1300,386 +1092,6 @@ class AckUpdateDeviceList : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static AckUpdateDeviceList* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class SyncDeviceList : public ::google::protobuf::Message {
- public:
-  SyncDeviceList();
-  virtual ~SyncDeviceList();
-
-  SyncDeviceList(const SyncDeviceList& from);
-
-  inline SyncDeviceList& operator=(const SyncDeviceList& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const SyncDeviceList& default_instance();
-
-  void Swap(SyncDeviceList* other);
-
-  // implements Message ----------------------------------------------
-
-  SyncDeviceList* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const SyncDeviceList& from);
-  void MergeFrom(const SyncDeviceList& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.SyncDeviceList)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static SyncDeviceList* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class AckSyncDeviceList : public ::google::protobuf::Message {
- public:
-  AckSyncDeviceList();
-  virtual ~AckSyncDeviceList();
-
-  AckSyncDeviceList(const AckSyncDeviceList& from);
-
-  inline AckSyncDeviceList& operator=(const AckSyncDeviceList& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const AckSyncDeviceList& default_instance();
-
-  void Swap(AckSyncDeviceList* other);
-
-  // implements Message ----------------------------------------------
-
-  AckSyncDeviceList* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckSyncDeviceList& from);
-  void MergeFrom(const AckSyncDeviceList& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // repeated string id = 3;
-  inline int id_size() const;
-  inline void clear_id();
-  static const int kIdFieldNumber = 3;
-  inline const ::std::string& id(int index) const;
-  inline ::std::string* mutable_id(int index);
-  inline void set_id(int index, const ::std::string& value);
-  inline void set_id(int index, const char* value);
-  inline void set_id(int index, const char* value, size_t size);
-  inline ::std::string* add_id();
-  inline void add_id(const ::std::string& value);
-  inline void add_id(const char* value);
-  inline void add_id(const char* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& id() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_id();
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckSyncDeviceList)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> id_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static AckSyncDeviceList* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class KickoutDevice : public ::google::protobuf::Message {
- public:
-  KickoutDevice();
-  virtual ~KickoutDevice();
-
-  KickoutDevice(const KickoutDevice& from);
-
-  inline KickoutDevice& operator=(const KickoutDevice& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const KickoutDevice& default_instance();
-
-  void Swap(KickoutDevice* other);
-
-  // implements Message ----------------------------------------------
-
-  KickoutDevice* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const KickoutDevice& from);
-  void MergeFrom(const KickoutDevice& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required string devid = 2;
-  inline bool has_devid() const;
-  inline void clear_devid();
-  static const int kDevidFieldNumber = 2;
-  inline const ::std::string& devid() const;
-  inline void set_devid(const ::std::string& value);
-  inline void set_devid(const char* value);
-  inline void set_devid(const char* value, size_t size);
-  inline ::std::string* mutable_devid();
-  inline ::std::string* release_devid();
-  inline void set_allocated_devid(::std::string* devid);
-
-  // @@protoc_insertion_point(class_scope:das.proto.KickoutDevice)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_devid();
-  inline void clear_has_devid();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::std::string* devid_;
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static KickoutDevice* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class AckKickoutDevice : public ::google::protobuf::Message {
- public:
-  AckKickoutDevice();
-  virtual ~AckKickoutDevice();
-
-  AckKickoutDevice(const AckKickoutDevice& from);
-
-  inline AckKickoutDevice& operator=(const AckKickoutDevice& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const AckKickoutDevice& default_instance();
-
-  void Swap(AckKickoutDevice* other);
-
-  // implements Message ----------------------------------------------
-
-  AckKickoutDevice* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckKickoutDevice& from);
-  void MergeFrom(const AckKickoutDevice& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckKickoutDevice)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static AckKickoutDevice* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -1917,14 +1329,14 @@ class AckIdentityAllocation : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class RequestProgramUpgrade : public ::google::protobuf::Message {
+class PostProgram : public ::google::protobuf::Message {
  public:
-  RequestProgramUpgrade();
-  virtual ~RequestProgramUpgrade();
+  PostProgram();
+  virtual ~PostProgram();
 
-  RequestProgramUpgrade(const RequestProgramUpgrade& from);
+  PostProgram(const PostProgram& from);
 
-  inline RequestProgramUpgrade& operator=(const RequestProgramUpgrade& from) {
+  inline PostProgram& operator=(const PostProgram& from) {
     CopyFrom(from);
     return *this;
   }
@@ -1938,17 +1350,17 @@ class RequestProgramUpgrade : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const RequestProgramUpgrade& default_instance();
+  static const PostProgram& default_instance();
 
-  void Swap(RequestProgramUpgrade* other);
+  void Swap(PostProgram* other);
 
   // implements Message ----------------------------------------------
 
-  RequestProgramUpgrade* New() const;
+  PostProgram* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const RequestProgramUpgrade& from);
-  void MergeFrom(const RequestProgramUpgrade& from);
+  void CopyFrom(const PostProgram& from);
+  void MergeFrom(const PostProgram& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -1978,80 +1390,115 @@ class RequestProgramUpgrade : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 seqno() const;
   inline void set_seqno(::google::protobuf::uint32 value);
 
-  // required string hardware = 2;
-  inline bool has_hardware() const;
-  inline void clear_hardware();
-  static const int kHardwareFieldNumber = 2;
-  inline const ::std::string& hardware() const;
-  inline void set_hardware(const ::std::string& value);
-  inline void set_hardware(const char* value);
-  inline void set_hardware(const char* value, size_t size);
-  inline ::std::string* mutable_hardware();
-  inline ::std::string* release_hardware();
-  inline void set_allocated_hardware(::std::string* hardware);
+  // required string name = 2;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 2;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
 
-  // required string software = 3;
-  inline bool has_software() const;
-  inline void clear_software();
-  static const int kSoftwareFieldNumber = 3;
-  inline const ::std::string& software() const;
-  inline void set_software(const ::std::string& value);
-  inline void set_software(const char* value);
-  inline void set_software(const char* value, size_t size);
-  inline ::std::string* mutable_software();
-  inline ::std::string* release_software();
-  inline void set_allocated_software(::std::string* software);
+  // required int32 offset = 3;
+  inline bool has_offset() const;
+  inline void clear_offset();
+  static const int kOffsetFieldNumber = 3;
+  inline ::google::protobuf::int32 offset() const;
+  inline void set_offset(::google::protobuf::int32 value);
 
-  // optional string extradata = 4;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 4;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
+  // optional bytes data = 4;
+  inline bool has_data() const;
+  inline void clear_data();
+  static const int kDataFieldNumber = 4;
+  inline const ::std::string& data() const;
+  inline void set_data(const ::std::string& value);
+  inline void set_data(const char* value);
+  inline void set_data(const void* value, size_t size);
+  inline ::std::string* mutable_data();
+  inline ::std::string* release_data();
+  inline void set_allocated_data(::std::string* data);
 
-  // @@protoc_insertion_point(class_scope:das.proto.RequestProgramUpgrade)
+  // optional int32 fwtype = 5;
+  inline bool has_fwtype() const;
+  inline void clear_fwtype();
+  static const int kFwtypeFieldNumber = 5;
+  inline ::google::protobuf::int32 fwtype() const;
+  inline void set_fwtype(::google::protobuf::int32 value);
+
+  // optional int32 length = 6;
+  inline bool has_length() const;
+  inline void clear_length();
+  static const int kLengthFieldNumber = 6;
+  inline ::google::protobuf::int32 length() const;
+  inline void set_length(::google::protobuf::int32 value);
+
+  // optional uint32 crc32 = 7;
+  inline bool has_crc32() const;
+  inline void clear_crc32();
+  static const int kCrc32FieldNumber = 7;
+  inline ::google::protobuf::uint32 crc32() const;
+  inline void set_crc32(::google::protobuf::uint32 value);
+
+  // optional bool release = 8;
+  inline bool has_release() const;
+  inline void clear_release();
+  static const int kReleaseFieldNumber = 8;
+  inline bool release() const;
+  inline void set_release(bool value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.PostProgram)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
-  inline void set_has_hardware();
-  inline void clear_has_hardware();
-  inline void set_has_software();
-  inline void clear_has_software();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
+  inline void set_has_name();
+  inline void clear_has_name();
+  inline void set_has_offset();
+  inline void clear_has_offset();
+  inline void set_has_data();
+  inline void clear_has_data();
+  inline void set_has_fwtype();
+  inline void clear_has_fwtype();
+  inline void set_has_length();
+  inline void clear_has_length();
+  inline void set_has_crc32();
+  inline void clear_has_crc32();
+  inline void set_has_release();
+  inline void clear_has_release();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::std::string* hardware_;
-  ::std::string* software_;
-  ::std::string* extradata_;
+  ::std::string* name_;
   ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 offset_;
+  ::std::string* data_;
+  ::google::protobuf::int32 fwtype_;
+  ::google::protobuf::int32 length_;
+  ::google::protobuf::uint32 crc32_;
+  bool release_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
   friend void protobuf_ShutdownFile_das_2eproto();
 
   void InitAsDefaultInstance();
-  static RequestProgramUpgrade* default_instance_;
+  static PostProgram* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class AckProgramUpgrade : public ::google::protobuf::Message {
+class AckPostProgram : public ::google::protobuf::Message {
  public:
-  AckProgramUpgrade();
-  virtual ~AckProgramUpgrade();
+  AckPostProgram();
+  virtual ~AckPostProgram();
 
-  AckProgramUpgrade(const AckProgramUpgrade& from);
+  AckPostProgram(const AckPostProgram& from);
 
-  inline AckProgramUpgrade& operator=(const AckProgramUpgrade& from) {
+  inline AckPostProgram& operator=(const AckPostProgram& from) {
     CopyFrom(from);
     return *this;
   }
@@ -2065,17 +1512,17 @@ class AckProgramUpgrade : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const AckProgramUpgrade& default_instance();
+  static const AckPostProgram& default_instance();
 
-  void Swap(AckProgramUpgrade* other);
+  void Swap(AckPostProgram* other);
 
   // implements Message ----------------------------------------------
 
-  AckProgramUpgrade* New() const;
+  AckPostProgram* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckProgramUpgrade& from);
-  void MergeFrom(const AckProgramUpgrade& from);
+  void CopyFrom(const AckPostProgram& from);
+  void MergeFrom(const AckPostProgram& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -2112,88 +1559,38 @@ class AckProgramUpgrade : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 result() const;
   inline void set_result(::google::protobuf::int32 value);
 
-  // required string software = 3;
-  inline bool has_software() const;
-  inline void clear_software();
-  static const int kSoftwareFieldNumber = 3;
-  inline const ::std::string& software() const;
-  inline void set_software(const ::std::string& value);
-  inline void set_software(const char* value);
-  inline void set_software(const char* value, size_t size);
-  inline ::std::string* mutable_software();
-  inline ::std::string* release_software();
-  inline void set_allocated_software(::std::string* software);
-
-  // required int32 length = 4;
-  inline bool has_length() const;
-  inline void clear_length();
-  static const int kLengthFieldNumber = 4;
-  inline ::google::protobuf::int32 length() const;
-  inline void set_length(::google::protobuf::int32 value);
-
-  // required bool forced = 5;
-  inline bool has_forced() const;
-  inline void clear_forced();
-  static const int kForcedFieldNumber = 5;
-  inline bool forced() const;
-  inline void set_forced(bool value);
-
-  // optional string extradata = 6;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 6;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckProgramUpgrade)
+  // @@protoc_insertion_point(class_scope:das.proto.AckPostProgram)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
   inline void set_has_result();
   inline void clear_has_result();
-  inline void set_has_software();
-  inline void clear_has_software();
-  inline void set_has_length();
-  inline void clear_has_length();
-  inline void set_has_forced();
-  inline void clear_has_forced();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 result_;
-  ::std::string* software_;
-  ::google::protobuf::int32 length_;
-  bool forced_;
-  ::std::string* extradata_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
   friend void protobuf_ShutdownFile_das_2eproto();
 
   void InitAsDefaultInstance();
-  static AckProgramUpgrade* default_instance_;
+  static AckPostProgram* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class RequestProgramDownload : public ::google::protobuf::Message {
+class NotifyProgram : public ::google::protobuf::Message {
  public:
-  RequestProgramDownload();
-  virtual ~RequestProgramDownload();
+  NotifyProgram();
+  virtual ~NotifyProgram();
 
-  RequestProgramDownload(const RequestProgramDownload& from);
+  NotifyProgram(const NotifyProgram& from);
 
-  inline RequestProgramDownload& operator=(const RequestProgramDownload& from) {
+  inline NotifyProgram& operator=(const NotifyProgram& from) {
     CopyFrom(from);
     return *this;
   }
@@ -2207,17 +1604,17 @@ class RequestProgramDownload : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const RequestProgramDownload& default_instance();
+  static const NotifyProgram& default_instance();
 
-  void Swap(RequestProgramDownload* other);
+  void Swap(NotifyProgram* other);
 
   // implements Message ----------------------------------------------
 
-  RequestProgramDownload* New() const;
+  NotifyProgram* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const RequestProgramDownload& from);
-  void MergeFrom(const RequestProgramDownload& from);
+  void CopyFrom(const NotifyProgram& from);
+  void MergeFrom(const NotifyProgram& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -2247,17 +1644,251 @@ class RequestProgramDownload : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 seqno() const;
   inline void set_seqno(::google::protobuf::uint32 value);
 
-  // required string software = 2;
-  inline bool has_software() const;
-  inline void clear_software();
-  static const int kSoftwareFieldNumber = 2;
-  inline const ::std::string& software() const;
-  inline void set_software(const ::std::string& value);
-  inline void set_software(const char* value);
-  inline void set_software(const char* value, size_t size);
-  inline ::std::string* mutable_software();
-  inline ::std::string* release_software();
-  inline void set_allocated_software(::std::string* software);
+  // required string uavid = 2;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 2;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
+
+  // required string name = 3;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 3;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // required int32 fwtype = 5;
+  inline bool has_fwtype() const;
+  inline void clear_fwtype();
+  static const int kFwtypeFieldNumber = 5;
+  inline ::google::protobuf::int32 fwtype() const;
+  inline void set_fwtype(::google::protobuf::int32 value);
+
+  // required int32 length = 6;
+  inline bool has_length() const;
+  inline void clear_length();
+  static const int kLengthFieldNumber = 6;
+  inline ::google::protobuf::int32 length() const;
+  inline void set_length(::google::protobuf::int32 value);
+
+  // required uint32 crc32 = 7;
+  inline bool has_crc32() const;
+  inline void clear_crc32();
+  static const int kCrc32FieldNumber = 7;
+  inline ::google::protobuf::uint32 crc32() const;
+  inline void set_crc32(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.NotifyProgram)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
+  inline void set_has_name();
+  inline void clear_has_name();
+  inline void set_has_fwtype();
+  inline void clear_has_fwtype();
+  inline void set_has_length();
+  inline void clear_has_length();
+  inline void set_has_crc32();
+  inline void clear_has_crc32();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uavid_;
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 fwtype_;
+  ::std::string* name_;
+  ::google::protobuf::int32 length_;
+  ::google::protobuf::uint32 crc32_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static NotifyProgram* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckNotifyProgram : public ::google::protobuf::Message {
+ public:
+  AckNotifyProgram();
+  virtual ~AckNotifyProgram();
+
+  AckNotifyProgram(const AckNotifyProgram& from);
+
+  inline AckNotifyProgram& operator=(const AckNotifyProgram& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckNotifyProgram& default_instance();
+
+  void Swap(AckNotifyProgram* other);
+
+  // implements Message ----------------------------------------------
+
+  AckNotifyProgram* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckNotifyProgram& from);
+  void MergeFrom(const AckNotifyProgram& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required int32 result = 2;
+  inline bool has_result() const;
+  inline void clear_result();
+  static const int kResultFieldNumber = 2;
+  inline ::google::protobuf::int32 result() const;
+  inline void set_result(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckNotifyProgram)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_result();
+  inline void clear_has_result();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 result_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckNotifyProgram* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class RequestProgram : public ::google::protobuf::Message {
+ public:
+  RequestProgram();
+  virtual ~RequestProgram();
+
+  RequestProgram(const RequestProgram& from);
+
+  inline RequestProgram& operator=(const RequestProgram& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RequestProgram& default_instance();
+
+  void Swap(RequestProgram* other);
+
+  // implements Message ----------------------------------------------
+
+  RequestProgram* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RequestProgram& from);
+  void MergeFrom(const RequestProgram& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string name = 2;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 2;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
 
   // required int32 offset = 3;
   inline bool has_offset() const;
@@ -2273,59 +1904,44 @@ class RequestProgramDownload : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 length() const;
   inline void set_length(::google::protobuf::int32 value);
 
-  // optional string extradata = 5;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 5;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
-
-  // @@protoc_insertion_point(class_scope:das.proto.RequestProgramDownload)
+  // @@protoc_insertion_point(class_scope:das.proto.RequestProgram)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
-  inline void set_has_software();
-  inline void clear_has_software();
+  inline void set_has_name();
+  inline void clear_has_name();
   inline void set_has_offset();
   inline void clear_has_offset();
   inline void set_has_length();
   inline void clear_has_length();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::std::string* software_;
+  ::std::string* name_;
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 offset_;
-  ::std::string* extradata_;
   ::google::protobuf::int32 length_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
   friend void protobuf_ShutdownFile_das_2eproto();
 
   void InitAsDefaultInstance();
-  static RequestProgramDownload* default_instance_;
+  static RequestProgram* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class AckProgramDownload : public ::google::protobuf::Message {
+class AckRequestProgram : public ::google::protobuf::Message {
  public:
-  AckProgramDownload();
-  virtual ~AckProgramDownload();
+  AckRequestProgram();
+  virtual ~AckRequestProgram();
 
-  AckProgramDownload(const AckProgramDownload& from);
+  AckRequestProgram(const AckRequestProgram& from);
 
-  inline AckProgramDownload& operator=(const AckProgramDownload& from) {
+  inline AckRequestProgram& operator=(const AckRequestProgram& from) {
     CopyFrom(from);
     return *this;
   }
@@ -2339,17 +1955,17 @@ class AckProgramDownload : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const AckProgramDownload& default_instance();
+  static const AckRequestProgram& default_instance();
 
-  void Swap(AckProgramDownload* other);
+  void Swap(AckRequestProgram* other);
 
   // implements Message ----------------------------------------------
 
-  AckProgramDownload* New() const;
+  AckRequestProgram* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckProgramDownload& from);
-  void MergeFrom(const AckProgramDownload& from);
+  void CopyFrom(const AckRequestProgram& from);
+  void MergeFrom(const AckRequestProgram& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -2386,17 +2002,17 @@ class AckProgramDownload : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 result() const;
   inline void set_result(::google::protobuf::int32 value);
 
-  // required string software = 3;
-  inline bool has_software() const;
-  inline void clear_software();
-  static const int kSoftwareFieldNumber = 3;
-  inline const ::std::string& software() const;
-  inline void set_software(const ::std::string& value);
-  inline void set_software(const char* value);
-  inline void set_software(const char* value, size_t size);
-  inline ::std::string* mutable_software();
-  inline ::std::string* release_software();
-  inline void set_allocated_software(::std::string* software);
+  // required string name = 3;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 3;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
 
   // required int32 offset = 4;
   inline bool has_offset() const;
@@ -2404,13 +2020,6 @@ class AckProgramDownload : public ::google::protobuf::Message {
   static const int kOffsetFieldNumber = 4;
   inline ::google::protobuf::int32 offset() const;
   inline void set_offset(::google::protobuf::int32 value);
-
-  // required int32 length = 5;
-  inline bool has_length() const;
-  inline void clear_length();
-  static const int kLengthFieldNumber = 5;
-  inline ::google::protobuf::int32 length() const;
-  inline void set_length(::google::protobuf::int32 value);
 
   // optional bytes data = 6;
   inline bool has_data() const;
@@ -2424,64 +2033,36 @@ class AckProgramDownload : public ::google::protobuf::Message {
   inline ::std::string* release_data();
   inline void set_allocated_data(::std::string* data);
 
-  // optional uint32 crc32 = 7;
-  inline bool has_crc32() const;
-  inline void clear_crc32();
-  static const int kCrc32FieldNumber = 7;
-  inline ::google::protobuf::uint32 crc32() const;
-  inline void set_crc32(::google::protobuf::uint32 value);
-
-  // optional string extradata = 8;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 8;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckProgramDownload)
+  // @@protoc_insertion_point(class_scope:das.proto.AckRequestProgram)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
   inline void set_has_result();
   inline void clear_has_result();
-  inline void set_has_software();
-  inline void clear_has_software();
+  inline void set_has_name();
+  inline void clear_has_name();
   inline void set_has_offset();
   inline void clear_has_offset();
-  inline void set_has_length();
-  inline void clear_has_length();
   inline void set_has_data();
   inline void clear_has_data();
-  inline void set_has_crc32();
-  inline void clear_has_crc32();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 result_;
-  ::std::string* software_;
-  ::google::protobuf::int32 offset_;
-  ::google::protobuf::int32 length_;
+  ::std::string* name_;
   ::std::string* data_;
-  ::std::string* extradata_;
-  ::google::protobuf::uint32 crc32_;
+  ::google::protobuf::int32 offset_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
   friend void protobuf_ShutdownFile_das_2eproto();
 
   void InitAsDefaultInstance();
-  static AckProgramDownload* default_instance_;
+  static AckRequestProgram* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -3179,14 +2760,14 @@ class AckUavIdentityAuthentication : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class RequestTrackerIdentityAuthentication : public ::google::protobuf::Message {
+class RequestNewGS : public ::google::protobuf::Message {
  public:
-  RequestTrackerIdentityAuthentication();
-  virtual ~RequestTrackerIdentityAuthentication();
+  RequestNewGS();
+  virtual ~RequestNewGS();
 
-  RequestTrackerIdentityAuthentication(const RequestTrackerIdentityAuthentication& from);
+  RequestNewGS(const RequestNewGS& from);
 
-  inline RequestTrackerIdentityAuthentication& operator=(const RequestTrackerIdentityAuthentication& from) {
+  inline RequestNewGS& operator=(const RequestNewGS& from) {
     CopyFrom(from);
     return *this;
   }
@@ -3200,236 +2781,17 @@ class RequestTrackerIdentityAuthentication : public ::google::protobuf::Message 
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const RequestTrackerIdentityAuthentication& default_instance();
+  static const RequestNewGS& default_instance();
 
-  void Swap(RequestTrackerIdentityAuthentication* other);
-
-  // implements Message ----------------------------------------------
-
-  RequestTrackerIdentityAuthentication* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const RequestTrackerIdentityAuthentication& from);
-  void MergeFrom(const RequestTrackerIdentityAuthentication& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required string trackerid = 2;
-  inline bool has_trackerid() const;
-  inline void clear_trackerid();
-  static const int kTrackeridFieldNumber = 2;
-  inline const ::std::string& trackerid() const;
-  inline void set_trackerid(const ::std::string& value);
-  inline void set_trackerid(const char* value);
-  inline void set_trackerid(const char* value, size_t size);
-  inline ::std::string* mutable_trackerid();
-  inline ::std::string* release_trackerid();
-  inline void set_allocated_trackerid(::std::string* trackerid);
-
-  // optional string extradata = 3;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 3;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
-
-  // @@protoc_insertion_point(class_scope:das.proto.RequestTrackerIdentityAuthentication)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_trackerid();
-  inline void clear_has_trackerid();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::std::string* trackerid_;
-  ::std::string* extradata_;
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static RequestTrackerIdentityAuthentication* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class AckTrackerIdentityAuthentication : public ::google::protobuf::Message {
- public:
-  AckTrackerIdentityAuthentication();
-  virtual ~AckTrackerIdentityAuthentication();
-
-  AckTrackerIdentityAuthentication(const AckTrackerIdentityAuthentication& from);
-
-  inline AckTrackerIdentityAuthentication& operator=(const AckTrackerIdentityAuthentication& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const AckTrackerIdentityAuthentication& default_instance();
-
-  void Swap(AckTrackerIdentityAuthentication* other);
+  void Swap(RequestNewGS* other);
 
   // implements Message ----------------------------------------------
 
-  AckTrackerIdentityAuthentication* New() const;
+  RequestNewGS* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckTrackerIdentityAuthentication& from);
-  void MergeFrom(const AckTrackerIdentityAuthentication& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // optional string extradata = 3;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 3;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckTrackerIdentityAuthentication)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-  ::std::string* extradata_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static AckTrackerIdentityAuthentication* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class RequestGVIdentityAuthentication : public ::google::protobuf::Message {
- public:
-  RequestGVIdentityAuthentication();
-  virtual ~RequestGVIdentityAuthentication();
-
-  RequestGVIdentityAuthentication(const RequestGVIdentityAuthentication& from);
-
-  inline RequestGVIdentityAuthentication& operator=(const RequestGVIdentityAuthentication& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const RequestGVIdentityAuthentication& default_instance();
-
-  void Swap(RequestGVIdentityAuthentication* other);
-
-  // implements Message ----------------------------------------------
-
-  RequestGVIdentityAuthentication* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const RequestGVIdentityAuthentication& from);
-  void MergeFrom(const RequestGVIdentityAuthentication& from);
+  void CopyFrom(const RequestNewGS& from);
+  void MergeFrom(const RequestNewGS& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -3471,10 +2833,34 @@ class RequestGVIdentityAuthentication : public ::google::protobuf::Message {
   inline ::std::string* release_userid();
   inline void set_allocated_userid(::std::string* userid);
 
-  // required string password = 3;
+  // optional string phone = 3;
+  inline bool has_phone() const;
+  inline void clear_phone();
+  static const int kPhoneFieldNumber = 3;
+  inline const ::std::string& phone() const;
+  inline void set_phone(const ::std::string& value);
+  inline void set_phone(const char* value);
+  inline void set_phone(const char* value, size_t size);
+  inline ::std::string* mutable_phone();
+  inline ::std::string* release_phone();
+  inline void set_allocated_phone(::std::string* phone);
+
+  // optional string check = 4;
+  inline bool has_check() const;
+  inline void clear_check();
+  static const int kCheckFieldNumber = 4;
+  inline const ::std::string& check() const;
+  inline void set_check(const ::std::string& value);
+  inline void set_check(const char* value);
+  inline void set_check(const char* value, size_t size);
+  inline ::std::string* mutable_check();
+  inline ::std::string* release_check();
+  inline void set_allocated_check(::std::string* check);
+
+  // optional string password = 5;
   inline bool has_password() const;
   inline void clear_password();
-  static const int kPasswordFieldNumber = 3;
+  static const int kPasswordFieldNumber = 5;
   inline const ::std::string& password() const;
   inline void set_password(const ::std::string& value);
   inline void set_password(const char* value);
@@ -3483,56 +2869,47 @@ class RequestGVIdentityAuthentication : public ::google::protobuf::Message {
   inline ::std::string* release_password();
   inline void set_allocated_password(::std::string* password);
 
-  // optional string extradata = 4;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 4;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
-
-  // @@protoc_insertion_point(class_scope:das.proto.RequestGVIdentityAuthentication)
+  // @@protoc_insertion_point(class_scope:das.proto.RequestNewGS)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
   inline void set_has_userid();
   inline void clear_has_userid();
+  inline void set_has_phone();
+  inline void clear_has_phone();
+  inline void set_has_check();
+  inline void clear_has_check();
   inline void set_has_password();
   inline void clear_has_password();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* userid_;
+  ::std::string* phone_;
+  ::std::string* check_;
   ::std::string* password_;
-  ::std::string* extradata_;
   ::google::protobuf::uint32 seqno_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
   friend void protobuf_ShutdownFile_das_2eproto();
 
   void InitAsDefaultInstance();
-  static RequestGVIdentityAuthentication* default_instance_;
+  static RequestNewGS* default_instance_;
 };
 // -------------------------------------------------------------------
 
-class AckGVIdentityAuthentication : public ::google::protobuf::Message {
+class AckNewGS : public ::google::protobuf::Message {
  public:
-  AckGVIdentityAuthentication();
-  virtual ~AckGVIdentityAuthentication();
+  AckNewGS();
+  virtual ~AckNewGS();
 
-  AckGVIdentityAuthentication(const AckGVIdentityAuthentication& from);
+  AckNewGS(const AckNewGS& from);
 
-  inline AckGVIdentityAuthentication& operator=(const AckGVIdentityAuthentication& from) {
+  inline AckNewGS& operator=(const AckNewGS& from) {
     CopyFrom(from);
     return *this;
   }
@@ -3546,17 +2923,17 @@ class AckGVIdentityAuthentication : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const AckGVIdentityAuthentication& default_instance();
+  static const AckNewGS& default_instance();
 
-  void Swap(AckGVIdentityAuthentication* other);
+  void Swap(AckNewGS* other);
 
   // implements Message ----------------------------------------------
 
-  AckGVIdentityAuthentication* New() const;
+  AckNewGS* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckGVIdentityAuthentication& from);
-  void MergeFrom(const AckGVIdentityAuthentication& from);
+  void CopyFrom(const AckNewGS& from);
+  void MergeFrom(const AckNewGS& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -3593,32 +2970,32 @@ class AckGVIdentityAuthentication : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 result() const;
   inline void set_result(::google::protobuf::int32 value);
 
-  // optional string extradata = 3;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 3;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
+  // optional string check = 3;
+  inline bool has_check() const;
+  inline void clear_check();
+  static const int kCheckFieldNumber = 3;
+  inline const ::std::string& check() const;
+  inline void set_check(const ::std::string& value);
+  inline void set_check(const char* value);
+  inline void set_check(const char* value, size_t size);
+  inline ::std::string* mutable_check();
+  inline ::std::string* release_check();
+  inline void set_allocated_check(::std::string* check);
 
-  // @@protoc_insertion_point(class_scope:das.proto.AckGVIdentityAuthentication)
+  // @@protoc_insertion_point(class_scope:das.proto.AckNewGS)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
   inline void set_has_result();
   inline void clear_has_result();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
+  inline void set_has_check();
+  inline void clear_has_check();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 result_;
-  ::std::string* extradata_;
+  ::std::string* check_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
@@ -3628,7 +3005,7 @@ class AckGVIdentityAuthentication : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_das_2eproto();
 
   void InitAsDefaultInstance();
-  static AckGVIdentityAuthentication* default_instance_;
+  static AckNewGS* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -3705,7 +3082,7 @@ class RequestGSIdentityAuthentication : public ::google::protobuf::Message {
   inline ::std::string* release_userid();
   inline void set_allocated_userid(::std::string* userid);
 
-  // required string password = 3;
+  // optional string password = 3;
   inline bool has_password() const;
   inline void clear_password();
   static const int kPasswordFieldNumber = 3;
@@ -3717,17 +3094,29 @@ class RequestGSIdentityAuthentication : public ::google::protobuf::Message {
   inline ::std::string* release_password();
   inline void set_allocated_password(::std::string* password);
 
-  // optional string extradata = 4;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 4;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
+  // optional string phone = 4;
+  inline bool has_phone() const;
+  inline void clear_phone();
+  static const int kPhoneFieldNumber = 4;
+  inline const ::std::string& phone() const;
+  inline void set_phone(const ::std::string& value);
+  inline void set_phone(const char* value);
+  inline void set_phone(const char* value, size_t size);
+  inline ::std::string* mutable_phone();
+  inline ::std::string* release_phone();
+  inline void set_allocated_phone(::std::string* phone);
+
+  // optional string check = 5;
+  inline bool has_check() const;
+  inline void clear_check();
+  static const int kCheckFieldNumber = 5;
+  inline const ::std::string& check() const;
+  inline void set_check(const ::std::string& value);
+  inline void set_check(const char* value);
+  inline void set_check(const char* value, size_t size);
+  inline ::std::string* mutable_check();
+  inline ::std::string* release_check();
+  inline void set_allocated_check(::std::string* check);
 
   // @@protoc_insertion_point(class_scope:das.proto.RequestGSIdentityAuthentication)
  private:
@@ -3737,18 +3126,21 @@ class RequestGSIdentityAuthentication : public ::google::protobuf::Message {
   inline void clear_has_userid();
   inline void set_has_password();
   inline void clear_has_password();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
+  inline void set_has_phone();
+  inline void clear_has_phone();
+  inline void set_has_check();
+  inline void clear_has_check();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* userid_;
   ::std::string* password_;
-  ::std::string* extradata_;
+  ::std::string* phone_;
+  ::std::string* check_;
   ::google::protobuf::uint32 seqno_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -3827,17 +3219,17 @@ class AckGSIdentityAuthentication : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 result() const;
   inline void set_result(::google::protobuf::int32 value);
 
-  // optional string extradata = 3;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 3;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
+  // optional string password = 3;
+  inline bool has_password() const;
+  inline void clear_password();
+  static const int kPasswordFieldNumber = 3;
+  inline const ::std::string& password() const;
+  inline void set_password(const ::std::string& value);
+  inline void set_password(const char* value);
+  inline void set_password(const char* value, size_t size);
+  inline ::std::string* mutable_password();
+  inline ::std::string* release_password();
+  inline void set_allocated_password(::std::string* password);
 
   // @@protoc_insertion_point(class_scope:das.proto.AckGSIdentityAuthentication)
  private:
@@ -3845,14 +3237,14 @@ class AckGSIdentityAuthentication : public ::google::protobuf::Message {
   inline void clear_has_seqno();
   inline void set_has_result();
   inline void clear_has_result();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
+  inline void set_has_password();
+  inline void clear_has_password();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 result_;
-  ::std::string* extradata_;
+  ::std::string* password_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
@@ -3863,474 +3255,6 @@ class AckGSIdentityAuthentication : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static AckGSIdentityAuthentication* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class RequestIVIdentityAuthentication : public ::google::protobuf::Message {
- public:
-  RequestIVIdentityAuthentication();
-  virtual ~RequestIVIdentityAuthentication();
-
-  RequestIVIdentityAuthentication(const RequestIVIdentityAuthentication& from);
-
-  inline RequestIVIdentityAuthentication& operator=(const RequestIVIdentityAuthentication& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const RequestIVIdentityAuthentication& default_instance();
-
-  void Swap(RequestIVIdentityAuthentication* other);
-
-  // implements Message ----------------------------------------------
-
-  RequestIVIdentityAuthentication* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const RequestIVIdentityAuthentication& from);
-  void MergeFrom(const RequestIVIdentityAuthentication& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required string userid = 2;
-  inline bool has_userid() const;
-  inline void clear_userid();
-  static const int kUseridFieldNumber = 2;
-  inline const ::std::string& userid() const;
-  inline void set_userid(const ::std::string& value);
-  inline void set_userid(const char* value);
-  inline void set_userid(const char* value, size_t size);
-  inline ::std::string* mutable_userid();
-  inline ::std::string* release_userid();
-  inline void set_allocated_userid(::std::string* userid);
-
-  // required string password = 3;
-  inline bool has_password() const;
-  inline void clear_password();
-  static const int kPasswordFieldNumber = 3;
-  inline const ::std::string& password() const;
-  inline void set_password(const ::std::string& value);
-  inline void set_password(const char* value);
-  inline void set_password(const char* value, size_t size);
-  inline ::std::string* mutable_password();
-  inline ::std::string* release_password();
-  inline void set_allocated_password(::std::string* password);
-
-  // optional string extradata = 4;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 4;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
-
-  // @@protoc_insertion_point(class_scope:das.proto.RequestIVIdentityAuthentication)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_userid();
-  inline void clear_has_userid();
-  inline void set_has_password();
-  inline void clear_has_password();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::std::string* userid_;
-  ::std::string* password_;
-  ::std::string* extradata_;
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static RequestIVIdentityAuthentication* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class AckIVIdentityAuthentication : public ::google::protobuf::Message {
- public:
-  AckIVIdentityAuthentication();
-  virtual ~AckIVIdentityAuthentication();
-
-  AckIVIdentityAuthentication(const AckIVIdentityAuthentication& from);
-
-  inline AckIVIdentityAuthentication& operator=(const AckIVIdentityAuthentication& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const AckIVIdentityAuthentication& default_instance();
-
-  void Swap(AckIVIdentityAuthentication* other);
-
-  // implements Message ----------------------------------------------
-
-  AckIVIdentityAuthentication* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckIVIdentityAuthentication& from);
-  void MergeFrom(const AckIVIdentityAuthentication& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // optional string extradata = 3;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 3;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckIVIdentityAuthentication)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-  ::std::string* extradata_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static AckIVIdentityAuthentication* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class RequestQQBotIdentityAuthentication : public ::google::protobuf::Message {
- public:
-  RequestQQBotIdentityAuthentication();
-  virtual ~RequestQQBotIdentityAuthentication();
-
-  RequestQQBotIdentityAuthentication(const RequestQQBotIdentityAuthentication& from);
-
-  inline RequestQQBotIdentityAuthentication& operator=(const RequestQQBotIdentityAuthentication& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const RequestQQBotIdentityAuthentication& default_instance();
-
-  void Swap(RequestQQBotIdentityAuthentication* other);
-
-  // implements Message ----------------------------------------------
-
-  RequestQQBotIdentityAuthentication* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const RequestQQBotIdentityAuthentication& from);
-  void MergeFrom(const RequestQQBotIdentityAuthentication& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required string userid = 2;
-  inline bool has_userid() const;
-  inline void clear_userid();
-  static const int kUseridFieldNumber = 2;
-  inline const ::std::string& userid() const;
-  inline void set_userid(const ::std::string& value);
-  inline void set_userid(const char* value);
-  inline void set_userid(const char* value, size_t size);
-  inline ::std::string* mutable_userid();
-  inline ::std::string* release_userid();
-  inline void set_allocated_userid(::std::string* userid);
-
-  // required string password = 3;
-  inline bool has_password() const;
-  inline void clear_password();
-  static const int kPasswordFieldNumber = 3;
-  inline const ::std::string& password() const;
-  inline void set_password(const ::std::string& value);
-  inline void set_password(const char* value);
-  inline void set_password(const char* value, size_t size);
-  inline ::std::string* mutable_password();
-  inline ::std::string* release_password();
-  inline void set_allocated_password(::std::string* password);
-
-  // optional string extradata = 4;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 4;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
-
-  // @@protoc_insertion_point(class_scope:das.proto.RequestQQBotIdentityAuthentication)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_userid();
-  inline void clear_has_userid();
-  inline void set_has_password();
-  inline void clear_has_password();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::std::string* userid_;
-  ::std::string* password_;
-  ::std::string* extradata_;
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static RequestQQBotIdentityAuthentication* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class AckQQBotIdentityAuthentication : public ::google::protobuf::Message {
- public:
-  AckQQBotIdentityAuthentication();
-  virtual ~AckQQBotIdentityAuthentication();
-
-  AckQQBotIdentityAuthentication(const AckQQBotIdentityAuthentication& from);
-
-  inline AckQQBotIdentityAuthentication& operator=(const AckQQBotIdentityAuthentication& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const AckQQBotIdentityAuthentication& default_instance();
-
-  void Swap(AckQQBotIdentityAuthentication* other);
-
-  // implements Message ----------------------------------------------
-
-  AckQQBotIdentityAuthentication* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckQQBotIdentityAuthentication& from);
-  void MergeFrom(const AckQQBotIdentityAuthentication& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // optional string extradata = 3;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 3;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckQQBotIdentityAuthentication)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-  ::std::string* extradata_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static AckQQBotIdentityAuthentication* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -7353,180 +6277,6 @@ class AckDeleteParcelDescription : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class SyncParcelDescriptions : public ::google::protobuf::Message {
- public:
-  SyncParcelDescriptions();
-  virtual ~SyncParcelDescriptions();
-
-  SyncParcelDescriptions(const SyncParcelDescriptions& from);
-
-  inline SyncParcelDescriptions& operator=(const SyncParcelDescriptions& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const SyncParcelDescriptions& default_instance();
-
-  void Swap(SyncParcelDescriptions* other);
-
-  // implements Message ----------------------------------------------
-
-  SyncParcelDescriptions* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const SyncParcelDescriptions& from);
-  void MergeFrom(const SyncParcelDescriptions& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.SyncParcelDescriptions)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static SyncParcelDescriptions* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class AckSyncParcelDescriptions : public ::google::protobuf::Message {
- public:
-  AckSyncParcelDescriptions();
-  virtual ~AckSyncParcelDescriptions();
-
-  AckSyncParcelDescriptions(const AckSyncParcelDescriptions& from);
-
-  inline AckSyncParcelDescriptions& operator=(const AckSyncParcelDescriptions& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const AckSyncParcelDescriptions& default_instance();
-
-  void Swap(AckSyncParcelDescriptions* other);
-
-  // implements Message ----------------------------------------------
-
-  AckSyncParcelDescriptions* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckSyncParcelDescriptions& from);
-  void MergeFrom(const AckSyncParcelDescriptions& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckSyncParcelDescriptions)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static AckSyncParcelDescriptions* default_instance_;
-};
-// -------------------------------------------------------------------
-
 class CropInformation : public ::google::protobuf::Message {
  public:
   CropInformation();
@@ -7843,14 +6593,14 @@ class BillInformation : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class DeviceInformation : public ::google::protobuf::Message {
+class OperationPlan : public ::google::protobuf::Message {
  public:
-  DeviceInformation();
-  virtual ~DeviceInformation();
+  OperationPlan();
+  virtual ~OperationPlan();
 
-  DeviceInformation(const DeviceInformation& from);
+  OperationPlan(const OperationPlan& from);
 
-  inline DeviceInformation& operator=(const DeviceInformation& from) {
+  inline OperationPlan& operator=(const OperationPlan& from) {
     CopyFrom(from);
     return *this;
   }
@@ -7864,17 +6614,17 @@ class DeviceInformation : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const DeviceInformation& default_instance();
+  static const OperationPlan& default_instance();
 
-  void Swap(DeviceInformation* other);
+  void Swap(OperationPlan* other);
 
   // implements Message ----------------------------------------------
 
-  DeviceInformation* New() const;
+  OperationPlan* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const DeviceInformation& from);
-  void MergeFrom(const DeviceInformation& from);
+  void CopyFrom(const OperationPlan& from);
+  void MergeFrom(const OperationPlan& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -7897,51 +6647,84 @@ class DeviceInformation : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional string name = 1;
-  inline bool has_name() const;
-  inline void clear_name();
-  static const int kNameFieldNumber = 1;
-  inline const ::std::string& name() const;
-  inline void set_name(const ::std::string& value);
-  inline void set_name(const char* value);
-  inline void set_name(const char* value, size_t size);
-  inline ::std::string* mutable_name();
-  inline ::std::string* release_name();
-  inline void set_allocated_name(::std::string* name);
+  // required double width = 1;
+  inline bool has_width() const;
+  inline void clear_width();
+  static const int kWidthFieldNumber = 1;
+  inline double width() const;
+  inline void set_width(double value);
 
-  // optional string diid = 2;
-  inline bool has_diid() const;
-  inline void clear_diid();
-  static const int kDiidFieldNumber = 2;
-  inline const ::std::string& diid() const;
-  inline void set_diid(const ::std::string& value);
-  inline void set_diid(const char* value);
-  inline void set_diid(const char* value, size_t size);
-  inline ::std::string* mutable_diid();
-  inline ::std::string* release_diid();
-  inline void set_allocated_diid(::std::string* diid);
+  // required float angle = 2;
+  inline bool has_angle() const;
+  inline void clear_angle();
+  static const int kAngleFieldNumber = 2;
+  inline float angle() const;
+  inline void set_angle(float value);
 
-  // @@protoc_insertion_point(class_scope:das.proto.DeviceInformation)
+  // required bool anti = 3;
+  inline bool has_anti() const;
+  inline void clear_anti();
+  static const int kAntiFieldNumber = 3;
+  inline bool anti() const;
+  inline void set_anti(bool value);
+
+  // required bool single = 4;
+  inline bool has_single() const;
+  inline void clear_single();
+  static const int kSingleFieldNumber = 4;
+  inline bool single() const;
+  inline void set_single(bool value);
+
+  // repeated double boundary = 5;
+  inline int boundary_size() const;
+  inline void clear_boundary();
+  static const int kBoundaryFieldNumber = 5;
+  inline double boundary(int index) const;
+  inline void set_boundary(int index, double value);
+  inline void add_boundary(double value);
+  inline const ::google::protobuf::RepeatedField< double >&
+      boundary() const;
+  inline ::google::protobuf::RepeatedField< double >*
+      mutable_boundary();
+
+  // required double block = 6;
+  inline bool has_block() const;
+  inline void clear_block();
+  static const int kBlockFieldNumber = 6;
+  inline double block() const;
+  inline void set_block(double value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.OperationPlan)
  private:
-  inline void set_has_name();
-  inline void clear_has_name();
-  inline void set_has_diid();
-  inline void clear_has_diid();
+  inline void set_has_width();
+  inline void clear_has_width();
+  inline void set_has_angle();
+  inline void clear_has_angle();
+  inline void set_has_anti();
+  inline void clear_has_anti();
+  inline void set_has_single();
+  inline void clear_has_single();
+  inline void set_has_block();
+  inline void clear_has_block();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::std::string* name_;
-  ::std::string* diid_;
+  double width_;
+  float angle_;
+  bool anti_;
+  bool single_;
+  ::google::protobuf::RepeatedField< double > boundary_;
+  double block_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
   friend void protobuf_ShutdownFile_das_2eproto();
 
   void InitAsDefaultInstance();
-  static DeviceInformation* default_instance_;
+  static OperationPlan* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -8039,90 +6822,10 @@ class OperationDescription : public ::google::protobuf::Message {
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& operatorid() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_operatorid();
 
-  // optional uint64 begintime = 4;
-  inline bool has_begintime() const;
-  inline void clear_begintime();
-  static const int kBegintimeFieldNumber = 4;
-  inline ::google::protobuf::uint64 begintime() const;
-  inline void set_begintime(::google::protobuf::uint64 value);
-
-  // optional uint64 endtime = 5;
-  inline bool has_endtime() const;
-  inline void clear_endtime();
-  static const int kEndtimeFieldNumber = 5;
-  inline ::google::protobuf::uint64 endtime() const;
-  inline void set_endtime(::google::protobuf::uint64 value);
-
-  // required string operationtype = 6;
-  inline bool has_operationtype() const;
-  inline void clear_operationtype();
-  static const int kOperationtypeFieldNumber = 6;
-  inline const ::std::string& operationtype() const;
-  inline void set_operationtype(const ::std::string& value);
-  inline void set_operationtype(const char* value);
-  inline void set_operationtype(const char* value, size_t size);
-  inline ::std::string* mutable_operationtype();
-  inline ::std::string* release_operationtype();
-  inline void set_allocated_operationtype(::std::string* operationtype);
-
-  // optional .das.proto.CropInformation ci = 7;
-  inline bool has_ci() const;
-  inline void clear_ci();
-  static const int kCiFieldNumber = 7;
-  inline const ::das::proto::CropInformation& ci() const;
-  inline ::das::proto::CropInformation* mutable_ci();
-  inline ::das::proto::CropInformation* release_ci();
-  inline void set_allocated_ci(::das::proto::CropInformation* ci);
-
-  // repeated .das.proto.PesticideInformation pi = 8;
-  inline int pi_size() const;
-  inline void clear_pi();
-  static const int kPiFieldNumber = 8;
-  inline const ::das::proto::PesticideInformation& pi(int index) const;
-  inline ::das::proto::PesticideInformation* mutable_pi(int index);
-  inline ::das::proto::PesticideInformation* add_pi();
-  inline const ::google::protobuf::RepeatedPtrField< ::das::proto::PesticideInformation >&
-      pi() const;
-  inline ::google::protobuf::RepeatedPtrField< ::das::proto::PesticideInformation >*
-      mutable_pi();
-
-  // required .das.proto.BillInformation bi = 9;
-  inline bool has_bi() const;
-  inline void clear_bi();
-  static const int kBiFieldNumber = 9;
-  inline const ::das::proto::BillInformation& bi() const;
-  inline ::das::proto::BillInformation* mutable_bi();
-  inline ::das::proto::BillInformation* release_bi();
-  inline void set_allocated_bi(::das::proto::BillInformation* bi);
-
-  // repeated .das.proto.DeviceInformation di = 10;
-  inline int di_size() const;
-  inline void clear_di();
-  static const int kDiFieldNumber = 10;
-  inline const ::das::proto::DeviceInformation& di(int index) const;
-  inline ::das::proto::DeviceInformation* mutable_di(int index);
-  inline ::das::proto::DeviceInformation* add_di();
-  inline const ::google::protobuf::RepeatedPtrField< ::das::proto::DeviceInformation >&
-      di() const;
-  inline ::google::protobuf::RepeatedPtrField< ::das::proto::DeviceInformation >*
-      mutable_di();
-
-  // optional string notes = 11;
-  inline bool has_notes() const;
-  inline void clear_notes();
-  static const int kNotesFieldNumber = 11;
-  inline const ::std::string& notes() const;
-  inline void set_notes(const ::std::string& value);
-  inline void set_notes(const char* value);
-  inline void set_notes(const char* value, size_t size);
-  inline ::std::string* mutable_notes();
-  inline ::std::string* release_notes();
-  inline void set_allocated_notes(::std::string* notes);
-
-  // required string pdid = 12;
+  // required string pdid = 4;
   inline bool has_pdid() const;
   inline void clear_pdid();
-  static const int kPdidFieldNumber = 12;
+  static const int kPdidFieldNumber = 4;
   inline const ::std::string& pdid() const;
   inline void set_pdid(const ::std::string& value);
   inline void set_pdid(const char* value);
@@ -8131,10 +6834,38 @@ class OperationDescription : public ::google::protobuf::Message {
   inline ::std::string* release_pdid();
   inline void set_allocated_pdid(::std::string* pdid);
 
-  // optional string odid = 13;
+  // required .das.proto.OperationPlan op = 5;
+  inline bool has_op() const;
+  inline void clear_op();
+  static const int kOpFieldNumber = 5;
+  inline const ::das::proto::OperationPlan& op() const;
+  inline ::das::proto::OperationPlan* mutable_op();
+  inline ::das::proto::OperationPlan* release_op();
+  inline void set_allocated_op(::das::proto::OperationPlan* op);
+
+  // optional uint64 plantime = 6;
+  inline bool has_plantime() const;
+  inline void clear_plantime();
+  static const int kPlantimeFieldNumber = 6;
+  inline ::google::protobuf::uint64 plantime() const;
+  inline void set_plantime(::google::protobuf::uint64 value);
+
+  // optional string notes = 7;
+  inline bool has_notes() const;
+  inline void clear_notes();
+  static const int kNotesFieldNumber = 7;
+  inline const ::std::string& notes() const;
+  inline void set_notes(const ::std::string& value);
+  inline void set_notes(const char* value);
+  inline void set_notes(const char* value, size_t size);
+  inline ::std::string* mutable_notes();
+  inline ::std::string* release_notes();
+  inline void set_allocated_notes(::std::string* notes);
+
+  // optional string odid = 8;
   inline bool has_odid() const;
   inline void clear_odid();
-  static const int kOdidFieldNumber = 13;
+  static const int kOdidFieldNumber = 8;
   inline const ::std::string& odid() const;
   inline void set_odid(const ::std::string& value);
   inline void set_odid(const char* value);
@@ -8149,20 +6880,14 @@ class OperationDescription : public ::google::protobuf::Message {
   inline void clear_has_chargerid();
   inline void set_has_registerid();
   inline void clear_has_registerid();
-  inline void set_has_begintime();
-  inline void clear_has_begintime();
-  inline void set_has_endtime();
-  inline void clear_has_endtime();
-  inline void set_has_operationtype();
-  inline void clear_has_operationtype();
-  inline void set_has_ci();
-  inline void clear_has_ci();
-  inline void set_has_bi();
-  inline void clear_has_bi();
-  inline void set_has_notes();
-  inline void clear_has_notes();
   inline void set_has_pdid();
   inline void clear_has_pdid();
+  inline void set_has_op();
+  inline void clear_has_op();
+  inline void set_has_plantime();
+  inline void clear_has_plantime();
+  inline void set_has_notes();
+  inline void clear_has_notes();
   inline void set_has_odid();
   inline void clear_has_odid();
 
@@ -8171,19 +6896,14 @@ class OperationDescription : public ::google::protobuf::Message {
   ::std::string* chargerid_;
   ::std::string* registerid_;
   ::google::protobuf::RepeatedPtrField< ::std::string> operatorid_;
-  ::google::protobuf::uint64 begintime_;
-  ::google::protobuf::uint64 endtime_;
-  ::std::string* operationtype_;
-  ::das::proto::CropInformation* ci_;
-  ::google::protobuf::RepeatedPtrField< ::das::proto::PesticideInformation > pi_;
-  ::das::proto::BillInformation* bi_;
-  ::google::protobuf::RepeatedPtrField< ::das::proto::DeviceInformation > di_;
-  ::std::string* notes_;
   ::std::string* pdid_;
+  ::das::proto::OperationPlan* op_;
+  ::google::protobuf::uint64 plantime_;
+  ::std::string* notes_;
   ::std::string* odid_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(13 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -8846,180 +7566,6 @@ class AckDeleteOperationDescription : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class SyncOperationDescriptions : public ::google::protobuf::Message {
- public:
-  SyncOperationDescriptions();
-  virtual ~SyncOperationDescriptions();
-
-  SyncOperationDescriptions(const SyncOperationDescriptions& from);
-
-  inline SyncOperationDescriptions& operator=(const SyncOperationDescriptions& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const SyncOperationDescriptions& default_instance();
-
-  void Swap(SyncOperationDescriptions* other);
-
-  // implements Message ----------------------------------------------
-
-  SyncOperationDescriptions* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const SyncOperationDescriptions& from);
-  void MergeFrom(const SyncOperationDescriptions& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.SyncOperationDescriptions)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static SyncOperationDescriptions* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class AckSyncOperationDescriptions : public ::google::protobuf::Message {
- public:
-  AckSyncOperationDescriptions();
-  virtual ~AckSyncOperationDescriptions();
-
-  AckSyncOperationDescriptions(const AckSyncOperationDescriptions& from);
-
-  inline AckSyncOperationDescriptions& operator=(const AckSyncOperationDescriptions& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const AckSyncOperationDescriptions& default_instance();
-
-  void Swap(AckSyncOperationDescriptions* other);
-
-  // implements Message ----------------------------------------------
-
-  AckSyncOperationDescriptions* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckSyncOperationDescriptions& from);
-  void MergeFrom(const AckSyncOperationDescriptions& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckSyncOperationDescriptions)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static AckSyncOperationDescriptions* default_instance_;
-};
-// -------------------------------------------------------------------
-
 class OperationRoute : public ::google::protobuf::Message {
  public:
   OperationRoute();
@@ -9074,17 +7620,29 @@ class OperationRoute : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required string creatorid = 1;
-  inline bool has_creatorid() const;
-  inline void clear_creatorid();
-  static const int kCreatoridFieldNumber = 1;
-  inline const ::std::string& creatorid() const;
-  inline void set_creatorid(const ::std::string& value);
-  inline void set_creatorid(const char* value);
-  inline void set_creatorid(const char* value, size_t size);
-  inline ::std::string* mutable_creatorid();
-  inline ::std::string* release_creatorid();
-  inline void set_allocated_creatorid(::std::string* creatorid);
+  // required string gsid = 1;
+  inline bool has_gsid() const;
+  inline void clear_gsid();
+  static const int kGsidFieldNumber = 1;
+  inline const ::std::string& gsid() const;
+  inline void set_gsid(const ::std::string& value);
+  inline void set_gsid(const char* value);
+  inline void set_gsid(const char* value, size_t size);
+  inline ::std::string* mutable_gsid();
+  inline ::std::string* release_gsid();
+  inline void set_allocated_gsid(::std::string* gsid);
+
+  // required string uavid = 6;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 6;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
 
   // required uint64 createtime = 2;
   inline bool has_createtime() const;
@@ -9093,66 +7651,17 @@ class OperationRoute : public ::google::protobuf::Message {
   inline ::google::protobuf::uint64 createtime() const;
   inline void set_createtime(::google::protobuf::uint64 value);
 
-  // optional string odid = 3;
-  inline bool has_odid() const;
-  inline void clear_odid();
-  static const int kOdidFieldNumber = 3;
-  inline const ::std::string& odid() const;
-  inline void set_odid(const ::std::string& value);
-  inline void set_odid(const char* value);
-  inline void set_odid(const char* value, size_t size);
-  inline ::std::string* mutable_odid();
-  inline ::std::string* release_odid();
-  inline void set_allocated_odid(::std::string* odid);
-
-  // optional .das.proto.ParcelSurveyInformation fsz = 4;
-  inline bool has_fsz() const;
-  inline void clear_fsz();
-  static const int kFszFieldNumber = 4;
-  inline const ::das::proto::ParcelSurveyInformation& fsz() const;
-  inline ::das::proto::ParcelSurveyInformation* mutable_fsz();
-  inline ::das::proto::ParcelSurveyInformation* release_fsz();
-  inline void set_allocated_fsz(::das::proto::ParcelSurveyInformation* fsz);
-
-  // required .das.proto.ParcelSurveyInformation psi = 5;
-  inline bool has_psi() const;
-  inline void clear_psi();
-  static const int kPsiFieldNumber = 5;
-  inline const ::das::proto::ParcelSurveyInformation& psi() const;
-  inline ::das::proto::ParcelSurveyInformation* mutable_psi();
-  inline ::das::proto::ParcelSurveyInformation* release_psi();
-  inline void set_allocated_psi(::das::proto::ParcelSurveyInformation* psi);
-
-  // required float sprinklingwidth = 6;
-  inline bool has_sprinklingwidth() const;
-  inline void clear_sprinklingwidth();
-  static const int kSprinklingwidthFieldNumber = 6;
-  inline float sprinklingwidth() const;
-  inline void set_sprinklingwidth(float value);
-
-  // required float maxvoyage = 7;
+  // required float maxvoyage = 3;
   inline bool has_maxvoyage() const;
   inline void clear_maxvoyage();
-  static const int kMaxvoyageFieldNumber = 7;
+  static const int kMaxvoyageFieldNumber = 3;
   inline float maxvoyage() const;
   inline void set_maxvoyage(float value);
 
-  // repeated .das.proto.Coordinate supplypoints = 8;
-  inline int supplypoints_size() const;
-  inline void clear_supplypoints();
-  static const int kSupplypointsFieldNumber = 8;
-  inline const ::das::proto::Coordinate& supplypoints(int index) const;
-  inline ::das::proto::Coordinate* mutable_supplypoints(int index);
-  inline ::das::proto::Coordinate* add_supplypoints();
-  inline const ::google::protobuf::RepeatedPtrField< ::das::proto::Coordinate >&
-      supplypoints() const;
-  inline ::google::protobuf::RepeatedPtrField< ::das::proto::Coordinate >*
-      mutable_supplypoints();
-
-  // repeated bytes missions = 9;
+  // repeated bytes missions = 4;
   inline int missions_size() const;
   inline void clear_missions();
-  static const int kMissionsFieldNumber = 9;
+  static const int kMissionsFieldNumber = 4;
   inline const ::std::string& missions(int index) const;
   inline ::std::string* mutable_missions(int index);
   inline void set_missions(int index, const ::std::string& value);
@@ -9165,52 +7674,54 @@ class OperationRoute : public ::google::protobuf::Message {
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& missions() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_missions();
 
-  // optional string orid = 10;
-  inline bool has_orid() const;
-  inline void clear_orid();
-  static const int kOridFieldNumber = 10;
-  inline const ::std::string& orid() const;
-  inline void set_orid(const ::std::string& value);
-  inline void set_orid(const char* value);
-  inline void set_orid(const char* value, size_t size);
-  inline ::std::string* mutable_orid();
-  inline ::std::string* release_orid();
-  inline void set_allocated_orid(::std::string* orid);
+  // repeated bytes boundarys = 5;
+  inline int boundarys_size() const;
+  inline void clear_boundarys();
+  static const int kBoundarysFieldNumber = 5;
+  inline const ::std::string& boundarys(int index) const;
+  inline ::std::string* mutable_boundarys(int index);
+  inline void set_boundarys(int index, const ::std::string& value);
+  inline void set_boundarys(int index, const char* value);
+  inline void set_boundarys(int index, const void* value, size_t size);
+  inline ::std::string* add_boundarys();
+  inline void add_boundarys(const ::std::string& value);
+  inline void add_boundarys(const char* value);
+  inline void add_boundarys(const void* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& boundarys() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_boundarys();
+
+  // required uint64 timestamp = 7;
+  inline bool has_timestamp() const;
+  inline void clear_timestamp();
+  static const int kTimestampFieldNumber = 7;
+  inline ::google::protobuf::uint64 timestamp() const;
+  inline void set_timestamp(::google::protobuf::uint64 value);
 
   // @@protoc_insertion_point(class_scope:das.proto.OperationRoute)
  private:
-  inline void set_has_creatorid();
-  inline void clear_has_creatorid();
+  inline void set_has_gsid();
+  inline void clear_has_gsid();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
   inline void set_has_createtime();
   inline void clear_has_createtime();
-  inline void set_has_odid();
-  inline void clear_has_odid();
-  inline void set_has_fsz();
-  inline void clear_has_fsz();
-  inline void set_has_psi();
-  inline void clear_has_psi();
-  inline void set_has_sprinklingwidth();
-  inline void clear_has_sprinklingwidth();
   inline void set_has_maxvoyage();
   inline void clear_has_maxvoyage();
-  inline void set_has_orid();
-  inline void clear_has_orid();
+  inline void set_has_timestamp();
+  inline void clear_has_timestamp();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::std::string* creatorid_;
+  ::std::string* gsid_;
+  ::std::string* uavid_;
   ::google::protobuf::uint64 createtime_;
-  ::std::string* odid_;
-  ::das::proto::ParcelSurveyInformation* fsz_;
-  ::das::proto::ParcelSurveyInformation* psi_;
-  float sprinklingwidth_;
-  float maxvoyage_;
-  ::google::protobuf::RepeatedPtrField< ::das::proto::Coordinate > supplypoints_;
   ::google::protobuf::RepeatedPtrField< ::std::string> missions_;
-  ::std::string* orid_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> boundarys_;
+  ::google::protobuf::uint64 timestamp_;
+  float maxvoyage_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(10 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -9383,65 +7894,20 @@ class AckPostOperationRoute : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 result() const;
   inline void set_result(::google::protobuf::int32 value);
 
-  // optional string orid = 3;
-  inline bool has_orid() const;
-  inline void clear_orid();
-  static const int kOridFieldNumber = 3;
-  inline const ::std::string& orid() const;
-  inline void set_orid(const ::std::string& value);
-  inline void set_orid(const char* value);
-  inline void set_orid(const char* value, size_t size);
-  inline ::std::string* mutable_orid();
-  inline ::std::string* release_orid();
-  inline void set_allocated_orid(::std::string* orid);
-
-  // optional string fszid = 4;
-  inline bool has_fszid() const;
-  inline void clear_fszid();
-  static const int kFszidFieldNumber = 4;
-  inline const ::std::string& fszid() const;
-  inline void set_fszid(const ::std::string& value);
-  inline void set_fszid(const char* value);
-  inline void set_fszid(const char* value, size_t size);
-  inline ::std::string* mutable_fszid();
-  inline ::std::string* release_fszid();
-  inline void set_allocated_fszid(::std::string* fszid);
-
-  // optional string psiid = 5;
-  inline bool has_psiid() const;
-  inline void clear_psiid();
-  static const int kPsiidFieldNumber = 5;
-  inline const ::std::string& psiid() const;
-  inline void set_psiid(const ::std::string& value);
-  inline void set_psiid(const char* value);
-  inline void set_psiid(const char* value, size_t size);
-  inline ::std::string* mutable_psiid();
-  inline ::std::string* release_psiid();
-  inline void set_allocated_psiid(::std::string* psiid);
-
   // @@protoc_insertion_point(class_scope:das.proto.AckPostOperationRoute)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
   inline void set_has_result();
   inline void clear_has_result();
-  inline void set_has_orid();
-  inline void clear_has_orid();
-  inline void set_has_fszid();
-  inline void clear_has_fszid();
-  inline void set_has_psiid();
-  inline void clear_has_psiid();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 result_;
-  ::std::string* orid_;
-  ::std::string* fszid_;
-  ::std::string* psiid_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -9449,504 +7915,6 @@ class AckPostOperationRoute : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static AckPostOperationRoute* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class RequestOperationRoutes : public ::google::protobuf::Message {
- public:
-  RequestOperationRoutes();
-  virtual ~RequestOperationRoutes();
-
-  RequestOperationRoutes(const RequestOperationRoutes& from);
-
-  inline RequestOperationRoutes& operator=(const RequestOperationRoutes& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const RequestOperationRoutes& default_instance();
-
-  void Swap(RequestOperationRoutes* other);
-
-  // implements Message ----------------------------------------------
-
-  RequestOperationRoutes* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const RequestOperationRoutes& from);
-  void MergeFrom(const RequestOperationRoutes& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // optional string orid = 2;
-  inline bool has_orid() const;
-  inline void clear_orid();
-  static const int kOridFieldNumber = 2;
-  inline const ::std::string& orid() const;
-  inline void set_orid(const ::std::string& value);
-  inline void set_orid(const char* value);
-  inline void set_orid(const char* value, size_t size);
-  inline ::std::string* mutable_orid();
-  inline ::std::string* release_orid();
-  inline void set_allocated_orid(::std::string* orid);
-
-  // optional string odid = 3;
-  inline bool has_odid() const;
-  inline void clear_odid();
-  static const int kOdidFieldNumber = 3;
-  inline const ::std::string& odid() const;
-  inline void set_odid(const ::std::string& value);
-  inline void set_odid(const char* value);
-  inline void set_odid(const char* value, size_t size);
-  inline ::std::string* mutable_odid();
-  inline ::std::string* release_odid();
-  inline void set_allocated_odid(::std::string* odid);
-
-  // optional string pdid = 4;
-  inline bool has_pdid() const;
-  inline void clear_pdid();
-  static const int kPdidFieldNumber = 4;
-  inline const ::std::string& pdid() const;
-  inline void set_pdid(const ::std::string& value);
-  inline void set_pdid(const char* value);
-  inline void set_pdid(const char* value, size_t size);
-  inline ::std::string* mutable_pdid();
-  inline ::std::string* release_pdid();
-  inline void set_allocated_pdid(::std::string* pdid);
-
-  // optional .das.proto.Coordinate coordinate = 5;
-  inline bool has_coordinate() const;
-  inline void clear_coordinate();
-  static const int kCoordinateFieldNumber = 5;
-  inline const ::das::proto::Coordinate& coordinate() const;
-  inline ::das::proto::Coordinate* mutable_coordinate();
-  inline ::das::proto::Coordinate* release_coordinate();
-  inline void set_allocated_coordinate(::das::proto::Coordinate* coordinate);
-
-  // @@protoc_insertion_point(class_scope:das.proto.RequestOperationRoutes)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_orid();
-  inline void clear_has_orid();
-  inline void set_has_odid();
-  inline void clear_has_odid();
-  inline void set_has_pdid();
-  inline void clear_has_pdid();
-  inline void set_has_coordinate();
-  inline void clear_has_coordinate();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::std::string* orid_;
-  ::std::string* odid_;
-  ::std::string* pdid_;
-  ::das::proto::Coordinate* coordinate_;
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static RequestOperationRoutes* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class AckRequestOperationRoutes : public ::google::protobuf::Message {
- public:
-  AckRequestOperationRoutes();
-  virtual ~AckRequestOperationRoutes();
-
-  AckRequestOperationRoutes(const AckRequestOperationRoutes& from);
-
-  inline AckRequestOperationRoutes& operator=(const AckRequestOperationRoutes& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const AckRequestOperationRoutes& default_instance();
-
-  void Swap(AckRequestOperationRoutes* other);
-
-  // implements Message ----------------------------------------------
-
-  AckRequestOperationRoutes* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckRequestOperationRoutes& from);
-  void MergeFrom(const AckRequestOperationRoutes& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // repeated .das.proto.OperationRoute ors = 3;
-  inline int ors_size() const;
-  inline void clear_ors();
-  static const int kOrsFieldNumber = 3;
-  inline const ::das::proto::OperationRoute& ors(int index) const;
-  inline ::das::proto::OperationRoute* mutable_ors(int index);
-  inline ::das::proto::OperationRoute* add_ors();
-  inline const ::google::protobuf::RepeatedPtrField< ::das::proto::OperationRoute >&
-      ors() const;
-  inline ::google::protobuf::RepeatedPtrField< ::das::proto::OperationRoute >*
-      mutable_ors();
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckRequestOperationRoutes)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-  ::google::protobuf::RepeatedPtrField< ::das::proto::OperationRoute > ors_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static AckRequestOperationRoutes* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class RequestUploadOperationRoutes : public ::google::protobuf::Message {
- public:
-  RequestUploadOperationRoutes();
-  virtual ~RequestUploadOperationRoutes();
-
-  RequestUploadOperationRoutes(const RequestUploadOperationRoutes& from);
-
-  inline RequestUploadOperationRoutes& operator=(const RequestUploadOperationRoutes& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const RequestUploadOperationRoutes& default_instance();
-
-  void Swap(RequestUploadOperationRoutes* other);
-
-  // implements Message ----------------------------------------------
-
-  RequestUploadOperationRoutes* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const RequestUploadOperationRoutes& from);
-  void MergeFrom(const RequestUploadOperationRoutes& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required string uavid = 2;
-  inline bool has_uavid() const;
-  inline void clear_uavid();
-  static const int kUavidFieldNumber = 2;
-  inline const ::std::string& uavid() const;
-  inline void set_uavid(const ::std::string& value);
-  inline void set_uavid(const char* value);
-  inline void set_uavid(const char* value, size_t size);
-  inline ::std::string* mutable_uavid();
-  inline ::std::string* release_uavid();
-  inline void set_allocated_uavid(::std::string* uavid);
-
-  // required string orid = 3;
-  inline bool has_orid() const;
-  inline void clear_orid();
-  static const int kOridFieldNumber = 3;
-  inline const ::std::string& orid() const;
-  inline void set_orid(const ::std::string& value);
-  inline void set_orid(const char* value);
-  inline void set_orid(const char* value, size_t size);
-  inline ::std::string* mutable_orid();
-  inline ::std::string* release_orid();
-  inline void set_allocated_orid(::std::string* orid);
-
-  // @@protoc_insertion_point(class_scope:das.proto.RequestUploadOperationRoutes)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_uavid();
-  inline void clear_has_uavid();
-  inline void set_has_orid();
-  inline void clear_has_orid();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::std::string* uavid_;
-  ::std::string* orid_;
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static RequestUploadOperationRoutes* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class AckRequestUploadOperationRoutes : public ::google::protobuf::Message {
- public:
-  AckRequestUploadOperationRoutes();
-  virtual ~AckRequestUploadOperationRoutes();
-
-  AckRequestUploadOperationRoutes(const AckRequestUploadOperationRoutes& from);
-
-  inline AckRequestUploadOperationRoutes& operator=(const AckRequestUploadOperationRoutes& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const AckRequestUploadOperationRoutes& default_instance();
-
-  void Swap(AckRequestUploadOperationRoutes* other);
-
-  // implements Message ----------------------------------------------
-
-  AckRequestUploadOperationRoutes* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckRequestUploadOperationRoutes& from);
-  void MergeFrom(const AckRequestUploadOperationRoutes& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // required string uavid = 3;
-  inline bool has_uavid() const;
-  inline void clear_uavid();
-  static const int kUavidFieldNumber = 3;
-  inline const ::std::string& uavid() const;
-  inline void set_uavid(const ::std::string& value);
-  inline void set_uavid(const char* value);
-  inline void set_uavid(const char* value, size_t size);
-  inline ::std::string* mutable_uavid();
-  inline ::std::string* release_uavid();
-  inline void set_allocated_uavid(::std::string* uavid);
-
-  // required string orid = 4;
-  inline bool has_orid() const;
-  inline void clear_orid();
-  static const int kOridFieldNumber = 4;
-  inline const ::std::string& orid() const;
-  inline void set_orid(const ::std::string& value);
-  inline void set_orid(const char* value);
-  inline void set_orid(const char* value, size_t size);
-  inline ::std::string* mutable_orid();
-  inline ::std::string* release_orid();
-  inline void set_allocated_orid(::std::string* orid);
-
-  // optional int32 index = 5;
-  inline bool has_index() const;
-  inline void clear_index();
-  static const int kIndexFieldNumber = 5;
-  inline ::google::protobuf::int32 index() const;
-  inline void set_index(::google::protobuf::int32 value);
-
-  // optional int32 count = 6;
-  inline bool has_count() const;
-  inline void clear_count();
-  static const int kCountFieldNumber = 6;
-  inline ::google::protobuf::int32 count() const;
-  inline void set_count(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckRequestUploadOperationRoutes)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-  inline void set_has_uavid();
-  inline void clear_has_uavid();
-  inline void set_has_orid();
-  inline void clear_has_orid();
-  inline void set_has_index();
-  inline void clear_has_index();
-  inline void set_has_count();
-  inline void clear_has_count();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-  ::std::string* uavid_;
-  ::std::string* orid_;
-  ::google::protobuf::int32 index_;
-  ::google::protobuf::int32 count_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static AckRequestUploadOperationRoutes* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -10023,18 +7991,6 @@ class UploadOperationRoutes : public ::google::protobuf::Message {
   inline ::std::string* release_uavid();
   inline void set_allocated_uavid(::std::string* uavid);
 
-  // required string orid = 3;
-  inline bool has_orid() const;
-  inline void clear_orid();
-  static const int kOridFieldNumber = 3;
-  inline const ::std::string& orid() const;
-  inline void set_orid(const ::std::string& value);
-  inline void set_orid(const char* value);
-  inline void set_orid(const char* value, size_t size);
-  inline ::std::string* mutable_orid();
-  inline ::std::string* release_orid();
-  inline void set_allocated_orid(::std::string* orid);
-
   // required string userid = 4;
   inline bool has_userid() const;
   inline void clear_userid();
@@ -10054,12 +8010,19 @@ class UploadOperationRoutes : public ::google::protobuf::Message {
   inline ::google::protobuf::uint64 timestamp() const;
   inline void set_timestamp(::google::protobuf::uint64 value);
 
-  // required int32 count = 6;
-  inline bool has_count() const;
-  inline void clear_count();
-  static const int kCountFieldNumber = 6;
-  inline ::google::protobuf::int32 count() const;
-  inline void set_count(::google::protobuf::int32 value);
+  // required int32 countmission = 6;
+  inline bool has_countmission() const;
+  inline void clear_countmission();
+  static const int kCountmissionFieldNumber = 6;
+  inline ::google::protobuf::int32 countmission() const;
+  inline void set_countmission(::google::protobuf::int32 value);
+
+  // required int32 countboundary = 7;
+  inline bool has_countboundary() const;
+  inline void clear_countboundary();
+  static const int kCountboundaryFieldNumber = 7;
+  inline ::google::protobuf::int32 countboundary() const;
+  inline void set_countboundary(::google::protobuf::int32 value);
 
   // @@protoc_insertion_point(class_scope:das.proto.UploadOperationRoutes)
  private:
@@ -10067,23 +8030,23 @@ class UploadOperationRoutes : public ::google::protobuf::Message {
   inline void clear_has_seqno();
   inline void set_has_uavid();
   inline void clear_has_uavid();
-  inline void set_has_orid();
-  inline void clear_has_orid();
   inline void set_has_userid();
   inline void clear_has_userid();
   inline void set_has_timestamp();
   inline void clear_has_timestamp();
-  inline void set_has_count();
-  inline void clear_has_count();
+  inline void set_has_countmission();
+  inline void clear_has_countmission();
+  inline void set_has_countboundary();
+  inline void clear_has_countboundary();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* uavid_;
-  ::std::string* orid_;
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 count_;
   ::std::string* userid_;
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 countmission_;
   ::google::protobuf::uint64 timestamp_;
+  ::google::protobuf::int32 countboundary_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
@@ -10165,6 +8128,98 @@ class AckUploadOperationRoutes : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 result() const;
   inline void set_result(::google::protobuf::int32 value);
 
+  // @@protoc_insertion_point(class_scope:das.proto.AckUploadOperationRoutes)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_result();
+  inline void clear_has_result();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 result_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckUploadOperationRoutes* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class SyscOperationRoutes : public ::google::protobuf::Message {
+ public:
+  SyscOperationRoutes();
+  virtual ~SyscOperationRoutes();
+
+  SyscOperationRoutes(const SyscOperationRoutes& from);
+
+  inline SyscOperationRoutes& operator=(const SyscOperationRoutes& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SyscOperationRoutes& default_instance();
+
+  void Swap(SyscOperationRoutes* other);
+
+  // implements Message ----------------------------------------------
+
+  SyscOperationRoutes* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const SyscOperationRoutes& from);
+  void MergeFrom(const SyscOperationRoutes& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required int32 result = 2;
+  inline bool has_result() const;
+  inline void clear_result();
+  static const int kResultFieldNumber = 2;
+  inline ::google::protobuf::int32 result() const;
+  inline void set_result(::google::protobuf::int32 value);
+
   // required string uavid = 3;
   inline bool has_uavid() const;
   inline void clear_uavid();
@@ -10177,38 +8232,21 @@ class AckUploadOperationRoutes : public ::google::protobuf::Message {
   inline ::std::string* release_uavid();
   inline void set_allocated_uavid(::std::string* uavid);
 
-  // required string orid = 4;
-  inline bool has_orid() const;
-  inline void clear_orid();
-  static const int kOridFieldNumber = 4;
-  inline const ::std::string& orid() const;
-  inline void set_orid(const ::std::string& value);
-  inline void set_orid(const char* value);
-  inline void set_orid(const char* value, size_t size);
-  inline ::std::string* mutable_orid();
-  inline ::std::string* release_orid();
-  inline void set_allocated_orid(::std::string* orid);
+  // optional int32 index = 5;
+  inline bool has_index() const;
+  inline void clear_index();
+  static const int kIndexFieldNumber = 5;
+  inline ::google::protobuf::int32 index() const;
+  inline void set_index(::google::protobuf::int32 value);
 
-  // required string userid = 5;
-  inline bool has_userid() const;
-  inline void clear_userid();
-  static const int kUseridFieldNumber = 5;
-  inline const ::std::string& userid() const;
-  inline void set_userid(const ::std::string& value);
-  inline void set_userid(const char* value);
-  inline void set_userid(const char* value, size_t size);
-  inline ::std::string* mutable_userid();
-  inline ::std::string* release_userid();
-  inline void set_allocated_userid(::std::string* userid);
+  // optional int32 count = 6;
+  inline bool has_count() const;
+  inline void clear_count();
+  static const int kCountFieldNumber = 6;
+  inline ::google::protobuf::int32 count() const;
+  inline void set_count(::google::protobuf::int32 value);
 
-  // required uint64 timestamp = 6;
-  inline bool has_timestamp() const;
-  inline void clear_timestamp();
-  static const int kTimestampFieldNumber = 6;
-  inline ::google::protobuf::uint64 timestamp() const;
-  inline void set_timestamp(::google::protobuf::uint64 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckUploadOperationRoutes)
+  // @@protoc_insertion_point(class_scope:das.proto.SyscOperationRoutes)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
@@ -10216,31 +8254,28 @@ class AckUploadOperationRoutes : public ::google::protobuf::Message {
   inline void clear_has_result();
   inline void set_has_uavid();
   inline void clear_has_uavid();
-  inline void set_has_orid();
-  inline void clear_has_orid();
-  inline void set_has_userid();
-  inline void clear_has_userid();
-  inline void set_has_timestamp();
-  inline void clear_has_timestamp();
+  inline void set_has_index();
+  inline void clear_has_index();
+  inline void set_has_count();
+  inline void clear_has_count();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 result_;
   ::std::string* uavid_;
-  ::std::string* orid_;
-  ::std::string* userid_;
-  ::google::protobuf::uint64 timestamp_;
+  ::google::protobuf::int32 index_;
+  ::google::protobuf::int32 count_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
   friend void protobuf_ShutdownFile_das_2eproto();
 
   void InitAsDefaultInstance();
-  static AckUploadOperationRoutes* default_instance_;
+  static SyscOperationRoutes* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -10317,48 +8352,24 @@ class RequestRouteMissions : public ::google::protobuf::Message {
   inline ::std::string* release_uavid();
   inline void set_allocated_uavid(::std::string* uavid);
 
-  // required string orid = 3;
-  inline bool has_orid() const;
-  inline void clear_orid();
-  static const int kOridFieldNumber = 3;
-  inline const ::std::string& orid() const;
-  inline void set_orid(const ::std::string& value);
-  inline void set_orid(const char* value);
-  inline void set_orid(const char* value, size_t size);
-  inline ::std::string* mutable_orid();
-  inline ::std::string* release_orid();
-  inline void set_allocated_orid(::std::string* orid);
+  // required bool boundary = 3;
+  inline bool has_boundary() const;
+  inline void clear_boundary();
+  static const int kBoundaryFieldNumber = 3;
+  inline bool boundary() const;
+  inline void set_boundary(bool value);
 
-  // required string userid = 4;
-  inline bool has_userid() const;
-  inline void clear_userid();
-  static const int kUseridFieldNumber = 4;
-  inline const ::std::string& userid() const;
-  inline void set_userid(const ::std::string& value);
-  inline void set_userid(const char* value);
-  inline void set_userid(const char* value, size_t size);
-  inline ::std::string* mutable_userid();
-  inline ::std::string* release_userid();
-  inline void set_allocated_userid(::std::string* userid);
-
-  // required uint64 timestamp = 5;
-  inline bool has_timestamp() const;
-  inline void clear_timestamp();
-  static const int kTimestampFieldNumber = 5;
-  inline ::google::protobuf::uint64 timestamp() const;
-  inline void set_timestamp(::google::protobuf::uint64 value);
-
-  // required int32 offset = 6;
+  // required int32 offset = 4;
   inline bool has_offset() const;
   inline void clear_offset();
-  static const int kOffsetFieldNumber = 6;
+  static const int kOffsetFieldNumber = 4;
   inline ::google::protobuf::int32 offset() const;
   inline void set_offset(::google::protobuf::int32 value);
 
-  // required int32 count = 7;
+  // required int32 count = 5;
   inline bool has_count() const;
   inline void clear_count();
-  static const int kCountFieldNumber = 7;
+  static const int kCountFieldNumber = 5;
   inline ::google::protobuf::int32 count() const;
   inline void set_count(::google::protobuf::int32 value);
 
@@ -10368,12 +8379,8 @@ class RequestRouteMissions : public ::google::protobuf::Message {
   inline void clear_has_seqno();
   inline void set_has_uavid();
   inline void clear_has_uavid();
-  inline void set_has_orid();
-  inline void clear_has_orid();
-  inline void set_has_userid();
-  inline void clear_has_userid();
-  inline void set_has_timestamp();
-  inline void clear_has_timestamp();
+  inline void set_has_boundary();
+  inline void clear_has_boundary();
   inline void set_has_offset();
   inline void clear_has_offset();
   inline void set_has_count();
@@ -10382,15 +8389,13 @@ class RequestRouteMissions : public ::google::protobuf::Message {
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* uavid_;
-  ::std::string* orid_;
   ::google::protobuf::uint32 seqno_;
+  bool boundary_;
   ::google::protobuf::int32 offset_;
-  ::std::string* userid_;
-  ::google::protobuf::uint64 timestamp_;
   ::google::protobuf::int32 count_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -10469,60 +8474,24 @@ class AckRequestRouteMissions : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 result() const;
   inline void set_result(::google::protobuf::int32 value);
 
-  // required string uavid = 3;
-  inline bool has_uavid() const;
-  inline void clear_uavid();
-  static const int kUavidFieldNumber = 3;
-  inline const ::std::string& uavid() const;
-  inline void set_uavid(const ::std::string& value);
-  inline void set_uavid(const char* value);
-  inline void set_uavid(const char* value, size_t size);
-  inline ::std::string* mutable_uavid();
-  inline ::std::string* release_uavid();
-  inline void set_allocated_uavid(::std::string* uavid);
+  // required bool boundary = 3;
+  inline bool has_boundary() const;
+  inline void clear_boundary();
+  static const int kBoundaryFieldNumber = 3;
+  inline bool boundary() const;
+  inline void set_boundary(bool value);
 
-  // required string orid = 4;
-  inline bool has_orid() const;
-  inline void clear_orid();
-  static const int kOridFieldNumber = 4;
-  inline const ::std::string& orid() const;
-  inline void set_orid(const ::std::string& value);
-  inline void set_orid(const char* value);
-  inline void set_orid(const char* value, size_t size);
-  inline ::std::string* mutable_orid();
-  inline ::std::string* release_orid();
-  inline void set_allocated_orid(::std::string* orid);
-
-  // required string userid = 5;
-  inline bool has_userid() const;
-  inline void clear_userid();
-  static const int kUseridFieldNumber = 5;
-  inline const ::std::string& userid() const;
-  inline void set_userid(const ::std::string& value);
-  inline void set_userid(const char* value);
-  inline void set_userid(const char* value, size_t size);
-  inline ::std::string* mutable_userid();
-  inline ::std::string* release_userid();
-  inline void set_allocated_userid(::std::string* userid);
-
-  // required uint64 timestamp = 6;
-  inline bool has_timestamp() const;
-  inline void clear_timestamp();
-  static const int kTimestampFieldNumber = 6;
-  inline ::google::protobuf::uint64 timestamp() const;
-  inline void set_timestamp(::google::protobuf::uint64 value);
-
-  // required int32 offset = 7;
+  // required int32 offset = 4;
   inline bool has_offset() const;
   inline void clear_offset();
-  static const int kOffsetFieldNumber = 7;
+  static const int kOffsetFieldNumber = 4;
   inline ::google::protobuf::int32 offset() const;
   inline void set_offset(::google::protobuf::int32 value);
 
-  // repeated bytes missions = 8;
+  // repeated bytes missions = 5;
   inline int missions_size() const;
   inline void clear_missions();
-  static const int kMissionsFieldNumber = 8;
+  static const int kMissionsFieldNumber = 5;
   inline const ::std::string& missions(int index) const;
   inline ::std::string* mutable_missions(int index);
   inline void set_missions(int index, const ::std::string& value);
@@ -10541,14 +8510,8 @@ class AckRequestRouteMissions : public ::google::protobuf::Message {
   inline void clear_has_seqno();
   inline void set_has_result();
   inline void clear_has_result();
-  inline void set_has_uavid();
-  inline void clear_has_uavid();
-  inline void set_has_orid();
-  inline void clear_has_orid();
-  inline void set_has_userid();
-  inline void clear_has_userid();
-  inline void set_has_timestamp();
-  inline void clear_has_timestamp();
+  inline void set_has_boundary();
+  inline void clear_has_boundary();
   inline void set_has_offset();
   inline void clear_has_offset();
 
@@ -10556,15 +8519,12 @@ class AckRequestRouteMissions : public ::google::protobuf::Message {
 
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 result_;
-  ::std::string* uavid_;
-  ::std::string* orid_;
-  ::std::string* userid_;
-  ::google::protobuf::uint64 timestamp_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> missions_;
+  bool boundary_;
   ::google::protobuf::int32 offset_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> missions_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -11582,180 +9542,6 @@ class AckRequestUavProductInfos : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class SyncUavProductInfos : public ::google::protobuf::Message {
- public:
-  SyncUavProductInfos();
-  virtual ~SyncUavProductInfos();
-
-  SyncUavProductInfos(const SyncUavProductInfos& from);
-
-  inline SyncUavProductInfos& operator=(const SyncUavProductInfos& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const SyncUavProductInfos& default_instance();
-
-  void Swap(SyncUavProductInfos* other);
-
-  // implements Message ----------------------------------------------
-
-  SyncUavProductInfos* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const SyncUavProductInfos& from);
-  void MergeFrom(const SyncUavProductInfos& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.SyncUavProductInfos)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static SyncUavProductInfos* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class AckSyncUavProductInfos : public ::google::protobuf::Message {
- public:
-  AckSyncUavProductInfos();
-  virtual ~AckSyncUavProductInfos();
-
-  AckSyncUavProductInfos(const AckSyncUavProductInfos& from);
-
-  inline AckSyncUavProductInfos& operator=(const AckSyncUavProductInfos& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const AckSyncUavProductInfos& default_instance();
-
-  void Swap(AckSyncUavProductInfos* other);
-
-  // implements Message ----------------------------------------------
-
-  AckSyncUavProductInfos* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckSyncUavProductInfos& from);
-  void MergeFrom(const AckSyncUavProductInfos& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckSyncUavProductInfos)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static AckSyncUavProductInfos* default_instance_;
-};
-// -------------------------------------------------------------------
-
 class PostUavProductInfos : public ::google::protobuf::Message {
  public:
   PostUavProductInfos();
@@ -12715,6 +10501,50 @@ inline void QueryParameters::set_allocated_id(::std::string* id) {
   }
 }
 
+// repeated string pdnames = 3;
+inline int QueryParameters::pdnames_size() const {
+  return pdnames_.size();
+}
+inline void QueryParameters::clear_pdnames() {
+  pdnames_.Clear();
+}
+inline const ::std::string& QueryParameters::pdnames(int index) const {
+  return pdnames_.Get(index);
+}
+inline ::std::string* QueryParameters::mutable_pdnames(int index) {
+  return pdnames_.Mutable(index);
+}
+inline void QueryParameters::set_pdnames(int index, const ::std::string& value) {
+  pdnames_.Mutable(index)->assign(value);
+}
+inline void QueryParameters::set_pdnames(int index, const char* value) {
+  pdnames_.Mutable(index)->assign(value);
+}
+inline void QueryParameters::set_pdnames(int index, const char* value, size_t size) {
+  pdnames_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* QueryParameters::add_pdnames() {
+  return pdnames_.Add();
+}
+inline void QueryParameters::add_pdnames(const ::std::string& value) {
+  pdnames_.Add()->assign(value);
+}
+inline void QueryParameters::add_pdnames(const char* value) {
+  pdnames_.Add()->assign(value);
+}
+inline void QueryParameters::add_pdnames(const char* value, size_t size) {
+  pdnames_.Add()->assign(reinterpret_cast<const char*>(value), size);
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+QueryParameters::pdnames() const {
+  return pdnames_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+QueryParameters::mutable_pdnames() {
+  return &pdnames_;
+}
+
 // -------------------------------------------------------------------
 
 // AckQueryParameters
@@ -13099,194 +10929,6 @@ inline void AckConfigurParameters::set_result(::google::protobuf::int32 value) {
 
 // -------------------------------------------------------------------
 
-// ReportDeviceException
-
-// required uint32 seqno = 1;
-inline bool ReportDeviceException::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void ReportDeviceException::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void ReportDeviceException::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void ReportDeviceException::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 ReportDeviceException::seqno() const {
-  return seqno_;
-}
-inline void ReportDeviceException::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required string id = 2;
-inline bool ReportDeviceException::has_id() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void ReportDeviceException::set_has_id() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void ReportDeviceException::clear_has_id() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void ReportDeviceException::clear_id() {
-  if (id_ != &::google::protobuf::internal::kEmptyString) {
-    id_->clear();
-  }
-  clear_has_id();
-}
-inline const ::std::string& ReportDeviceException::id() const {
-  return *id_;
-}
-inline void ReportDeviceException::set_id(const ::std::string& value) {
-  set_has_id();
-  if (id_ == &::google::protobuf::internal::kEmptyString) {
-    id_ = new ::std::string;
-  }
-  id_->assign(value);
-}
-inline void ReportDeviceException::set_id(const char* value) {
-  set_has_id();
-  if (id_ == &::google::protobuf::internal::kEmptyString) {
-    id_ = new ::std::string;
-  }
-  id_->assign(value);
-}
-inline void ReportDeviceException::set_id(const char* value, size_t size) {
-  set_has_id();
-  if (id_ == &::google::protobuf::internal::kEmptyString) {
-    id_ = new ::std::string;
-  }
-  id_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* ReportDeviceException::mutable_id() {
-  set_has_id();
-  if (id_ == &::google::protobuf::internal::kEmptyString) {
-    id_ = new ::std::string;
-  }
-  return id_;
-}
-inline ::std::string* ReportDeviceException::release_id() {
-  clear_has_id();
-  if (id_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = id_;
-    id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void ReportDeviceException::set_allocated_id(::std::string* id) {
-  if (id_ != &::google::protobuf::internal::kEmptyString) {
-    delete id_;
-  }
-  if (id) {
-    set_has_id();
-    id_ = id;
-  } else {
-    clear_has_id();
-    id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// repeated string desc = 3;
-inline int ReportDeviceException::desc_size() const {
-  return desc_.size();
-}
-inline void ReportDeviceException::clear_desc() {
-  desc_.Clear();
-}
-inline const ::std::string& ReportDeviceException::desc(int index) const {
-  return desc_.Get(index);
-}
-inline ::std::string* ReportDeviceException::mutable_desc(int index) {
-  return desc_.Mutable(index);
-}
-inline void ReportDeviceException::set_desc(int index, const ::std::string& value) {
-  desc_.Mutable(index)->assign(value);
-}
-inline void ReportDeviceException::set_desc(int index, const char* value) {
-  desc_.Mutable(index)->assign(value);
-}
-inline void ReportDeviceException::set_desc(int index, const char* value, size_t size) {
-  desc_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* ReportDeviceException::add_desc() {
-  return desc_.Add();
-}
-inline void ReportDeviceException::add_desc(const ::std::string& value) {
-  desc_.Add()->assign(value);
-}
-inline void ReportDeviceException::add_desc(const char* value) {
-  desc_.Add()->assign(value);
-}
-inline void ReportDeviceException::add_desc(const char* value, size_t size) {
-  desc_.Add()->assign(reinterpret_cast<const char*>(value), size);
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-ReportDeviceException::desc() const {
-  return desc_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-ReportDeviceException::mutable_desc() {
-  return &desc_;
-}
-
-// -------------------------------------------------------------------
-
-// AckReportDeviceException
-
-// required uint32 seqno = 1;
-inline bool AckReportDeviceException::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckReportDeviceException::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckReportDeviceException::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckReportDeviceException::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckReportDeviceException::seqno() const {
-  return seqno_;
-}
-inline void AckReportDeviceException::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckReportDeviceException::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckReportDeviceException::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckReportDeviceException::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckReportDeviceException::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckReportDeviceException::result() const {
-  return result_;
-}
-inline void AckReportDeviceException::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// -------------------------------------------------------------------
-
 // UpdateDeviceList
 
 // required uint32 seqno = 1;
@@ -13421,268 +11063,6 @@ inline ::google::protobuf::int32 AckUpdateDeviceList::result() const {
   return result_;
 }
 inline void AckUpdateDeviceList::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// SyncDeviceList
-
-// required uint32 seqno = 1;
-inline bool SyncDeviceList::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void SyncDeviceList::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void SyncDeviceList::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void SyncDeviceList::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 SyncDeviceList::seqno() const {
-  return seqno_;
-}
-inline void SyncDeviceList::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// AckSyncDeviceList
-
-// required uint32 seqno = 1;
-inline bool AckSyncDeviceList::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckSyncDeviceList::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckSyncDeviceList::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckSyncDeviceList::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckSyncDeviceList::seqno() const {
-  return seqno_;
-}
-inline void AckSyncDeviceList::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckSyncDeviceList::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckSyncDeviceList::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckSyncDeviceList::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckSyncDeviceList::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckSyncDeviceList::result() const {
-  return result_;
-}
-inline void AckSyncDeviceList::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// repeated string id = 3;
-inline int AckSyncDeviceList::id_size() const {
-  return id_.size();
-}
-inline void AckSyncDeviceList::clear_id() {
-  id_.Clear();
-}
-inline const ::std::string& AckSyncDeviceList::id(int index) const {
-  return id_.Get(index);
-}
-inline ::std::string* AckSyncDeviceList::mutable_id(int index) {
-  return id_.Mutable(index);
-}
-inline void AckSyncDeviceList::set_id(int index, const ::std::string& value) {
-  id_.Mutable(index)->assign(value);
-}
-inline void AckSyncDeviceList::set_id(int index, const char* value) {
-  id_.Mutable(index)->assign(value);
-}
-inline void AckSyncDeviceList::set_id(int index, const char* value, size_t size) {
-  id_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckSyncDeviceList::add_id() {
-  return id_.Add();
-}
-inline void AckSyncDeviceList::add_id(const ::std::string& value) {
-  id_.Add()->assign(value);
-}
-inline void AckSyncDeviceList::add_id(const char* value) {
-  id_.Add()->assign(value);
-}
-inline void AckSyncDeviceList::add_id(const char* value, size_t size) {
-  id_.Add()->assign(reinterpret_cast<const char*>(value), size);
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-AckSyncDeviceList::id() const {
-  return id_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-AckSyncDeviceList::mutable_id() {
-  return &id_;
-}
-
-// -------------------------------------------------------------------
-
-// KickoutDevice
-
-// required uint32 seqno = 1;
-inline bool KickoutDevice::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void KickoutDevice::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void KickoutDevice::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void KickoutDevice::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 KickoutDevice::seqno() const {
-  return seqno_;
-}
-inline void KickoutDevice::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required string devid = 2;
-inline bool KickoutDevice::has_devid() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void KickoutDevice::set_has_devid() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void KickoutDevice::clear_has_devid() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void KickoutDevice::clear_devid() {
-  if (devid_ != &::google::protobuf::internal::kEmptyString) {
-    devid_->clear();
-  }
-  clear_has_devid();
-}
-inline const ::std::string& KickoutDevice::devid() const {
-  return *devid_;
-}
-inline void KickoutDevice::set_devid(const ::std::string& value) {
-  set_has_devid();
-  if (devid_ == &::google::protobuf::internal::kEmptyString) {
-    devid_ = new ::std::string;
-  }
-  devid_->assign(value);
-}
-inline void KickoutDevice::set_devid(const char* value) {
-  set_has_devid();
-  if (devid_ == &::google::protobuf::internal::kEmptyString) {
-    devid_ = new ::std::string;
-  }
-  devid_->assign(value);
-}
-inline void KickoutDevice::set_devid(const char* value, size_t size) {
-  set_has_devid();
-  if (devid_ == &::google::protobuf::internal::kEmptyString) {
-    devid_ = new ::std::string;
-  }
-  devid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* KickoutDevice::mutable_devid() {
-  set_has_devid();
-  if (devid_ == &::google::protobuf::internal::kEmptyString) {
-    devid_ = new ::std::string;
-  }
-  return devid_;
-}
-inline ::std::string* KickoutDevice::release_devid() {
-  clear_has_devid();
-  if (devid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = devid_;
-    devid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void KickoutDevice::set_allocated_devid(::std::string* devid) {
-  if (devid_ != &::google::protobuf::internal::kEmptyString) {
-    delete devid_;
-  }
-  if (devid) {
-    set_has_devid();
-    devid_ = devid;
-  } else {
-    clear_has_devid();
-    devid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// AckKickoutDevice
-
-// required uint32 seqno = 1;
-inline bool AckKickoutDevice::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckKickoutDevice::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckKickoutDevice::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckKickoutDevice::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckKickoutDevice::seqno() const {
-  return seqno_;
-}
-inline void AckKickoutDevice::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckKickoutDevice::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckKickoutDevice::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckKickoutDevice::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckKickoutDevice::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckKickoutDevice::result() const {
-  return result_;
-}
-inline void AckKickoutDevice::set_result(::google::protobuf::int32 value) {
   set_has_result();
   result_ = value;
 }
@@ -14043,892 +11423,170 @@ inline void AckIdentityAllocation::set_allocated_extradata(::std::string* extrad
 
 // -------------------------------------------------------------------
 
-// RequestProgramUpgrade
+// PostProgram
 
 // required uint32 seqno = 1;
-inline bool RequestProgramUpgrade::has_seqno() const {
+inline bool PostProgram::has_seqno() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void RequestProgramUpgrade::set_has_seqno() {
+inline void PostProgram::set_has_seqno() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void RequestProgramUpgrade::clear_has_seqno() {
+inline void PostProgram::clear_has_seqno() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void RequestProgramUpgrade::clear_seqno() {
+inline void PostProgram::clear_seqno() {
   seqno_ = 0u;
   clear_has_seqno();
 }
-inline ::google::protobuf::uint32 RequestProgramUpgrade::seqno() const {
+inline ::google::protobuf::uint32 PostProgram::seqno() const {
   return seqno_;
 }
-inline void RequestProgramUpgrade::set_seqno(::google::protobuf::uint32 value) {
+inline void PostProgram::set_seqno(::google::protobuf::uint32 value) {
   set_has_seqno();
   seqno_ = value;
 }
 
-// required string hardware = 2;
-inline bool RequestProgramUpgrade::has_hardware() const {
+// required string name = 2;
+inline bool PostProgram::has_name() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void RequestProgramUpgrade::set_has_hardware() {
+inline void PostProgram::set_has_name() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void RequestProgramUpgrade::clear_has_hardware() {
+inline void PostProgram::clear_has_name() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void RequestProgramUpgrade::clear_hardware() {
-  if (hardware_ != &::google::protobuf::internal::kEmptyString) {
-    hardware_->clear();
+inline void PostProgram::clear_name() {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    name_->clear();
   }
-  clear_has_hardware();
+  clear_has_name();
 }
-inline const ::std::string& RequestProgramUpgrade::hardware() const {
-  return *hardware_;
+inline const ::std::string& PostProgram::name() const {
+  return *name_;
 }
-inline void RequestProgramUpgrade::set_hardware(const ::std::string& value) {
-  set_has_hardware();
-  if (hardware_ == &::google::protobuf::internal::kEmptyString) {
-    hardware_ = new ::std::string;
+inline void PostProgram::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
   }
-  hardware_->assign(value);
+  name_->assign(value);
 }
-inline void RequestProgramUpgrade::set_hardware(const char* value) {
-  set_has_hardware();
-  if (hardware_ == &::google::protobuf::internal::kEmptyString) {
-    hardware_ = new ::std::string;
+inline void PostProgram::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
   }
-  hardware_->assign(value);
+  name_->assign(value);
 }
-inline void RequestProgramUpgrade::set_hardware(const char* value, size_t size) {
-  set_has_hardware();
-  if (hardware_ == &::google::protobuf::internal::kEmptyString) {
-    hardware_ = new ::std::string;
+inline void PostProgram::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
   }
-  hardware_->assign(reinterpret_cast<const char*>(value), size);
+  name_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* RequestProgramUpgrade::mutable_hardware() {
-  set_has_hardware();
-  if (hardware_ == &::google::protobuf::internal::kEmptyString) {
-    hardware_ = new ::std::string;
+inline ::std::string* PostProgram::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
   }
-  return hardware_;
+  return name_;
 }
-inline ::std::string* RequestProgramUpgrade::release_hardware() {
-  clear_has_hardware();
-  if (hardware_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* PostProgram::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = hardware_;
-    hardware_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void RequestProgramUpgrade::set_allocated_hardware(::std::string* hardware) {
-  if (hardware_ != &::google::protobuf::internal::kEmptyString) {
-    delete hardware_;
+inline void PostProgram::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    delete name_;
   }
-  if (hardware) {
-    set_has_hardware();
-    hardware_ = hardware;
+  if (name) {
+    set_has_name();
+    name_ = name;
   } else {
-    clear_has_hardware();
-    hardware_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required string software = 3;
-inline bool RequestProgramUpgrade::has_software() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void RequestProgramUpgrade::set_has_software() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void RequestProgramUpgrade::clear_has_software() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void RequestProgramUpgrade::clear_software() {
-  if (software_ != &::google::protobuf::internal::kEmptyString) {
-    software_->clear();
-  }
-  clear_has_software();
-}
-inline const ::std::string& RequestProgramUpgrade::software() const {
-  return *software_;
-}
-inline void RequestProgramUpgrade::set_software(const ::std::string& value) {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  software_->assign(value);
-}
-inline void RequestProgramUpgrade::set_software(const char* value) {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  software_->assign(value);
-}
-inline void RequestProgramUpgrade::set_software(const char* value, size_t size) {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  software_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestProgramUpgrade::mutable_software() {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  return software_;
-}
-inline ::std::string* RequestProgramUpgrade::release_software() {
-  clear_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = software_;
-    software_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestProgramUpgrade::set_allocated_software(::std::string* software) {
-  if (software_ != &::google::protobuf::internal::kEmptyString) {
-    delete software_;
-  }
-  if (software) {
-    set_has_software();
-    software_ = software;
-  } else {
-    clear_has_software();
-    software_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string extradata = 4;
-inline bool RequestProgramUpgrade::has_extradata() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void RequestProgramUpgrade::set_has_extradata() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void RequestProgramUpgrade::clear_has_extradata() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void RequestProgramUpgrade::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& RequestProgramUpgrade::extradata() const {
-  return *extradata_;
-}
-inline void RequestProgramUpgrade::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void RequestProgramUpgrade::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void RequestProgramUpgrade::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestProgramUpgrade::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* RequestProgramUpgrade::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestProgramUpgrade::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// AckProgramUpgrade
-
-// required uint32 seqno = 1;
-inline bool AckProgramUpgrade::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckProgramUpgrade::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckProgramUpgrade::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckProgramUpgrade::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckProgramUpgrade::seqno() const {
-  return seqno_;
-}
-inline void AckProgramUpgrade::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckProgramUpgrade::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckProgramUpgrade::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckProgramUpgrade::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckProgramUpgrade::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckProgramUpgrade::result() const {
-  return result_;
-}
-inline void AckProgramUpgrade::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// required string software = 3;
-inline bool AckProgramUpgrade::has_software() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void AckProgramUpgrade::set_has_software() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void AckProgramUpgrade::clear_has_software() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void AckProgramUpgrade::clear_software() {
-  if (software_ != &::google::protobuf::internal::kEmptyString) {
-    software_->clear();
-  }
-  clear_has_software();
-}
-inline const ::std::string& AckProgramUpgrade::software() const {
-  return *software_;
-}
-inline void AckProgramUpgrade::set_software(const ::std::string& value) {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  software_->assign(value);
-}
-inline void AckProgramUpgrade::set_software(const char* value) {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  software_->assign(value);
-}
-inline void AckProgramUpgrade::set_software(const char* value, size_t size) {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  software_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckProgramUpgrade::mutable_software() {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  return software_;
-}
-inline ::std::string* AckProgramUpgrade::release_software() {
-  clear_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = software_;
-    software_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckProgramUpgrade::set_allocated_software(::std::string* software) {
-  if (software_ != &::google::protobuf::internal::kEmptyString) {
-    delete software_;
-  }
-  if (software) {
-    set_has_software();
-    software_ = software;
-  } else {
-    clear_has_software();
-    software_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required int32 length = 4;
-inline bool AckProgramUpgrade::has_length() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void AckProgramUpgrade::set_has_length() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void AckProgramUpgrade::clear_has_length() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void AckProgramUpgrade::clear_length() {
-  length_ = 0;
-  clear_has_length();
-}
-inline ::google::protobuf::int32 AckProgramUpgrade::length() const {
-  return length_;
-}
-inline void AckProgramUpgrade::set_length(::google::protobuf::int32 value) {
-  set_has_length();
-  length_ = value;
-}
-
-// required bool forced = 5;
-inline bool AckProgramUpgrade::has_forced() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void AckProgramUpgrade::set_has_forced() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void AckProgramUpgrade::clear_has_forced() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void AckProgramUpgrade::clear_forced() {
-  forced_ = false;
-  clear_has_forced();
-}
-inline bool AckProgramUpgrade::forced() const {
-  return forced_;
-}
-inline void AckProgramUpgrade::set_forced(bool value) {
-  set_has_forced();
-  forced_ = value;
-}
-
-// optional string extradata = 6;
-inline bool AckProgramUpgrade::has_extradata() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void AckProgramUpgrade::set_has_extradata() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void AckProgramUpgrade::clear_has_extradata() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void AckProgramUpgrade::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& AckProgramUpgrade::extradata() const {
-  return *extradata_;
-}
-inline void AckProgramUpgrade::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void AckProgramUpgrade::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void AckProgramUpgrade::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckProgramUpgrade::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* AckProgramUpgrade::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckProgramUpgrade::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// RequestProgramDownload
-
-// required uint32 seqno = 1;
-inline bool RequestProgramDownload::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void RequestProgramDownload::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void RequestProgramDownload::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void RequestProgramDownload::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 RequestProgramDownload::seqno() const {
-  return seqno_;
-}
-inline void RequestProgramDownload::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required string software = 2;
-inline bool RequestProgramDownload::has_software() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void RequestProgramDownload::set_has_software() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void RequestProgramDownload::clear_has_software() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void RequestProgramDownload::clear_software() {
-  if (software_ != &::google::protobuf::internal::kEmptyString) {
-    software_->clear();
-  }
-  clear_has_software();
-}
-inline const ::std::string& RequestProgramDownload::software() const {
-  return *software_;
-}
-inline void RequestProgramDownload::set_software(const ::std::string& value) {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  software_->assign(value);
-}
-inline void RequestProgramDownload::set_software(const char* value) {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  software_->assign(value);
-}
-inline void RequestProgramDownload::set_software(const char* value, size_t size) {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  software_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestProgramDownload::mutable_software() {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  return software_;
-}
-inline ::std::string* RequestProgramDownload::release_software() {
-  clear_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = software_;
-    software_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestProgramDownload::set_allocated_software(::std::string* software) {
-  if (software_ != &::google::protobuf::internal::kEmptyString) {
-    delete software_;
-  }
-  if (software) {
-    set_has_software();
-    software_ = software;
-  } else {
-    clear_has_software();
-    software_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
 // required int32 offset = 3;
-inline bool RequestProgramDownload::has_offset() const {
+inline bool PostProgram::has_offset() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void RequestProgramDownload::set_has_offset() {
+inline void PostProgram::set_has_offset() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void RequestProgramDownload::clear_has_offset() {
+inline void PostProgram::clear_has_offset() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void RequestProgramDownload::clear_offset() {
+inline void PostProgram::clear_offset() {
   offset_ = 0;
   clear_has_offset();
 }
-inline ::google::protobuf::int32 RequestProgramDownload::offset() const {
+inline ::google::protobuf::int32 PostProgram::offset() const {
   return offset_;
 }
-inline void RequestProgramDownload::set_offset(::google::protobuf::int32 value) {
+inline void PostProgram::set_offset(::google::protobuf::int32 value) {
   set_has_offset();
   offset_ = value;
 }
 
-// required int32 length = 4;
-inline bool RequestProgramDownload::has_length() const {
+// optional bytes data = 4;
+inline bool PostProgram::has_data() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void RequestProgramDownload::set_has_length() {
+inline void PostProgram::set_has_data() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void RequestProgramDownload::clear_has_length() {
+inline void PostProgram::clear_has_data() {
   _has_bits_[0] &= ~0x00000008u;
 }
-inline void RequestProgramDownload::clear_length() {
-  length_ = 0;
-  clear_has_length();
-}
-inline ::google::protobuf::int32 RequestProgramDownload::length() const {
-  return length_;
-}
-inline void RequestProgramDownload::set_length(::google::protobuf::int32 value) {
-  set_has_length();
-  length_ = value;
-}
-
-// optional string extradata = 5;
-inline bool RequestProgramDownload::has_extradata() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void RequestProgramDownload::set_has_extradata() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void RequestProgramDownload::clear_has_extradata() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void RequestProgramDownload::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& RequestProgramDownload::extradata() const {
-  return *extradata_;
-}
-inline void RequestProgramDownload::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void RequestProgramDownload::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void RequestProgramDownload::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestProgramDownload::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* RequestProgramDownload::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestProgramDownload::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// AckProgramDownload
-
-// required uint32 seqno = 1;
-inline bool AckProgramDownload::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckProgramDownload::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckProgramDownload::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckProgramDownload::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckProgramDownload::seqno() const {
-  return seqno_;
-}
-inline void AckProgramDownload::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckProgramDownload::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckProgramDownload::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckProgramDownload::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckProgramDownload::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckProgramDownload::result() const {
-  return result_;
-}
-inline void AckProgramDownload::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// required string software = 3;
-inline bool AckProgramDownload::has_software() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void AckProgramDownload::set_has_software() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void AckProgramDownload::clear_has_software() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void AckProgramDownload::clear_software() {
-  if (software_ != &::google::protobuf::internal::kEmptyString) {
-    software_->clear();
-  }
-  clear_has_software();
-}
-inline const ::std::string& AckProgramDownload::software() const {
-  return *software_;
-}
-inline void AckProgramDownload::set_software(const ::std::string& value) {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  software_->assign(value);
-}
-inline void AckProgramDownload::set_software(const char* value) {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  software_->assign(value);
-}
-inline void AckProgramDownload::set_software(const char* value, size_t size) {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  software_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckProgramDownload::mutable_software() {
-  set_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    software_ = new ::std::string;
-  }
-  return software_;
-}
-inline ::std::string* AckProgramDownload::release_software() {
-  clear_has_software();
-  if (software_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = software_;
-    software_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckProgramDownload::set_allocated_software(::std::string* software) {
-  if (software_ != &::google::protobuf::internal::kEmptyString) {
-    delete software_;
-  }
-  if (software) {
-    set_has_software();
-    software_ = software;
-  } else {
-    clear_has_software();
-    software_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required int32 offset = 4;
-inline bool AckProgramDownload::has_offset() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void AckProgramDownload::set_has_offset() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void AckProgramDownload::clear_has_offset() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void AckProgramDownload::clear_offset() {
-  offset_ = 0;
-  clear_has_offset();
-}
-inline ::google::protobuf::int32 AckProgramDownload::offset() const {
-  return offset_;
-}
-inline void AckProgramDownload::set_offset(::google::protobuf::int32 value) {
-  set_has_offset();
-  offset_ = value;
-}
-
-// required int32 length = 5;
-inline bool AckProgramDownload::has_length() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void AckProgramDownload::set_has_length() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void AckProgramDownload::clear_has_length() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void AckProgramDownload::clear_length() {
-  length_ = 0;
-  clear_has_length();
-}
-inline ::google::protobuf::int32 AckProgramDownload::length() const {
-  return length_;
-}
-inline void AckProgramDownload::set_length(::google::protobuf::int32 value) {
-  set_has_length();
-  length_ = value;
-}
-
-// optional bytes data = 6;
-inline bool AckProgramDownload::has_data() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void AckProgramDownload::set_has_data() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void AckProgramDownload::clear_has_data() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void AckProgramDownload::clear_data() {
+inline void PostProgram::clear_data() {
   if (data_ != &::google::protobuf::internal::kEmptyString) {
     data_->clear();
   }
   clear_has_data();
 }
-inline const ::std::string& AckProgramDownload::data() const {
+inline const ::std::string& PostProgram::data() const {
   return *data_;
 }
-inline void AckProgramDownload::set_data(const ::std::string& value) {
+inline void PostProgram::set_data(const ::std::string& value) {
   set_has_data();
   if (data_ == &::google::protobuf::internal::kEmptyString) {
     data_ = new ::std::string;
   }
   data_->assign(value);
 }
-inline void AckProgramDownload::set_data(const char* value) {
+inline void PostProgram::set_data(const char* value) {
   set_has_data();
   if (data_ == &::google::protobuf::internal::kEmptyString) {
     data_ = new ::std::string;
   }
   data_->assign(value);
 }
-inline void AckProgramDownload::set_data(const void* value, size_t size) {
+inline void PostProgram::set_data(const void* value, size_t size) {
   set_has_data();
   if (data_ == &::google::protobuf::internal::kEmptyString) {
     data_ = new ::std::string;
   }
   data_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* AckProgramDownload::mutable_data() {
+inline ::std::string* PostProgram::mutable_data() {
   set_has_data();
   if (data_ == &::google::protobuf::internal::kEmptyString) {
     data_ = new ::std::string;
   }
   return data_;
 }
-inline ::std::string* AckProgramDownload::release_data() {
+inline ::std::string* PostProgram::release_data() {
   clear_has_data();
   if (data_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
@@ -14938,7 +11596,7 @@ inline ::std::string* AckProgramDownload::release_data() {
     return temp;
   }
 }
-inline void AckProgramDownload::set_allocated_data(::std::string* data) {
+inline void PostProgram::set_allocated_data(::std::string* data) {
   if (data_ != &::google::protobuf::internal::kEmptyString) {
     delete data_;
   }
@@ -14951,95 +11609,769 @@ inline void AckProgramDownload::set_allocated_data(::std::string* data) {
   }
 }
 
+// optional int32 fwtype = 5;
+inline bool PostProgram::has_fwtype() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void PostProgram::set_has_fwtype() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void PostProgram::clear_has_fwtype() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void PostProgram::clear_fwtype() {
+  fwtype_ = 0;
+  clear_has_fwtype();
+}
+inline ::google::protobuf::int32 PostProgram::fwtype() const {
+  return fwtype_;
+}
+inline void PostProgram::set_fwtype(::google::protobuf::int32 value) {
+  set_has_fwtype();
+  fwtype_ = value;
+}
+
+// optional int32 length = 6;
+inline bool PostProgram::has_length() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void PostProgram::set_has_length() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void PostProgram::clear_has_length() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void PostProgram::clear_length() {
+  length_ = 0;
+  clear_has_length();
+}
+inline ::google::protobuf::int32 PostProgram::length() const {
+  return length_;
+}
+inline void PostProgram::set_length(::google::protobuf::int32 value) {
+  set_has_length();
+  length_ = value;
+}
+
 // optional uint32 crc32 = 7;
-inline bool AckProgramDownload::has_crc32() const {
+inline bool PostProgram::has_crc32() const {
   return (_has_bits_[0] & 0x00000040u) != 0;
 }
-inline void AckProgramDownload::set_has_crc32() {
+inline void PostProgram::set_has_crc32() {
   _has_bits_[0] |= 0x00000040u;
 }
-inline void AckProgramDownload::clear_has_crc32() {
+inline void PostProgram::clear_has_crc32() {
   _has_bits_[0] &= ~0x00000040u;
 }
-inline void AckProgramDownload::clear_crc32() {
+inline void PostProgram::clear_crc32() {
   crc32_ = 0u;
   clear_has_crc32();
 }
-inline ::google::protobuf::uint32 AckProgramDownload::crc32() const {
+inline ::google::protobuf::uint32 PostProgram::crc32() const {
   return crc32_;
 }
-inline void AckProgramDownload::set_crc32(::google::protobuf::uint32 value) {
+inline void PostProgram::set_crc32(::google::protobuf::uint32 value) {
   set_has_crc32();
   crc32_ = value;
 }
 
-// optional string extradata = 8;
-inline bool AckProgramDownload::has_extradata() const {
+// optional bool release = 8;
+inline bool PostProgram::has_release() const {
   return (_has_bits_[0] & 0x00000080u) != 0;
 }
-inline void AckProgramDownload::set_has_extradata() {
+inline void PostProgram::set_has_release() {
   _has_bits_[0] |= 0x00000080u;
 }
-inline void AckProgramDownload::clear_has_extradata() {
+inline void PostProgram::clear_has_release() {
   _has_bits_[0] &= ~0x00000080u;
 }
-inline void AckProgramDownload::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
+inline void PostProgram::clear_release() {
+  release_ = false;
+  clear_has_release();
+}
+inline bool PostProgram::release() const {
+  return release_;
+}
+inline void PostProgram::set_release(bool value) {
+  set_has_release();
+  release_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// AckPostProgram
+
+// required uint32 seqno = 1;
+inline bool AckPostProgram::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckPostProgram::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckPostProgram::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckPostProgram::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckPostProgram::seqno() const {
+  return seqno_;
+}
+inline void AckPostProgram::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 result = 2;
+inline bool AckPostProgram::has_result() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckPostProgram::set_has_result() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckPostProgram::clear_has_result() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckPostProgram::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::google::protobuf::int32 AckPostProgram::result() const {
+  return result_;
+}
+inline void AckPostProgram::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// NotifyProgram
+
+// required uint32 seqno = 1;
+inline bool NotifyProgram::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void NotifyProgram::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void NotifyProgram::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void NotifyProgram::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 NotifyProgram::seqno() const {
+  return seqno_;
+}
+inline void NotifyProgram::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string uavid = 2;
+inline bool NotifyProgram::has_uavid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void NotifyProgram::set_has_uavid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void NotifyProgram::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void NotifyProgram::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
   }
-  clear_has_extradata();
+  clear_has_uavid();
 }
-inline const ::std::string& AckProgramDownload::extradata() const {
-  return *extradata_;
+inline const ::std::string& NotifyProgram::uavid() const {
+  return *uavid_;
 }
-inline void AckProgramDownload::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline void NotifyProgram::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
   }
-  extradata_->assign(value);
+  uavid_->assign(value);
 }
-inline void AckProgramDownload::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline void NotifyProgram::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
   }
-  extradata_->assign(value);
+  uavid_->assign(value);
 }
-inline void AckProgramDownload::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline void NotifyProgram::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
   }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* AckProgramDownload::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline ::std::string* NotifyProgram::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
   }
-  return extradata_;
+  return uavid_;
 }
-inline ::std::string* AckProgramDownload::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* NotifyProgram::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void AckProgramDownload::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
+inline void NotifyProgram::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
   }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
   } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string name = 3;
+inline bool NotifyProgram::has_name() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void NotifyProgram::set_has_name() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void NotifyProgram::clear_has_name() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void NotifyProgram::clear_name() {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& NotifyProgram::name() const {
+  return *name_;
+}
+inline void NotifyProgram::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void NotifyProgram::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void NotifyProgram::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* NotifyProgram::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  return name_;
+}
+inline ::std::string* NotifyProgram::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void NotifyProgram::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required int32 fwtype = 5;
+inline bool NotifyProgram::has_fwtype() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void NotifyProgram::set_has_fwtype() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void NotifyProgram::clear_has_fwtype() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void NotifyProgram::clear_fwtype() {
+  fwtype_ = 0;
+  clear_has_fwtype();
+}
+inline ::google::protobuf::int32 NotifyProgram::fwtype() const {
+  return fwtype_;
+}
+inline void NotifyProgram::set_fwtype(::google::protobuf::int32 value) {
+  set_has_fwtype();
+  fwtype_ = value;
+}
+
+// required int32 length = 6;
+inline bool NotifyProgram::has_length() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void NotifyProgram::set_has_length() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void NotifyProgram::clear_has_length() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void NotifyProgram::clear_length() {
+  length_ = 0;
+  clear_has_length();
+}
+inline ::google::protobuf::int32 NotifyProgram::length() const {
+  return length_;
+}
+inline void NotifyProgram::set_length(::google::protobuf::int32 value) {
+  set_has_length();
+  length_ = value;
+}
+
+// required uint32 crc32 = 7;
+inline bool NotifyProgram::has_crc32() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void NotifyProgram::set_has_crc32() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void NotifyProgram::clear_has_crc32() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void NotifyProgram::clear_crc32() {
+  crc32_ = 0u;
+  clear_has_crc32();
+}
+inline ::google::protobuf::uint32 NotifyProgram::crc32() const {
+  return crc32_;
+}
+inline void NotifyProgram::set_crc32(::google::protobuf::uint32 value) {
+  set_has_crc32();
+  crc32_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// AckNotifyProgram
+
+// required uint32 seqno = 1;
+inline bool AckNotifyProgram::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckNotifyProgram::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckNotifyProgram::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckNotifyProgram::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckNotifyProgram::seqno() const {
+  return seqno_;
+}
+inline void AckNotifyProgram::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 result = 2;
+inline bool AckNotifyProgram::has_result() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckNotifyProgram::set_has_result() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckNotifyProgram::clear_has_result() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckNotifyProgram::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::google::protobuf::int32 AckNotifyProgram::result() const {
+  return result_;
+}
+inline void AckNotifyProgram::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// RequestProgram
+
+// required uint32 seqno = 1;
+inline bool RequestProgram::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void RequestProgram::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void RequestProgram::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void RequestProgram::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 RequestProgram::seqno() const {
+  return seqno_;
+}
+inline void RequestProgram::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string name = 2;
+inline bool RequestProgram::has_name() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void RequestProgram::set_has_name() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void RequestProgram::clear_has_name() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void RequestProgram::clear_name() {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& RequestProgram::name() const {
+  return *name_;
+}
+inline void RequestProgram::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void RequestProgram::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void RequestProgram::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestProgram::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  return name_;
+}
+inline ::std::string* RequestProgram::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestProgram::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required int32 offset = 3;
+inline bool RequestProgram::has_offset() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void RequestProgram::set_has_offset() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void RequestProgram::clear_has_offset() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void RequestProgram::clear_offset() {
+  offset_ = 0;
+  clear_has_offset();
+}
+inline ::google::protobuf::int32 RequestProgram::offset() const {
+  return offset_;
+}
+inline void RequestProgram::set_offset(::google::protobuf::int32 value) {
+  set_has_offset();
+  offset_ = value;
+}
+
+// required int32 length = 4;
+inline bool RequestProgram::has_length() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void RequestProgram::set_has_length() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void RequestProgram::clear_has_length() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void RequestProgram::clear_length() {
+  length_ = 0;
+  clear_has_length();
+}
+inline ::google::protobuf::int32 RequestProgram::length() const {
+  return length_;
+}
+inline void RequestProgram::set_length(::google::protobuf::int32 value) {
+  set_has_length();
+  length_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// AckRequestProgram
+
+// required uint32 seqno = 1;
+inline bool AckRequestProgram::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckRequestProgram::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckRequestProgram::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckRequestProgram::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckRequestProgram::seqno() const {
+  return seqno_;
+}
+inline void AckRequestProgram::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 result = 2;
+inline bool AckRequestProgram::has_result() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckRequestProgram::set_has_result() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckRequestProgram::clear_has_result() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckRequestProgram::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::google::protobuf::int32 AckRequestProgram::result() const {
+  return result_;
+}
+inline void AckRequestProgram::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
+}
+
+// required string name = 3;
+inline bool AckRequestProgram::has_name() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void AckRequestProgram::set_has_name() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void AckRequestProgram::clear_has_name() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void AckRequestProgram::clear_name() {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& AckRequestProgram::name() const {
+  return *name_;
+}
+inline void AckRequestProgram::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void AckRequestProgram::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void AckRequestProgram::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* AckRequestProgram::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  return name_;
+}
+inline ::std::string* AckRequestProgram::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void AckRequestProgram::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required int32 offset = 4;
+inline bool AckRequestProgram::has_offset() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void AckRequestProgram::set_has_offset() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void AckRequestProgram::clear_has_offset() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void AckRequestProgram::clear_offset() {
+  offset_ = 0;
+  clear_has_offset();
+}
+inline ::google::protobuf::int32 AckRequestProgram::offset() const {
+  return offset_;
+}
+inline void AckRequestProgram::set_offset(::google::protobuf::int32 value) {
+  set_has_offset();
+  offset_ = value;
+}
+
+// optional bytes data = 6;
+inline bool AckRequestProgram::has_data() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void AckRequestProgram::set_has_data() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void AckRequestProgram::clear_has_data() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void AckRequestProgram::clear_data() {
+  if (data_ != &::google::protobuf::internal::kEmptyString) {
+    data_->clear();
+  }
+  clear_has_data();
+}
+inline const ::std::string& AckRequestProgram::data() const {
+  return *data_;
+}
+inline void AckRequestProgram::set_data(const ::std::string& value) {
+  set_has_data();
+  if (data_ == &::google::protobuf::internal::kEmptyString) {
+    data_ = new ::std::string;
+  }
+  data_->assign(value);
+}
+inline void AckRequestProgram::set_data(const char* value) {
+  set_has_data();
+  if (data_ == &::google::protobuf::internal::kEmptyString) {
+    data_ = new ::std::string;
+  }
+  data_->assign(value);
+}
+inline void AckRequestProgram::set_data(const void* value, size_t size) {
+  set_has_data();
+  if (data_ == &::google::protobuf::internal::kEmptyString) {
+    data_ = new ::std::string;
+  }
+  data_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* AckRequestProgram::mutable_data() {
+  set_has_data();
+  if (data_ == &::google::protobuf::internal::kEmptyString) {
+    data_ = new ::std::string;
+  }
+  return data_;
+}
+inline ::std::string* AckRequestProgram::release_data() {
+  clear_has_data();
+  if (data_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = data_;
+    data_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void AckRequestProgram::set_allocated_data(::std::string* data) {
+  if (data_ != &::google::protobuf::internal::kEmptyString) {
+    delete data_;
+  }
+  if (data) {
+    set_has_data();
+    data_ = data;
+  } else {
+    clear_has_data();
+    data_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
@@ -16027,362 +13359,78 @@ inline void AckUavIdentityAuthentication::set_allocated_extradata(::std::string*
 
 // -------------------------------------------------------------------
 
-// RequestTrackerIdentityAuthentication
+// RequestNewGS
 
 // required uint32 seqno = 1;
-inline bool RequestTrackerIdentityAuthentication::has_seqno() const {
+inline bool RequestNewGS::has_seqno() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void RequestTrackerIdentityAuthentication::set_has_seqno() {
+inline void RequestNewGS::set_has_seqno() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void RequestTrackerIdentityAuthentication::clear_has_seqno() {
+inline void RequestNewGS::clear_has_seqno() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void RequestTrackerIdentityAuthentication::clear_seqno() {
+inline void RequestNewGS::clear_seqno() {
   seqno_ = 0u;
   clear_has_seqno();
 }
-inline ::google::protobuf::uint32 RequestTrackerIdentityAuthentication::seqno() const {
+inline ::google::protobuf::uint32 RequestNewGS::seqno() const {
   return seqno_;
 }
-inline void RequestTrackerIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required string trackerid = 2;
-inline bool RequestTrackerIdentityAuthentication::has_trackerid() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void RequestTrackerIdentityAuthentication::set_has_trackerid() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void RequestTrackerIdentityAuthentication::clear_has_trackerid() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void RequestTrackerIdentityAuthentication::clear_trackerid() {
-  if (trackerid_ != &::google::protobuf::internal::kEmptyString) {
-    trackerid_->clear();
-  }
-  clear_has_trackerid();
-}
-inline const ::std::string& RequestTrackerIdentityAuthentication::trackerid() const {
-  return *trackerid_;
-}
-inline void RequestTrackerIdentityAuthentication::set_trackerid(const ::std::string& value) {
-  set_has_trackerid();
-  if (trackerid_ == &::google::protobuf::internal::kEmptyString) {
-    trackerid_ = new ::std::string;
-  }
-  trackerid_->assign(value);
-}
-inline void RequestTrackerIdentityAuthentication::set_trackerid(const char* value) {
-  set_has_trackerid();
-  if (trackerid_ == &::google::protobuf::internal::kEmptyString) {
-    trackerid_ = new ::std::string;
-  }
-  trackerid_->assign(value);
-}
-inline void RequestTrackerIdentityAuthentication::set_trackerid(const char* value, size_t size) {
-  set_has_trackerid();
-  if (trackerid_ == &::google::protobuf::internal::kEmptyString) {
-    trackerid_ = new ::std::string;
-  }
-  trackerid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestTrackerIdentityAuthentication::mutable_trackerid() {
-  set_has_trackerid();
-  if (trackerid_ == &::google::protobuf::internal::kEmptyString) {
-    trackerid_ = new ::std::string;
-  }
-  return trackerid_;
-}
-inline ::std::string* RequestTrackerIdentityAuthentication::release_trackerid() {
-  clear_has_trackerid();
-  if (trackerid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = trackerid_;
-    trackerid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestTrackerIdentityAuthentication::set_allocated_trackerid(::std::string* trackerid) {
-  if (trackerid_ != &::google::protobuf::internal::kEmptyString) {
-    delete trackerid_;
-  }
-  if (trackerid) {
-    set_has_trackerid();
-    trackerid_ = trackerid;
-  } else {
-    clear_has_trackerid();
-    trackerid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string extradata = 3;
-inline bool RequestTrackerIdentityAuthentication::has_extradata() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void RequestTrackerIdentityAuthentication::set_has_extradata() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void RequestTrackerIdentityAuthentication::clear_has_extradata() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void RequestTrackerIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& RequestTrackerIdentityAuthentication::extradata() const {
-  return *extradata_;
-}
-inline void RequestTrackerIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void RequestTrackerIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void RequestTrackerIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestTrackerIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* RequestTrackerIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestTrackerIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// AckTrackerIdentityAuthentication
-
-// required uint32 seqno = 1;
-inline bool AckTrackerIdentityAuthentication::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckTrackerIdentityAuthentication::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckTrackerIdentityAuthentication::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckTrackerIdentityAuthentication::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckTrackerIdentityAuthentication::seqno() const {
-  return seqno_;
-}
-inline void AckTrackerIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckTrackerIdentityAuthentication::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckTrackerIdentityAuthentication::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckTrackerIdentityAuthentication::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckTrackerIdentityAuthentication::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckTrackerIdentityAuthentication::result() const {
-  return result_;
-}
-inline void AckTrackerIdentityAuthentication::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// optional string extradata = 3;
-inline bool AckTrackerIdentityAuthentication::has_extradata() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void AckTrackerIdentityAuthentication::set_has_extradata() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void AckTrackerIdentityAuthentication::clear_has_extradata() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void AckTrackerIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& AckTrackerIdentityAuthentication::extradata() const {
-  return *extradata_;
-}
-inline void AckTrackerIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void AckTrackerIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void AckTrackerIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckTrackerIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* AckTrackerIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckTrackerIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// RequestGVIdentityAuthentication
-
-// required uint32 seqno = 1;
-inline bool RequestGVIdentityAuthentication::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void RequestGVIdentityAuthentication::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void RequestGVIdentityAuthentication::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void RequestGVIdentityAuthentication::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 RequestGVIdentityAuthentication::seqno() const {
-  return seqno_;
-}
-inline void RequestGVIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
+inline void RequestNewGS::set_seqno(::google::protobuf::uint32 value) {
   set_has_seqno();
   seqno_ = value;
 }
 
 // required string userid = 2;
-inline bool RequestGVIdentityAuthentication::has_userid() const {
+inline bool RequestNewGS::has_userid() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void RequestGVIdentityAuthentication::set_has_userid() {
+inline void RequestNewGS::set_has_userid() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void RequestGVIdentityAuthentication::clear_has_userid() {
+inline void RequestNewGS::clear_has_userid() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void RequestGVIdentityAuthentication::clear_userid() {
+inline void RequestNewGS::clear_userid() {
   if (userid_ != &::google::protobuf::internal::kEmptyString) {
     userid_->clear();
   }
   clear_has_userid();
 }
-inline const ::std::string& RequestGVIdentityAuthentication::userid() const {
+inline const ::std::string& RequestNewGS::userid() const {
   return *userid_;
 }
-inline void RequestGVIdentityAuthentication::set_userid(const ::std::string& value) {
+inline void RequestNewGS::set_userid(const ::std::string& value) {
   set_has_userid();
   if (userid_ == &::google::protobuf::internal::kEmptyString) {
     userid_ = new ::std::string;
   }
   userid_->assign(value);
 }
-inline void RequestGVIdentityAuthentication::set_userid(const char* value) {
+inline void RequestNewGS::set_userid(const char* value) {
   set_has_userid();
   if (userid_ == &::google::protobuf::internal::kEmptyString) {
     userid_ = new ::std::string;
   }
   userid_->assign(value);
 }
-inline void RequestGVIdentityAuthentication::set_userid(const char* value, size_t size) {
+inline void RequestNewGS::set_userid(const char* value, size_t size) {
   set_has_userid();
   if (userid_ == &::google::protobuf::internal::kEmptyString) {
     userid_ = new ::std::string;
   }
   userid_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* RequestGVIdentityAuthentication::mutable_userid() {
+inline ::std::string* RequestNewGS::mutable_userid() {
   set_has_userid();
   if (userid_ == &::google::protobuf::internal::kEmptyString) {
     userid_ = new ::std::string;
   }
   return userid_;
 }
-inline ::std::string* RequestGVIdentityAuthentication::release_userid() {
+inline ::std::string* RequestNewGS::release_userid() {
   clear_has_userid();
   if (userid_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
@@ -16392,7 +13440,7 @@ inline ::std::string* RequestGVIdentityAuthentication::release_userid() {
     return temp;
   }
 }
-inline void RequestGVIdentityAuthentication::set_allocated_userid(::std::string* userid) {
+inline void RequestNewGS::set_allocated_userid(::std::string* userid) {
   if (userid_ != &::google::protobuf::internal::kEmptyString) {
     delete userid_;
   }
@@ -16405,54 +13453,194 @@ inline void RequestGVIdentityAuthentication::set_allocated_userid(::std::string*
   }
 }
 
-// required string password = 3;
-inline bool RequestGVIdentityAuthentication::has_password() const {
+// optional string phone = 3;
+inline bool RequestNewGS::has_phone() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void RequestGVIdentityAuthentication::set_has_password() {
+inline void RequestNewGS::set_has_phone() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void RequestGVIdentityAuthentication::clear_has_password() {
+inline void RequestNewGS::clear_has_phone() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void RequestGVIdentityAuthentication::clear_password() {
+inline void RequestNewGS::clear_phone() {
+  if (phone_ != &::google::protobuf::internal::kEmptyString) {
+    phone_->clear();
+  }
+  clear_has_phone();
+}
+inline const ::std::string& RequestNewGS::phone() const {
+  return *phone_;
+}
+inline void RequestNewGS::set_phone(const ::std::string& value) {
+  set_has_phone();
+  if (phone_ == &::google::protobuf::internal::kEmptyString) {
+    phone_ = new ::std::string;
+  }
+  phone_->assign(value);
+}
+inline void RequestNewGS::set_phone(const char* value) {
+  set_has_phone();
+  if (phone_ == &::google::protobuf::internal::kEmptyString) {
+    phone_ = new ::std::string;
+  }
+  phone_->assign(value);
+}
+inline void RequestNewGS::set_phone(const char* value, size_t size) {
+  set_has_phone();
+  if (phone_ == &::google::protobuf::internal::kEmptyString) {
+    phone_ = new ::std::string;
+  }
+  phone_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestNewGS::mutable_phone() {
+  set_has_phone();
+  if (phone_ == &::google::protobuf::internal::kEmptyString) {
+    phone_ = new ::std::string;
+  }
+  return phone_;
+}
+inline ::std::string* RequestNewGS::release_phone() {
+  clear_has_phone();
+  if (phone_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = phone_;
+    phone_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestNewGS::set_allocated_phone(::std::string* phone) {
+  if (phone_ != &::google::protobuf::internal::kEmptyString) {
+    delete phone_;
+  }
+  if (phone) {
+    set_has_phone();
+    phone_ = phone;
+  } else {
+    clear_has_phone();
+    phone_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string check = 4;
+inline bool RequestNewGS::has_check() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void RequestNewGS::set_has_check() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void RequestNewGS::clear_has_check() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void RequestNewGS::clear_check() {
+  if (check_ != &::google::protobuf::internal::kEmptyString) {
+    check_->clear();
+  }
+  clear_has_check();
+}
+inline const ::std::string& RequestNewGS::check() const {
+  return *check_;
+}
+inline void RequestNewGS::set_check(const ::std::string& value) {
+  set_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    check_ = new ::std::string;
+  }
+  check_->assign(value);
+}
+inline void RequestNewGS::set_check(const char* value) {
+  set_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    check_ = new ::std::string;
+  }
+  check_->assign(value);
+}
+inline void RequestNewGS::set_check(const char* value, size_t size) {
+  set_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    check_ = new ::std::string;
+  }
+  check_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestNewGS::mutable_check() {
+  set_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    check_ = new ::std::string;
+  }
+  return check_;
+}
+inline ::std::string* RequestNewGS::release_check() {
+  clear_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = check_;
+    check_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestNewGS::set_allocated_check(::std::string* check) {
+  if (check_ != &::google::protobuf::internal::kEmptyString) {
+    delete check_;
+  }
+  if (check) {
+    set_has_check();
+    check_ = check;
+  } else {
+    clear_has_check();
+    check_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string password = 5;
+inline bool RequestNewGS::has_password() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void RequestNewGS::set_has_password() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void RequestNewGS::clear_has_password() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void RequestNewGS::clear_password() {
   if (password_ != &::google::protobuf::internal::kEmptyString) {
     password_->clear();
   }
   clear_has_password();
 }
-inline const ::std::string& RequestGVIdentityAuthentication::password() const {
+inline const ::std::string& RequestNewGS::password() const {
   return *password_;
 }
-inline void RequestGVIdentityAuthentication::set_password(const ::std::string& value) {
+inline void RequestNewGS::set_password(const ::std::string& value) {
   set_has_password();
   if (password_ == &::google::protobuf::internal::kEmptyString) {
     password_ = new ::std::string;
   }
   password_->assign(value);
 }
-inline void RequestGVIdentityAuthentication::set_password(const char* value) {
+inline void RequestNewGS::set_password(const char* value) {
   set_has_password();
   if (password_ == &::google::protobuf::internal::kEmptyString) {
     password_ = new ::std::string;
   }
   password_->assign(value);
 }
-inline void RequestGVIdentityAuthentication::set_password(const char* value, size_t size) {
+inline void RequestNewGS::set_password(const char* value, size_t size) {
   set_has_password();
   if (password_ == &::google::protobuf::internal::kEmptyString) {
     password_ = new ::std::string;
   }
   password_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* RequestGVIdentityAuthentication::mutable_password() {
+inline ::std::string* RequestNewGS::mutable_password() {
   set_has_password();
   if (password_ == &::google::protobuf::internal::kEmptyString) {
     password_ = new ::std::string;
   }
   return password_;
 }
-inline ::std::string* RequestGVIdentityAuthentication::release_password() {
+inline ::std::string* RequestNewGS::release_password() {
   clear_has_password();
   if (password_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
@@ -16462,7 +13650,7 @@ inline ::std::string* RequestGVIdentityAuthentication::release_password() {
     return temp;
   }
 }
-inline void RequestGVIdentityAuthentication::set_allocated_password(::std::string* password) {
+inline void RequestNewGS::set_allocated_password(::std::string* password) {
   if (password_ != &::google::protobuf::internal::kEmptyString) {
     delete password_;
   }
@@ -16475,191 +13663,121 @@ inline void RequestGVIdentityAuthentication::set_allocated_password(::std::strin
   }
 }
 
-// optional string extradata = 4;
-inline bool RequestGVIdentityAuthentication::has_extradata() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void RequestGVIdentityAuthentication::set_has_extradata() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void RequestGVIdentityAuthentication::clear_has_extradata() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void RequestGVIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& RequestGVIdentityAuthentication::extradata() const {
-  return *extradata_;
-}
-inline void RequestGVIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void RequestGVIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void RequestGVIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestGVIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* RequestGVIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestGVIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
 // -------------------------------------------------------------------
 
-// AckGVIdentityAuthentication
+// AckNewGS
 
 // required uint32 seqno = 1;
-inline bool AckGVIdentityAuthentication::has_seqno() const {
+inline bool AckNewGS::has_seqno() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void AckGVIdentityAuthentication::set_has_seqno() {
+inline void AckNewGS::set_has_seqno() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void AckGVIdentityAuthentication::clear_has_seqno() {
+inline void AckNewGS::clear_has_seqno() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void AckGVIdentityAuthentication::clear_seqno() {
+inline void AckNewGS::clear_seqno() {
   seqno_ = 0u;
   clear_has_seqno();
 }
-inline ::google::protobuf::uint32 AckGVIdentityAuthentication::seqno() const {
+inline ::google::protobuf::uint32 AckNewGS::seqno() const {
   return seqno_;
 }
-inline void AckGVIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
+inline void AckNewGS::set_seqno(::google::protobuf::uint32 value) {
   set_has_seqno();
   seqno_ = value;
 }
 
 // required int32 result = 2;
-inline bool AckGVIdentityAuthentication::has_result() const {
+inline bool AckNewGS::has_result() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void AckGVIdentityAuthentication::set_has_result() {
+inline void AckNewGS::set_has_result() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void AckGVIdentityAuthentication::clear_has_result() {
+inline void AckNewGS::clear_has_result() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void AckGVIdentityAuthentication::clear_result() {
+inline void AckNewGS::clear_result() {
   result_ = 0;
   clear_has_result();
 }
-inline ::google::protobuf::int32 AckGVIdentityAuthentication::result() const {
+inline ::google::protobuf::int32 AckNewGS::result() const {
   return result_;
 }
-inline void AckGVIdentityAuthentication::set_result(::google::protobuf::int32 value) {
+inline void AckNewGS::set_result(::google::protobuf::int32 value) {
   set_has_result();
   result_ = value;
 }
 
-// optional string extradata = 3;
-inline bool AckGVIdentityAuthentication::has_extradata() const {
+// optional string check = 3;
+inline bool AckNewGS::has_check() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void AckGVIdentityAuthentication::set_has_extradata() {
+inline void AckNewGS::set_has_check() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void AckGVIdentityAuthentication::clear_has_extradata() {
+inline void AckNewGS::clear_has_check() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void AckGVIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
+inline void AckNewGS::clear_check() {
+  if (check_ != &::google::protobuf::internal::kEmptyString) {
+    check_->clear();
   }
-  clear_has_extradata();
+  clear_has_check();
 }
-inline const ::std::string& AckGVIdentityAuthentication::extradata() const {
-  return *extradata_;
+inline const ::std::string& AckNewGS::check() const {
+  return *check_;
 }
-inline void AckGVIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline void AckNewGS::set_check(const ::std::string& value) {
+  set_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    check_ = new ::std::string;
   }
-  extradata_->assign(value);
+  check_->assign(value);
 }
-inline void AckGVIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline void AckNewGS::set_check(const char* value) {
+  set_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    check_ = new ::std::string;
   }
-  extradata_->assign(value);
+  check_->assign(value);
 }
-inline void AckGVIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline void AckNewGS::set_check(const char* value, size_t size) {
+  set_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    check_ = new ::std::string;
   }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
+  check_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* AckGVIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline ::std::string* AckNewGS::mutable_check() {
+  set_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    check_ = new ::std::string;
   }
-  return extradata_;
+  return check_;
 }
-inline ::std::string* AckGVIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* AckNewGS::release_check() {
+  clear_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = check_;
+    check_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void AckGVIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
+inline void AckNewGS::set_allocated_check(::std::string* check) {
+  if (check_ != &::google::protobuf::internal::kEmptyString) {
+    delete check_;
   }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
+  if (check) {
+    set_has_check();
+    check_ = check;
   } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_check();
+    check_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
@@ -16759,7 +13877,7 @@ inline void RequestGSIdentityAuthentication::set_allocated_userid(::std::string*
   }
 }
 
-// required string password = 3;
+// optional string password = 3;
 inline bool RequestGSIdentityAuthentication::has_password() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
@@ -16829,73 +13947,143 @@ inline void RequestGSIdentityAuthentication::set_allocated_password(::std::strin
   }
 }
 
-// optional string extradata = 4;
-inline bool RequestGSIdentityAuthentication::has_extradata() const {
+// optional string phone = 4;
+inline bool RequestGSIdentityAuthentication::has_phone() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void RequestGSIdentityAuthentication::set_has_extradata() {
+inline void RequestGSIdentityAuthentication::set_has_phone() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void RequestGSIdentityAuthentication::clear_has_extradata() {
+inline void RequestGSIdentityAuthentication::clear_has_phone() {
   _has_bits_[0] &= ~0x00000008u;
 }
-inline void RequestGSIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
+inline void RequestGSIdentityAuthentication::clear_phone() {
+  if (phone_ != &::google::protobuf::internal::kEmptyString) {
+    phone_->clear();
   }
-  clear_has_extradata();
+  clear_has_phone();
 }
-inline const ::std::string& RequestGSIdentityAuthentication::extradata() const {
-  return *extradata_;
+inline const ::std::string& RequestGSIdentityAuthentication::phone() const {
+  return *phone_;
 }
-inline void RequestGSIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline void RequestGSIdentityAuthentication::set_phone(const ::std::string& value) {
+  set_has_phone();
+  if (phone_ == &::google::protobuf::internal::kEmptyString) {
+    phone_ = new ::std::string;
   }
-  extradata_->assign(value);
+  phone_->assign(value);
 }
-inline void RequestGSIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline void RequestGSIdentityAuthentication::set_phone(const char* value) {
+  set_has_phone();
+  if (phone_ == &::google::protobuf::internal::kEmptyString) {
+    phone_ = new ::std::string;
   }
-  extradata_->assign(value);
+  phone_->assign(value);
 }
-inline void RequestGSIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline void RequestGSIdentityAuthentication::set_phone(const char* value, size_t size) {
+  set_has_phone();
+  if (phone_ == &::google::protobuf::internal::kEmptyString) {
+    phone_ = new ::std::string;
   }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
+  phone_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* RequestGSIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline ::std::string* RequestGSIdentityAuthentication::mutable_phone() {
+  set_has_phone();
+  if (phone_ == &::google::protobuf::internal::kEmptyString) {
+    phone_ = new ::std::string;
   }
-  return extradata_;
+  return phone_;
 }
-inline ::std::string* RequestGSIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* RequestGSIdentityAuthentication::release_phone() {
+  clear_has_phone();
+  if (phone_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = phone_;
+    phone_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void RequestGSIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
+inline void RequestGSIdentityAuthentication::set_allocated_phone(::std::string* phone) {
+  if (phone_ != &::google::protobuf::internal::kEmptyString) {
+    delete phone_;
   }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
+  if (phone) {
+    set_has_phone();
+    phone_ = phone;
   } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_phone();
+    phone_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string check = 5;
+inline bool RequestGSIdentityAuthentication::has_check() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void RequestGSIdentityAuthentication::set_has_check() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void RequestGSIdentityAuthentication::clear_has_check() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void RequestGSIdentityAuthentication::clear_check() {
+  if (check_ != &::google::protobuf::internal::kEmptyString) {
+    check_->clear();
+  }
+  clear_has_check();
+}
+inline const ::std::string& RequestGSIdentityAuthentication::check() const {
+  return *check_;
+}
+inline void RequestGSIdentityAuthentication::set_check(const ::std::string& value) {
+  set_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    check_ = new ::std::string;
+  }
+  check_->assign(value);
+}
+inline void RequestGSIdentityAuthentication::set_check(const char* value) {
+  set_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    check_ = new ::std::string;
+  }
+  check_->assign(value);
+}
+inline void RequestGSIdentityAuthentication::set_check(const char* value, size_t size) {
+  set_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    check_ = new ::std::string;
+  }
+  check_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestGSIdentityAuthentication::mutable_check() {
+  set_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    check_ = new ::std::string;
+  }
+  return check_;
+}
+inline ::std::string* RequestGSIdentityAuthentication::release_check() {
+  clear_has_check();
+  if (check_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = check_;
+    check_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestGSIdentityAuthentication::set_allocated_check(::std::string* check) {
+  if (check_ != &::google::protobuf::internal::kEmptyString) {
+    delete check_;
+  }
+  if (check) {
+    set_has_check();
+    check_ = check;
+  } else {
+    clear_has_check();
+    check_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
@@ -16947,220 +14135,54 @@ inline void AckGSIdentityAuthentication::set_result(::google::protobuf::int32 va
   result_ = value;
 }
 
-// optional string extradata = 3;
-inline bool AckGSIdentityAuthentication::has_extradata() const {
+// optional string password = 3;
+inline bool AckGSIdentityAuthentication::has_password() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void AckGSIdentityAuthentication::set_has_extradata() {
+inline void AckGSIdentityAuthentication::set_has_password() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void AckGSIdentityAuthentication::clear_has_extradata() {
+inline void AckGSIdentityAuthentication::clear_has_password() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void AckGSIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& AckGSIdentityAuthentication::extradata() const {
-  return *extradata_;
-}
-inline void AckGSIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void AckGSIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void AckGSIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckGSIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* AckGSIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckGSIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// RequestIVIdentityAuthentication
-
-// required uint32 seqno = 1;
-inline bool RequestIVIdentityAuthentication::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void RequestIVIdentityAuthentication::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void RequestIVIdentityAuthentication::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void RequestIVIdentityAuthentication::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 RequestIVIdentityAuthentication::seqno() const {
-  return seqno_;
-}
-inline void RequestIVIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required string userid = 2;
-inline bool RequestIVIdentityAuthentication::has_userid() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void RequestIVIdentityAuthentication::set_has_userid() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void RequestIVIdentityAuthentication::clear_has_userid() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void RequestIVIdentityAuthentication::clear_userid() {
-  if (userid_ != &::google::protobuf::internal::kEmptyString) {
-    userid_->clear();
-  }
-  clear_has_userid();
-}
-inline const ::std::string& RequestIVIdentityAuthentication::userid() const {
-  return *userid_;
-}
-inline void RequestIVIdentityAuthentication::set_userid(const ::std::string& value) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(value);
-}
-inline void RequestIVIdentityAuthentication::set_userid(const char* value) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(value);
-}
-inline void RequestIVIdentityAuthentication::set_userid(const char* value, size_t size) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestIVIdentityAuthentication::mutable_userid() {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  return userid_;
-}
-inline ::std::string* RequestIVIdentityAuthentication::release_userid() {
-  clear_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = userid_;
-    userid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestIVIdentityAuthentication::set_allocated_userid(::std::string* userid) {
-  if (userid_ != &::google::protobuf::internal::kEmptyString) {
-    delete userid_;
-  }
-  if (userid) {
-    set_has_userid();
-    userid_ = userid;
-  } else {
-    clear_has_userid();
-    userid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required string password = 3;
-inline bool RequestIVIdentityAuthentication::has_password() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void RequestIVIdentityAuthentication::set_has_password() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void RequestIVIdentityAuthentication::clear_has_password() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void RequestIVIdentityAuthentication::clear_password() {
+inline void AckGSIdentityAuthentication::clear_password() {
   if (password_ != &::google::protobuf::internal::kEmptyString) {
     password_->clear();
   }
   clear_has_password();
 }
-inline const ::std::string& RequestIVIdentityAuthentication::password() const {
+inline const ::std::string& AckGSIdentityAuthentication::password() const {
   return *password_;
 }
-inline void RequestIVIdentityAuthentication::set_password(const ::std::string& value) {
+inline void AckGSIdentityAuthentication::set_password(const ::std::string& value) {
   set_has_password();
   if (password_ == &::google::protobuf::internal::kEmptyString) {
     password_ = new ::std::string;
   }
   password_->assign(value);
 }
-inline void RequestIVIdentityAuthentication::set_password(const char* value) {
+inline void AckGSIdentityAuthentication::set_password(const char* value) {
   set_has_password();
   if (password_ == &::google::protobuf::internal::kEmptyString) {
     password_ = new ::std::string;
   }
   password_->assign(value);
 }
-inline void RequestIVIdentityAuthentication::set_password(const char* value, size_t size) {
+inline void AckGSIdentityAuthentication::set_password(const char* value, size_t size) {
   set_has_password();
   if (password_ == &::google::protobuf::internal::kEmptyString) {
     password_ = new ::std::string;
   }
   password_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* RequestIVIdentityAuthentication::mutable_password() {
+inline ::std::string* AckGSIdentityAuthentication::mutable_password() {
   set_has_password();
   if (password_ == &::google::protobuf::internal::kEmptyString) {
     password_ = new ::std::string;
   }
   return password_;
 }
-inline ::std::string* RequestIVIdentityAuthentication::release_password() {
+inline ::std::string* AckGSIdentityAuthentication::release_password() {
   clear_has_password();
   if (password_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
@@ -17170,7 +14192,7 @@ inline ::std::string* RequestIVIdentityAuthentication::release_password() {
     return temp;
   }
 }
-inline void RequestIVIdentityAuthentication::set_allocated_password(::std::string* password) {
+inline void AckGSIdentityAuthentication::set_allocated_password(::std::string* password) {
   if (password_ != &::google::protobuf::internal::kEmptyString) {
     delete password_;
   }
@@ -17180,548 +14202,6 @@ inline void RequestIVIdentityAuthentication::set_allocated_password(::std::strin
   } else {
     clear_has_password();
     password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string extradata = 4;
-inline bool RequestIVIdentityAuthentication::has_extradata() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void RequestIVIdentityAuthentication::set_has_extradata() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void RequestIVIdentityAuthentication::clear_has_extradata() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void RequestIVIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& RequestIVIdentityAuthentication::extradata() const {
-  return *extradata_;
-}
-inline void RequestIVIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void RequestIVIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void RequestIVIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestIVIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* RequestIVIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestIVIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// AckIVIdentityAuthentication
-
-// required uint32 seqno = 1;
-inline bool AckIVIdentityAuthentication::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckIVIdentityAuthentication::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckIVIdentityAuthentication::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckIVIdentityAuthentication::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckIVIdentityAuthentication::seqno() const {
-  return seqno_;
-}
-inline void AckIVIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckIVIdentityAuthentication::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckIVIdentityAuthentication::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckIVIdentityAuthentication::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckIVIdentityAuthentication::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckIVIdentityAuthentication::result() const {
-  return result_;
-}
-inline void AckIVIdentityAuthentication::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// optional string extradata = 3;
-inline bool AckIVIdentityAuthentication::has_extradata() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void AckIVIdentityAuthentication::set_has_extradata() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void AckIVIdentityAuthentication::clear_has_extradata() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void AckIVIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& AckIVIdentityAuthentication::extradata() const {
-  return *extradata_;
-}
-inline void AckIVIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void AckIVIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void AckIVIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckIVIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* AckIVIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckIVIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// RequestQQBotIdentityAuthentication
-
-// required uint32 seqno = 1;
-inline bool RequestQQBotIdentityAuthentication::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void RequestQQBotIdentityAuthentication::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void RequestQQBotIdentityAuthentication::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void RequestQQBotIdentityAuthentication::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 RequestQQBotIdentityAuthentication::seqno() const {
-  return seqno_;
-}
-inline void RequestQQBotIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required string userid = 2;
-inline bool RequestQQBotIdentityAuthentication::has_userid() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void RequestQQBotIdentityAuthentication::set_has_userid() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void RequestQQBotIdentityAuthentication::clear_has_userid() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void RequestQQBotIdentityAuthentication::clear_userid() {
-  if (userid_ != &::google::protobuf::internal::kEmptyString) {
-    userid_->clear();
-  }
-  clear_has_userid();
-}
-inline const ::std::string& RequestQQBotIdentityAuthentication::userid() const {
-  return *userid_;
-}
-inline void RequestQQBotIdentityAuthentication::set_userid(const ::std::string& value) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(value);
-}
-inline void RequestQQBotIdentityAuthentication::set_userid(const char* value) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(value);
-}
-inline void RequestQQBotIdentityAuthentication::set_userid(const char* value, size_t size) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestQQBotIdentityAuthentication::mutable_userid() {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  return userid_;
-}
-inline ::std::string* RequestQQBotIdentityAuthentication::release_userid() {
-  clear_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = userid_;
-    userid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestQQBotIdentityAuthentication::set_allocated_userid(::std::string* userid) {
-  if (userid_ != &::google::protobuf::internal::kEmptyString) {
-    delete userid_;
-  }
-  if (userid) {
-    set_has_userid();
-    userid_ = userid;
-  } else {
-    clear_has_userid();
-    userid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required string password = 3;
-inline bool RequestQQBotIdentityAuthentication::has_password() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void RequestQQBotIdentityAuthentication::set_has_password() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void RequestQQBotIdentityAuthentication::clear_has_password() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void RequestQQBotIdentityAuthentication::clear_password() {
-  if (password_ != &::google::protobuf::internal::kEmptyString) {
-    password_->clear();
-  }
-  clear_has_password();
-}
-inline const ::std::string& RequestQQBotIdentityAuthentication::password() const {
-  return *password_;
-}
-inline void RequestQQBotIdentityAuthentication::set_password(const ::std::string& value) {
-  set_has_password();
-  if (password_ == &::google::protobuf::internal::kEmptyString) {
-    password_ = new ::std::string;
-  }
-  password_->assign(value);
-}
-inline void RequestQQBotIdentityAuthentication::set_password(const char* value) {
-  set_has_password();
-  if (password_ == &::google::protobuf::internal::kEmptyString) {
-    password_ = new ::std::string;
-  }
-  password_->assign(value);
-}
-inline void RequestQQBotIdentityAuthentication::set_password(const char* value, size_t size) {
-  set_has_password();
-  if (password_ == &::google::protobuf::internal::kEmptyString) {
-    password_ = new ::std::string;
-  }
-  password_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestQQBotIdentityAuthentication::mutable_password() {
-  set_has_password();
-  if (password_ == &::google::protobuf::internal::kEmptyString) {
-    password_ = new ::std::string;
-  }
-  return password_;
-}
-inline ::std::string* RequestQQBotIdentityAuthentication::release_password() {
-  clear_has_password();
-  if (password_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = password_;
-    password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestQQBotIdentityAuthentication::set_allocated_password(::std::string* password) {
-  if (password_ != &::google::protobuf::internal::kEmptyString) {
-    delete password_;
-  }
-  if (password) {
-    set_has_password();
-    password_ = password;
-  } else {
-    clear_has_password();
-    password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string extradata = 4;
-inline bool RequestQQBotIdentityAuthentication::has_extradata() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void RequestQQBotIdentityAuthentication::set_has_extradata() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void RequestQQBotIdentityAuthentication::clear_has_extradata() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void RequestQQBotIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& RequestQQBotIdentityAuthentication::extradata() const {
-  return *extradata_;
-}
-inline void RequestQQBotIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void RequestQQBotIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void RequestQQBotIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestQQBotIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* RequestQQBotIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestQQBotIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// AckQQBotIdentityAuthentication
-
-// required uint32 seqno = 1;
-inline bool AckQQBotIdentityAuthentication::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckQQBotIdentityAuthentication::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckQQBotIdentityAuthentication::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckQQBotIdentityAuthentication::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckQQBotIdentityAuthentication::seqno() const {
-  return seqno_;
-}
-inline void AckQQBotIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckQQBotIdentityAuthentication::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckQQBotIdentityAuthentication::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckQQBotIdentityAuthentication::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckQQBotIdentityAuthentication::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckQQBotIdentityAuthentication::result() const {
-  return result_;
-}
-inline void AckQQBotIdentityAuthentication::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// optional string extradata = 3;
-inline bool AckQQBotIdentityAuthentication::has_extradata() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void AckQQBotIdentityAuthentication::set_has_extradata() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void AckQQBotIdentityAuthentication::clear_has_extradata() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void AckQQBotIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& AckQQBotIdentityAuthentication::extradata() const {
-  return *extradata_;
-}
-inline void AckQQBotIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void AckQQBotIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void AckQQBotIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckQQBotIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* AckQQBotIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckQQBotIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
@@ -21757,80 +18237,6 @@ inline void AckDeleteParcelDescription::set_result(::google::protobuf::int32 val
 
 // -------------------------------------------------------------------
 
-// SyncParcelDescriptions
-
-// required uint32 seqno = 1;
-inline bool SyncParcelDescriptions::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void SyncParcelDescriptions::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void SyncParcelDescriptions::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void SyncParcelDescriptions::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 SyncParcelDescriptions::seqno() const {
-  return seqno_;
-}
-inline void SyncParcelDescriptions::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// AckSyncParcelDescriptions
-
-// required uint32 seqno = 1;
-inline bool AckSyncParcelDescriptions::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckSyncParcelDescriptions::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckSyncParcelDescriptions::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckSyncParcelDescriptions::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckSyncParcelDescriptions::seqno() const {
-  return seqno_;
-}
-inline void AckSyncParcelDescriptions::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckSyncParcelDescriptions::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckSyncParcelDescriptions::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckSyncParcelDescriptions::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckSyncParcelDescriptions::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckSyncParcelDescriptions::result() const {
-  return result_;
-}
-inline void AckSyncParcelDescriptions::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// -------------------------------------------------------------------
-
 // CropInformation
 
 // required string name = 1;
@@ -22211,146 +18617,141 @@ inline void BillInformation::set_sumcharge(float value) {
 
 // -------------------------------------------------------------------
 
-// DeviceInformation
+// OperationPlan
 
-// optional string name = 1;
-inline bool DeviceInformation::has_name() const {
+// required double width = 1;
+inline bool OperationPlan::has_width() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void DeviceInformation::set_has_name() {
+inline void OperationPlan::set_has_width() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void DeviceInformation::clear_has_name() {
+inline void OperationPlan::clear_has_width() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void DeviceInformation::clear_name() {
-  if (name_ != &::google::protobuf::internal::kEmptyString) {
-    name_->clear();
-  }
-  clear_has_name();
+inline void OperationPlan::clear_width() {
+  width_ = 0;
+  clear_has_width();
 }
-inline const ::std::string& DeviceInformation::name() const {
-  return *name_;
+inline double OperationPlan::width() const {
+  return width_;
 }
-inline void DeviceInformation::set_name(const ::std::string& value) {
-  set_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    name_ = new ::std::string;
-  }
-  name_->assign(value);
-}
-inline void DeviceInformation::set_name(const char* value) {
-  set_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    name_ = new ::std::string;
-  }
-  name_->assign(value);
-}
-inline void DeviceInformation::set_name(const char* value, size_t size) {
-  set_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    name_ = new ::std::string;
-  }
-  name_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* DeviceInformation::mutable_name() {
-  set_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    name_ = new ::std::string;
-  }
-  return name_;
-}
-inline ::std::string* DeviceInformation::release_name() {
-  clear_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = name_;
-    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void DeviceInformation::set_allocated_name(::std::string* name) {
-  if (name_ != &::google::protobuf::internal::kEmptyString) {
-    delete name_;
-  }
-  if (name) {
-    set_has_name();
-    name_ = name;
-  } else {
-    clear_has_name();
-    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
+inline void OperationPlan::set_width(double value) {
+  set_has_width();
+  width_ = value;
 }
 
-// optional string diid = 2;
-inline bool DeviceInformation::has_diid() const {
+// required float angle = 2;
+inline bool OperationPlan::has_angle() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void DeviceInformation::set_has_diid() {
+inline void OperationPlan::set_has_angle() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void DeviceInformation::clear_has_diid() {
+inline void OperationPlan::clear_has_angle() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void DeviceInformation::clear_diid() {
-  if (diid_ != &::google::protobuf::internal::kEmptyString) {
-    diid_->clear();
-  }
-  clear_has_diid();
+inline void OperationPlan::clear_angle() {
+  angle_ = 0;
+  clear_has_angle();
 }
-inline const ::std::string& DeviceInformation::diid() const {
-  return *diid_;
+inline float OperationPlan::angle() const {
+  return angle_;
 }
-inline void DeviceInformation::set_diid(const ::std::string& value) {
-  set_has_diid();
-  if (diid_ == &::google::protobuf::internal::kEmptyString) {
-    diid_ = new ::std::string;
-  }
-  diid_->assign(value);
+inline void OperationPlan::set_angle(float value) {
+  set_has_angle();
+  angle_ = value;
 }
-inline void DeviceInformation::set_diid(const char* value) {
-  set_has_diid();
-  if (diid_ == &::google::protobuf::internal::kEmptyString) {
-    diid_ = new ::std::string;
-  }
-  diid_->assign(value);
+
+// required bool anti = 3;
+inline bool OperationPlan::has_anti() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void DeviceInformation::set_diid(const char* value, size_t size) {
-  set_has_diid();
-  if (diid_ == &::google::protobuf::internal::kEmptyString) {
-    diid_ = new ::std::string;
-  }
-  diid_->assign(reinterpret_cast<const char*>(value), size);
+inline void OperationPlan::set_has_anti() {
+  _has_bits_[0] |= 0x00000004u;
 }
-inline ::std::string* DeviceInformation::mutable_diid() {
-  set_has_diid();
-  if (diid_ == &::google::protobuf::internal::kEmptyString) {
-    diid_ = new ::std::string;
-  }
-  return diid_;
+inline void OperationPlan::clear_has_anti() {
+  _has_bits_[0] &= ~0x00000004u;
 }
-inline ::std::string* DeviceInformation::release_diid() {
-  clear_has_diid();
-  if (diid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = diid_;
-    diid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
+inline void OperationPlan::clear_anti() {
+  anti_ = false;
+  clear_has_anti();
 }
-inline void DeviceInformation::set_allocated_diid(::std::string* diid) {
-  if (diid_ != &::google::protobuf::internal::kEmptyString) {
-    delete diid_;
-  }
-  if (diid) {
-    set_has_diid();
-    diid_ = diid;
-  } else {
-    clear_has_diid();
-    diid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
+inline bool OperationPlan::anti() const {
+  return anti_;
+}
+inline void OperationPlan::set_anti(bool value) {
+  set_has_anti();
+  anti_ = value;
+}
+
+// required bool single = 4;
+inline bool OperationPlan::has_single() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void OperationPlan::set_has_single() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void OperationPlan::clear_has_single() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void OperationPlan::clear_single() {
+  single_ = false;
+  clear_has_single();
+}
+inline bool OperationPlan::single() const {
+  return single_;
+}
+inline void OperationPlan::set_single(bool value) {
+  set_has_single();
+  single_ = value;
+}
+
+// repeated double boundary = 5;
+inline int OperationPlan::boundary_size() const {
+  return boundary_.size();
+}
+inline void OperationPlan::clear_boundary() {
+  boundary_.Clear();
+}
+inline double OperationPlan::boundary(int index) const {
+  return boundary_.Get(index);
+}
+inline void OperationPlan::set_boundary(int index, double value) {
+  boundary_.Set(index, value);
+}
+inline void OperationPlan::add_boundary(double value) {
+  boundary_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< double >&
+OperationPlan::boundary() const {
+  return boundary_;
+}
+inline ::google::protobuf::RepeatedField< double >*
+OperationPlan::mutable_boundary() {
+  return &boundary_;
+}
+
+// required double block = 6;
+inline bool OperationPlan::has_block() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void OperationPlan::set_has_block() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void OperationPlan::clear_has_block() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void OperationPlan::clear_block() {
+  block_ = 0;
+  clear_has_block();
+}
+inline double OperationPlan::block() const {
+  return block_;
+}
+inline void OperationPlan::set_block(double value) {
+  set_has_block();
+  block_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -22541,325 +18942,15 @@ OperationDescription::mutable_operatorid() {
   return &operatorid_;
 }
 
-// optional uint64 begintime = 4;
-inline bool OperationDescription::has_begintime() const {
+// required string pdid = 4;
+inline bool OperationDescription::has_pdid() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void OperationDescription::set_has_begintime() {
+inline void OperationDescription::set_has_pdid() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void OperationDescription::clear_has_begintime() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void OperationDescription::clear_begintime() {
-  begintime_ = GOOGLE_ULONGLONG(0);
-  clear_has_begintime();
-}
-inline ::google::protobuf::uint64 OperationDescription::begintime() const {
-  return begintime_;
-}
-inline void OperationDescription::set_begintime(::google::protobuf::uint64 value) {
-  set_has_begintime();
-  begintime_ = value;
-}
-
-// optional uint64 endtime = 5;
-inline bool OperationDescription::has_endtime() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void OperationDescription::set_has_endtime() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void OperationDescription::clear_has_endtime() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void OperationDescription::clear_endtime() {
-  endtime_ = GOOGLE_ULONGLONG(0);
-  clear_has_endtime();
-}
-inline ::google::protobuf::uint64 OperationDescription::endtime() const {
-  return endtime_;
-}
-inline void OperationDescription::set_endtime(::google::protobuf::uint64 value) {
-  set_has_endtime();
-  endtime_ = value;
-}
-
-// required string operationtype = 6;
-inline bool OperationDescription::has_operationtype() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void OperationDescription::set_has_operationtype() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void OperationDescription::clear_has_operationtype() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void OperationDescription::clear_operationtype() {
-  if (operationtype_ != &::google::protobuf::internal::kEmptyString) {
-    operationtype_->clear();
-  }
-  clear_has_operationtype();
-}
-inline const ::std::string& OperationDescription::operationtype() const {
-  return *operationtype_;
-}
-inline void OperationDescription::set_operationtype(const ::std::string& value) {
-  set_has_operationtype();
-  if (operationtype_ == &::google::protobuf::internal::kEmptyString) {
-    operationtype_ = new ::std::string;
-  }
-  operationtype_->assign(value);
-}
-inline void OperationDescription::set_operationtype(const char* value) {
-  set_has_operationtype();
-  if (operationtype_ == &::google::protobuf::internal::kEmptyString) {
-    operationtype_ = new ::std::string;
-  }
-  operationtype_->assign(value);
-}
-inline void OperationDescription::set_operationtype(const char* value, size_t size) {
-  set_has_operationtype();
-  if (operationtype_ == &::google::protobuf::internal::kEmptyString) {
-    operationtype_ = new ::std::string;
-  }
-  operationtype_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* OperationDescription::mutable_operationtype() {
-  set_has_operationtype();
-  if (operationtype_ == &::google::protobuf::internal::kEmptyString) {
-    operationtype_ = new ::std::string;
-  }
-  return operationtype_;
-}
-inline ::std::string* OperationDescription::release_operationtype() {
-  clear_has_operationtype();
-  if (operationtype_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = operationtype_;
-    operationtype_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void OperationDescription::set_allocated_operationtype(::std::string* operationtype) {
-  if (operationtype_ != &::google::protobuf::internal::kEmptyString) {
-    delete operationtype_;
-  }
-  if (operationtype) {
-    set_has_operationtype();
-    operationtype_ = operationtype;
-  } else {
-    clear_has_operationtype();
-    operationtype_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional .das.proto.CropInformation ci = 7;
-inline bool OperationDescription::has_ci() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
-}
-inline void OperationDescription::set_has_ci() {
-  _has_bits_[0] |= 0x00000040u;
-}
-inline void OperationDescription::clear_has_ci() {
-  _has_bits_[0] &= ~0x00000040u;
-}
-inline void OperationDescription::clear_ci() {
-  if (ci_ != NULL) ci_->::das::proto::CropInformation::Clear();
-  clear_has_ci();
-}
-inline const ::das::proto::CropInformation& OperationDescription::ci() const {
-  return ci_ != NULL ? *ci_ : *default_instance_->ci_;
-}
-inline ::das::proto::CropInformation* OperationDescription::mutable_ci() {
-  set_has_ci();
-  if (ci_ == NULL) ci_ = new ::das::proto::CropInformation;
-  return ci_;
-}
-inline ::das::proto::CropInformation* OperationDescription::release_ci() {
-  clear_has_ci();
-  ::das::proto::CropInformation* temp = ci_;
-  ci_ = NULL;
-  return temp;
-}
-inline void OperationDescription::set_allocated_ci(::das::proto::CropInformation* ci) {
-  delete ci_;
-  ci_ = ci;
-  if (ci) {
-    set_has_ci();
-  } else {
-    clear_has_ci();
-  }
-}
-
-// repeated .das.proto.PesticideInformation pi = 8;
-inline int OperationDescription::pi_size() const {
-  return pi_.size();
-}
-inline void OperationDescription::clear_pi() {
-  pi_.Clear();
-}
-inline const ::das::proto::PesticideInformation& OperationDescription::pi(int index) const {
-  return pi_.Get(index);
-}
-inline ::das::proto::PesticideInformation* OperationDescription::mutable_pi(int index) {
-  return pi_.Mutable(index);
-}
-inline ::das::proto::PesticideInformation* OperationDescription::add_pi() {
-  return pi_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::das::proto::PesticideInformation >&
-OperationDescription::pi() const {
-  return pi_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::das::proto::PesticideInformation >*
-OperationDescription::mutable_pi() {
-  return &pi_;
-}
-
-// required .das.proto.BillInformation bi = 9;
-inline bool OperationDescription::has_bi() const {
-  return (_has_bits_[0] & 0x00000100u) != 0;
-}
-inline void OperationDescription::set_has_bi() {
-  _has_bits_[0] |= 0x00000100u;
-}
-inline void OperationDescription::clear_has_bi() {
-  _has_bits_[0] &= ~0x00000100u;
-}
-inline void OperationDescription::clear_bi() {
-  if (bi_ != NULL) bi_->::das::proto::BillInformation::Clear();
-  clear_has_bi();
-}
-inline const ::das::proto::BillInformation& OperationDescription::bi() const {
-  return bi_ != NULL ? *bi_ : *default_instance_->bi_;
-}
-inline ::das::proto::BillInformation* OperationDescription::mutable_bi() {
-  set_has_bi();
-  if (bi_ == NULL) bi_ = new ::das::proto::BillInformation;
-  return bi_;
-}
-inline ::das::proto::BillInformation* OperationDescription::release_bi() {
-  clear_has_bi();
-  ::das::proto::BillInformation* temp = bi_;
-  bi_ = NULL;
-  return temp;
-}
-inline void OperationDescription::set_allocated_bi(::das::proto::BillInformation* bi) {
-  delete bi_;
-  bi_ = bi;
-  if (bi) {
-    set_has_bi();
-  } else {
-    clear_has_bi();
-  }
-}
-
-// repeated .das.proto.DeviceInformation di = 10;
-inline int OperationDescription::di_size() const {
-  return di_.size();
-}
-inline void OperationDescription::clear_di() {
-  di_.Clear();
-}
-inline const ::das::proto::DeviceInformation& OperationDescription::di(int index) const {
-  return di_.Get(index);
-}
-inline ::das::proto::DeviceInformation* OperationDescription::mutable_di(int index) {
-  return di_.Mutable(index);
-}
-inline ::das::proto::DeviceInformation* OperationDescription::add_di() {
-  return di_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::das::proto::DeviceInformation >&
-OperationDescription::di() const {
-  return di_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::das::proto::DeviceInformation >*
-OperationDescription::mutable_di() {
-  return &di_;
-}
-
-// optional string notes = 11;
-inline bool OperationDescription::has_notes() const {
-  return (_has_bits_[0] & 0x00000400u) != 0;
-}
-inline void OperationDescription::set_has_notes() {
-  _has_bits_[0] |= 0x00000400u;
-}
-inline void OperationDescription::clear_has_notes() {
-  _has_bits_[0] &= ~0x00000400u;
-}
-inline void OperationDescription::clear_notes() {
-  if (notes_ != &::google::protobuf::internal::kEmptyString) {
-    notes_->clear();
-  }
-  clear_has_notes();
-}
-inline const ::std::string& OperationDescription::notes() const {
-  return *notes_;
-}
-inline void OperationDescription::set_notes(const ::std::string& value) {
-  set_has_notes();
-  if (notes_ == &::google::protobuf::internal::kEmptyString) {
-    notes_ = new ::std::string;
-  }
-  notes_->assign(value);
-}
-inline void OperationDescription::set_notes(const char* value) {
-  set_has_notes();
-  if (notes_ == &::google::protobuf::internal::kEmptyString) {
-    notes_ = new ::std::string;
-  }
-  notes_->assign(value);
-}
-inline void OperationDescription::set_notes(const char* value, size_t size) {
-  set_has_notes();
-  if (notes_ == &::google::protobuf::internal::kEmptyString) {
-    notes_ = new ::std::string;
-  }
-  notes_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* OperationDescription::mutable_notes() {
-  set_has_notes();
-  if (notes_ == &::google::protobuf::internal::kEmptyString) {
-    notes_ = new ::std::string;
-  }
-  return notes_;
-}
-inline ::std::string* OperationDescription::release_notes() {
-  clear_has_notes();
-  if (notes_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = notes_;
-    notes_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void OperationDescription::set_allocated_notes(::std::string* notes) {
-  if (notes_ != &::google::protobuf::internal::kEmptyString) {
-    delete notes_;
-  }
-  if (notes) {
-    set_has_notes();
-    notes_ = notes;
-  } else {
-    clear_has_notes();
-    notes_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required string pdid = 12;
-inline bool OperationDescription::has_pdid() const {
-  return (_has_bits_[0] & 0x00000800u) != 0;
-}
-inline void OperationDescription::set_has_pdid() {
-  _has_bits_[0] |= 0x00000800u;
-}
 inline void OperationDescription::clear_has_pdid() {
-  _has_bits_[0] &= ~0x00000800u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void OperationDescription::clear_pdid() {
   if (pdid_ != &::google::protobuf::internal::kEmptyString) {
@@ -22921,15 +19012,145 @@ inline void OperationDescription::set_allocated_pdid(::std::string* pdid) {
   }
 }
 
-// optional string odid = 13;
+// required .das.proto.OperationPlan op = 5;
+inline bool OperationDescription::has_op() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void OperationDescription::set_has_op() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void OperationDescription::clear_has_op() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void OperationDescription::clear_op() {
+  if (op_ != NULL) op_->::das::proto::OperationPlan::Clear();
+  clear_has_op();
+}
+inline const ::das::proto::OperationPlan& OperationDescription::op() const {
+  return op_ != NULL ? *op_ : *default_instance_->op_;
+}
+inline ::das::proto::OperationPlan* OperationDescription::mutable_op() {
+  set_has_op();
+  if (op_ == NULL) op_ = new ::das::proto::OperationPlan;
+  return op_;
+}
+inline ::das::proto::OperationPlan* OperationDescription::release_op() {
+  clear_has_op();
+  ::das::proto::OperationPlan* temp = op_;
+  op_ = NULL;
+  return temp;
+}
+inline void OperationDescription::set_allocated_op(::das::proto::OperationPlan* op) {
+  delete op_;
+  op_ = op;
+  if (op) {
+    set_has_op();
+  } else {
+    clear_has_op();
+  }
+}
+
+// optional uint64 plantime = 6;
+inline bool OperationDescription::has_plantime() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void OperationDescription::set_has_plantime() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void OperationDescription::clear_has_plantime() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void OperationDescription::clear_plantime() {
+  plantime_ = GOOGLE_ULONGLONG(0);
+  clear_has_plantime();
+}
+inline ::google::protobuf::uint64 OperationDescription::plantime() const {
+  return plantime_;
+}
+inline void OperationDescription::set_plantime(::google::protobuf::uint64 value) {
+  set_has_plantime();
+  plantime_ = value;
+}
+
+// optional string notes = 7;
+inline bool OperationDescription::has_notes() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void OperationDescription::set_has_notes() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void OperationDescription::clear_has_notes() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void OperationDescription::clear_notes() {
+  if (notes_ != &::google::protobuf::internal::kEmptyString) {
+    notes_->clear();
+  }
+  clear_has_notes();
+}
+inline const ::std::string& OperationDescription::notes() const {
+  return *notes_;
+}
+inline void OperationDescription::set_notes(const ::std::string& value) {
+  set_has_notes();
+  if (notes_ == &::google::protobuf::internal::kEmptyString) {
+    notes_ = new ::std::string;
+  }
+  notes_->assign(value);
+}
+inline void OperationDescription::set_notes(const char* value) {
+  set_has_notes();
+  if (notes_ == &::google::protobuf::internal::kEmptyString) {
+    notes_ = new ::std::string;
+  }
+  notes_->assign(value);
+}
+inline void OperationDescription::set_notes(const char* value, size_t size) {
+  set_has_notes();
+  if (notes_ == &::google::protobuf::internal::kEmptyString) {
+    notes_ = new ::std::string;
+  }
+  notes_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* OperationDescription::mutable_notes() {
+  set_has_notes();
+  if (notes_ == &::google::protobuf::internal::kEmptyString) {
+    notes_ = new ::std::string;
+  }
+  return notes_;
+}
+inline ::std::string* OperationDescription::release_notes() {
+  clear_has_notes();
+  if (notes_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = notes_;
+    notes_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void OperationDescription::set_allocated_notes(::std::string* notes) {
+  if (notes_ != &::google::protobuf::internal::kEmptyString) {
+    delete notes_;
+  }
+  if (notes) {
+    set_has_notes();
+    notes_ = notes;
+  } else {
+    clear_has_notes();
+    notes_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string odid = 8;
 inline bool OperationDescription::has_odid() const {
-  return (_has_bits_[0] & 0x00001000u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void OperationDescription::set_has_odid() {
-  _has_bits_[0] |= 0x00001000u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void OperationDescription::clear_has_odid() {
-  _has_bits_[0] &= ~0x00001000u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void OperationDescription::clear_odid() {
   if (odid_ != &::google::protobuf::internal::kEmptyString) {
@@ -23768,161 +19989,157 @@ inline void AckDeleteOperationDescription::set_result(::google::protobuf::int32 
 
 // -------------------------------------------------------------------
 
-// SyncOperationDescriptions
-
-// required uint32 seqno = 1;
-inline bool SyncOperationDescriptions::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void SyncOperationDescriptions::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void SyncOperationDescriptions::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void SyncOperationDescriptions::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 SyncOperationDescriptions::seqno() const {
-  return seqno_;
-}
-inline void SyncOperationDescriptions::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// AckSyncOperationDescriptions
-
-// required uint32 seqno = 1;
-inline bool AckSyncOperationDescriptions::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckSyncOperationDescriptions::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckSyncOperationDescriptions::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckSyncOperationDescriptions::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckSyncOperationDescriptions::seqno() const {
-  return seqno_;
-}
-inline void AckSyncOperationDescriptions::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckSyncOperationDescriptions::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckSyncOperationDescriptions::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckSyncOperationDescriptions::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckSyncOperationDescriptions::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckSyncOperationDescriptions::result() const {
-  return result_;
-}
-inline void AckSyncOperationDescriptions::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// -------------------------------------------------------------------
-
 // OperationRoute
 
-// required string creatorid = 1;
-inline bool OperationRoute::has_creatorid() const {
+// required string gsid = 1;
+inline bool OperationRoute::has_gsid() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void OperationRoute::set_has_creatorid() {
+inline void OperationRoute::set_has_gsid() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void OperationRoute::clear_has_creatorid() {
+inline void OperationRoute::clear_has_gsid() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void OperationRoute::clear_creatorid() {
-  if (creatorid_ != &::google::protobuf::internal::kEmptyString) {
-    creatorid_->clear();
+inline void OperationRoute::clear_gsid() {
+  if (gsid_ != &::google::protobuf::internal::kEmptyString) {
+    gsid_->clear();
   }
-  clear_has_creatorid();
+  clear_has_gsid();
 }
-inline const ::std::string& OperationRoute::creatorid() const {
-  return *creatorid_;
+inline const ::std::string& OperationRoute::gsid() const {
+  return *gsid_;
 }
-inline void OperationRoute::set_creatorid(const ::std::string& value) {
-  set_has_creatorid();
-  if (creatorid_ == &::google::protobuf::internal::kEmptyString) {
-    creatorid_ = new ::std::string;
+inline void OperationRoute::set_gsid(const ::std::string& value) {
+  set_has_gsid();
+  if (gsid_ == &::google::protobuf::internal::kEmptyString) {
+    gsid_ = new ::std::string;
   }
-  creatorid_->assign(value);
+  gsid_->assign(value);
 }
-inline void OperationRoute::set_creatorid(const char* value) {
-  set_has_creatorid();
-  if (creatorid_ == &::google::protobuf::internal::kEmptyString) {
-    creatorid_ = new ::std::string;
+inline void OperationRoute::set_gsid(const char* value) {
+  set_has_gsid();
+  if (gsid_ == &::google::protobuf::internal::kEmptyString) {
+    gsid_ = new ::std::string;
   }
-  creatorid_->assign(value);
+  gsid_->assign(value);
 }
-inline void OperationRoute::set_creatorid(const char* value, size_t size) {
-  set_has_creatorid();
-  if (creatorid_ == &::google::protobuf::internal::kEmptyString) {
-    creatorid_ = new ::std::string;
+inline void OperationRoute::set_gsid(const char* value, size_t size) {
+  set_has_gsid();
+  if (gsid_ == &::google::protobuf::internal::kEmptyString) {
+    gsid_ = new ::std::string;
   }
-  creatorid_->assign(reinterpret_cast<const char*>(value), size);
+  gsid_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* OperationRoute::mutable_creatorid() {
-  set_has_creatorid();
-  if (creatorid_ == &::google::protobuf::internal::kEmptyString) {
-    creatorid_ = new ::std::string;
+inline ::std::string* OperationRoute::mutable_gsid() {
+  set_has_gsid();
+  if (gsid_ == &::google::protobuf::internal::kEmptyString) {
+    gsid_ = new ::std::string;
   }
-  return creatorid_;
+  return gsid_;
 }
-inline ::std::string* OperationRoute::release_creatorid() {
-  clear_has_creatorid();
-  if (creatorid_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* OperationRoute::release_gsid() {
+  clear_has_gsid();
+  if (gsid_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = creatorid_;
-    creatorid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = gsid_;
+    gsid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void OperationRoute::set_allocated_creatorid(::std::string* creatorid) {
-  if (creatorid_ != &::google::protobuf::internal::kEmptyString) {
-    delete creatorid_;
+inline void OperationRoute::set_allocated_gsid(::std::string* gsid) {
+  if (gsid_ != &::google::protobuf::internal::kEmptyString) {
+    delete gsid_;
   }
-  if (creatorid) {
-    set_has_creatorid();
-    creatorid_ = creatorid;
+  if (gsid) {
+    set_has_gsid();
+    gsid_ = gsid;
   } else {
-    clear_has_creatorid();
-    creatorid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_gsid();
+    gsid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string uavid = 6;
+inline bool OperationRoute::has_uavid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void OperationRoute::set_has_uavid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void OperationRoute::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void OperationRoute::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
+  }
+  clear_has_uavid();
+}
+inline const ::std::string& OperationRoute::uavid() const {
+  return *uavid_;
+}
+inline void OperationRoute::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void OperationRoute::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void OperationRoute::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* OperationRoute::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  return uavid_;
+}
+inline ::std::string* OperationRoute::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void OperationRoute::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
+  } else {
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
 // required uint64 createtime = 2;
 inline bool OperationRoute::has_createtime() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void OperationRoute::set_has_createtime() {
-  _has_bits_[0] |= 0x00000002u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void OperationRoute::clear_has_createtime() {
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void OperationRoute::clear_createtime() {
   createtime_ = GOOGLE_ULONGLONG(0);
@@ -23936,183 +20153,15 @@ inline void OperationRoute::set_createtime(::google::protobuf::uint64 value) {
   createtime_ = value;
 }
 
-// optional string odid = 3;
-inline bool OperationRoute::has_odid() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void OperationRoute::set_has_odid() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void OperationRoute::clear_has_odid() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void OperationRoute::clear_odid() {
-  if (odid_ != &::google::protobuf::internal::kEmptyString) {
-    odid_->clear();
-  }
-  clear_has_odid();
-}
-inline const ::std::string& OperationRoute::odid() const {
-  return *odid_;
-}
-inline void OperationRoute::set_odid(const ::std::string& value) {
-  set_has_odid();
-  if (odid_ == &::google::protobuf::internal::kEmptyString) {
-    odid_ = new ::std::string;
-  }
-  odid_->assign(value);
-}
-inline void OperationRoute::set_odid(const char* value) {
-  set_has_odid();
-  if (odid_ == &::google::protobuf::internal::kEmptyString) {
-    odid_ = new ::std::string;
-  }
-  odid_->assign(value);
-}
-inline void OperationRoute::set_odid(const char* value, size_t size) {
-  set_has_odid();
-  if (odid_ == &::google::protobuf::internal::kEmptyString) {
-    odid_ = new ::std::string;
-  }
-  odid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* OperationRoute::mutable_odid() {
-  set_has_odid();
-  if (odid_ == &::google::protobuf::internal::kEmptyString) {
-    odid_ = new ::std::string;
-  }
-  return odid_;
-}
-inline ::std::string* OperationRoute::release_odid() {
-  clear_has_odid();
-  if (odid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = odid_;
-    odid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void OperationRoute::set_allocated_odid(::std::string* odid) {
-  if (odid_ != &::google::protobuf::internal::kEmptyString) {
-    delete odid_;
-  }
-  if (odid) {
-    set_has_odid();
-    odid_ = odid;
-  } else {
-    clear_has_odid();
-    odid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional .das.proto.ParcelSurveyInformation fsz = 4;
-inline bool OperationRoute::has_fsz() const {
+// required float maxvoyage = 3;
+inline bool OperationRoute::has_maxvoyage() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void OperationRoute::set_has_fsz() {
+inline void OperationRoute::set_has_maxvoyage() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void OperationRoute::clear_has_fsz() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void OperationRoute::clear_fsz() {
-  if (fsz_ != NULL) fsz_->::das::proto::ParcelSurveyInformation::Clear();
-  clear_has_fsz();
-}
-inline const ::das::proto::ParcelSurveyInformation& OperationRoute::fsz() const {
-  return fsz_ != NULL ? *fsz_ : *default_instance_->fsz_;
-}
-inline ::das::proto::ParcelSurveyInformation* OperationRoute::mutable_fsz() {
-  set_has_fsz();
-  if (fsz_ == NULL) fsz_ = new ::das::proto::ParcelSurveyInformation;
-  return fsz_;
-}
-inline ::das::proto::ParcelSurveyInformation* OperationRoute::release_fsz() {
-  clear_has_fsz();
-  ::das::proto::ParcelSurveyInformation* temp = fsz_;
-  fsz_ = NULL;
-  return temp;
-}
-inline void OperationRoute::set_allocated_fsz(::das::proto::ParcelSurveyInformation* fsz) {
-  delete fsz_;
-  fsz_ = fsz;
-  if (fsz) {
-    set_has_fsz();
-  } else {
-    clear_has_fsz();
-  }
-}
-
-// required .das.proto.ParcelSurveyInformation psi = 5;
-inline bool OperationRoute::has_psi() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void OperationRoute::set_has_psi() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void OperationRoute::clear_has_psi() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void OperationRoute::clear_psi() {
-  if (psi_ != NULL) psi_->::das::proto::ParcelSurveyInformation::Clear();
-  clear_has_psi();
-}
-inline const ::das::proto::ParcelSurveyInformation& OperationRoute::psi() const {
-  return psi_ != NULL ? *psi_ : *default_instance_->psi_;
-}
-inline ::das::proto::ParcelSurveyInformation* OperationRoute::mutable_psi() {
-  set_has_psi();
-  if (psi_ == NULL) psi_ = new ::das::proto::ParcelSurveyInformation;
-  return psi_;
-}
-inline ::das::proto::ParcelSurveyInformation* OperationRoute::release_psi() {
-  clear_has_psi();
-  ::das::proto::ParcelSurveyInformation* temp = psi_;
-  psi_ = NULL;
-  return temp;
-}
-inline void OperationRoute::set_allocated_psi(::das::proto::ParcelSurveyInformation* psi) {
-  delete psi_;
-  psi_ = psi;
-  if (psi) {
-    set_has_psi();
-  } else {
-    clear_has_psi();
-  }
-}
-
-// required float sprinklingwidth = 6;
-inline bool OperationRoute::has_sprinklingwidth() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void OperationRoute::set_has_sprinklingwidth() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void OperationRoute::clear_has_sprinklingwidth() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void OperationRoute::clear_sprinklingwidth() {
-  sprinklingwidth_ = 0;
-  clear_has_sprinklingwidth();
-}
-inline float OperationRoute::sprinklingwidth() const {
-  return sprinklingwidth_;
-}
-inline void OperationRoute::set_sprinklingwidth(float value) {
-  set_has_sprinklingwidth();
-  sprinklingwidth_ = value;
-}
-
-// required float maxvoyage = 7;
-inline bool OperationRoute::has_maxvoyage() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
-}
-inline void OperationRoute::set_has_maxvoyage() {
-  _has_bits_[0] |= 0x00000040u;
-}
 inline void OperationRoute::clear_has_maxvoyage() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void OperationRoute::clear_maxvoyage() {
   maxvoyage_ = 0;
@@ -24126,32 +20175,7 @@ inline void OperationRoute::set_maxvoyage(float value) {
   maxvoyage_ = value;
 }
 
-// repeated .das.proto.Coordinate supplypoints = 8;
-inline int OperationRoute::supplypoints_size() const {
-  return supplypoints_.size();
-}
-inline void OperationRoute::clear_supplypoints() {
-  supplypoints_.Clear();
-}
-inline const ::das::proto::Coordinate& OperationRoute::supplypoints(int index) const {
-  return supplypoints_.Get(index);
-}
-inline ::das::proto::Coordinate* OperationRoute::mutable_supplypoints(int index) {
-  return supplypoints_.Mutable(index);
-}
-inline ::das::proto::Coordinate* OperationRoute::add_supplypoints() {
-  return supplypoints_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::das::proto::Coordinate >&
-OperationRoute::supplypoints() const {
-  return supplypoints_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::das::proto::Coordinate >*
-OperationRoute::mutable_supplypoints() {
-  return &supplypoints_;
-}
-
-// repeated bytes missions = 9;
+// repeated bytes missions = 4;
 inline int OperationRoute::missions_size() const {
   return missions_.size();
 }
@@ -24195,74 +20219,70 @@ OperationRoute::mutable_missions() {
   return &missions_;
 }
 
-// optional string orid = 10;
-inline bool OperationRoute::has_orid() const {
-  return (_has_bits_[0] & 0x00000200u) != 0;
+// repeated bytes boundarys = 5;
+inline int OperationRoute::boundarys_size() const {
+  return boundarys_.size();
 }
-inline void OperationRoute::set_has_orid() {
-  _has_bits_[0] |= 0x00000200u;
+inline void OperationRoute::clear_boundarys() {
+  boundarys_.Clear();
 }
-inline void OperationRoute::clear_has_orid() {
-  _has_bits_[0] &= ~0x00000200u;
+inline const ::std::string& OperationRoute::boundarys(int index) const {
+  return boundarys_.Get(index);
 }
-inline void OperationRoute::clear_orid() {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    orid_->clear();
-  }
-  clear_has_orid();
+inline ::std::string* OperationRoute::mutable_boundarys(int index) {
+  return boundarys_.Mutable(index);
 }
-inline const ::std::string& OperationRoute::orid() const {
-  return *orid_;
+inline void OperationRoute::set_boundarys(int index, const ::std::string& value) {
+  boundarys_.Mutable(index)->assign(value);
 }
-inline void OperationRoute::set_orid(const ::std::string& value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
+inline void OperationRoute::set_boundarys(int index, const char* value) {
+  boundarys_.Mutable(index)->assign(value);
 }
-inline void OperationRoute::set_orid(const char* value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
+inline void OperationRoute::set_boundarys(int index, const void* value, size_t size) {
+  boundarys_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
 }
-inline void OperationRoute::set_orid(const char* value, size_t size) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(reinterpret_cast<const char*>(value), size);
+inline ::std::string* OperationRoute::add_boundarys() {
+  return boundarys_.Add();
 }
-inline ::std::string* OperationRoute::mutable_orid() {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  return orid_;
+inline void OperationRoute::add_boundarys(const ::std::string& value) {
+  boundarys_.Add()->assign(value);
 }
-inline ::std::string* OperationRoute::release_orid() {
-  clear_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = orid_;
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
+inline void OperationRoute::add_boundarys(const char* value) {
+  boundarys_.Add()->assign(value);
 }
-inline void OperationRoute::set_allocated_orid(::std::string* orid) {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    delete orid_;
-  }
-  if (orid) {
-    set_has_orid();
-    orid_ = orid;
-  } else {
-    clear_has_orid();
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
+inline void OperationRoute::add_boundarys(const void* value, size_t size) {
+  boundarys_.Add()->assign(reinterpret_cast<const char*>(value), size);
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+OperationRoute::boundarys() const {
+  return boundarys_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+OperationRoute::mutable_boundarys() {
+  return &boundarys_;
+}
+
+// required uint64 timestamp = 7;
+inline bool OperationRoute::has_timestamp() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void OperationRoute::set_has_timestamp() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void OperationRoute::clear_has_timestamp() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void OperationRoute::clear_timestamp() {
+  timestamp_ = GOOGLE_ULONGLONG(0);
+  clear_has_timestamp();
+}
+inline ::google::protobuf::uint64 OperationRoute::timestamp() const {
+  return timestamp_;
+}
+inline void OperationRoute::set_timestamp(::google::protobuf::uint64 value) {
+  set_has_timestamp();
+  timestamp_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -24377,961 +20397,6 @@ inline void AckPostOperationRoute::set_result(::google::protobuf::int32 value) {
   result_ = value;
 }
 
-// optional string orid = 3;
-inline bool AckPostOperationRoute::has_orid() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void AckPostOperationRoute::set_has_orid() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void AckPostOperationRoute::clear_has_orid() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void AckPostOperationRoute::clear_orid() {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    orid_->clear();
-  }
-  clear_has_orid();
-}
-inline const ::std::string& AckPostOperationRoute::orid() const {
-  return *orid_;
-}
-inline void AckPostOperationRoute::set_orid(const ::std::string& value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void AckPostOperationRoute::set_orid(const char* value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void AckPostOperationRoute::set_orid(const char* value, size_t size) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckPostOperationRoute::mutable_orid() {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  return orid_;
-}
-inline ::std::string* AckPostOperationRoute::release_orid() {
-  clear_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = orid_;
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckPostOperationRoute::set_allocated_orid(::std::string* orid) {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    delete orid_;
-  }
-  if (orid) {
-    set_has_orid();
-    orid_ = orid;
-  } else {
-    clear_has_orid();
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string fszid = 4;
-inline bool AckPostOperationRoute::has_fszid() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void AckPostOperationRoute::set_has_fszid() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void AckPostOperationRoute::clear_has_fszid() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void AckPostOperationRoute::clear_fszid() {
-  if (fszid_ != &::google::protobuf::internal::kEmptyString) {
-    fszid_->clear();
-  }
-  clear_has_fszid();
-}
-inline const ::std::string& AckPostOperationRoute::fszid() const {
-  return *fszid_;
-}
-inline void AckPostOperationRoute::set_fszid(const ::std::string& value) {
-  set_has_fszid();
-  if (fszid_ == &::google::protobuf::internal::kEmptyString) {
-    fszid_ = new ::std::string;
-  }
-  fszid_->assign(value);
-}
-inline void AckPostOperationRoute::set_fszid(const char* value) {
-  set_has_fszid();
-  if (fszid_ == &::google::protobuf::internal::kEmptyString) {
-    fszid_ = new ::std::string;
-  }
-  fszid_->assign(value);
-}
-inline void AckPostOperationRoute::set_fszid(const char* value, size_t size) {
-  set_has_fszid();
-  if (fszid_ == &::google::protobuf::internal::kEmptyString) {
-    fszid_ = new ::std::string;
-  }
-  fszid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckPostOperationRoute::mutable_fszid() {
-  set_has_fszid();
-  if (fszid_ == &::google::protobuf::internal::kEmptyString) {
-    fszid_ = new ::std::string;
-  }
-  return fszid_;
-}
-inline ::std::string* AckPostOperationRoute::release_fszid() {
-  clear_has_fszid();
-  if (fszid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = fszid_;
-    fszid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckPostOperationRoute::set_allocated_fszid(::std::string* fszid) {
-  if (fszid_ != &::google::protobuf::internal::kEmptyString) {
-    delete fszid_;
-  }
-  if (fszid) {
-    set_has_fszid();
-    fszid_ = fszid;
-  } else {
-    clear_has_fszid();
-    fszid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string psiid = 5;
-inline bool AckPostOperationRoute::has_psiid() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void AckPostOperationRoute::set_has_psiid() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void AckPostOperationRoute::clear_has_psiid() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void AckPostOperationRoute::clear_psiid() {
-  if (psiid_ != &::google::protobuf::internal::kEmptyString) {
-    psiid_->clear();
-  }
-  clear_has_psiid();
-}
-inline const ::std::string& AckPostOperationRoute::psiid() const {
-  return *psiid_;
-}
-inline void AckPostOperationRoute::set_psiid(const ::std::string& value) {
-  set_has_psiid();
-  if (psiid_ == &::google::protobuf::internal::kEmptyString) {
-    psiid_ = new ::std::string;
-  }
-  psiid_->assign(value);
-}
-inline void AckPostOperationRoute::set_psiid(const char* value) {
-  set_has_psiid();
-  if (psiid_ == &::google::protobuf::internal::kEmptyString) {
-    psiid_ = new ::std::string;
-  }
-  psiid_->assign(value);
-}
-inline void AckPostOperationRoute::set_psiid(const char* value, size_t size) {
-  set_has_psiid();
-  if (psiid_ == &::google::protobuf::internal::kEmptyString) {
-    psiid_ = new ::std::string;
-  }
-  psiid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckPostOperationRoute::mutable_psiid() {
-  set_has_psiid();
-  if (psiid_ == &::google::protobuf::internal::kEmptyString) {
-    psiid_ = new ::std::string;
-  }
-  return psiid_;
-}
-inline ::std::string* AckPostOperationRoute::release_psiid() {
-  clear_has_psiid();
-  if (psiid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = psiid_;
-    psiid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckPostOperationRoute::set_allocated_psiid(::std::string* psiid) {
-  if (psiid_ != &::google::protobuf::internal::kEmptyString) {
-    delete psiid_;
-  }
-  if (psiid) {
-    set_has_psiid();
-    psiid_ = psiid;
-  } else {
-    clear_has_psiid();
-    psiid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// RequestOperationRoutes
-
-// required uint32 seqno = 1;
-inline bool RequestOperationRoutes::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void RequestOperationRoutes::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void RequestOperationRoutes::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void RequestOperationRoutes::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 RequestOperationRoutes::seqno() const {
-  return seqno_;
-}
-inline void RequestOperationRoutes::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// optional string orid = 2;
-inline bool RequestOperationRoutes::has_orid() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void RequestOperationRoutes::set_has_orid() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void RequestOperationRoutes::clear_has_orid() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void RequestOperationRoutes::clear_orid() {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    orid_->clear();
-  }
-  clear_has_orid();
-}
-inline const ::std::string& RequestOperationRoutes::orid() const {
-  return *orid_;
-}
-inline void RequestOperationRoutes::set_orid(const ::std::string& value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void RequestOperationRoutes::set_orid(const char* value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void RequestOperationRoutes::set_orid(const char* value, size_t size) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestOperationRoutes::mutable_orid() {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  return orid_;
-}
-inline ::std::string* RequestOperationRoutes::release_orid() {
-  clear_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = orid_;
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestOperationRoutes::set_allocated_orid(::std::string* orid) {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    delete orid_;
-  }
-  if (orid) {
-    set_has_orid();
-    orid_ = orid;
-  } else {
-    clear_has_orid();
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string odid = 3;
-inline bool RequestOperationRoutes::has_odid() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void RequestOperationRoutes::set_has_odid() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void RequestOperationRoutes::clear_has_odid() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void RequestOperationRoutes::clear_odid() {
-  if (odid_ != &::google::protobuf::internal::kEmptyString) {
-    odid_->clear();
-  }
-  clear_has_odid();
-}
-inline const ::std::string& RequestOperationRoutes::odid() const {
-  return *odid_;
-}
-inline void RequestOperationRoutes::set_odid(const ::std::string& value) {
-  set_has_odid();
-  if (odid_ == &::google::protobuf::internal::kEmptyString) {
-    odid_ = new ::std::string;
-  }
-  odid_->assign(value);
-}
-inline void RequestOperationRoutes::set_odid(const char* value) {
-  set_has_odid();
-  if (odid_ == &::google::protobuf::internal::kEmptyString) {
-    odid_ = new ::std::string;
-  }
-  odid_->assign(value);
-}
-inline void RequestOperationRoutes::set_odid(const char* value, size_t size) {
-  set_has_odid();
-  if (odid_ == &::google::protobuf::internal::kEmptyString) {
-    odid_ = new ::std::string;
-  }
-  odid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestOperationRoutes::mutable_odid() {
-  set_has_odid();
-  if (odid_ == &::google::protobuf::internal::kEmptyString) {
-    odid_ = new ::std::string;
-  }
-  return odid_;
-}
-inline ::std::string* RequestOperationRoutes::release_odid() {
-  clear_has_odid();
-  if (odid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = odid_;
-    odid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestOperationRoutes::set_allocated_odid(::std::string* odid) {
-  if (odid_ != &::google::protobuf::internal::kEmptyString) {
-    delete odid_;
-  }
-  if (odid) {
-    set_has_odid();
-    odid_ = odid;
-  } else {
-    clear_has_odid();
-    odid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string pdid = 4;
-inline bool RequestOperationRoutes::has_pdid() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void RequestOperationRoutes::set_has_pdid() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void RequestOperationRoutes::clear_has_pdid() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void RequestOperationRoutes::clear_pdid() {
-  if (pdid_ != &::google::protobuf::internal::kEmptyString) {
-    pdid_->clear();
-  }
-  clear_has_pdid();
-}
-inline const ::std::string& RequestOperationRoutes::pdid() const {
-  return *pdid_;
-}
-inline void RequestOperationRoutes::set_pdid(const ::std::string& value) {
-  set_has_pdid();
-  if (pdid_ == &::google::protobuf::internal::kEmptyString) {
-    pdid_ = new ::std::string;
-  }
-  pdid_->assign(value);
-}
-inline void RequestOperationRoutes::set_pdid(const char* value) {
-  set_has_pdid();
-  if (pdid_ == &::google::protobuf::internal::kEmptyString) {
-    pdid_ = new ::std::string;
-  }
-  pdid_->assign(value);
-}
-inline void RequestOperationRoutes::set_pdid(const char* value, size_t size) {
-  set_has_pdid();
-  if (pdid_ == &::google::protobuf::internal::kEmptyString) {
-    pdid_ = new ::std::string;
-  }
-  pdid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestOperationRoutes::mutable_pdid() {
-  set_has_pdid();
-  if (pdid_ == &::google::protobuf::internal::kEmptyString) {
-    pdid_ = new ::std::string;
-  }
-  return pdid_;
-}
-inline ::std::string* RequestOperationRoutes::release_pdid() {
-  clear_has_pdid();
-  if (pdid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = pdid_;
-    pdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestOperationRoutes::set_allocated_pdid(::std::string* pdid) {
-  if (pdid_ != &::google::protobuf::internal::kEmptyString) {
-    delete pdid_;
-  }
-  if (pdid) {
-    set_has_pdid();
-    pdid_ = pdid;
-  } else {
-    clear_has_pdid();
-    pdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional .das.proto.Coordinate coordinate = 5;
-inline bool RequestOperationRoutes::has_coordinate() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void RequestOperationRoutes::set_has_coordinate() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void RequestOperationRoutes::clear_has_coordinate() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void RequestOperationRoutes::clear_coordinate() {
-  if (coordinate_ != NULL) coordinate_->::das::proto::Coordinate::Clear();
-  clear_has_coordinate();
-}
-inline const ::das::proto::Coordinate& RequestOperationRoutes::coordinate() const {
-  return coordinate_ != NULL ? *coordinate_ : *default_instance_->coordinate_;
-}
-inline ::das::proto::Coordinate* RequestOperationRoutes::mutable_coordinate() {
-  set_has_coordinate();
-  if (coordinate_ == NULL) coordinate_ = new ::das::proto::Coordinate;
-  return coordinate_;
-}
-inline ::das::proto::Coordinate* RequestOperationRoutes::release_coordinate() {
-  clear_has_coordinate();
-  ::das::proto::Coordinate* temp = coordinate_;
-  coordinate_ = NULL;
-  return temp;
-}
-inline void RequestOperationRoutes::set_allocated_coordinate(::das::proto::Coordinate* coordinate) {
-  delete coordinate_;
-  coordinate_ = coordinate;
-  if (coordinate) {
-    set_has_coordinate();
-  } else {
-    clear_has_coordinate();
-  }
-}
-
-// -------------------------------------------------------------------
-
-// AckRequestOperationRoutes
-
-// required uint32 seqno = 1;
-inline bool AckRequestOperationRoutes::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckRequestOperationRoutes::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckRequestOperationRoutes::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckRequestOperationRoutes::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckRequestOperationRoutes::seqno() const {
-  return seqno_;
-}
-inline void AckRequestOperationRoutes::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckRequestOperationRoutes::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckRequestOperationRoutes::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckRequestOperationRoutes::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckRequestOperationRoutes::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckRequestOperationRoutes::result() const {
-  return result_;
-}
-inline void AckRequestOperationRoutes::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// repeated .das.proto.OperationRoute ors = 3;
-inline int AckRequestOperationRoutes::ors_size() const {
-  return ors_.size();
-}
-inline void AckRequestOperationRoutes::clear_ors() {
-  ors_.Clear();
-}
-inline const ::das::proto::OperationRoute& AckRequestOperationRoutes::ors(int index) const {
-  return ors_.Get(index);
-}
-inline ::das::proto::OperationRoute* AckRequestOperationRoutes::mutable_ors(int index) {
-  return ors_.Mutable(index);
-}
-inline ::das::proto::OperationRoute* AckRequestOperationRoutes::add_ors() {
-  return ors_.Add();
-}
-inline const ::google::protobuf::RepeatedPtrField< ::das::proto::OperationRoute >&
-AckRequestOperationRoutes::ors() const {
-  return ors_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::das::proto::OperationRoute >*
-AckRequestOperationRoutes::mutable_ors() {
-  return &ors_;
-}
-
-// -------------------------------------------------------------------
-
-// RequestUploadOperationRoutes
-
-// required uint32 seqno = 1;
-inline bool RequestUploadOperationRoutes::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void RequestUploadOperationRoutes::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void RequestUploadOperationRoutes::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void RequestUploadOperationRoutes::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 RequestUploadOperationRoutes::seqno() const {
-  return seqno_;
-}
-inline void RequestUploadOperationRoutes::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required string uavid = 2;
-inline bool RequestUploadOperationRoutes::has_uavid() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void RequestUploadOperationRoutes::set_has_uavid() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void RequestUploadOperationRoutes::clear_has_uavid() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void RequestUploadOperationRoutes::clear_uavid() {
-  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
-    uavid_->clear();
-  }
-  clear_has_uavid();
-}
-inline const ::std::string& RequestUploadOperationRoutes::uavid() const {
-  return *uavid_;
-}
-inline void RequestUploadOperationRoutes::set_uavid(const ::std::string& value) {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  uavid_->assign(value);
-}
-inline void RequestUploadOperationRoutes::set_uavid(const char* value) {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  uavid_->assign(value);
-}
-inline void RequestUploadOperationRoutes::set_uavid(const char* value, size_t size) {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  uavid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestUploadOperationRoutes::mutable_uavid() {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  return uavid_;
-}
-inline ::std::string* RequestUploadOperationRoutes::release_uavid() {
-  clear_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = uavid_;
-    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestUploadOperationRoutes::set_allocated_uavid(::std::string* uavid) {
-  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
-    delete uavid_;
-  }
-  if (uavid) {
-    set_has_uavid();
-    uavid_ = uavid;
-  } else {
-    clear_has_uavid();
-    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required string orid = 3;
-inline bool RequestUploadOperationRoutes::has_orid() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void RequestUploadOperationRoutes::set_has_orid() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void RequestUploadOperationRoutes::clear_has_orid() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void RequestUploadOperationRoutes::clear_orid() {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    orid_->clear();
-  }
-  clear_has_orid();
-}
-inline const ::std::string& RequestUploadOperationRoutes::orid() const {
-  return *orid_;
-}
-inline void RequestUploadOperationRoutes::set_orid(const ::std::string& value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void RequestUploadOperationRoutes::set_orid(const char* value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void RequestUploadOperationRoutes::set_orid(const char* value, size_t size) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestUploadOperationRoutes::mutable_orid() {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  return orid_;
-}
-inline ::std::string* RequestUploadOperationRoutes::release_orid() {
-  clear_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = orid_;
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestUploadOperationRoutes::set_allocated_orid(::std::string* orid) {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    delete orid_;
-  }
-  if (orid) {
-    set_has_orid();
-    orid_ = orid;
-  } else {
-    clear_has_orid();
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// AckRequestUploadOperationRoutes
-
-// required uint32 seqno = 1;
-inline bool AckRequestUploadOperationRoutes::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckRequestUploadOperationRoutes::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckRequestUploadOperationRoutes::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckRequestUploadOperationRoutes::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckRequestUploadOperationRoutes::seqno() const {
-  return seqno_;
-}
-inline void AckRequestUploadOperationRoutes::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckRequestUploadOperationRoutes::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckRequestUploadOperationRoutes::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckRequestUploadOperationRoutes::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckRequestUploadOperationRoutes::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckRequestUploadOperationRoutes::result() const {
-  return result_;
-}
-inline void AckRequestUploadOperationRoutes::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// required string uavid = 3;
-inline bool AckRequestUploadOperationRoutes::has_uavid() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void AckRequestUploadOperationRoutes::set_has_uavid() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void AckRequestUploadOperationRoutes::clear_has_uavid() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void AckRequestUploadOperationRoutes::clear_uavid() {
-  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
-    uavid_->clear();
-  }
-  clear_has_uavid();
-}
-inline const ::std::string& AckRequestUploadOperationRoutes::uavid() const {
-  return *uavid_;
-}
-inline void AckRequestUploadOperationRoutes::set_uavid(const ::std::string& value) {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  uavid_->assign(value);
-}
-inline void AckRequestUploadOperationRoutes::set_uavid(const char* value) {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  uavid_->assign(value);
-}
-inline void AckRequestUploadOperationRoutes::set_uavid(const char* value, size_t size) {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  uavid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckRequestUploadOperationRoutes::mutable_uavid() {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  return uavid_;
-}
-inline ::std::string* AckRequestUploadOperationRoutes::release_uavid() {
-  clear_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = uavid_;
-    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckRequestUploadOperationRoutes::set_allocated_uavid(::std::string* uavid) {
-  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
-    delete uavid_;
-  }
-  if (uavid) {
-    set_has_uavid();
-    uavid_ = uavid;
-  } else {
-    clear_has_uavid();
-    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required string orid = 4;
-inline bool AckRequestUploadOperationRoutes::has_orid() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void AckRequestUploadOperationRoutes::set_has_orid() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void AckRequestUploadOperationRoutes::clear_has_orid() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void AckRequestUploadOperationRoutes::clear_orid() {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    orid_->clear();
-  }
-  clear_has_orid();
-}
-inline const ::std::string& AckRequestUploadOperationRoutes::orid() const {
-  return *orid_;
-}
-inline void AckRequestUploadOperationRoutes::set_orid(const ::std::string& value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void AckRequestUploadOperationRoutes::set_orid(const char* value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void AckRequestUploadOperationRoutes::set_orid(const char* value, size_t size) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckRequestUploadOperationRoutes::mutable_orid() {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  return orid_;
-}
-inline ::std::string* AckRequestUploadOperationRoutes::release_orid() {
-  clear_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = orid_;
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckRequestUploadOperationRoutes::set_allocated_orid(::std::string* orid) {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    delete orid_;
-  }
-  if (orid) {
-    set_has_orid();
-    orid_ = orid;
-  } else {
-    clear_has_orid();
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional int32 index = 5;
-inline bool AckRequestUploadOperationRoutes::has_index() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void AckRequestUploadOperationRoutes::set_has_index() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void AckRequestUploadOperationRoutes::clear_has_index() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void AckRequestUploadOperationRoutes::clear_index() {
-  index_ = 0;
-  clear_has_index();
-}
-inline ::google::protobuf::int32 AckRequestUploadOperationRoutes::index() const {
-  return index_;
-}
-inline void AckRequestUploadOperationRoutes::set_index(::google::protobuf::int32 value) {
-  set_has_index();
-  index_ = value;
-}
-
-// optional int32 count = 6;
-inline bool AckRequestUploadOperationRoutes::has_count() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void AckRequestUploadOperationRoutes::set_has_count() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void AckRequestUploadOperationRoutes::clear_has_count() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void AckRequestUploadOperationRoutes::clear_count() {
-  count_ = 0;
-  clear_has_count();
-}
-inline ::google::protobuf::int32 AckRequestUploadOperationRoutes::count() const {
-  return count_;
-}
-inline void AckRequestUploadOperationRoutes::set_count(::google::protobuf::int32 value) {
-  set_has_count();
-  count_ = value;
-}
-
 // -------------------------------------------------------------------
 
 // UploadOperationRoutes
@@ -25428,85 +20493,15 @@ inline void UploadOperationRoutes::set_allocated_uavid(::std::string* uavid) {
   }
 }
 
-// required string orid = 3;
-inline bool UploadOperationRoutes::has_orid() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void UploadOperationRoutes::set_has_orid() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void UploadOperationRoutes::clear_has_orid() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void UploadOperationRoutes::clear_orid() {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    orid_->clear();
-  }
-  clear_has_orid();
-}
-inline const ::std::string& UploadOperationRoutes::orid() const {
-  return *orid_;
-}
-inline void UploadOperationRoutes::set_orid(const ::std::string& value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void UploadOperationRoutes::set_orid(const char* value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void UploadOperationRoutes::set_orid(const char* value, size_t size) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* UploadOperationRoutes::mutable_orid() {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  return orid_;
-}
-inline ::std::string* UploadOperationRoutes::release_orid() {
-  clear_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = orid_;
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void UploadOperationRoutes::set_allocated_orid(::std::string* orid) {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    delete orid_;
-  }
-  if (orid) {
-    set_has_orid();
-    orid_ = orid;
-  } else {
-    clear_has_orid();
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
 // required string userid = 4;
 inline bool UploadOperationRoutes::has_userid() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void UploadOperationRoutes::set_has_userid() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void UploadOperationRoutes::clear_has_userid() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void UploadOperationRoutes::clear_userid() {
   if (userid_ != &::google::protobuf::internal::kEmptyString) {
@@ -25570,13 +20565,13 @@ inline void UploadOperationRoutes::set_allocated_userid(::std::string* userid) {
 
 // required uint64 timestamp = 5;
 inline bool UploadOperationRoutes::has_timestamp() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void UploadOperationRoutes::set_has_timestamp() {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void UploadOperationRoutes::clear_has_timestamp() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void UploadOperationRoutes::clear_timestamp() {
   timestamp_ = GOOGLE_ULONGLONG(0);
@@ -25590,26 +20585,48 @@ inline void UploadOperationRoutes::set_timestamp(::google::protobuf::uint64 valu
   timestamp_ = value;
 }
 
-// required int32 count = 6;
-inline bool UploadOperationRoutes::has_count() const {
+// required int32 countmission = 6;
+inline bool UploadOperationRoutes::has_countmission() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void UploadOperationRoutes::set_has_countmission() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void UploadOperationRoutes::clear_has_countmission() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void UploadOperationRoutes::clear_countmission() {
+  countmission_ = 0;
+  clear_has_countmission();
+}
+inline ::google::protobuf::int32 UploadOperationRoutes::countmission() const {
+  return countmission_;
+}
+inline void UploadOperationRoutes::set_countmission(::google::protobuf::int32 value) {
+  set_has_countmission();
+  countmission_ = value;
+}
+
+// required int32 countboundary = 7;
+inline bool UploadOperationRoutes::has_countboundary() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
-inline void UploadOperationRoutes::set_has_count() {
+inline void UploadOperationRoutes::set_has_countboundary() {
   _has_bits_[0] |= 0x00000020u;
 }
-inline void UploadOperationRoutes::clear_has_count() {
+inline void UploadOperationRoutes::clear_has_countboundary() {
   _has_bits_[0] &= ~0x00000020u;
 }
-inline void UploadOperationRoutes::clear_count() {
-  count_ = 0;
-  clear_has_count();
+inline void UploadOperationRoutes::clear_countboundary() {
+  countboundary_ = 0;
+  clear_has_countboundary();
 }
-inline ::google::protobuf::int32 UploadOperationRoutes::count() const {
-  return count_;
+inline ::google::protobuf::int32 UploadOperationRoutes::countboundary() const {
+  return countboundary_;
 }
-inline void UploadOperationRoutes::set_count(::google::protobuf::int32 value) {
-  set_has_count();
-  count_ = value;
+inline void UploadOperationRoutes::set_countboundary(::google::protobuf::int32 value) {
+  set_has_countboundary();
+  countboundary_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -25660,54 +20677,102 @@ inline void AckUploadOperationRoutes::set_result(::google::protobuf::int32 value
   result_ = value;
 }
 
+// -------------------------------------------------------------------
+
+// SyscOperationRoutes
+
+// required uint32 seqno = 1;
+inline bool SyscOperationRoutes::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void SyscOperationRoutes::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void SyscOperationRoutes::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void SyscOperationRoutes::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 SyscOperationRoutes::seqno() const {
+  return seqno_;
+}
+inline void SyscOperationRoutes::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 result = 2;
+inline bool SyscOperationRoutes::has_result() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void SyscOperationRoutes::set_has_result() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void SyscOperationRoutes::clear_has_result() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void SyscOperationRoutes::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::google::protobuf::int32 SyscOperationRoutes::result() const {
+  return result_;
+}
+inline void SyscOperationRoutes::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
+}
+
 // required string uavid = 3;
-inline bool AckUploadOperationRoutes::has_uavid() const {
+inline bool SyscOperationRoutes::has_uavid() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void AckUploadOperationRoutes::set_has_uavid() {
+inline void SyscOperationRoutes::set_has_uavid() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void AckUploadOperationRoutes::clear_has_uavid() {
+inline void SyscOperationRoutes::clear_has_uavid() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void AckUploadOperationRoutes::clear_uavid() {
+inline void SyscOperationRoutes::clear_uavid() {
   if (uavid_ != &::google::protobuf::internal::kEmptyString) {
     uavid_->clear();
   }
   clear_has_uavid();
 }
-inline const ::std::string& AckUploadOperationRoutes::uavid() const {
+inline const ::std::string& SyscOperationRoutes::uavid() const {
   return *uavid_;
 }
-inline void AckUploadOperationRoutes::set_uavid(const ::std::string& value) {
+inline void SyscOperationRoutes::set_uavid(const ::std::string& value) {
   set_has_uavid();
   if (uavid_ == &::google::protobuf::internal::kEmptyString) {
     uavid_ = new ::std::string;
   }
   uavid_->assign(value);
 }
-inline void AckUploadOperationRoutes::set_uavid(const char* value) {
+inline void SyscOperationRoutes::set_uavid(const char* value) {
   set_has_uavid();
   if (uavid_ == &::google::protobuf::internal::kEmptyString) {
     uavid_ = new ::std::string;
   }
   uavid_->assign(value);
 }
-inline void AckUploadOperationRoutes::set_uavid(const char* value, size_t size) {
+inline void SyscOperationRoutes::set_uavid(const char* value, size_t size) {
   set_has_uavid();
   if (uavid_ == &::google::protobuf::internal::kEmptyString) {
     uavid_ = new ::std::string;
   }
   uavid_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* AckUploadOperationRoutes::mutable_uavid() {
+inline ::std::string* SyscOperationRoutes::mutable_uavid() {
   set_has_uavid();
   if (uavid_ == &::google::protobuf::internal::kEmptyString) {
     uavid_ = new ::std::string;
   }
   return uavid_;
 }
-inline ::std::string* AckUploadOperationRoutes::release_uavid() {
+inline ::std::string* SyscOperationRoutes::release_uavid() {
   clear_has_uavid();
   if (uavid_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
@@ -25717,7 +20782,7 @@ inline ::std::string* AckUploadOperationRoutes::release_uavid() {
     return temp;
   }
 }
-inline void AckUploadOperationRoutes::set_allocated_uavid(::std::string* uavid) {
+inline void SyscOperationRoutes::set_allocated_uavid(::std::string* uavid) {
   if (uavid_ != &::google::protobuf::internal::kEmptyString) {
     delete uavid_;
   }
@@ -25730,166 +20795,48 @@ inline void AckUploadOperationRoutes::set_allocated_uavid(::std::string* uavid) 
   }
 }
 
-// required string orid = 4;
-inline bool AckUploadOperationRoutes::has_orid() const {
+// optional int32 index = 5;
+inline bool SyscOperationRoutes::has_index() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void AckUploadOperationRoutes::set_has_orid() {
+inline void SyscOperationRoutes::set_has_index() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void AckUploadOperationRoutes::clear_has_orid() {
+inline void SyscOperationRoutes::clear_has_index() {
   _has_bits_[0] &= ~0x00000008u;
 }
-inline void AckUploadOperationRoutes::clear_orid() {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    orid_->clear();
-  }
-  clear_has_orid();
+inline void SyscOperationRoutes::clear_index() {
+  index_ = 0;
+  clear_has_index();
 }
-inline const ::std::string& AckUploadOperationRoutes::orid() const {
-  return *orid_;
+inline ::google::protobuf::int32 SyscOperationRoutes::index() const {
+  return index_;
 }
-inline void AckUploadOperationRoutes::set_orid(const ::std::string& value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void AckUploadOperationRoutes::set_orid(const char* value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void AckUploadOperationRoutes::set_orid(const char* value, size_t size) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckUploadOperationRoutes::mutable_orid() {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  return orid_;
-}
-inline ::std::string* AckUploadOperationRoutes::release_orid() {
-  clear_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = orid_;
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckUploadOperationRoutes::set_allocated_orid(::std::string* orid) {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    delete orid_;
-  }
-  if (orid) {
-    set_has_orid();
-    orid_ = orid;
-  } else {
-    clear_has_orid();
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
+inline void SyscOperationRoutes::set_index(::google::protobuf::int32 value) {
+  set_has_index();
+  index_ = value;
 }
 
-// required string userid = 5;
-inline bool AckUploadOperationRoutes::has_userid() const {
+// optional int32 count = 6;
+inline bool SyscOperationRoutes::has_count() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
-inline void AckUploadOperationRoutes::set_has_userid() {
+inline void SyscOperationRoutes::set_has_count() {
   _has_bits_[0] |= 0x00000010u;
 }
-inline void AckUploadOperationRoutes::clear_has_userid() {
+inline void SyscOperationRoutes::clear_has_count() {
   _has_bits_[0] &= ~0x00000010u;
 }
-inline void AckUploadOperationRoutes::clear_userid() {
-  if (userid_ != &::google::protobuf::internal::kEmptyString) {
-    userid_->clear();
-  }
-  clear_has_userid();
+inline void SyscOperationRoutes::clear_count() {
+  count_ = 0;
+  clear_has_count();
 }
-inline const ::std::string& AckUploadOperationRoutes::userid() const {
-  return *userid_;
+inline ::google::protobuf::int32 SyscOperationRoutes::count() const {
+  return count_;
 }
-inline void AckUploadOperationRoutes::set_userid(const ::std::string& value) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(value);
-}
-inline void AckUploadOperationRoutes::set_userid(const char* value) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(value);
-}
-inline void AckUploadOperationRoutes::set_userid(const char* value, size_t size) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckUploadOperationRoutes::mutable_userid() {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  return userid_;
-}
-inline ::std::string* AckUploadOperationRoutes::release_userid() {
-  clear_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = userid_;
-    userid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckUploadOperationRoutes::set_allocated_userid(::std::string* userid) {
-  if (userid_ != &::google::protobuf::internal::kEmptyString) {
-    delete userid_;
-  }
-  if (userid) {
-    set_has_userid();
-    userid_ = userid;
-  } else {
-    clear_has_userid();
-    userid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required uint64 timestamp = 6;
-inline bool AckUploadOperationRoutes::has_timestamp() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void AckUploadOperationRoutes::set_has_timestamp() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void AckUploadOperationRoutes::clear_has_timestamp() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void AckUploadOperationRoutes::clear_timestamp() {
-  timestamp_ = GOOGLE_ULONGLONG(0);
-  clear_has_timestamp();
-}
-inline ::google::protobuf::uint64 AckUploadOperationRoutes::timestamp() const {
-  return timestamp_;
-}
-inline void AckUploadOperationRoutes::set_timestamp(::google::protobuf::uint64 value) {
-  set_has_timestamp();
-  timestamp_ = value;
+inline void SyscOperationRoutes::set_count(::google::protobuf::int32 value) {
+  set_has_count();
+  count_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -25988,177 +20935,37 @@ inline void RequestRouteMissions::set_allocated_uavid(::std::string* uavid) {
   }
 }
 
-// required string orid = 3;
-inline bool RequestRouteMissions::has_orid() const {
+// required bool boundary = 3;
+inline bool RequestRouteMissions::has_boundary() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void RequestRouteMissions::set_has_orid() {
+inline void RequestRouteMissions::set_has_boundary() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void RequestRouteMissions::clear_has_orid() {
+inline void RequestRouteMissions::clear_has_boundary() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void RequestRouteMissions::clear_orid() {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    orid_->clear();
-  }
-  clear_has_orid();
+inline void RequestRouteMissions::clear_boundary() {
+  boundary_ = false;
+  clear_has_boundary();
 }
-inline const ::std::string& RequestRouteMissions::orid() const {
-  return *orid_;
+inline bool RequestRouteMissions::boundary() const {
+  return boundary_;
 }
-inline void RequestRouteMissions::set_orid(const ::std::string& value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void RequestRouteMissions::set_orid(const char* value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void RequestRouteMissions::set_orid(const char* value, size_t size) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestRouteMissions::mutable_orid() {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  return orid_;
-}
-inline ::std::string* RequestRouteMissions::release_orid() {
-  clear_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = orid_;
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestRouteMissions::set_allocated_orid(::std::string* orid) {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    delete orid_;
-  }
-  if (orid) {
-    set_has_orid();
-    orid_ = orid;
-  } else {
-    clear_has_orid();
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
+inline void RequestRouteMissions::set_boundary(bool value) {
+  set_has_boundary();
+  boundary_ = value;
 }
 
-// required string userid = 4;
-inline bool RequestRouteMissions::has_userid() const {
+// required int32 offset = 4;
+inline bool RequestRouteMissions::has_offset() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void RequestRouteMissions::set_has_userid() {
+inline void RequestRouteMissions::set_has_offset() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void RequestRouteMissions::clear_has_userid() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void RequestRouteMissions::clear_userid() {
-  if (userid_ != &::google::protobuf::internal::kEmptyString) {
-    userid_->clear();
-  }
-  clear_has_userid();
-}
-inline const ::std::string& RequestRouteMissions::userid() const {
-  return *userid_;
-}
-inline void RequestRouteMissions::set_userid(const ::std::string& value) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(value);
-}
-inline void RequestRouteMissions::set_userid(const char* value) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(value);
-}
-inline void RequestRouteMissions::set_userid(const char* value, size_t size) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestRouteMissions::mutable_userid() {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  return userid_;
-}
-inline ::std::string* RequestRouteMissions::release_userid() {
-  clear_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = userid_;
-    userid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestRouteMissions::set_allocated_userid(::std::string* userid) {
-  if (userid_ != &::google::protobuf::internal::kEmptyString) {
-    delete userid_;
-  }
-  if (userid) {
-    set_has_userid();
-    userid_ = userid;
-  } else {
-    clear_has_userid();
-    userid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required uint64 timestamp = 5;
-inline bool RequestRouteMissions::has_timestamp() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void RequestRouteMissions::set_has_timestamp() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void RequestRouteMissions::clear_has_timestamp() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void RequestRouteMissions::clear_timestamp() {
-  timestamp_ = GOOGLE_ULONGLONG(0);
-  clear_has_timestamp();
-}
-inline ::google::protobuf::uint64 RequestRouteMissions::timestamp() const {
-  return timestamp_;
-}
-inline void RequestRouteMissions::set_timestamp(::google::protobuf::uint64 value) {
-  set_has_timestamp();
-  timestamp_ = value;
-}
-
-// required int32 offset = 6;
-inline bool RequestRouteMissions::has_offset() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void RequestRouteMissions::set_has_offset() {
-  _has_bits_[0] |= 0x00000020u;
-}
 inline void RequestRouteMissions::clear_has_offset() {
-  _has_bits_[0] &= ~0x00000020u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void RequestRouteMissions::clear_offset() {
   offset_ = 0;
@@ -26172,15 +20979,15 @@ inline void RequestRouteMissions::set_offset(::google::protobuf::int32 value) {
   offset_ = value;
 }
 
-// required int32 count = 7;
+// required int32 count = 5;
 inline bool RequestRouteMissions::has_count() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000010u) != 0;
 }
 inline void RequestRouteMissions::set_has_count() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000010u;
 }
 inline void RequestRouteMissions::clear_has_count() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void RequestRouteMissions::clear_count() {
   count_ = 0;
@@ -26242,247 +21049,37 @@ inline void AckRequestRouteMissions::set_result(::google::protobuf::int32 value)
   result_ = value;
 }
 
-// required string uavid = 3;
-inline bool AckRequestRouteMissions::has_uavid() const {
+// required bool boundary = 3;
+inline bool AckRequestRouteMissions::has_boundary() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void AckRequestRouteMissions::set_has_uavid() {
+inline void AckRequestRouteMissions::set_has_boundary() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void AckRequestRouteMissions::clear_has_uavid() {
+inline void AckRequestRouteMissions::clear_has_boundary() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void AckRequestRouteMissions::clear_uavid() {
-  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
-    uavid_->clear();
-  }
-  clear_has_uavid();
+inline void AckRequestRouteMissions::clear_boundary() {
+  boundary_ = false;
+  clear_has_boundary();
 }
-inline const ::std::string& AckRequestRouteMissions::uavid() const {
-  return *uavid_;
+inline bool AckRequestRouteMissions::boundary() const {
+  return boundary_;
 }
-inline void AckRequestRouteMissions::set_uavid(const ::std::string& value) {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  uavid_->assign(value);
-}
-inline void AckRequestRouteMissions::set_uavid(const char* value) {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  uavid_->assign(value);
-}
-inline void AckRequestRouteMissions::set_uavid(const char* value, size_t size) {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  uavid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckRequestRouteMissions::mutable_uavid() {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  return uavid_;
-}
-inline ::std::string* AckRequestRouteMissions::release_uavid() {
-  clear_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = uavid_;
-    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckRequestRouteMissions::set_allocated_uavid(::std::string* uavid) {
-  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
-    delete uavid_;
-  }
-  if (uavid) {
-    set_has_uavid();
-    uavid_ = uavid;
-  } else {
-    clear_has_uavid();
-    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
+inline void AckRequestRouteMissions::set_boundary(bool value) {
+  set_has_boundary();
+  boundary_ = value;
 }
 
-// required string orid = 4;
-inline bool AckRequestRouteMissions::has_orid() const {
+// required int32 offset = 4;
+inline bool AckRequestRouteMissions::has_offset() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void AckRequestRouteMissions::set_has_orid() {
+inline void AckRequestRouteMissions::set_has_offset() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void AckRequestRouteMissions::clear_has_orid() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void AckRequestRouteMissions::clear_orid() {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    orid_->clear();
-  }
-  clear_has_orid();
-}
-inline const ::std::string& AckRequestRouteMissions::orid() const {
-  return *orid_;
-}
-inline void AckRequestRouteMissions::set_orid(const ::std::string& value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void AckRequestRouteMissions::set_orid(const char* value) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(value);
-}
-inline void AckRequestRouteMissions::set_orid(const char* value, size_t size) {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  orid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckRequestRouteMissions::mutable_orid() {
-  set_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    orid_ = new ::std::string;
-  }
-  return orid_;
-}
-inline ::std::string* AckRequestRouteMissions::release_orid() {
-  clear_has_orid();
-  if (orid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = orid_;
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckRequestRouteMissions::set_allocated_orid(::std::string* orid) {
-  if (orid_ != &::google::protobuf::internal::kEmptyString) {
-    delete orid_;
-  }
-  if (orid) {
-    set_has_orid();
-    orid_ = orid;
-  } else {
-    clear_has_orid();
-    orid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required string userid = 5;
-inline bool AckRequestRouteMissions::has_userid() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void AckRequestRouteMissions::set_has_userid() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void AckRequestRouteMissions::clear_has_userid() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void AckRequestRouteMissions::clear_userid() {
-  if (userid_ != &::google::protobuf::internal::kEmptyString) {
-    userid_->clear();
-  }
-  clear_has_userid();
-}
-inline const ::std::string& AckRequestRouteMissions::userid() const {
-  return *userid_;
-}
-inline void AckRequestRouteMissions::set_userid(const ::std::string& value) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(value);
-}
-inline void AckRequestRouteMissions::set_userid(const char* value) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(value);
-}
-inline void AckRequestRouteMissions::set_userid(const char* value, size_t size) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  userid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckRequestRouteMissions::mutable_userid() {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
-  }
-  return userid_;
-}
-inline ::std::string* AckRequestRouteMissions::release_userid() {
-  clear_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = userid_;
-    userid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckRequestRouteMissions::set_allocated_userid(::std::string* userid) {
-  if (userid_ != &::google::protobuf::internal::kEmptyString) {
-    delete userid_;
-  }
-  if (userid) {
-    set_has_userid();
-    userid_ = userid;
-  } else {
-    clear_has_userid();
-    userid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required uint64 timestamp = 6;
-inline bool AckRequestRouteMissions::has_timestamp() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void AckRequestRouteMissions::set_has_timestamp() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void AckRequestRouteMissions::clear_has_timestamp() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void AckRequestRouteMissions::clear_timestamp() {
-  timestamp_ = GOOGLE_ULONGLONG(0);
-  clear_has_timestamp();
-}
-inline ::google::protobuf::uint64 AckRequestRouteMissions::timestamp() const {
-  return timestamp_;
-}
-inline void AckRequestRouteMissions::set_timestamp(::google::protobuf::uint64 value) {
-  set_has_timestamp();
-  timestamp_ = value;
-}
-
-// required int32 offset = 7;
-inline bool AckRequestRouteMissions::has_offset() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
-}
-inline void AckRequestRouteMissions::set_has_offset() {
-  _has_bits_[0] |= 0x00000040u;
-}
 inline void AckRequestRouteMissions::clear_has_offset() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void AckRequestRouteMissions::clear_offset() {
   offset_ = 0;
@@ -26496,7 +21093,7 @@ inline void AckRequestRouteMissions::set_offset(::google::protobuf::int32 value)
   offset_ = value;
 }
 
-// repeated bytes missions = 8;
+// repeated bytes missions = 5;
 inline int AckRequestRouteMissions::missions_size() const {
   return missions_.size();
 }
@@ -27924,80 +22521,6 @@ AckRequestUavProductInfos::upi() const {
 inline ::google::protobuf::RepeatedPtrField< ::das::proto::UavProductInfo >*
 AckRequestUavProductInfos::mutable_upi() {
   return &upi_;
-}
-
-// -------------------------------------------------------------------
-
-// SyncUavProductInfos
-
-// required uint32 seqno = 1;
-inline bool SyncUavProductInfos::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void SyncUavProductInfos::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void SyncUavProductInfos::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void SyncUavProductInfos::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 SyncUavProductInfos::seqno() const {
-  return seqno_;
-}
-inline void SyncUavProductInfos::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// AckSyncUavProductInfos
-
-// required uint32 seqno = 1;
-inline bool AckSyncUavProductInfos::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckSyncUavProductInfos::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckSyncUavProductInfos::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckSyncUavProductInfos::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckSyncUavProductInfos::seqno() const {
-  return seqno_;
-}
-inline void AckSyncUavProductInfos::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckSyncUavProductInfos::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckSyncUavProductInfos::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckSyncUavProductInfos::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckSyncUavProductInfos::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckSyncUavProductInfos::result() const {
-  return result_;
-}
-inline void AckSyncUavProductInfos::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
 }
 
 // -------------------------------------------------------------------

@@ -44,7 +44,7 @@ void GSMessage::SetGSContent(const Message &msg)
         m_msg = new AckPostControl2Uav;
         break;
     case SychMissionRes:
-        m_msg = new AckRequestUploadOperationRoutes;
+        m_msg = new RequestRouteMissions;
         break;
     case PushUavSndInfo:
         m_msg = new PostOperationInformation;
@@ -90,7 +90,7 @@ MessageType GSMessage::getMessageType(const Message &msg)
         ret = BindUavRes;
     else if (name == d_p_ClassName(AckPostControl2Uav))
         ret = ControlUavRes;
-    else if (name == d_p_ClassName(AckRequestUploadOperationRoutes))
+    else if (name == d_p_ClassName(SyscOperationRoutes))
         ret = SychMissionRes;
     else if (name == d_p_ClassName(PostOperationInformation))
         ret = PushUavSndInfo;
@@ -140,7 +140,7 @@ void UAVMessage::SetContent(const google::protobuf::Message &msg)
         m_msg = new PostControl2Uav;
         break;
     case SychMission:
-        m_msg = new RequestUploadOperationRoutes;
+        m_msg = new RequestRouteMissions;
         break;
     case QueryUav:
         m_msg = new RequestUavStatus;
@@ -180,7 +180,7 @@ MessageType UAVMessage::getMessageType(const google::protobuf::Message &msg)
         ret = BindUav;
     else if (name == d_p_ClassName(PostControl2Uav))
         ret = ControlUav;
-    else if (name == d_p_ClassName(RequestUploadOperationRoutes))
+    else if (name == d_p_ClassName(RequestRouteMissions))
         ret = SychMission;
     else if (name == d_p_ClassName(RequestUavStatus))
         ret = QueryUav;
