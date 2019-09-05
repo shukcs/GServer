@@ -87,9 +87,7 @@ class RequestParcelDescriptions;
 class AckRequestParcelDescriptions;
 class DeleteParcelDescription;
 class AckDeleteParcelDescription;
-class CropInformation;
-class PesticideInformation;
-class BillInformation;
+class SingleShrink;
 class OperationPlan;
 class OperationDescription;
 class PostOperationDescription;
@@ -98,6 +96,7 @@ class RequestOperationDescriptions;
 class AckRequestOperationDescriptions;
 class DeleteOperationDescription;
 class AckDeleteOperationDescription;
+class BillInformation;
 class OperationRoute;
 class PostOperationRoute;
 class AckPostOperationRoute;
@@ -6277,14 +6276,14 @@ class AckDeleteParcelDescription : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class CropInformation : public ::google::protobuf::Message {
+class SingleShrink : public ::google::protobuf::Message {
  public:
-  CropInformation();
-  virtual ~CropInformation();
+  SingleShrink();
+  virtual ~SingleShrink();
 
-  CropInformation(const CropInformation& from);
+  SingleShrink(const SingleShrink& from);
 
-  inline CropInformation& operator=(const CropInformation& from) {
+  inline SingleShrink& operator=(const SingleShrink& from) {
     CopyFrom(from);
     return *this;
   }
@@ -6298,17 +6297,17 @@ class CropInformation : public ::google::protobuf::Message {
   }
 
   static const ::google::protobuf::Descriptor* descriptor();
-  static const CropInformation& default_instance();
+  static const SingleShrink& default_instance();
 
-  void Swap(CropInformation* other);
+  void Swap(SingleShrink* other);
 
   // implements Message ----------------------------------------------
 
-  CropInformation* New() const;
+  SingleShrink* New() const;
   void CopyFrom(const ::google::protobuf::Message& from);
   void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const CropInformation& from);
-  void MergeFrom(const CropInformation& from);
+  void CopyFrom(const SingleShrink& from);
+  void MergeFrom(const SingleShrink& from);
   void Clear();
   bool IsInitialized() const;
 
@@ -6331,41 +6330,31 @@ class CropInformation : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required string name = 1;
-  inline bool has_name() const;
-  inline void clear_name();
-  static const int kNameFieldNumber = 1;
-  inline const ::std::string& name() const;
-  inline void set_name(const ::std::string& value);
-  inline void set_name(const char* value);
-  inline void set_name(const char* value, size_t size);
-  inline ::std::string* mutable_name();
-  inline ::std::string* release_name();
-  inline void set_allocated_name(::std::string* name);
+  // required int32 bdr = 1;
+  inline bool has_bdr() const;
+  inline void clear_bdr();
+  static const int kBdrFieldNumber = 1;
+  inline ::google::protobuf::int32 bdr() const;
+  inline void set_bdr(::google::protobuf::int32 value);
 
-  // optional string cdid = 2;
-  inline bool has_cdid() const;
-  inline void clear_cdid();
-  static const int kCdidFieldNumber = 2;
-  inline const ::std::string& cdid() const;
-  inline void set_cdid(const ::std::string& value);
-  inline void set_cdid(const char* value);
-  inline void set_cdid(const char* value, size_t size);
-  inline ::std::string* mutable_cdid();
-  inline ::std::string* release_cdid();
-  inline void set_allocated_cdid(::std::string* cdid);
+  // required double safe = 2;
+  inline bool has_safe() const;
+  inline void clear_safe();
+  static const int kSafeFieldNumber = 2;
+  inline double safe() const;
+  inline void set_safe(double value);
 
-  // @@protoc_insertion_point(class_scope:das.proto.CropInformation)
+  // @@protoc_insertion_point(class_scope:das.proto.SingleShrink)
  private:
-  inline void set_has_name();
-  inline void clear_has_name();
-  inline void set_has_cdid();
-  inline void clear_has_cdid();
+  inline void set_has_bdr();
+  inline void clear_has_bdr();
+  inline void set_has_safe();
+  inline void clear_has_safe();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::std::string* name_;
-  ::std::string* cdid_;
+  double safe_;
+  ::google::protobuf::int32 bdr_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
@@ -6375,221 +6364,7 @@ class CropInformation : public ::google::protobuf::Message {
   friend void protobuf_ShutdownFile_das_2eproto();
 
   void InitAsDefaultInstance();
-  static CropInformation* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class PesticideInformation : public ::google::protobuf::Message {
- public:
-  PesticideInformation();
-  virtual ~PesticideInformation();
-
-  PesticideInformation(const PesticideInformation& from);
-
-  inline PesticideInformation& operator=(const PesticideInformation& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const PesticideInformation& default_instance();
-
-  void Swap(PesticideInformation* other);
-
-  // implements Message ----------------------------------------------
-
-  PesticideInformation* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const PesticideInformation& from);
-  void MergeFrom(const PesticideInformation& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required string name = 1;
-  inline bool has_name() const;
-  inline void clear_name();
-  static const int kNameFieldNumber = 1;
-  inline const ::std::string& name() const;
-  inline void set_name(const ::std::string& value);
-  inline void set_name(const char* value);
-  inline void set_name(const char* value, size_t size);
-  inline ::std::string* mutable_name();
-  inline ::std::string* release_name();
-  inline void set_allocated_name(::std::string* name);
-
-  // optional string pdid = 2;
-  inline bool has_pdid() const;
-  inline void clear_pdid();
-  static const int kPdidFieldNumber = 2;
-  inline const ::std::string& pdid() const;
-  inline void set_pdid(const ::std::string& value);
-  inline void set_pdid(const char* value);
-  inline void set_pdid(const char* value, size_t size);
-  inline ::std::string* mutable_pdid();
-  inline ::std::string* release_pdid();
-  inline void set_allocated_pdid(::std::string* pdid);
-
-  // @@protoc_insertion_point(class_scope:das.proto.PesticideInformation)
- private:
-  inline void set_has_name();
-  inline void clear_has_name();
-  inline void set_has_pdid();
-  inline void clear_has_pdid();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::std::string* name_;
-  ::std::string* pdid_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static PesticideInformation* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class BillInformation : public ::google::protobuf::Message {
- public:
-  BillInformation();
-  virtual ~BillInformation();
-
-  BillInformation(const BillInformation& from);
-
-  inline BillInformation& operator=(const BillInformation& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const BillInformation& default_instance();
-
-  void Swap(BillInformation* other);
-
-  // implements Message ----------------------------------------------
-
-  BillInformation* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const BillInformation& from);
-  void MergeFrom(const BillInformation& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // optional float servicecharge = 1;
-  inline bool has_servicecharge() const;
-  inline void clear_servicecharge();
-  static const int kServicechargeFieldNumber = 1;
-  inline float servicecharge() const;
-  inline void set_servicecharge(float value);
-
-  // optional float pesticidecharge = 2;
-  inline bool has_pesticidecharge() const;
-  inline void clear_pesticidecharge();
-  static const int kPesticidechargeFieldNumber = 2;
-  inline float pesticidecharge() const;
-  inline void set_pesticidecharge(float value);
-
-  // optional float othercharge = 3;
-  inline bool has_othercharge() const;
-  inline void clear_othercharge();
-  static const int kOtherchargeFieldNumber = 3;
-  inline float othercharge() const;
-  inline void set_othercharge(float value);
-
-  // required float sumcharge = 4;
-  inline bool has_sumcharge() const;
-  inline void clear_sumcharge();
-  static const int kSumchargeFieldNumber = 4;
-  inline float sumcharge() const;
-  inline void set_sumcharge(float value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.BillInformation)
- private:
-  inline void set_has_servicecharge();
-  inline void clear_has_servicecharge();
-  inline void set_has_pesticidecharge();
-  inline void clear_has_pesticidecharge();
-  inline void set_has_othercharge();
-  inline void clear_has_othercharge();
-  inline void set_has_sumcharge();
-  inline void clear_has_sumcharge();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  float servicecharge_;
-  float pesticidecharge_;
-  float othercharge_;
-  float sumcharge_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static BillInformation* default_instance_;
+  static SingleShrink* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -6675,17 +6450,17 @@ class OperationPlan : public ::google::protobuf::Message {
   inline bool single() const;
   inline void set_single(bool value);
 
-  // repeated double boundary = 5;
-  inline int boundary_size() const;
-  inline void clear_boundary();
-  static const int kBoundaryFieldNumber = 5;
-  inline double boundary(int index) const;
-  inline void set_boundary(int index, double value);
-  inline void add_boundary(double value);
-  inline const ::google::protobuf::RepeatedField< double >&
-      boundary() const;
-  inline ::google::protobuf::RepeatedField< double >*
-      mutable_boundary();
+  // repeated .das.proto.SingleShrink bdrsafe = 5;
+  inline int bdrsafe_size() const;
+  inline void clear_bdrsafe();
+  static const int kBdrsafeFieldNumber = 5;
+  inline const ::das::proto::SingleShrink& bdrsafe(int index) const;
+  inline ::das::proto::SingleShrink* mutable_bdrsafe(int index);
+  inline ::das::proto::SingleShrink* add_bdrsafe();
+  inline const ::google::protobuf::RepeatedPtrField< ::das::proto::SingleShrink >&
+      bdrsafe() const;
+  inline ::google::protobuf::RepeatedPtrField< ::das::proto::SingleShrink >*
+      mutable_bdrsafe();
 
   // required double block = 6;
   inline bool has_block() const;
@@ -6713,7 +6488,7 @@ class OperationPlan : public ::google::protobuf::Message {
   float angle_;
   bool anti_;
   bool single_;
-  ::google::protobuf::RepeatedField< double > boundary_;
+  ::google::protobuf::RepeatedPtrField< ::das::proto::SingleShrink > bdrsafe_;
   double block_;
 
   mutable int _cached_size_;
@@ -6782,22 +6557,10 @@ class OperationDescription : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // required string chargerid = 1;
-  inline bool has_chargerid() const;
-  inline void clear_chargerid();
-  static const int kChargeridFieldNumber = 1;
-  inline const ::std::string& chargerid() const;
-  inline void set_chargerid(const ::std::string& value);
-  inline void set_chargerid(const char* value);
-  inline void set_chargerid(const char* value, size_t size);
-  inline ::std::string* mutable_chargerid();
-  inline ::std::string* release_chargerid();
-  inline void set_allocated_chargerid(::std::string* chargerid);
-
-  // required string registerid = 2;
+  // required string registerid = 1;
   inline bool has_registerid() const;
   inline void clear_registerid();
-  static const int kRegisteridFieldNumber = 2;
+  static const int kRegisteridFieldNumber = 1;
   inline const ::std::string& registerid() const;
   inline void set_registerid(const ::std::string& value);
   inline void set_registerid(const char* value);
@@ -6806,26 +6569,10 @@ class OperationDescription : public ::google::protobuf::Message {
   inline ::std::string* release_registerid();
   inline void set_allocated_registerid(::std::string* registerid);
 
-  // repeated string operatorid = 3;
-  inline int operatorid_size() const;
-  inline void clear_operatorid();
-  static const int kOperatoridFieldNumber = 3;
-  inline const ::std::string& operatorid(int index) const;
-  inline ::std::string* mutable_operatorid(int index);
-  inline void set_operatorid(int index, const ::std::string& value);
-  inline void set_operatorid(int index, const char* value);
-  inline void set_operatorid(int index, const char* value, size_t size);
-  inline ::std::string* add_operatorid();
-  inline void add_operatorid(const ::std::string& value);
-  inline void add_operatorid(const char* value);
-  inline void add_operatorid(const char* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& operatorid() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_operatorid();
-
-  // required string pdid = 4;
+  // required string pdid = 2;
   inline bool has_pdid() const;
   inline void clear_pdid();
-  static const int kPdidFieldNumber = 4;
+  static const int kPdidFieldNumber = 2;
   inline const ::std::string& pdid() const;
   inline void set_pdid(const ::std::string& value);
   inline void set_pdid(const char* value);
@@ -6834,26 +6581,57 @@ class OperationDescription : public ::google::protobuf::Message {
   inline ::std::string* release_pdid();
   inline void set_allocated_pdid(::std::string* pdid);
 
-  // required .das.proto.OperationPlan op = 5;
+  // required .das.proto.OperationPlan op = 3;
   inline bool has_op() const;
   inline void clear_op();
-  static const int kOpFieldNumber = 5;
+  static const int kOpFieldNumber = 3;
   inline const ::das::proto::OperationPlan& op() const;
   inline ::das::proto::OperationPlan* mutable_op();
   inline ::das::proto::OperationPlan* release_op();
   inline void set_allocated_op(::das::proto::OperationPlan* op);
 
-  // optional uint64 plantime = 6;
+  // required string crop = 4;
+  inline bool has_crop() const;
+  inline void clear_crop();
+  static const int kCropFieldNumber = 4;
+  inline const ::std::string& crop() const;
+  inline void set_crop(const ::std::string& value);
+  inline void set_crop(const char* value);
+  inline void set_crop(const char* value, size_t size);
+  inline ::std::string* mutable_crop();
+  inline ::std::string* release_crop();
+  inline void set_allocated_crop(::std::string* crop);
+
+  // required string drug = 5;
+  inline bool has_drug() const;
+  inline void clear_drug();
+  static const int kDrugFieldNumber = 5;
+  inline const ::std::string& drug() const;
+  inline void set_drug(const ::std::string& value);
+  inline void set_drug(const char* value);
+  inline void set_drug(const char* value, size_t size);
+  inline ::std::string* mutable_drug();
+  inline ::std::string* release_drug();
+  inline void set_allocated_drug(::std::string* drug);
+
+  // required float prize = 6;
+  inline bool has_prize() const;
+  inline void clear_prize();
+  static const int kPrizeFieldNumber = 6;
+  inline float prize() const;
+  inline void set_prize(float value);
+
+  // optional uint64 plantime = 7;
   inline bool has_plantime() const;
   inline void clear_plantime();
-  static const int kPlantimeFieldNumber = 6;
+  static const int kPlantimeFieldNumber = 7;
   inline ::google::protobuf::uint64 plantime() const;
   inline void set_plantime(::google::protobuf::uint64 value);
 
-  // optional string notes = 7;
+  // optional string notes = 8;
   inline bool has_notes() const;
   inline void clear_notes();
-  static const int kNotesFieldNumber = 7;
+  static const int kNotesFieldNumber = 8;
   inline const ::std::string& notes() const;
   inline void set_notes(const ::std::string& value);
   inline void set_notes(const char* value);
@@ -6862,10 +6640,10 @@ class OperationDescription : public ::google::protobuf::Message {
   inline ::std::string* release_notes();
   inline void set_allocated_notes(::std::string* notes);
 
-  // optional string odid = 8;
+  // optional string odid = 9;
   inline bool has_odid() const;
   inline void clear_odid();
-  static const int kOdidFieldNumber = 8;
+  static const int kOdidFieldNumber = 9;
   inline const ::std::string& odid() const;
   inline void set_odid(const ::std::string& value);
   inline void set_odid(const char* value);
@@ -6876,14 +6654,18 @@ class OperationDescription : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:das.proto.OperationDescription)
  private:
-  inline void set_has_chargerid();
-  inline void clear_has_chargerid();
   inline void set_has_registerid();
   inline void clear_has_registerid();
   inline void set_has_pdid();
   inline void clear_has_pdid();
   inline void set_has_op();
   inline void clear_has_op();
+  inline void set_has_crop();
+  inline void clear_has_crop();
+  inline void set_has_drug();
+  inline void clear_has_drug();
+  inline void set_has_prize();
+  inline void clear_has_prize();
   inline void set_has_plantime();
   inline void clear_has_plantime();
   inline void set_has_notes();
@@ -6893,17 +6675,18 @@ class OperationDescription : public ::google::protobuf::Message {
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::std::string* chargerid_;
   ::std::string* registerid_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> operatorid_;
   ::std::string* pdid_;
   ::das::proto::OperationPlan* op_;
+  ::std::string* crop_;
+  ::std::string* drug_;
   ::google::protobuf::uint64 plantime_;
   ::std::string* notes_;
   ::std::string* odid_;
+  float prize_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(9 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -7200,22 +6983,10 @@ class RequestOperationDescriptions : public ::google::protobuf::Message {
   inline ::std::string* release_pdid();
   inline void set_allocated_pdid(::std::string* pdid);
 
-  // optional string chargemanid = 4;
-  inline bool has_chargemanid() const;
-  inline void clear_chargemanid();
-  static const int kChargemanidFieldNumber = 4;
-  inline const ::std::string& chargemanid() const;
-  inline void set_chargemanid(const ::std::string& value);
-  inline void set_chargemanid(const char* value);
-  inline void set_chargemanid(const char* value, size_t size);
-  inline ::std::string* mutable_chargemanid();
-  inline ::std::string* release_chargemanid();
-  inline void set_allocated_chargemanid(::std::string* chargemanid);
-
-  // optional string registerid = 5;
+  // optional string registerid = 4;
   inline bool has_registerid() const;
   inline void clear_registerid();
-  static const int kRegisteridFieldNumber = 5;
+  static const int kRegisteridFieldNumber = 4;
   inline const ::std::string& registerid() const;
   inline void set_registerid(const ::std::string& value);
   inline void set_registerid(const char* value);
@@ -7223,18 +6994,6 @@ class RequestOperationDescriptions : public ::google::protobuf::Message {
   inline ::std::string* mutable_registerid();
   inline ::std::string* release_registerid();
   inline void set_allocated_registerid(::std::string* registerid);
-
-  // optional string operatorid = 6;
-  inline bool has_operatorid() const;
-  inline void clear_operatorid();
-  static const int kOperatoridFieldNumber = 6;
-  inline const ::std::string& operatorid() const;
-  inline void set_operatorid(const ::std::string& value);
-  inline void set_operatorid(const char* value);
-  inline void set_operatorid(const char* value, size_t size);
-  inline ::std::string* mutable_operatorid();
-  inline ::std::string* release_operatorid();
-  inline void set_allocated_operatorid(::std::string* operatorid);
 
   // @@protoc_insertion_point(class_scope:das.proto.RequestOperationDescriptions)
  private:
@@ -7244,24 +7003,18 @@ class RequestOperationDescriptions : public ::google::protobuf::Message {
   inline void clear_has_odid();
   inline void set_has_pdid();
   inline void clear_has_pdid();
-  inline void set_has_chargemanid();
-  inline void clear_has_chargemanid();
   inline void set_has_registerid();
   inline void clear_has_registerid();
-  inline void set_has_operatorid();
-  inline void clear_has_operatorid();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* odid_;
   ::std::string* pdid_;
-  ::std::string* chargemanid_;
   ::std::string* registerid_;
-  ::std::string* operatorid_;
   ::google::protobuf::uint32 seqno_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -7566,6 +7319,148 @@ class AckDeleteOperationDescription : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class BillInformation : public ::google::protobuf::Message {
+ public:
+  BillInformation();
+  virtual ~BillInformation();
+
+  BillInformation(const BillInformation& from);
+
+  inline BillInformation& operator=(const BillInformation& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const BillInformation& default_instance();
+
+  void Swap(BillInformation* other);
+
+  // implements Message ----------------------------------------------
+
+  BillInformation* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const BillInformation& from);
+  void MergeFrom(const BillInformation& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional float servicecharge = 1;
+  inline bool has_servicecharge() const;
+  inline void clear_servicecharge();
+  static const int kServicechargeFieldNumber = 1;
+  inline float servicecharge() const;
+  inline void set_servicecharge(float value);
+
+  // optional float pesticidecharge = 2;
+  inline bool has_pesticidecharge() const;
+  inline void clear_pesticidecharge();
+  static const int kPesticidechargeFieldNumber = 2;
+  inline float pesticidecharge() const;
+  inline void set_pesticidecharge(float value);
+
+  // optional float othercharge = 3;
+  inline bool has_othercharge() const;
+  inline void clear_othercharge();
+  static const int kOtherchargeFieldNumber = 3;
+  inline float othercharge() const;
+  inline void set_othercharge(float value);
+
+  // required float sumcharge = 4;
+  inline bool has_sumcharge() const;
+  inline void clear_sumcharge();
+  static const int kSumchargeFieldNumber = 4;
+  inline float sumcharge() const;
+  inline void set_sumcharge(float value);
+
+  // required string pesticide = 5;
+  inline bool has_pesticide() const;
+  inline void clear_pesticide();
+  static const int kPesticideFieldNumber = 5;
+  inline const ::std::string& pesticide() const;
+  inline void set_pesticide(const ::std::string& value);
+  inline void set_pesticide(const char* value);
+  inline void set_pesticide(const char* value, size_t size);
+  inline ::std::string* mutable_pesticide();
+  inline ::std::string* release_pesticide();
+  inline void set_allocated_pesticide(::std::string* pesticide);
+
+  // required string crop = 6;
+  inline bool has_crop() const;
+  inline void clear_crop();
+  static const int kCropFieldNumber = 6;
+  inline const ::std::string& crop() const;
+  inline void set_crop(const ::std::string& value);
+  inline void set_crop(const char* value);
+  inline void set_crop(const char* value, size_t size);
+  inline ::std::string* mutable_crop();
+  inline ::std::string* release_crop();
+  inline void set_allocated_crop(::std::string* crop);
+
+  // @@protoc_insertion_point(class_scope:das.proto.BillInformation)
+ private:
+  inline void set_has_servicecharge();
+  inline void clear_has_servicecharge();
+  inline void set_has_pesticidecharge();
+  inline void clear_has_pesticidecharge();
+  inline void set_has_othercharge();
+  inline void clear_has_othercharge();
+  inline void set_has_sumcharge();
+  inline void clear_has_sumcharge();
+  inline void set_has_pesticide();
+  inline void clear_has_pesticide();
+  inline void set_has_crop();
+  inline void clear_has_crop();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  float servicecharge_;
+  float pesticidecharge_;
+  float othercharge_;
+  float sumcharge_;
+  ::std::string* pesticide_;
+  ::std::string* crop_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static BillInformation* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class OperationRoute : public ::google::protobuf::Message {
  public:
   OperationRoute();
@@ -7632,10 +7527,10 @@ class OperationRoute : public ::google::protobuf::Message {
   inline ::std::string* release_gsid();
   inline void set_allocated_gsid(::std::string* gsid);
 
-  // required string uavid = 6;
+  // required string uavid = 2;
   inline bool has_uavid() const;
   inline void clear_uavid();
-  static const int kUavidFieldNumber = 6;
+  static const int kUavidFieldNumber = 2;
   inline const ::std::string& uavid() const;
   inline void set_uavid(const ::std::string& value);
   inline void set_uavid(const char* value);
@@ -7644,24 +7539,36 @@ class OperationRoute : public ::google::protobuf::Message {
   inline ::std::string* release_uavid();
   inline void set_allocated_uavid(::std::string* uavid);
 
-  // required uint64 createtime = 2;
+  // required string rpid = 3;
+  inline bool has_rpid() const;
+  inline void clear_rpid();
+  static const int kRpidFieldNumber = 3;
+  inline const ::std::string& rpid() const;
+  inline void set_rpid(const ::std::string& value);
+  inline void set_rpid(const char* value);
+  inline void set_rpid(const char* value, size_t size);
+  inline ::std::string* mutable_rpid();
+  inline ::std::string* release_rpid();
+  inline void set_allocated_rpid(::std::string* rpid);
+
+  // required uint64 createtime = 4;
   inline bool has_createtime() const;
   inline void clear_createtime();
-  static const int kCreatetimeFieldNumber = 2;
+  static const int kCreatetimeFieldNumber = 4;
   inline ::google::protobuf::uint64 createtime() const;
   inline void set_createtime(::google::protobuf::uint64 value);
 
-  // required float maxvoyage = 3;
+  // required float maxvoyage = 5;
   inline bool has_maxvoyage() const;
   inline void clear_maxvoyage();
-  static const int kMaxvoyageFieldNumber = 3;
+  static const int kMaxvoyageFieldNumber = 5;
   inline float maxvoyage() const;
   inline void set_maxvoyage(float value);
 
-  // repeated bytes missions = 4;
+  // repeated bytes missions = 6;
   inline int missions_size() const;
   inline void clear_missions();
-  static const int kMissionsFieldNumber = 4;
+  static const int kMissionsFieldNumber = 6;
   inline const ::std::string& missions(int index) const;
   inline ::std::string* mutable_missions(int index);
   inline void set_missions(int index, const ::std::string& value);
@@ -7674,10 +7581,10 @@ class OperationRoute : public ::google::protobuf::Message {
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& missions() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_missions();
 
-  // repeated bytes boundarys = 5;
+  // repeated bytes boundarys = 7;
   inline int boundarys_size() const;
   inline void clear_boundarys();
-  static const int kBoundarysFieldNumber = 5;
+  static const int kBoundarysFieldNumber = 7;
   inline const ::std::string& boundarys(int index) const;
   inline ::std::string* mutable_boundarys(int index);
   inline void set_boundarys(int index, const ::std::string& value);
@@ -7690,12 +7597,14 @@ class OperationRoute : public ::google::protobuf::Message {
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& boundarys() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_boundarys();
 
-  // required uint64 timestamp = 7;
-  inline bool has_timestamp() const;
-  inline void clear_timestamp();
-  static const int kTimestampFieldNumber = 7;
-  inline ::google::protobuf::uint64 timestamp() const;
-  inline void set_timestamp(::google::protobuf::uint64 value);
+  // optional .das.proto.BillInformation bi = 8;
+  inline bool has_bi() const;
+  inline void clear_bi();
+  static const int kBiFieldNumber = 8;
+  inline const ::das::proto::BillInformation& bi() const;
+  inline ::das::proto::BillInformation* mutable_bi();
+  inline ::das::proto::BillInformation* release_bi();
+  inline void set_allocated_bi(::das::proto::BillInformation* bi);
 
   // @@protoc_insertion_point(class_scope:das.proto.OperationRoute)
  private:
@@ -7703,25 +7612,28 @@ class OperationRoute : public ::google::protobuf::Message {
   inline void clear_has_gsid();
   inline void set_has_uavid();
   inline void clear_has_uavid();
+  inline void set_has_rpid();
+  inline void clear_has_rpid();
   inline void set_has_createtime();
   inline void clear_has_createtime();
   inline void set_has_maxvoyage();
   inline void clear_has_maxvoyage();
-  inline void set_has_timestamp();
-  inline void clear_has_timestamp();
+  inline void set_has_bi();
+  inline void clear_has_bi();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* gsid_;
   ::std::string* uavid_;
+  ::std::string* rpid_;
   ::google::protobuf::uint64 createtime_;
   ::google::protobuf::RepeatedPtrField< ::std::string> missions_;
   ::google::protobuf::RepeatedPtrField< ::std::string> boundarys_;
-  ::google::protobuf::uint64 timestamp_;
+  ::das::proto::BillInformation* bi_;
   float maxvoyage_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -18237,382 +18149,50 @@ inline void AckDeleteParcelDescription::set_result(::google::protobuf::int32 val
 
 // -------------------------------------------------------------------
 
-// CropInformation
+// SingleShrink
 
-// required string name = 1;
-inline bool CropInformation::has_name() const {
+// required int32 bdr = 1;
+inline bool SingleShrink::has_bdr() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void CropInformation::set_has_name() {
+inline void SingleShrink::set_has_bdr() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void CropInformation::clear_has_name() {
+inline void SingleShrink::clear_has_bdr() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void CropInformation::clear_name() {
-  if (name_ != &::google::protobuf::internal::kEmptyString) {
-    name_->clear();
-  }
-  clear_has_name();
+inline void SingleShrink::clear_bdr() {
+  bdr_ = 0;
+  clear_has_bdr();
 }
-inline const ::std::string& CropInformation::name() const {
-  return *name_;
+inline ::google::protobuf::int32 SingleShrink::bdr() const {
+  return bdr_;
 }
-inline void CropInformation::set_name(const ::std::string& value) {
-  set_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    name_ = new ::std::string;
-  }
-  name_->assign(value);
-}
-inline void CropInformation::set_name(const char* value) {
-  set_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    name_ = new ::std::string;
-  }
-  name_->assign(value);
-}
-inline void CropInformation::set_name(const char* value, size_t size) {
-  set_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    name_ = new ::std::string;
-  }
-  name_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* CropInformation::mutable_name() {
-  set_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    name_ = new ::std::string;
-  }
-  return name_;
-}
-inline ::std::string* CropInformation::release_name() {
-  clear_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = name_;
-    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void CropInformation::set_allocated_name(::std::string* name) {
-  if (name_ != &::google::protobuf::internal::kEmptyString) {
-    delete name_;
-  }
-  if (name) {
-    set_has_name();
-    name_ = name;
-  } else {
-    clear_has_name();
-    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
+inline void SingleShrink::set_bdr(::google::protobuf::int32 value) {
+  set_has_bdr();
+  bdr_ = value;
 }
 
-// optional string cdid = 2;
-inline bool CropInformation::has_cdid() const {
+// required double safe = 2;
+inline bool SingleShrink::has_safe() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void CropInformation::set_has_cdid() {
+inline void SingleShrink::set_has_safe() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void CropInformation::clear_has_cdid() {
+inline void SingleShrink::clear_has_safe() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void CropInformation::clear_cdid() {
-  if (cdid_ != &::google::protobuf::internal::kEmptyString) {
-    cdid_->clear();
-  }
-  clear_has_cdid();
+inline void SingleShrink::clear_safe() {
+  safe_ = 0;
+  clear_has_safe();
 }
-inline const ::std::string& CropInformation::cdid() const {
-  return *cdid_;
+inline double SingleShrink::safe() const {
+  return safe_;
 }
-inline void CropInformation::set_cdid(const ::std::string& value) {
-  set_has_cdid();
-  if (cdid_ == &::google::protobuf::internal::kEmptyString) {
-    cdid_ = new ::std::string;
-  }
-  cdid_->assign(value);
-}
-inline void CropInformation::set_cdid(const char* value) {
-  set_has_cdid();
-  if (cdid_ == &::google::protobuf::internal::kEmptyString) {
-    cdid_ = new ::std::string;
-  }
-  cdid_->assign(value);
-}
-inline void CropInformation::set_cdid(const char* value, size_t size) {
-  set_has_cdid();
-  if (cdid_ == &::google::protobuf::internal::kEmptyString) {
-    cdid_ = new ::std::string;
-  }
-  cdid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* CropInformation::mutable_cdid() {
-  set_has_cdid();
-  if (cdid_ == &::google::protobuf::internal::kEmptyString) {
-    cdid_ = new ::std::string;
-  }
-  return cdid_;
-}
-inline ::std::string* CropInformation::release_cdid() {
-  clear_has_cdid();
-  if (cdid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = cdid_;
-    cdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void CropInformation::set_allocated_cdid(::std::string* cdid) {
-  if (cdid_ != &::google::protobuf::internal::kEmptyString) {
-    delete cdid_;
-  }
-  if (cdid) {
-    set_has_cdid();
-    cdid_ = cdid;
-  } else {
-    clear_has_cdid();
-    cdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// PesticideInformation
-
-// required string name = 1;
-inline bool PesticideInformation::has_name() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void PesticideInformation::set_has_name() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void PesticideInformation::clear_has_name() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void PesticideInformation::clear_name() {
-  if (name_ != &::google::protobuf::internal::kEmptyString) {
-    name_->clear();
-  }
-  clear_has_name();
-}
-inline const ::std::string& PesticideInformation::name() const {
-  return *name_;
-}
-inline void PesticideInformation::set_name(const ::std::string& value) {
-  set_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    name_ = new ::std::string;
-  }
-  name_->assign(value);
-}
-inline void PesticideInformation::set_name(const char* value) {
-  set_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    name_ = new ::std::string;
-  }
-  name_->assign(value);
-}
-inline void PesticideInformation::set_name(const char* value, size_t size) {
-  set_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    name_ = new ::std::string;
-  }
-  name_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* PesticideInformation::mutable_name() {
-  set_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    name_ = new ::std::string;
-  }
-  return name_;
-}
-inline ::std::string* PesticideInformation::release_name() {
-  clear_has_name();
-  if (name_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = name_;
-    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void PesticideInformation::set_allocated_name(::std::string* name) {
-  if (name_ != &::google::protobuf::internal::kEmptyString) {
-    delete name_;
-  }
-  if (name) {
-    set_has_name();
-    name_ = name;
-  } else {
-    clear_has_name();
-    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string pdid = 2;
-inline bool PesticideInformation::has_pdid() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void PesticideInformation::set_has_pdid() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void PesticideInformation::clear_has_pdid() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void PesticideInformation::clear_pdid() {
-  if (pdid_ != &::google::protobuf::internal::kEmptyString) {
-    pdid_->clear();
-  }
-  clear_has_pdid();
-}
-inline const ::std::string& PesticideInformation::pdid() const {
-  return *pdid_;
-}
-inline void PesticideInformation::set_pdid(const ::std::string& value) {
-  set_has_pdid();
-  if (pdid_ == &::google::protobuf::internal::kEmptyString) {
-    pdid_ = new ::std::string;
-  }
-  pdid_->assign(value);
-}
-inline void PesticideInformation::set_pdid(const char* value) {
-  set_has_pdid();
-  if (pdid_ == &::google::protobuf::internal::kEmptyString) {
-    pdid_ = new ::std::string;
-  }
-  pdid_->assign(value);
-}
-inline void PesticideInformation::set_pdid(const char* value, size_t size) {
-  set_has_pdid();
-  if (pdid_ == &::google::protobuf::internal::kEmptyString) {
-    pdid_ = new ::std::string;
-  }
-  pdid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* PesticideInformation::mutable_pdid() {
-  set_has_pdid();
-  if (pdid_ == &::google::protobuf::internal::kEmptyString) {
-    pdid_ = new ::std::string;
-  }
-  return pdid_;
-}
-inline ::std::string* PesticideInformation::release_pdid() {
-  clear_has_pdid();
-  if (pdid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = pdid_;
-    pdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void PesticideInformation::set_allocated_pdid(::std::string* pdid) {
-  if (pdid_ != &::google::protobuf::internal::kEmptyString) {
-    delete pdid_;
-  }
-  if (pdid) {
-    set_has_pdid();
-    pdid_ = pdid;
-  } else {
-    clear_has_pdid();
-    pdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// BillInformation
-
-// optional float servicecharge = 1;
-inline bool BillInformation::has_servicecharge() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void BillInformation::set_has_servicecharge() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void BillInformation::clear_has_servicecharge() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void BillInformation::clear_servicecharge() {
-  servicecharge_ = 0;
-  clear_has_servicecharge();
-}
-inline float BillInformation::servicecharge() const {
-  return servicecharge_;
-}
-inline void BillInformation::set_servicecharge(float value) {
-  set_has_servicecharge();
-  servicecharge_ = value;
-}
-
-// optional float pesticidecharge = 2;
-inline bool BillInformation::has_pesticidecharge() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void BillInformation::set_has_pesticidecharge() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void BillInformation::clear_has_pesticidecharge() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void BillInformation::clear_pesticidecharge() {
-  pesticidecharge_ = 0;
-  clear_has_pesticidecharge();
-}
-inline float BillInformation::pesticidecharge() const {
-  return pesticidecharge_;
-}
-inline void BillInformation::set_pesticidecharge(float value) {
-  set_has_pesticidecharge();
-  pesticidecharge_ = value;
-}
-
-// optional float othercharge = 3;
-inline bool BillInformation::has_othercharge() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void BillInformation::set_has_othercharge() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void BillInformation::clear_has_othercharge() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void BillInformation::clear_othercharge() {
-  othercharge_ = 0;
-  clear_has_othercharge();
-}
-inline float BillInformation::othercharge() const {
-  return othercharge_;
-}
-inline void BillInformation::set_othercharge(float value) {
-  set_has_othercharge();
-  othercharge_ = value;
-}
-
-// required float sumcharge = 4;
-inline bool BillInformation::has_sumcharge() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void BillInformation::set_has_sumcharge() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void BillInformation::clear_has_sumcharge() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void BillInformation::clear_sumcharge() {
-  sumcharge_ = 0;
-  clear_has_sumcharge();
-}
-inline float BillInformation::sumcharge() const {
-  return sumcharge_;
-}
-inline void BillInformation::set_sumcharge(float value) {
-  set_has_sumcharge();
-  sumcharge_ = value;
+inline void SingleShrink::set_safe(double value) {
+  set_has_safe();
+  safe_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -18707,29 +18287,29 @@ inline void OperationPlan::set_single(bool value) {
   single_ = value;
 }
 
-// repeated double boundary = 5;
-inline int OperationPlan::boundary_size() const {
-  return boundary_.size();
+// repeated .das.proto.SingleShrink bdrsafe = 5;
+inline int OperationPlan::bdrsafe_size() const {
+  return bdrsafe_.size();
 }
-inline void OperationPlan::clear_boundary() {
-  boundary_.Clear();
+inline void OperationPlan::clear_bdrsafe() {
+  bdrsafe_.Clear();
 }
-inline double OperationPlan::boundary(int index) const {
-  return boundary_.Get(index);
+inline const ::das::proto::SingleShrink& OperationPlan::bdrsafe(int index) const {
+  return bdrsafe_.Get(index);
 }
-inline void OperationPlan::set_boundary(int index, double value) {
-  boundary_.Set(index, value);
+inline ::das::proto::SingleShrink* OperationPlan::mutable_bdrsafe(int index) {
+  return bdrsafe_.Mutable(index);
 }
-inline void OperationPlan::add_boundary(double value) {
-  boundary_.Add(value);
+inline ::das::proto::SingleShrink* OperationPlan::add_bdrsafe() {
+  return bdrsafe_.Add();
 }
-inline const ::google::protobuf::RepeatedField< double >&
-OperationPlan::boundary() const {
-  return boundary_;
+inline const ::google::protobuf::RepeatedPtrField< ::das::proto::SingleShrink >&
+OperationPlan::bdrsafe() const {
+  return bdrsafe_;
 }
-inline ::google::protobuf::RepeatedField< double >*
-OperationPlan::mutable_boundary() {
-  return &boundary_;
+inline ::google::protobuf::RepeatedPtrField< ::das::proto::SingleShrink >*
+OperationPlan::mutable_bdrsafe() {
+  return &bdrsafe_;
 }
 
 // required double block = 6;
@@ -18758,85 +18338,15 @@ inline void OperationPlan::set_block(double value) {
 
 // OperationDescription
 
-// required string chargerid = 1;
-inline bool OperationDescription::has_chargerid() const {
+// required string registerid = 1;
+inline bool OperationDescription::has_registerid() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void OperationDescription::set_has_chargerid() {
+inline void OperationDescription::set_has_registerid() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void OperationDescription::clear_has_chargerid() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void OperationDescription::clear_chargerid() {
-  if (chargerid_ != &::google::protobuf::internal::kEmptyString) {
-    chargerid_->clear();
-  }
-  clear_has_chargerid();
-}
-inline const ::std::string& OperationDescription::chargerid() const {
-  return *chargerid_;
-}
-inline void OperationDescription::set_chargerid(const ::std::string& value) {
-  set_has_chargerid();
-  if (chargerid_ == &::google::protobuf::internal::kEmptyString) {
-    chargerid_ = new ::std::string;
-  }
-  chargerid_->assign(value);
-}
-inline void OperationDescription::set_chargerid(const char* value) {
-  set_has_chargerid();
-  if (chargerid_ == &::google::protobuf::internal::kEmptyString) {
-    chargerid_ = new ::std::string;
-  }
-  chargerid_->assign(value);
-}
-inline void OperationDescription::set_chargerid(const char* value, size_t size) {
-  set_has_chargerid();
-  if (chargerid_ == &::google::protobuf::internal::kEmptyString) {
-    chargerid_ = new ::std::string;
-  }
-  chargerid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* OperationDescription::mutable_chargerid() {
-  set_has_chargerid();
-  if (chargerid_ == &::google::protobuf::internal::kEmptyString) {
-    chargerid_ = new ::std::string;
-  }
-  return chargerid_;
-}
-inline ::std::string* OperationDescription::release_chargerid() {
-  clear_has_chargerid();
-  if (chargerid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = chargerid_;
-    chargerid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void OperationDescription::set_allocated_chargerid(::std::string* chargerid) {
-  if (chargerid_ != &::google::protobuf::internal::kEmptyString) {
-    delete chargerid_;
-  }
-  if (chargerid) {
-    set_has_chargerid();
-    chargerid_ = chargerid;
-  } else {
-    clear_has_chargerid();
-    chargerid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required string registerid = 2;
-inline bool OperationDescription::has_registerid() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void OperationDescription::set_has_registerid() {
-  _has_bits_[0] |= 0x00000002u;
-}
 inline void OperationDescription::clear_has_registerid() {
-  _has_bits_[0] &= ~0x00000002u;
+  _has_bits_[0] &= ~0x00000001u;
 }
 inline void OperationDescription::clear_registerid() {
   if (registerid_ != &::google::protobuf::internal::kEmptyString) {
@@ -18898,59 +18408,15 @@ inline void OperationDescription::set_allocated_registerid(::std::string* regist
   }
 }
 
-// repeated string operatorid = 3;
-inline int OperationDescription::operatorid_size() const {
-  return operatorid_.size();
-}
-inline void OperationDescription::clear_operatorid() {
-  operatorid_.Clear();
-}
-inline const ::std::string& OperationDescription::operatorid(int index) const {
-  return operatorid_.Get(index);
-}
-inline ::std::string* OperationDescription::mutable_operatorid(int index) {
-  return operatorid_.Mutable(index);
-}
-inline void OperationDescription::set_operatorid(int index, const ::std::string& value) {
-  operatorid_.Mutable(index)->assign(value);
-}
-inline void OperationDescription::set_operatorid(int index, const char* value) {
-  operatorid_.Mutable(index)->assign(value);
-}
-inline void OperationDescription::set_operatorid(int index, const char* value, size_t size) {
-  operatorid_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* OperationDescription::add_operatorid() {
-  return operatorid_.Add();
-}
-inline void OperationDescription::add_operatorid(const ::std::string& value) {
-  operatorid_.Add()->assign(value);
-}
-inline void OperationDescription::add_operatorid(const char* value) {
-  operatorid_.Add()->assign(value);
-}
-inline void OperationDescription::add_operatorid(const char* value, size_t size) {
-  operatorid_.Add()->assign(reinterpret_cast<const char*>(value), size);
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-OperationDescription::operatorid() const {
-  return operatorid_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-OperationDescription::mutable_operatorid() {
-  return &operatorid_;
-}
-
-// required string pdid = 4;
+// required string pdid = 2;
 inline bool OperationDescription::has_pdid() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000002u) != 0;
 }
 inline void OperationDescription::set_has_pdid() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000002u;
 }
 inline void OperationDescription::clear_has_pdid() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void OperationDescription::clear_pdid() {
   if (pdid_ != &::google::protobuf::internal::kEmptyString) {
@@ -19012,15 +18478,15 @@ inline void OperationDescription::set_allocated_pdid(::std::string* pdid) {
   }
 }
 
-// required .das.proto.OperationPlan op = 5;
+// required .das.proto.OperationPlan op = 3;
 inline bool OperationDescription::has_op() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void OperationDescription::set_has_op() {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void OperationDescription::clear_has_op() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void OperationDescription::clear_op() {
   if (op_ != NULL) op_->::das::proto::OperationPlan::Clear();
@@ -19050,15 +18516,177 @@ inline void OperationDescription::set_allocated_op(::das::proto::OperationPlan* 
   }
 }
 
-// optional uint64 plantime = 6;
-inline bool OperationDescription::has_plantime() const {
+// required string crop = 4;
+inline bool OperationDescription::has_crop() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void OperationDescription::set_has_crop() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void OperationDescription::clear_has_crop() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void OperationDescription::clear_crop() {
+  if (crop_ != &::google::protobuf::internal::kEmptyString) {
+    crop_->clear();
+  }
+  clear_has_crop();
+}
+inline const ::std::string& OperationDescription::crop() const {
+  return *crop_;
+}
+inline void OperationDescription::set_crop(const ::std::string& value) {
+  set_has_crop();
+  if (crop_ == &::google::protobuf::internal::kEmptyString) {
+    crop_ = new ::std::string;
+  }
+  crop_->assign(value);
+}
+inline void OperationDescription::set_crop(const char* value) {
+  set_has_crop();
+  if (crop_ == &::google::protobuf::internal::kEmptyString) {
+    crop_ = new ::std::string;
+  }
+  crop_->assign(value);
+}
+inline void OperationDescription::set_crop(const char* value, size_t size) {
+  set_has_crop();
+  if (crop_ == &::google::protobuf::internal::kEmptyString) {
+    crop_ = new ::std::string;
+  }
+  crop_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* OperationDescription::mutable_crop() {
+  set_has_crop();
+  if (crop_ == &::google::protobuf::internal::kEmptyString) {
+    crop_ = new ::std::string;
+  }
+  return crop_;
+}
+inline ::std::string* OperationDescription::release_crop() {
+  clear_has_crop();
+  if (crop_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = crop_;
+    crop_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void OperationDescription::set_allocated_crop(::std::string* crop) {
+  if (crop_ != &::google::protobuf::internal::kEmptyString) {
+    delete crop_;
+  }
+  if (crop) {
+    set_has_crop();
+    crop_ = crop;
+  } else {
+    clear_has_crop();
+    crop_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string drug = 5;
+inline bool OperationDescription::has_drug() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void OperationDescription::set_has_drug() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void OperationDescription::clear_has_drug() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void OperationDescription::clear_drug() {
+  if (drug_ != &::google::protobuf::internal::kEmptyString) {
+    drug_->clear();
+  }
+  clear_has_drug();
+}
+inline const ::std::string& OperationDescription::drug() const {
+  return *drug_;
+}
+inline void OperationDescription::set_drug(const ::std::string& value) {
+  set_has_drug();
+  if (drug_ == &::google::protobuf::internal::kEmptyString) {
+    drug_ = new ::std::string;
+  }
+  drug_->assign(value);
+}
+inline void OperationDescription::set_drug(const char* value) {
+  set_has_drug();
+  if (drug_ == &::google::protobuf::internal::kEmptyString) {
+    drug_ = new ::std::string;
+  }
+  drug_->assign(value);
+}
+inline void OperationDescription::set_drug(const char* value, size_t size) {
+  set_has_drug();
+  if (drug_ == &::google::protobuf::internal::kEmptyString) {
+    drug_ = new ::std::string;
+  }
+  drug_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* OperationDescription::mutable_drug() {
+  set_has_drug();
+  if (drug_ == &::google::protobuf::internal::kEmptyString) {
+    drug_ = new ::std::string;
+  }
+  return drug_;
+}
+inline ::std::string* OperationDescription::release_drug() {
+  clear_has_drug();
+  if (drug_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = drug_;
+    drug_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void OperationDescription::set_allocated_drug(::std::string* drug) {
+  if (drug_ != &::google::protobuf::internal::kEmptyString) {
+    delete drug_;
+  }
+  if (drug) {
+    set_has_drug();
+    drug_ = drug;
+  } else {
+    clear_has_drug();
+    drug_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required float prize = 6;
+inline bool OperationDescription::has_prize() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
-inline void OperationDescription::set_has_plantime() {
+inline void OperationDescription::set_has_prize() {
   _has_bits_[0] |= 0x00000020u;
 }
-inline void OperationDescription::clear_has_plantime() {
+inline void OperationDescription::clear_has_prize() {
   _has_bits_[0] &= ~0x00000020u;
+}
+inline void OperationDescription::clear_prize() {
+  prize_ = 0;
+  clear_has_prize();
+}
+inline float OperationDescription::prize() const {
+  return prize_;
+}
+inline void OperationDescription::set_prize(float value) {
+  set_has_prize();
+  prize_ = value;
+}
+
+// optional uint64 plantime = 7;
+inline bool OperationDescription::has_plantime() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void OperationDescription::set_has_plantime() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void OperationDescription::clear_has_plantime() {
+  _has_bits_[0] &= ~0x00000040u;
 }
 inline void OperationDescription::clear_plantime() {
   plantime_ = GOOGLE_ULONGLONG(0);
@@ -19072,15 +18700,15 @@ inline void OperationDescription::set_plantime(::google::protobuf::uint64 value)
   plantime_ = value;
 }
 
-// optional string notes = 7;
+// optional string notes = 8;
 inline bool OperationDescription::has_notes() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
 inline void OperationDescription::set_has_notes() {
-  _has_bits_[0] |= 0x00000040u;
+  _has_bits_[0] |= 0x00000080u;
 }
 inline void OperationDescription::clear_has_notes() {
-  _has_bits_[0] &= ~0x00000040u;
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void OperationDescription::clear_notes() {
   if (notes_ != &::google::protobuf::internal::kEmptyString) {
@@ -19142,15 +18770,15 @@ inline void OperationDescription::set_allocated_notes(::std::string* notes) {
   }
 }
 
-// optional string odid = 8;
+// optional string odid = 9;
 inline bool OperationDescription::has_odid() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
+  return (_has_bits_[0] & 0x00000100u) != 0;
 }
 inline void OperationDescription::set_has_odid() {
-  _has_bits_[0] |= 0x00000080u;
+  _has_bits_[0] |= 0x00000100u;
 }
 inline void OperationDescription::clear_has_odid() {
-  _has_bits_[0] &= ~0x00000080u;
+  _has_bits_[0] &= ~0x00000100u;
 }
 inline void OperationDescription::clear_odid() {
   if (odid_ != &::google::protobuf::internal::kEmptyString) {
@@ -19560,85 +19188,15 @@ inline void RequestOperationDescriptions::set_allocated_pdid(::std::string* pdid
   }
 }
 
-// optional string chargemanid = 4;
-inline bool RequestOperationDescriptions::has_chargemanid() const {
+// optional string registerid = 4;
+inline bool RequestOperationDescriptions::has_registerid() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void RequestOperationDescriptions::set_has_chargemanid() {
+inline void RequestOperationDescriptions::set_has_registerid() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void RequestOperationDescriptions::clear_has_chargemanid() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void RequestOperationDescriptions::clear_chargemanid() {
-  if (chargemanid_ != &::google::protobuf::internal::kEmptyString) {
-    chargemanid_->clear();
-  }
-  clear_has_chargemanid();
-}
-inline const ::std::string& RequestOperationDescriptions::chargemanid() const {
-  return *chargemanid_;
-}
-inline void RequestOperationDescriptions::set_chargemanid(const ::std::string& value) {
-  set_has_chargemanid();
-  if (chargemanid_ == &::google::protobuf::internal::kEmptyString) {
-    chargemanid_ = new ::std::string;
-  }
-  chargemanid_->assign(value);
-}
-inline void RequestOperationDescriptions::set_chargemanid(const char* value) {
-  set_has_chargemanid();
-  if (chargemanid_ == &::google::protobuf::internal::kEmptyString) {
-    chargemanid_ = new ::std::string;
-  }
-  chargemanid_->assign(value);
-}
-inline void RequestOperationDescriptions::set_chargemanid(const char* value, size_t size) {
-  set_has_chargemanid();
-  if (chargemanid_ == &::google::protobuf::internal::kEmptyString) {
-    chargemanid_ = new ::std::string;
-  }
-  chargemanid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestOperationDescriptions::mutable_chargemanid() {
-  set_has_chargemanid();
-  if (chargemanid_ == &::google::protobuf::internal::kEmptyString) {
-    chargemanid_ = new ::std::string;
-  }
-  return chargemanid_;
-}
-inline ::std::string* RequestOperationDescriptions::release_chargemanid() {
-  clear_has_chargemanid();
-  if (chargemanid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = chargemanid_;
-    chargemanid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestOperationDescriptions::set_allocated_chargemanid(::std::string* chargemanid) {
-  if (chargemanid_ != &::google::protobuf::internal::kEmptyString) {
-    delete chargemanid_;
-  }
-  if (chargemanid) {
-    set_has_chargemanid();
-    chargemanid_ = chargemanid;
-  } else {
-    clear_has_chargemanid();
-    chargemanid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string registerid = 5;
-inline bool RequestOperationDescriptions::has_registerid() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void RequestOperationDescriptions::set_has_registerid() {
-  _has_bits_[0] |= 0x00000010u;
-}
 inline void RequestOperationDescriptions::clear_has_registerid() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void RequestOperationDescriptions::clear_registerid() {
   if (registerid_ != &::google::protobuf::internal::kEmptyString) {
@@ -19697,76 +19255,6 @@ inline void RequestOperationDescriptions::set_allocated_registerid(::std::string
   } else {
     clear_has_registerid();
     registerid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string operatorid = 6;
-inline bool RequestOperationDescriptions::has_operatorid() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void RequestOperationDescriptions::set_has_operatorid() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void RequestOperationDescriptions::clear_has_operatorid() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void RequestOperationDescriptions::clear_operatorid() {
-  if (operatorid_ != &::google::protobuf::internal::kEmptyString) {
-    operatorid_->clear();
-  }
-  clear_has_operatorid();
-}
-inline const ::std::string& RequestOperationDescriptions::operatorid() const {
-  return *operatorid_;
-}
-inline void RequestOperationDescriptions::set_operatorid(const ::std::string& value) {
-  set_has_operatorid();
-  if (operatorid_ == &::google::protobuf::internal::kEmptyString) {
-    operatorid_ = new ::std::string;
-  }
-  operatorid_->assign(value);
-}
-inline void RequestOperationDescriptions::set_operatorid(const char* value) {
-  set_has_operatorid();
-  if (operatorid_ == &::google::protobuf::internal::kEmptyString) {
-    operatorid_ = new ::std::string;
-  }
-  operatorid_->assign(value);
-}
-inline void RequestOperationDescriptions::set_operatorid(const char* value, size_t size) {
-  set_has_operatorid();
-  if (operatorid_ == &::google::protobuf::internal::kEmptyString) {
-    operatorid_ = new ::std::string;
-  }
-  operatorid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestOperationDescriptions::mutable_operatorid() {
-  set_has_operatorid();
-  if (operatorid_ == &::google::protobuf::internal::kEmptyString) {
-    operatorid_ = new ::std::string;
-  }
-  return operatorid_;
-}
-inline ::std::string* RequestOperationDescriptions::release_operatorid() {
-  clear_has_operatorid();
-  if (operatorid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = operatorid_;
-    operatorid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestOperationDescriptions::set_allocated_operatorid(::std::string* operatorid) {
-  if (operatorid_ != &::google::protobuf::internal::kEmptyString) {
-    delete operatorid_;
-  }
-  if (operatorid) {
-    set_has_operatorid();
-    operatorid_ = operatorid;
-  } else {
-    clear_has_operatorid();
-    operatorid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
@@ -19989,6 +19477,238 @@ inline void AckDeleteOperationDescription::set_result(::google::protobuf::int32 
 
 // -------------------------------------------------------------------
 
+// BillInformation
+
+// optional float servicecharge = 1;
+inline bool BillInformation::has_servicecharge() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void BillInformation::set_has_servicecharge() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void BillInformation::clear_has_servicecharge() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void BillInformation::clear_servicecharge() {
+  servicecharge_ = 0;
+  clear_has_servicecharge();
+}
+inline float BillInformation::servicecharge() const {
+  return servicecharge_;
+}
+inline void BillInformation::set_servicecharge(float value) {
+  set_has_servicecharge();
+  servicecharge_ = value;
+}
+
+// optional float pesticidecharge = 2;
+inline bool BillInformation::has_pesticidecharge() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void BillInformation::set_has_pesticidecharge() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void BillInformation::clear_has_pesticidecharge() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void BillInformation::clear_pesticidecharge() {
+  pesticidecharge_ = 0;
+  clear_has_pesticidecharge();
+}
+inline float BillInformation::pesticidecharge() const {
+  return pesticidecharge_;
+}
+inline void BillInformation::set_pesticidecharge(float value) {
+  set_has_pesticidecharge();
+  pesticidecharge_ = value;
+}
+
+// optional float othercharge = 3;
+inline bool BillInformation::has_othercharge() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void BillInformation::set_has_othercharge() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void BillInformation::clear_has_othercharge() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void BillInformation::clear_othercharge() {
+  othercharge_ = 0;
+  clear_has_othercharge();
+}
+inline float BillInformation::othercharge() const {
+  return othercharge_;
+}
+inline void BillInformation::set_othercharge(float value) {
+  set_has_othercharge();
+  othercharge_ = value;
+}
+
+// required float sumcharge = 4;
+inline bool BillInformation::has_sumcharge() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void BillInformation::set_has_sumcharge() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void BillInformation::clear_has_sumcharge() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void BillInformation::clear_sumcharge() {
+  sumcharge_ = 0;
+  clear_has_sumcharge();
+}
+inline float BillInformation::sumcharge() const {
+  return sumcharge_;
+}
+inline void BillInformation::set_sumcharge(float value) {
+  set_has_sumcharge();
+  sumcharge_ = value;
+}
+
+// required string pesticide = 5;
+inline bool BillInformation::has_pesticide() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void BillInformation::set_has_pesticide() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void BillInformation::clear_has_pesticide() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void BillInformation::clear_pesticide() {
+  if (pesticide_ != &::google::protobuf::internal::kEmptyString) {
+    pesticide_->clear();
+  }
+  clear_has_pesticide();
+}
+inline const ::std::string& BillInformation::pesticide() const {
+  return *pesticide_;
+}
+inline void BillInformation::set_pesticide(const ::std::string& value) {
+  set_has_pesticide();
+  if (pesticide_ == &::google::protobuf::internal::kEmptyString) {
+    pesticide_ = new ::std::string;
+  }
+  pesticide_->assign(value);
+}
+inline void BillInformation::set_pesticide(const char* value) {
+  set_has_pesticide();
+  if (pesticide_ == &::google::protobuf::internal::kEmptyString) {
+    pesticide_ = new ::std::string;
+  }
+  pesticide_->assign(value);
+}
+inline void BillInformation::set_pesticide(const char* value, size_t size) {
+  set_has_pesticide();
+  if (pesticide_ == &::google::protobuf::internal::kEmptyString) {
+    pesticide_ = new ::std::string;
+  }
+  pesticide_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* BillInformation::mutable_pesticide() {
+  set_has_pesticide();
+  if (pesticide_ == &::google::protobuf::internal::kEmptyString) {
+    pesticide_ = new ::std::string;
+  }
+  return pesticide_;
+}
+inline ::std::string* BillInformation::release_pesticide() {
+  clear_has_pesticide();
+  if (pesticide_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = pesticide_;
+    pesticide_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void BillInformation::set_allocated_pesticide(::std::string* pesticide) {
+  if (pesticide_ != &::google::protobuf::internal::kEmptyString) {
+    delete pesticide_;
+  }
+  if (pesticide) {
+    set_has_pesticide();
+    pesticide_ = pesticide;
+  } else {
+    clear_has_pesticide();
+    pesticide_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string crop = 6;
+inline bool BillInformation::has_crop() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void BillInformation::set_has_crop() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void BillInformation::clear_has_crop() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void BillInformation::clear_crop() {
+  if (crop_ != &::google::protobuf::internal::kEmptyString) {
+    crop_->clear();
+  }
+  clear_has_crop();
+}
+inline const ::std::string& BillInformation::crop() const {
+  return *crop_;
+}
+inline void BillInformation::set_crop(const ::std::string& value) {
+  set_has_crop();
+  if (crop_ == &::google::protobuf::internal::kEmptyString) {
+    crop_ = new ::std::string;
+  }
+  crop_->assign(value);
+}
+inline void BillInformation::set_crop(const char* value) {
+  set_has_crop();
+  if (crop_ == &::google::protobuf::internal::kEmptyString) {
+    crop_ = new ::std::string;
+  }
+  crop_->assign(value);
+}
+inline void BillInformation::set_crop(const char* value, size_t size) {
+  set_has_crop();
+  if (crop_ == &::google::protobuf::internal::kEmptyString) {
+    crop_ = new ::std::string;
+  }
+  crop_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* BillInformation::mutable_crop() {
+  set_has_crop();
+  if (crop_ == &::google::protobuf::internal::kEmptyString) {
+    crop_ = new ::std::string;
+  }
+  return crop_;
+}
+inline ::std::string* BillInformation::release_crop() {
+  clear_has_crop();
+  if (crop_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = crop_;
+    crop_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void BillInformation::set_allocated_crop(::std::string* crop) {
+  if (crop_ != &::google::protobuf::internal::kEmptyString) {
+    delete crop_;
+  }
+  if (crop) {
+    set_has_crop();
+    crop_ = crop;
+  } else {
+    clear_has_crop();
+    crop_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
 // OperationRoute
 
 // required string gsid = 1;
@@ -20061,7 +19781,7 @@ inline void OperationRoute::set_allocated_gsid(::std::string* gsid) {
   }
 }
 
-// required string uavid = 6;
+// required string uavid = 2;
 inline bool OperationRoute::has_uavid() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -20131,15 +19851,85 @@ inline void OperationRoute::set_allocated_uavid(::std::string* uavid) {
   }
 }
 
-// required uint64 createtime = 2;
-inline bool OperationRoute::has_createtime() const {
+// required string rpid = 3;
+inline bool OperationRoute::has_rpid() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void OperationRoute::set_has_createtime() {
+inline void OperationRoute::set_has_rpid() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void OperationRoute::clear_has_createtime() {
+inline void OperationRoute::clear_has_rpid() {
   _has_bits_[0] &= ~0x00000004u;
+}
+inline void OperationRoute::clear_rpid() {
+  if (rpid_ != &::google::protobuf::internal::kEmptyString) {
+    rpid_->clear();
+  }
+  clear_has_rpid();
+}
+inline const ::std::string& OperationRoute::rpid() const {
+  return *rpid_;
+}
+inline void OperationRoute::set_rpid(const ::std::string& value) {
+  set_has_rpid();
+  if (rpid_ == &::google::protobuf::internal::kEmptyString) {
+    rpid_ = new ::std::string;
+  }
+  rpid_->assign(value);
+}
+inline void OperationRoute::set_rpid(const char* value) {
+  set_has_rpid();
+  if (rpid_ == &::google::protobuf::internal::kEmptyString) {
+    rpid_ = new ::std::string;
+  }
+  rpid_->assign(value);
+}
+inline void OperationRoute::set_rpid(const char* value, size_t size) {
+  set_has_rpid();
+  if (rpid_ == &::google::protobuf::internal::kEmptyString) {
+    rpid_ = new ::std::string;
+  }
+  rpid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* OperationRoute::mutable_rpid() {
+  set_has_rpid();
+  if (rpid_ == &::google::protobuf::internal::kEmptyString) {
+    rpid_ = new ::std::string;
+  }
+  return rpid_;
+}
+inline ::std::string* OperationRoute::release_rpid() {
+  clear_has_rpid();
+  if (rpid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = rpid_;
+    rpid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void OperationRoute::set_allocated_rpid(::std::string* rpid) {
+  if (rpid_ != &::google::protobuf::internal::kEmptyString) {
+    delete rpid_;
+  }
+  if (rpid) {
+    set_has_rpid();
+    rpid_ = rpid;
+  } else {
+    clear_has_rpid();
+    rpid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required uint64 createtime = 4;
+inline bool OperationRoute::has_createtime() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void OperationRoute::set_has_createtime() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void OperationRoute::clear_has_createtime() {
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void OperationRoute::clear_createtime() {
   createtime_ = GOOGLE_ULONGLONG(0);
@@ -20153,15 +19943,15 @@ inline void OperationRoute::set_createtime(::google::protobuf::uint64 value) {
   createtime_ = value;
 }
 
-// required float maxvoyage = 3;
+// required float maxvoyage = 5;
 inline bool OperationRoute::has_maxvoyage() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000010u) != 0;
 }
 inline void OperationRoute::set_has_maxvoyage() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000010u;
 }
 inline void OperationRoute::clear_has_maxvoyage() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void OperationRoute::clear_maxvoyage() {
   maxvoyage_ = 0;
@@ -20175,7 +19965,7 @@ inline void OperationRoute::set_maxvoyage(float value) {
   maxvoyage_ = value;
 }
 
-// repeated bytes missions = 4;
+// repeated bytes missions = 6;
 inline int OperationRoute::missions_size() const {
   return missions_.size();
 }
@@ -20219,7 +20009,7 @@ OperationRoute::mutable_missions() {
   return &missions_;
 }
 
-// repeated bytes boundarys = 5;
+// repeated bytes boundarys = 7;
 inline int OperationRoute::boundarys_size() const {
   return boundarys_.size();
 }
@@ -20263,26 +20053,42 @@ OperationRoute::mutable_boundarys() {
   return &boundarys_;
 }
 
-// required uint64 timestamp = 7;
-inline bool OperationRoute::has_timestamp() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
+// optional .das.proto.BillInformation bi = 8;
+inline bool OperationRoute::has_bi() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
 }
-inline void OperationRoute::set_has_timestamp() {
-  _has_bits_[0] |= 0x00000040u;
+inline void OperationRoute::set_has_bi() {
+  _has_bits_[0] |= 0x00000080u;
 }
-inline void OperationRoute::clear_has_timestamp() {
-  _has_bits_[0] &= ~0x00000040u;
+inline void OperationRoute::clear_has_bi() {
+  _has_bits_[0] &= ~0x00000080u;
 }
-inline void OperationRoute::clear_timestamp() {
-  timestamp_ = GOOGLE_ULONGLONG(0);
-  clear_has_timestamp();
+inline void OperationRoute::clear_bi() {
+  if (bi_ != NULL) bi_->::das::proto::BillInformation::Clear();
+  clear_has_bi();
 }
-inline ::google::protobuf::uint64 OperationRoute::timestamp() const {
-  return timestamp_;
+inline const ::das::proto::BillInformation& OperationRoute::bi() const {
+  return bi_ != NULL ? *bi_ : *default_instance_->bi_;
 }
-inline void OperationRoute::set_timestamp(::google::protobuf::uint64 value) {
-  set_has_timestamp();
-  timestamp_ = value;
+inline ::das::proto::BillInformation* OperationRoute::mutable_bi() {
+  set_has_bi();
+  if (bi_ == NULL) bi_ = new ::das::proto::BillInformation;
+  return bi_;
+}
+inline ::das::proto::BillInformation* OperationRoute::release_bi() {
+  clear_has_bi();
+  ::das::proto::BillInformation* temp = bi_;
+  bi_ = NULL;
+  return temp;
+}
+inline void OperationRoute::set_allocated_bi(::das::proto::BillInformation* bi) {
+  delete bi_;
+  bi_ = bi;
+  if (bi) {
+    set_has_bi();
+  } else {
+    clear_has_bi();
+  }
 }
 
 // -------------------------------------------------------------------

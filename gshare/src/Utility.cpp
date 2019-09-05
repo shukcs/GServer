@@ -45,14 +45,14 @@ using namespace SOCKETS_NAMESPACE;
 
 using namespace std;
 // statics
-string Utility::m_host;
-bool Utility::m_local_resolved = false;
-ipaddr_t Utility::m_ip = 0;
-string Utility::m_addr;
+static string s_hostName;
+static bool s_local_resolved = false;
+static ipaddr_t s_ip = 0;
+static string s_address;
 #ifdef ENABLE_IPV6
 #ifdef IPPROTO_IPV6
-struct in6_addr Utility::m_local_ip6;
-string Utility::m_local_addr6;
+static struct in6_addr s_local_ip6;
+static string s_local_addr6;
 #endif
 #endif
 
@@ -410,7 +410,7 @@ long Utility::secTimeCount()
 {
     chrono::system_clock::time_point now = chrono::system_clock::now();
     auto sec = chrono::duration_cast<chrono::seconds>(now.time_since_epoch());
-    return sec.count();
+    return long(sec.count());
 }
 
 bool Utility::isipv4(const string& str)
@@ -584,85 +584,72 @@ void Utility::ResolveLocal()
 	// get local hostname and translate into ip-address
 	*h = 0;
 	gethostname(h,255);
-	{
-		if (Utility::u2ip(h, m_ip))
-		{
-			Utility::l2ip(m_ip, m_addr);
-		}
-	}
+
+	if (u2ip(h, s_ip))
+		l2ip(s_ip, s_address);
 #ifdef ENABLE_IPV6
 #ifdef IPPROTO_IPV6
-	memset(&m_local_ip6, 0, sizeof(m_local_ip6));
-	{
-		if (Utility::u2ip(h, m_local_ip6))
-		{
-			Utility::l2ip(m_local_ip6, m_local_addr6);
-		}
-	}
+	memset(&s_local_ip6, 0, sizeof(s_local_ip6));
+    if (u2ip(h, s_local_ip6))
+        l2ip(s_local_ip6, s_local_addr6);
 #endif
 #endif
-	m_host = h;
-	m_local_resolved = true;
+	s_hostName = h;
+	s_local_resolved = true;
 }
 
 const string& Utility::GetLocalHostname()
 {
-	if (!m_local_resolved)
-	{
+	if (!s_local_resolved)
 		ResolveLocal();
-	}
-	return m_host;
+
+	return s_hostName;
 }
 
 ipaddr_t Utility::GetLocalIP()
 {
-	if (!m_local_resolved)
-	{
+	if (!s_local_resolved)
 		ResolveLocal();
-	}
-	return m_ip;
+
+	return s_ip;
 }
 
 const string& Utility::GetLocalAddress()
 {
-	if (!m_local_resolved)
-	{
+	if (!s_local_resolved)
 		ResolveLocal();
-	}
-	return m_addr;
+
+	return s_address;
 }
 
 #ifdef ENABLE_IPV6
 #ifdef IPPROTO_IPV6
 const struct in6_addr& Utility::GetLocalIP6()
 {
-	if (!m_local_resolved)
-	{
+	if (!s_local_resolved)
 		ResolveLocal();
-	}
-	return m_local_ip6;
+
+	return s_local_ip6;
 }
 
 const string& Utility::GetLocalAddress6()
 {
-	if (!m_local_resolved)
-	{
+	if (!s_local_resolved)
 		ResolveLocal();
-	}
-	return m_local_addr6;
+
+	return s_local_addr6;
 }
 #endif
 #endif
 
-const string Utility::GetEnv(const string& name)
+const string Utility::GetEnv(const string &name)
 {
 #if defined( _WIN32) && !defined(__CYGWIN__)
 	size_t sz = 0;
 	char tmp[2048];
 	if (getenv_s(&sz, tmp, sizeof(tmp), name.c_str()))
-	{
 		*tmp = 0;
-	}
+
 	return tmp;
 #else
 	char *s = getenv(name.c_str());
@@ -678,9 +665,8 @@ void Utility::SetEnv(const string& var,const string& value)
 	{
 		static map<string, char *> vmap;
 		if (vmap.find(var) != vmap.end())
-		{
 			delete[] vmap[var];
-		}
+
 		size_t sz = var.size() + 1 + value.size() + 1;
 		vmap[var] = new char[sz];
 		snprintf(vmap[var], sz, "%s=%s", var.c_str(), value.c_str());
@@ -931,7 +917,7 @@ bool Utility::u2ip(const string& host, struct sockaddr_in6& sa, int ai_flags)
 bool Utility::reverse(struct sockaddr *sa, socklen_t sa_len, string& hostname, int flags)
 {
 	string service;
-	return Utility::reverse(sa, sa_len, hostname, service, flags);
+	return reverse(sa, sa_len, hostname, service, flags);
 }
 
 bool Utility::reverse(struct sockaddr *sa, socklen_t sa_len, string& hostname, string& service, int flags)
@@ -1059,7 +1045,7 @@ bool Utility::reverse(struct sockaddr *sa, socklen_t sa_len, string& hostname, s
 #endif // NO_GETADDRINFO
 }
 
-bool Utility::u2service(const string& name, int& service, int ai_flags)
+bool Utility::u2service(const string &name, int &service, int ai_flags)
 {
 #ifdef NO_GETADDRINFO
 	// %!
@@ -1131,52 +1117,6 @@ string Utility::ToString(double d)
 	char tmp[100];
 	snprintf(tmp, sizeof(tmp), "%f", d);
 	return tmp;
-}
-
-unsigned long Utility::Rnd()
-{
-static	Utility::Rng generator( (unsigned long)time(NULL) );
-	return generator.Get();
-}
-
-Utility::Rng::Rng(unsigned long seed) : m_value( 0 )
-{
-	m_tmp[0] = seed & 0xffffffffUL;
-	for (int i = 1; i < TWIST_LEN; ++i)
-	{
-		m_tmp[i] = (1812433253UL * (m_tmp[i - 1] ^ (m_tmp[i - 1] >> 30)) + i);
-	}
-}
-					
-unsigned long Utility::Rng::Get()
-{
-	unsigned long val = m_tmp[m_value];
-	++m_value;
-	if (m_value == TWIST_LEN)
-	{
-		for (int i = 0; i < TWIST_IB; ++i)
-		{
-			unsigned long s = TWIST(m_tmp, i, i + 1);
-			m_tmp[i] = m_tmp[i + TWIST_IA] ^ (s >> 1) ^ MAGIC_TWIST(s);
-		}
-		{
-			for (int i = 0; i < TWIST_LEN - 1; ++i)
-			{
-				unsigned long s = TWIST(m_tmp, i, i + 1);
-				m_tmp[i] = m_tmp[i - TWIST_IB] ^ (s >> 1) ^ MAGIC_TWIST(s);
-			}
-		}
-		unsigned long s = TWIST(m_tmp, TWIST_LEN - 1, 0);
-		m_tmp[TWIST_LEN - 1] = m_tmp[TWIST_IA - 1] ^ (s >> 1) ^ MAGIC_TWIST(s);
-
-		m_value = 0;
-	}
-	return val;
-}
-
-bool Utility::ncmap_compare::operator()(const string& x, const string& y) const
-{
-	return strcasecmp(x.c_str(), y.c_str()) < 0;
 }
 
 wstring Utility::Utf8ToUnicode(const string & str)

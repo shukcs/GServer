@@ -177,15 +177,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* AckDeleteParcelDescription_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   AckDeleteParcelDescription_reflection_ = NULL;
-const ::google::protobuf::Descriptor* CropInformation_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* SingleShrink_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  CropInformation_reflection_ = NULL;
-const ::google::protobuf::Descriptor* PesticideInformation_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  PesticideInformation_reflection_ = NULL;
-const ::google::protobuf::Descriptor* BillInformation_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  BillInformation_reflection_ = NULL;
+  SingleShrink_reflection_ = NULL;
 const ::google::protobuf::Descriptor* OperationPlan_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   OperationPlan_reflection_ = NULL;
@@ -210,6 +204,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* AckDeleteOperationDescription_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   AckDeleteOperationDescription_reflection_ = NULL;
+const ::google::protobuf::Descriptor* BillInformation_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  BillInformation_reflection_ = NULL;
 const ::google::protobuf::Descriptor* OperationRoute_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   OperationRoute_reflection_ = NULL;
@@ -1210,63 +1207,29 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckDeleteParcelDescription));
-  CropInformation_descriptor_ = file->message_type(52);
-  static const int CropInformation_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CropInformation, name_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CropInformation, cdid_),
+  SingleShrink_descriptor_ = file->message_type(52);
+  static const int SingleShrink_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SingleShrink, bdr_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SingleShrink, safe_),
   };
-  CropInformation_reflection_ =
+  SingleShrink_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
-      CropInformation_descriptor_,
-      CropInformation::default_instance_,
-      CropInformation_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CropInformation, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(CropInformation, _unknown_fields_),
+      SingleShrink_descriptor_,
+      SingleShrink::default_instance_,
+      SingleShrink_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SingleShrink, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SingleShrink, _unknown_fields_),
       -1,
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(CropInformation));
-  PesticideInformation_descriptor_ = file->message_type(53);
-  static const int PesticideInformation_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PesticideInformation, name_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PesticideInformation, pdid_),
-  };
-  PesticideInformation_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
-      PesticideInformation_descriptor_,
-      PesticideInformation::default_instance_,
-      PesticideInformation_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PesticideInformation, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PesticideInformation, _unknown_fields_),
-      -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(PesticideInformation));
-  BillInformation_descriptor_ = file->message_type(54);
-  static const int BillInformation_offsets_[4] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, servicecharge_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, pesticidecharge_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, othercharge_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, sumcharge_),
-  };
-  BillInformation_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
-      BillInformation_descriptor_,
-      BillInformation::default_instance_,
-      BillInformation_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, _unknown_fields_),
-      -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(BillInformation));
-  OperationPlan_descriptor_ = file->message_type(55);
+      sizeof(SingleShrink));
+  OperationPlan_descriptor_ = file->message_type(53);
   static const int OperationPlan_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationPlan, width_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationPlan, angle_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationPlan, anti_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationPlan, single_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationPlan, boundary_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationPlan, bdrsafe_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationPlan, block_),
   };
   OperationPlan_reflection_ =
@@ -1280,13 +1243,14 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationPlan));
-  OperationDescription_descriptor_ = file->message_type(56);
-  static const int OperationDescription_offsets_[8] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, chargerid_),
+  OperationDescription_descriptor_ = file->message_type(54);
+  static const int OperationDescription_offsets_[9] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, registerid_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, operatorid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, pdid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, op_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, crop_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, drug_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, prize_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, plantime_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, notes_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, odid_),
@@ -1302,7 +1266,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationDescription));
-  PostOperationDescription_descriptor_ = file->message_type(57);
+  PostOperationDescription_descriptor_ = file->message_type(55);
   static const int PostOperationDescription_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationDescription, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationDescription, od_),
@@ -1318,7 +1282,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostOperationDescription));
-  AckPostOperationDescription_descriptor_ = file->message_type(58);
+  AckPostOperationDescription_descriptor_ = file->message_type(56);
   static const int AckPostOperationDescription_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostOperationDescription, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostOperationDescription, result_),
@@ -1335,14 +1299,12 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostOperationDescription));
-  RequestOperationDescriptions_descriptor_ = file->message_type(59);
-  static const int RequestOperationDescriptions_offsets_[6] = {
+  RequestOperationDescriptions_descriptor_ = file->message_type(57);
+  static const int RequestOperationDescriptions_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestOperationDescriptions, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestOperationDescriptions, odid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestOperationDescriptions, pdid_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestOperationDescriptions, chargemanid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestOperationDescriptions, registerid_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestOperationDescriptions, operatorid_),
   };
   RequestOperationDescriptions_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -1355,7 +1317,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestOperationDescriptions));
-  AckRequestOperationDescriptions_descriptor_ = file->message_type(60);
+  AckRequestOperationDescriptions_descriptor_ = file->message_type(58);
   static const int AckRequestOperationDescriptions_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestOperationDescriptions, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestOperationDescriptions, result_),
@@ -1372,7 +1334,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestOperationDescriptions));
-  DeleteOperationDescription_descriptor_ = file->message_type(61);
+  DeleteOperationDescription_descriptor_ = file->message_type(59);
   static const int DeleteOperationDescription_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeleteOperationDescription, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeleteOperationDescription, odid_),
@@ -1388,7 +1350,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(DeleteOperationDescription));
-  AckDeleteOperationDescription_descriptor_ = file->message_type(62);
+  AckDeleteOperationDescription_descriptor_ = file->message_type(60);
   static const int AckDeleteOperationDescription_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckDeleteOperationDescription, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckDeleteOperationDescription, result_),
@@ -1404,15 +1366,36 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckDeleteOperationDescription));
-  OperationRoute_descriptor_ = file->message_type(63);
-  static const int OperationRoute_offsets_[7] = {
+  BillInformation_descriptor_ = file->message_type(61);
+  static const int BillInformation_offsets_[6] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, servicecharge_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, pesticidecharge_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, othercharge_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, sumcharge_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, pesticide_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, crop_),
+  };
+  BillInformation_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      BillInformation_descriptor_,
+      BillInformation::default_instance_,
+      BillInformation_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(BillInformation));
+  OperationRoute_descriptor_ = file->message_type(62);
+  static const int OperationRoute_offsets_[8] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, gsid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, uavid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, rpid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, createtime_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, maxvoyage_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, missions_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, boundarys_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, timestamp_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, bi_),
   };
   OperationRoute_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -1425,7 +1408,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationRoute));
-  PostOperationRoute_descriptor_ = file->message_type(64);
+  PostOperationRoute_descriptor_ = file->message_type(63);
   static const int PostOperationRoute_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationRoute, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationRoute, or__),
@@ -1441,7 +1424,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostOperationRoute));
-  AckPostOperationRoute_descriptor_ = file->message_type(65);
+  AckPostOperationRoute_descriptor_ = file->message_type(64);
   static const int AckPostOperationRoute_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostOperationRoute, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostOperationRoute, result_),
@@ -1457,7 +1440,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostOperationRoute));
-  UploadOperationRoutes_descriptor_ = file->message_type(66);
+  UploadOperationRoutes_descriptor_ = file->message_type(65);
   static const int UploadOperationRoutes_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, uavid_),
@@ -1477,7 +1460,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UploadOperationRoutes));
-  AckUploadOperationRoutes_descriptor_ = file->message_type(67);
+  AckUploadOperationRoutes_descriptor_ = file->message_type(66);
   static const int AckUploadOperationRoutes_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUploadOperationRoutes, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUploadOperationRoutes, result_),
@@ -1493,7 +1476,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckUploadOperationRoutes));
-  SyscOperationRoutes_descriptor_ = file->message_type(68);
+  SyscOperationRoutes_descriptor_ = file->message_type(67);
   static const int SyscOperationRoutes_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SyscOperationRoutes, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SyscOperationRoutes, result_),
@@ -1512,7 +1495,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(SyscOperationRoutes));
-  RequestRouteMissions_descriptor_ = file->message_type(69);
+  RequestRouteMissions_descriptor_ = file->message_type(68);
   static const int RequestRouteMissions_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestRouteMissions, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestRouteMissions, uavid_),
@@ -1531,7 +1514,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestRouteMissions));
-  AckRequestRouteMissions_descriptor_ = file->message_type(70);
+  AckRequestRouteMissions_descriptor_ = file->message_type(69);
   static const int AckRequestRouteMissions_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestRouteMissions, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestRouteMissions, result_),
@@ -1550,7 +1533,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestRouteMissions));
-  UavStatus_descriptor_ = file->message_type(71);
+  UavStatus_descriptor_ = file->message_type(70);
   static const int UavStatus_offsets_[11] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavStatus, uavid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavStatus, result_),
@@ -1575,7 +1558,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UavStatus));
-  RequestUavStatus_descriptor_ = file->message_type(72);
+  RequestUavStatus_descriptor_ = file->message_type(71);
   static const int RequestUavStatus_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavStatus, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavStatus, uavid_),
@@ -1591,7 +1574,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestUavStatus));
-  AckRequestUavStatus_descriptor_ = file->message_type(73);
+  AckRequestUavStatus_descriptor_ = file->message_type(72);
   static const int AckRequestUavStatus_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavStatus, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavStatus, status_),
@@ -1607,7 +1590,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestUavStatus));
-  RequestBindUav_descriptor_ = file->message_type(74);
+  RequestBindUav_descriptor_ = file->message_type(73);
   static const int RequestBindUav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestBindUav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestBindUav, opid_),
@@ -1625,7 +1608,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestBindUav));
-  AckRequestBindUav_descriptor_ = file->message_type(75);
+  AckRequestBindUav_descriptor_ = file->message_type(74);
   static const int AckRequestBindUav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestBindUav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestBindUav, opid_),
@@ -1643,7 +1626,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestBindUav));
-  UavProductInfo_descriptor_ = file->message_type(76);
+  UavProductInfo_descriptor_ = file->message_type(75);
   static const int UavProductInfo_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavProductInfo, uavid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavProductInfo, producttype_),
@@ -1663,7 +1646,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UavProductInfo));
-  RequestUavProductInfos_descriptor_ = file->message_type(77);
+  RequestUavProductInfos_descriptor_ = file->message_type(76);
   static const int RequestUavProductInfos_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavProductInfos, productid_),
@@ -1680,7 +1663,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestUavProductInfos));
-  AckRequestUavProductInfos_descriptor_ = file->message_type(78);
+  AckRequestUavProductInfos_descriptor_ = file->message_type(77);
   static const int AckRequestUavProductInfos_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavProductInfos, result_),
@@ -1697,7 +1680,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestUavProductInfos));
-  PostUavProductInfos_descriptor_ = file->message_type(79);
+  PostUavProductInfos_descriptor_ = file->message_type(78);
   static const int PostUavProductInfos_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostUavProductInfos, upi_),
@@ -1713,7 +1696,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostUavProductInfos));
-  AckPostUavProductInfos_descriptor_ = file->message_type(80);
+  AckPostUavProductInfos_descriptor_ = file->message_type(79);
   static const int AckPostUavProductInfos_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostUavProductInfos, result_),
@@ -1729,7 +1712,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostUavProductInfos));
-  PostControl2Uav_descriptor_ = file->message_type(81);
+  PostControl2Uav_descriptor_ = file->message_type(80);
   static const int PostControl2Uav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostControl2Uav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostControl2Uav, uavid_),
@@ -1747,7 +1730,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostControl2Uav));
-  AckPostControl2Uav_descriptor_ = file->message_type(82);
+  AckPostControl2Uav_descriptor_ = file->message_type(81);
   static const int AckPostControl2Uav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostControl2Uav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostControl2Uav, result_),
@@ -1765,7 +1748,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostControl2Uav));
-  PostStatus2GroundStation_descriptor_ = file->message_type(83);
+  PostStatus2GroundStation_descriptor_ = file->message_type(82);
   static const int PostStatus2GroundStation_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostStatus2GroundStation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostStatus2GroundStation, uavid_),
@@ -1900,11 +1883,7 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     AckDeleteParcelDescription_descriptor_, &AckDeleteParcelDescription::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    CropInformation_descriptor_, &CropInformation::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    PesticideInformation_descriptor_, &PesticideInformation::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    BillInformation_descriptor_, &BillInformation::default_instance());
+    SingleShrink_descriptor_, &SingleShrink::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     OperationPlan_descriptor_, &OperationPlan::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -1921,6 +1900,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
     DeleteOperationDescription_descriptor_, &DeleteOperationDescription::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     AckDeleteOperationDescription_descriptor_, &AckDeleteOperationDescription::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    BillInformation_descriptor_, &BillInformation::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     OperationRoute_descriptor_, &OperationRoute::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -2072,12 +2053,8 @@ void protobuf_ShutdownFile_das_2eproto() {
   delete DeleteParcelDescription_reflection_;
   delete AckDeleteParcelDescription::default_instance_;
   delete AckDeleteParcelDescription_reflection_;
-  delete CropInformation::default_instance_;
-  delete CropInformation_reflection_;
-  delete PesticideInformation::default_instance_;
-  delete PesticideInformation_reflection_;
-  delete BillInformation::default_instance_;
-  delete BillInformation_reflection_;
+  delete SingleShrink::default_instance_;
+  delete SingleShrink_reflection_;
   delete OperationPlan::default_instance_;
   delete OperationPlan_reflection_;
   delete OperationDescription::default_instance_;
@@ -2094,6 +2071,8 @@ void protobuf_ShutdownFile_das_2eproto() {
   delete DeleteOperationDescription_reflection_;
   delete AckDeleteOperationDescription::default_instance_;
   delete AckDeleteOperationDescription_reflection_;
+  delete BillInformation::default_instance_;
+  delete BillInformation_reflection_;
   delete OperationRoute::default_instance_;
   delete OperationRoute_reflection_;
   delete PostOperationRoute::default_instance_;
@@ -2273,37 +2252,37 @@ void protobuf_AddDesc_das_2eproto() {
     "ption\"U\n\027DeleteParcelDescription\022\r\n\005seqn"
     "o\030\001 \002(\r\022\014\n\004pdid\030\002 \002(\t\022\016\n\006delpsi\030\003 \001(\010\022\r\n"
     "\005delpc\030\004 \001(\010\";\n\032AckDeleteParcelDescripti"
-    "on\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"-\n\017Cro"
-    "pInformation\022\014\n\004name\030\001 \002(\t\022\014\n\004cdid\030\002 \001(\t"
-    "\"2\n\024PesticideInformation\022\014\n\004name\030\001 \002(\t\022\014"
-    "\n\004pdid\030\002 \001(\t\"i\n\017BillInformation\022\025\n\rservi"
-    "cecharge\030\001 \001(\002\022\027\n\017pesticidecharge\030\002 \001(\002\022"
-    "\023\n\013othercharge\030\003 \001(\002\022\021\n\tsumcharge\030\004 \002(\002\""
-    "l\n\rOperationPlan\022\r\n\005width\030\001 \002(\001\022\r\n\005angle"
-    "\030\002 \002(\002\022\014\n\004anti\030\003 \002(\010\022\016\n\006single\030\004 \002(\010\022\020\n\010"
-    "boundary\030\005 \003(\001\022\r\n\005block\030\006 \002(\001\"\264\001\n\024Operat"
-    "ionDescription\022\021\n\tchargerid\030\001 \002(\t\022\022\n\nreg"
-    "isterid\030\002 \002(\t\022\022\n\noperatorid\030\003 \003(\t\022\014\n\004pdi"
-    "d\030\004 \002(\t\022$\n\002op\030\005 \002(\0132\030.das.proto.Operatio"
-    "nPlan\022\020\n\010plantime\030\006 \001(\004\022\r\n\005notes\030\007 \001(\t\022\014"
-    "\n\004odid\030\010 \001(\t\"V\n\030PostOperationDescription"
-    "\022\r\n\005seqno\030\001 \002(\r\022+\n\002od\030\002 \002(\0132\037.das.proto."
-    "OperationDescription\"J\n\033AckPostOperation"
-    "Description\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002"
-    "(\005\022\014\n\004odid\030\003 \001(\t\"\206\001\n\034RequestOperationDes"
-    "criptions\022\r\n\005seqno\030\001 \002(\r\022\014\n\004odid\030\002 \001(\t\022\014"
-    "\n\004pdid\030\003 \001(\t\022\023\n\013chargemanid\030\004 \001(\t\022\022\n\nreg"
-    "isterid\030\005 \001(\t\022\022\n\noperatorid\030\006 \001(\t\"n\n\037Ack"
-    "RequestOperationDescriptions\022\r\n\005seqno\030\001 "
-    "\002(\r\022\016\n\006result\030\002 \002(\005\022,\n\003ods\030\003 \003(\0132\037.das.p"
-    "roto.OperationDescription\"9\n\032DeleteOpera"
-    "tionDescription\022\r\n\005seqno\030\001 \002(\r\022\014\n\004odid\030\002"
-    " \002(\t\">\n\035AckDeleteOperationDescription\022\r\n"
-    "\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"\214\001\n\016Operati"
-    "onRoute\022\014\n\004gsid\030\001 \002(\t\022\r\n\005uavid\030\006 \002(\t\022\022\n\n"
-    "createtime\030\002 \002(\004\022\021\n\tmaxvoyage\030\003 \002(\002\022\020\n\010m"
-    "issions\030\004 \003(\014\022\021\n\tboundarys\030\005 \003(\014\022\021\n\ttime"
-    "stamp\030\007 \002(\004\"J\n\022PostOperationRoute\022\r\n\005seq"
+    "on\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\")\n\014Sin"
+    "gleShrink\022\013\n\003bdr\030\001 \002(\005\022\014\n\004safe\030\002 \002(\001\"\204\001\n"
+    "\rOperationPlan\022\r\n\005width\030\001 \002(\001\022\r\n\005angle\030\002"
+    " \002(\002\022\014\n\004anti\030\003 \002(\010\022\016\n\006single\030\004 \002(\010\022(\n\007bd"
+    "rsafe\030\005 \003(\0132\027.das.proto.SingleShrink\022\r\n\005"
+    "block\030\006 \002(\001\"\270\001\n\024OperationDescription\022\022\n\n"
+    "registerid\030\001 \002(\t\022\014\n\004pdid\030\002 \002(\t\022$\n\002op\030\003 \002"
+    "(\0132\030.das.proto.OperationPlan\022\014\n\004crop\030\004 \002"
+    "(\t\022\014\n\004drug\030\005 \002(\t\022\r\n\005prize\030\006 \002(\002\022\020\n\010plant"
+    "ime\030\007 \001(\004\022\r\n\005notes\030\010 \001(\t\022\014\n\004odid\030\t \001(\t\"V"
+    "\n\030PostOperationDescription\022\r\n\005seqno\030\001 \002("
+    "\r\022+\n\002od\030\002 \002(\0132\037.das.proto.OperationDescr"
+    "iption\"J\n\033AckPostOperationDescription\022\r\n"
+    "\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\014\n\004odid\030\003 \001"
+    "(\t\"]\n\034RequestOperationDescriptions\022\r\n\005se"
+    "qno\030\001 \002(\r\022\014\n\004odid\030\002 \001(\t\022\014\n\004pdid\030\003 \001(\t\022\022\n"
+    "\nregisterid\030\004 \001(\t\"n\n\037AckRequestOperation"
+    "Descriptions\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 "
+    "\002(\005\022,\n\003ods\030\003 \003(\0132\037.das.proto.OperationDe"
+    "scription\"9\n\032DeleteOperationDescription\022"
+    "\r\n\005seqno\030\001 \002(\r\022\014\n\004odid\030\002 \002(\t\">\n\035AckDelet"
+    "eOperationDescription\022\r\n\005seqno\030\001 \002(\r\022\016\n\006"
+    "result\030\002 \002(\005\"\212\001\n\017BillInformation\022\025\n\rserv"
+    "icecharge\030\001 \001(\002\022\027\n\017pesticidecharge\030\002 \001(\002"
+    "\022\023\n\013othercharge\030\003 \001(\002\022\021\n\tsumcharge\030\004 \002(\002"
+    "\022\021\n\tpesticide\030\005 \002(\t\022\014\n\004crop\030\006 \002(\t\"\257\001\n\016Op"
+    "erationRoute\022\014\n\004gsid\030\001 \002(\t\022\r\n\005uavid\030\002 \002("
+    "\t\022\014\n\004rpid\030\003 \002(\t\022\022\n\ncreatetime\030\004 \002(\004\022\021\n\tm"
+    "axvoyage\030\005 \002(\002\022\020\n\010missions\030\006 \003(\014\022\021\n\tboun"
+    "darys\030\007 \003(\014\022&\n\002bi\030\010 \001(\0132\032.das.proto.Bill"
+    "Information\"J\n\022PostOperationRoute\022\r\n\005seq"
     "no\030\001 \002(\r\022%\n\002or\030\002 \002(\0132\031.das.proto.Operati"
     "onRoute\"6\n\025AckPostOperationRoute\022\r\n\005seqn"
     "o\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"\205\001\n\025UploadOperat"
@@ -2405,9 +2384,7 @@ void protobuf_AddDesc_das_2eproto() {
   AckRequestParcelDescriptions::default_instance_ = new AckRequestParcelDescriptions();
   DeleteParcelDescription::default_instance_ = new DeleteParcelDescription();
   AckDeleteParcelDescription::default_instance_ = new AckDeleteParcelDescription();
-  CropInformation::default_instance_ = new CropInformation();
-  PesticideInformation::default_instance_ = new PesticideInformation();
-  BillInformation::default_instance_ = new BillInformation();
+  SingleShrink::default_instance_ = new SingleShrink();
   OperationPlan::default_instance_ = new OperationPlan();
   OperationDescription::default_instance_ = new OperationDescription();
   PostOperationDescription::default_instance_ = new PostOperationDescription();
@@ -2416,6 +2393,7 @@ void protobuf_AddDesc_das_2eproto() {
   AckRequestOperationDescriptions::default_instance_ = new AckRequestOperationDescriptions();
   DeleteOperationDescription::default_instance_ = new DeleteOperationDescription();
   AckDeleteOperationDescription::default_instance_ = new AckDeleteOperationDescription();
+  BillInformation::default_instance_ = new BillInformation();
   OperationRoute::default_instance_ = new OperationRoute();
   PostOperationRoute::default_instance_ = new PostOperationRoute();
   AckPostOperationRoute::default_instance_ = new AckPostOperationRoute();
@@ -2489,9 +2467,7 @@ void protobuf_AddDesc_das_2eproto() {
   AckRequestParcelDescriptions::default_instance_->InitAsDefaultInstance();
   DeleteParcelDescription::default_instance_->InitAsDefaultInstance();
   AckDeleteParcelDescription::default_instance_->InitAsDefaultInstance();
-  CropInformation::default_instance_->InitAsDefaultInstance();
-  PesticideInformation::default_instance_->InitAsDefaultInstance();
-  BillInformation::default_instance_->InitAsDefaultInstance();
+  SingleShrink::default_instance_->InitAsDefaultInstance();
   OperationPlan::default_instance_->InitAsDefaultInstance();
   OperationDescription::default_instance_->InitAsDefaultInstance();
   PostOperationDescription::default_instance_->InitAsDefaultInstance();
@@ -2500,6 +2476,7 @@ void protobuf_AddDesc_das_2eproto() {
   AckRequestOperationDescriptions::default_instance_->InitAsDefaultInstance();
   DeleteOperationDescription::default_instance_->InitAsDefaultInstance();
   AckDeleteOperationDescription::default_instance_->InitAsDefaultInstance();
+  BillInformation::default_instance_->InitAsDefaultInstance();
   OperationRoute::default_instance_->InitAsDefaultInstance();
   PostOperationRoute::default_instance_->InitAsDefaultInstance();
   AckPostOperationRoute::default_instance_->InitAsDefaultInstance();
@@ -20509,116 +20486,100 @@ void AckDeleteParcelDescription::Swap(AckDeleteParcelDescription* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
-const int CropInformation::kNameFieldNumber;
-const int CropInformation::kCdidFieldNumber;
+const int SingleShrink::kBdrFieldNumber;
+const int SingleShrink::kSafeFieldNumber;
 #endif  // !_MSC_VER
 
-CropInformation::CropInformation()
+SingleShrink::SingleShrink()
   : ::google::protobuf::Message() {
   SharedCtor();
 }
 
-void CropInformation::InitAsDefaultInstance() {
+void SingleShrink::InitAsDefaultInstance() {
 }
 
-CropInformation::CropInformation(const CropInformation& from)
+SingleShrink::SingleShrink(const SingleShrink& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
 }
 
-void CropInformation::SharedCtor() {
+void SingleShrink::SharedCtor() {
   _cached_size_ = 0;
-  name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  cdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  bdr_ = 0;
+  safe_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
-CropInformation::~CropInformation() {
+SingleShrink::~SingleShrink() {
   SharedDtor();
 }
 
-void CropInformation::SharedDtor() {
-  if (name_ != &::google::protobuf::internal::kEmptyString) {
-    delete name_;
-  }
-  if (cdid_ != &::google::protobuf::internal::kEmptyString) {
-    delete cdid_;
-  }
+void SingleShrink::SharedDtor() {
   if (this != default_instance_) {
   }
 }
 
-void CropInformation::SetCachedSize(int size) const {
+void SingleShrink::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* CropInformation::descriptor() {
+const ::google::protobuf::Descriptor* SingleShrink::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return CropInformation_descriptor_;
+  return SingleShrink_descriptor_;
 }
 
-const CropInformation& CropInformation::default_instance() {
+const SingleShrink& SingleShrink::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
   return *default_instance_;
 }
 
-CropInformation* CropInformation::default_instance_ = NULL;
+SingleShrink* SingleShrink::default_instance_ = NULL;
 
-CropInformation* CropInformation::New() const {
-  return new CropInformation;
+SingleShrink* SingleShrink::New() const {
+  return new SingleShrink;
 }
 
-void CropInformation::Clear() {
+void SingleShrink::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (has_name()) {
-      if (name_ != &::google::protobuf::internal::kEmptyString) {
-        name_->clear();
-      }
-    }
-    if (has_cdid()) {
-      if (cdid_ != &::google::protobuf::internal::kEmptyString) {
-        cdid_->clear();
-      }
-    }
+    bdr_ = 0;
+    safe_ = 0;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
 
-bool CropInformation::MergePartialFromCodedStream(
+bool SingleShrink::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!(EXPRESSION)) return false
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required string name = 1;
+      // required int32 bdr = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_name()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->name().data(), this->name().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &bdr_)));
+          set_has_bdr();
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(18)) goto parse_cdid;
+        if (input->ExpectTag(17)) goto parse_safe;
         break;
       }
 
-      // optional string cdid = 2;
+      // required double safe = 2;
       case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_cdid:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_cdid()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->cdid().data(), this->cdid().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
+         parse_safe:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &safe_)));
+          set_has_safe();
         } else {
           goto handle_uninterpreted;
         }
@@ -20642,24 +20603,16 @@ bool CropInformation::MergePartialFromCodedStream(
 #undef DO_
 }
 
-void CropInformation::SerializeWithCachedSizes(
+void SingleShrink::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // required string name = 1;
-  if (has_name()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->name().data(), this->name().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->name(), output);
+  // required int32 bdr = 1;
+  if (has_bdr()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->bdr(), output);
   }
 
-  // optional string cdid = 2;
-  if (has_cdid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->cdid().data(), this->cdid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      2, this->cdid(), output);
+  // required double safe = 2;
+  if (has_safe()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(2, this->safe(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -20668,26 +20621,16 @@ void CropInformation::SerializeWithCachedSizes(
   }
 }
 
-::google::protobuf::uint8* CropInformation::SerializeWithCachedSizesToArray(
+::google::protobuf::uint8* SingleShrink::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // required string name = 1;
-  if (has_name()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->name().data(), this->name().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->name(), target);
+  // required int32 bdr = 1;
+  if (has_bdr()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->bdr(), target);
   }
 
-  // optional string cdid = 2;
-  if (has_cdid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->cdid().data(), this->cdid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->cdid(), target);
+  // required double safe = 2;
+  if (has_safe()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteDoubleToArray(2, this->safe(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -20697,22 +20640,20 @@ void CropInformation::SerializeWithCachedSizes(
   return target;
 }
 
-int CropInformation::ByteSize() const {
+int SingleShrink::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required string name = 1;
-    if (has_name()) {
+    // required int32 bdr = 1;
+    if (has_bdr()) {
       total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->name());
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->bdr());
     }
 
-    // optional string cdid = 2;
-    if (has_cdid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->cdid());
+    // required double safe = 2;
+    if (has_safe()) {
+      total_size += 1 + 8;
     }
 
   }
@@ -20727,10 +20668,10 @@ int CropInformation::ByteSize() const {
   return total_size;
 }
 
-void CropInformation::MergeFrom(const ::google::protobuf::Message& from) {
+void SingleShrink::MergeFrom(const ::google::protobuf::Message& from) {
   GOOGLE_CHECK_NE(&from, this);
-  const CropInformation* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const CropInformation*>(
+  const SingleShrink* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const SingleShrink*>(
       &from);
   if (source == NULL) {
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
@@ -20739,656 +20680,52 @@ void CropInformation::MergeFrom(const ::google::protobuf::Message& from) {
   }
 }
 
-void CropInformation::MergeFrom(const CropInformation& from) {
+void SingleShrink::MergeFrom(const SingleShrink& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_name()) {
-      set_name(from.name());
+    if (from.has_bdr()) {
+      set_bdr(from.bdr());
     }
-    if (from.has_cdid()) {
-      set_cdid(from.cdid());
+    if (from.has_safe()) {
+      set_safe(from.safe());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
-void CropInformation::CopyFrom(const ::google::protobuf::Message& from) {
+void SingleShrink::CopyFrom(const ::google::protobuf::Message& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void CropInformation::CopyFrom(const CropInformation& from) {
+void SingleShrink::CopyFrom(const SingleShrink& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool CropInformation::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+bool SingleShrink::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
 
   return true;
 }
 
-void CropInformation::Swap(CropInformation* other) {
+void SingleShrink::Swap(SingleShrink* other) {
   if (other != this) {
-    std::swap(name_, other->name_);
-    std::swap(cdid_, other->cdid_);
+    std::swap(bdr_, other->bdr_);
+    std::swap(safe_, other->safe_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
   }
 }
 
-::google::protobuf::Metadata CropInformation::GetMetadata() const {
+::google::protobuf::Metadata SingleShrink::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = CropInformation_descriptor_;
-  metadata.reflection = CropInformation_reflection_;
-  return metadata;
-}
-
-
-// ===================================================================
-
-#ifndef _MSC_VER
-const int PesticideInformation::kNameFieldNumber;
-const int PesticideInformation::kPdidFieldNumber;
-#endif  // !_MSC_VER
-
-PesticideInformation::PesticideInformation()
-  : ::google::protobuf::Message() {
-  SharedCtor();
-}
-
-void PesticideInformation::InitAsDefaultInstance() {
-}
-
-PesticideInformation::PesticideInformation(const PesticideInformation& from)
-  : ::google::protobuf::Message() {
-  SharedCtor();
-  MergeFrom(from);
-}
-
-void PesticideInformation::SharedCtor() {
-  _cached_size_ = 0;
-  name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  pdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-PesticideInformation::~PesticideInformation() {
-  SharedDtor();
-}
-
-void PesticideInformation::SharedDtor() {
-  if (name_ != &::google::protobuf::internal::kEmptyString) {
-    delete name_;
-  }
-  if (pdid_ != &::google::protobuf::internal::kEmptyString) {
-    delete pdid_;
-  }
-  if (this != default_instance_) {
-  }
-}
-
-void PesticideInformation::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* PesticideInformation::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return PesticideInformation_descriptor_;
-}
-
-const PesticideInformation& PesticideInformation::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
-  return *default_instance_;
-}
-
-PesticideInformation* PesticideInformation::default_instance_ = NULL;
-
-PesticideInformation* PesticideInformation::New() const {
-  return new PesticideInformation;
-}
-
-void PesticideInformation::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (has_name()) {
-      if (name_ != &::google::protobuf::internal::kEmptyString) {
-        name_->clear();
-      }
-    }
-    if (has_pdid()) {
-      if (pdid_ != &::google::protobuf::internal::kEmptyString) {
-        pdid_->clear();
-      }
-    }
-  }
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
-}
-
-bool PesticideInformation::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
-  ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required string name = 1;
-      case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_name()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->name().data(), this->name().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(18)) goto parse_pdid;
-        break;
-      }
-
-      // optional string pdid = 2;
-      case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_pdid:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_pdid()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->pdid().data(), this->pdid().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectAtEnd()) return true;
-        break;
-      }
-
-      default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-  return true;
-#undef DO_
-}
-
-void PesticideInformation::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // required string name = 1;
-  if (has_name()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->name().data(), this->name().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->name(), output);
-  }
-
-  // optional string pdid = 2;
-  if (has_pdid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->pdid().data(), this->pdid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      2, this->pdid(), output);
-  }
-
-  if (!unknown_fields().empty()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
-}
-
-::google::protobuf::uint8* PesticideInformation::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
-  // required string name = 1;
-  if (has_name()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->name().data(), this->name().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->name(), target);
-  }
-
-  // optional string pdid = 2;
-  if (has_pdid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->pdid().data(), this->pdid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->pdid(), target);
-  }
-
-  if (!unknown_fields().empty()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  return target;
-}
-
-int PesticideInformation::ByteSize() const {
-  int total_size = 0;
-
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required string name = 1;
-    if (has_name()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->name());
-    }
-
-    // optional string pdid = 2;
-    if (has_pdid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->pdid());
-    }
-
-  }
-  if (!unknown_fields().empty()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void PesticideInformation::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const PesticideInformation* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const PesticideInformation*>(
-      &from);
-  if (source == NULL) {
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-    MergeFrom(*source);
-  }
-}
-
-void PesticideInformation::MergeFrom(const PesticideInformation& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_name()) {
-      set_name(from.name());
-    }
-    if (from.has_pdid()) {
-      set_pdid(from.pdid());
-    }
-  }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
-}
-
-void PesticideInformation::CopyFrom(const ::google::protobuf::Message& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void PesticideInformation::CopyFrom(const PesticideInformation& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool PesticideInformation::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
-
-  return true;
-}
-
-void PesticideInformation::Swap(PesticideInformation* other) {
-  if (other != this) {
-    std::swap(name_, other->name_);
-    std::swap(pdid_, other->pdid_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
-}
-
-::google::protobuf::Metadata PesticideInformation::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = PesticideInformation_descriptor_;
-  metadata.reflection = PesticideInformation_reflection_;
-  return metadata;
-}
-
-
-// ===================================================================
-
-#ifndef _MSC_VER
-const int BillInformation::kServicechargeFieldNumber;
-const int BillInformation::kPesticidechargeFieldNumber;
-const int BillInformation::kOtherchargeFieldNumber;
-const int BillInformation::kSumchargeFieldNumber;
-#endif  // !_MSC_VER
-
-BillInformation::BillInformation()
-  : ::google::protobuf::Message() {
-  SharedCtor();
-}
-
-void BillInformation::InitAsDefaultInstance() {
-}
-
-BillInformation::BillInformation(const BillInformation& from)
-  : ::google::protobuf::Message() {
-  SharedCtor();
-  MergeFrom(from);
-}
-
-void BillInformation::SharedCtor() {
-  _cached_size_ = 0;
-  servicecharge_ = 0;
-  pesticidecharge_ = 0;
-  othercharge_ = 0;
-  sumcharge_ = 0;
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-BillInformation::~BillInformation() {
-  SharedDtor();
-}
-
-void BillInformation::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void BillInformation::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* BillInformation::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return BillInformation_descriptor_;
-}
-
-const BillInformation& BillInformation::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
-  return *default_instance_;
-}
-
-BillInformation* BillInformation::default_instance_ = NULL;
-
-BillInformation* BillInformation::New() const {
-  return new BillInformation;
-}
-
-void BillInformation::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    servicecharge_ = 0;
-    pesticidecharge_ = 0;
-    othercharge_ = 0;
-    sumcharge_ = 0;
-  }
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
-}
-
-bool BillInformation::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
-  ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional float servicecharge = 1;
-      case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
-                 input, &servicecharge_)));
-          set_has_servicecharge();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(21)) goto parse_pesticidecharge;
-        break;
-      }
-
-      // optional float pesticidecharge = 2;
-      case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
-         parse_pesticidecharge:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
-                 input, &pesticidecharge_)));
-          set_has_pesticidecharge();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(29)) goto parse_othercharge;
-        break;
-      }
-
-      // optional float othercharge = 3;
-      case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
-         parse_othercharge:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
-                 input, &othercharge_)));
-          set_has_othercharge();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(37)) goto parse_sumcharge;
-        break;
-      }
-
-      // required float sumcharge = 4;
-      case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
-         parse_sumcharge:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
-                 input, &sumcharge_)));
-          set_has_sumcharge();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectAtEnd()) return true;
-        break;
-      }
-
-      default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-  return true;
-#undef DO_
-}
-
-void BillInformation::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // optional float servicecharge = 1;
-  if (has_servicecharge()) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->servicecharge(), output);
-  }
-
-  // optional float pesticidecharge = 2;
-  if (has_pesticidecharge()) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->pesticidecharge(), output);
-  }
-
-  // optional float othercharge = 3;
-  if (has_othercharge()) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->othercharge(), output);
-  }
-
-  // required float sumcharge = 4;
-  if (has_sumcharge()) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(4, this->sumcharge(), output);
-  }
-
-  if (!unknown_fields().empty()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
-}
-
-::google::protobuf::uint8* BillInformation::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
-  // optional float servicecharge = 1;
-  if (has_servicecharge()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->servicecharge(), target);
-  }
-
-  // optional float pesticidecharge = 2;
-  if (has_pesticidecharge()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->pesticidecharge(), target);
-  }
-
-  // optional float othercharge = 3;
-  if (has_othercharge()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->othercharge(), target);
-  }
-
-  // required float sumcharge = 4;
-  if (has_sumcharge()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(4, this->sumcharge(), target);
-  }
-
-  if (!unknown_fields().empty()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  return target;
-}
-
-int BillInformation::ByteSize() const {
-  int total_size = 0;
-
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // optional float servicecharge = 1;
-    if (has_servicecharge()) {
-      total_size += 1 + 4;
-    }
-
-    // optional float pesticidecharge = 2;
-    if (has_pesticidecharge()) {
-      total_size += 1 + 4;
-    }
-
-    // optional float othercharge = 3;
-    if (has_othercharge()) {
-      total_size += 1 + 4;
-    }
-
-    // required float sumcharge = 4;
-    if (has_sumcharge()) {
-      total_size += 1 + 4;
-    }
-
-  }
-  if (!unknown_fields().empty()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void BillInformation::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const BillInformation* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const BillInformation*>(
-      &from);
-  if (source == NULL) {
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-    MergeFrom(*source);
-  }
-}
-
-void BillInformation::MergeFrom(const BillInformation& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_servicecharge()) {
-      set_servicecharge(from.servicecharge());
-    }
-    if (from.has_pesticidecharge()) {
-      set_pesticidecharge(from.pesticidecharge());
-    }
-    if (from.has_othercharge()) {
-      set_othercharge(from.othercharge());
-    }
-    if (from.has_sumcharge()) {
-      set_sumcharge(from.sumcharge());
-    }
-  }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
-}
-
-void BillInformation::CopyFrom(const ::google::protobuf::Message& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void BillInformation::CopyFrom(const BillInformation& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool BillInformation::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000008) != 0x00000008) return false;
-
-  return true;
-}
-
-void BillInformation::Swap(BillInformation* other) {
-  if (other != this) {
-    std::swap(servicecharge_, other->servicecharge_);
-    std::swap(pesticidecharge_, other->pesticidecharge_);
-    std::swap(othercharge_, other->othercharge_);
-    std::swap(sumcharge_, other->sumcharge_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
-}
-
-::google::protobuf::Metadata BillInformation::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = BillInformation_descriptor_;
-  metadata.reflection = BillInformation_reflection_;
+  metadata.descriptor = SingleShrink_descriptor_;
+  metadata.reflection = SingleShrink_reflection_;
   return metadata;
 }
 
@@ -21400,7 +20737,7 @@ const int OperationPlan::kWidthFieldNumber;
 const int OperationPlan::kAngleFieldNumber;
 const int OperationPlan::kAntiFieldNumber;
 const int OperationPlan::kSingleFieldNumber;
-const int OperationPlan::kBoundaryFieldNumber;
+const int OperationPlan::kBdrsafeFieldNumber;
 const int OperationPlan::kBlockFieldNumber;
 #endif  // !_MSC_VER
 
@@ -21466,7 +20803,7 @@ void OperationPlan::Clear() {
     single_ = false;
     block_ = 0;
   }
-  boundary_.Clear();
+  bdrsafe_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -21536,28 +20873,21 @@ bool OperationPlan::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(41)) goto parse_boundary;
+        if (input->ExpectTag(42)) goto parse_bdrsafe;
         break;
       }
 
-      // repeated double boundary = 5;
+      // repeated .das.proto.SingleShrink bdrsafe = 5;
       case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED64) {
-         parse_boundary:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitive<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 1, 41, input, this->mutable_boundary())));
-        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
-                   == ::google::protobuf::internal::WireFormatLite::
-                      WIRETYPE_LENGTH_DELIMITED) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitiveNoInline<
-                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
-                 input, this->mutable_boundary())));
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_bdrsafe:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+                input, add_bdrsafe()));
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(41)) goto parse_boundary;
+        if (input->ExpectTag(42)) goto parse_bdrsafe;
         if (input->ExpectTag(49)) goto parse_block;
         break;
       }
@@ -21616,10 +20946,10 @@ void OperationPlan::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteBool(4, this->single(), output);
   }
 
-  // repeated double boundary = 5;
-  for (int i = 0; i < this->boundary_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteDouble(
-      5, this->boundary(i), output);
+  // repeated .das.proto.SingleShrink bdrsafe = 5;
+  for (int i = 0; i < this->bdrsafe_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      5, this->bdrsafe(i), output);
   }
 
   // required double block = 6;
@@ -21655,10 +20985,11 @@ void OperationPlan::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteBoolToArray(4, this->single(), target);
   }
 
-  // repeated double boundary = 5;
-  for (int i = 0; i < this->boundary_size(); i++) {
+  // repeated .das.proto.SingleShrink bdrsafe = 5;
+  for (int i = 0; i < this->bdrsafe_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteDoubleToArray(5, this->boundary(i), target);
+      WriteMessageNoVirtualToArray(
+        5, this->bdrsafe(i), target);
   }
 
   // required double block = 6;
@@ -21703,11 +21034,12 @@ int OperationPlan::ByteSize() const {
     }
 
   }
-  // repeated double boundary = 5;
-  {
-    int data_size = 0;
-    data_size = 8 * this->boundary_size();
-    total_size += 1 * this->boundary_size() + data_size;
+  // repeated .das.proto.SingleShrink bdrsafe = 5;
+  total_size += 1 * this->bdrsafe_size();
+  for (int i = 0; i < this->bdrsafe_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        this->bdrsafe(i));
   }
 
   if (!unknown_fields().empty()) {
@@ -21735,7 +21067,7 @@ void OperationPlan::MergeFrom(const ::google::protobuf::Message& from) {
 
 void OperationPlan::MergeFrom(const OperationPlan& from) {
   GOOGLE_CHECK_NE(&from, this);
-  boundary_.MergeFrom(from.boundary_);
+  bdrsafe_.MergeFrom(from.bdrsafe_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_width()) {
       set_width(from.width());
@@ -21771,6 +21103,9 @@ void OperationPlan::CopyFrom(const OperationPlan& from) {
 bool OperationPlan::IsInitialized() const {
   if ((_has_bits_[0] & 0x0000002f) != 0x0000002f) return false;
 
+  for (int i = 0; i < bdrsafe_size(); i++) {
+    if (!this->bdrsafe(i).IsInitialized()) return false;
+  }
   return true;
 }
 
@@ -21780,7 +21115,7 @@ void OperationPlan::Swap(OperationPlan* other) {
     std::swap(angle_, other->angle_);
     std::swap(anti_, other->anti_);
     std::swap(single_, other->single_);
-    boundary_.Swap(&other->boundary_);
+    bdrsafe_.Swap(&other->bdrsafe_);
     std::swap(block_, other->block_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
@@ -21800,11 +21135,12 @@ void OperationPlan::Swap(OperationPlan* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
-const int OperationDescription::kChargeridFieldNumber;
 const int OperationDescription::kRegisteridFieldNumber;
-const int OperationDescription::kOperatoridFieldNumber;
 const int OperationDescription::kPdidFieldNumber;
 const int OperationDescription::kOpFieldNumber;
+const int OperationDescription::kCropFieldNumber;
+const int OperationDescription::kDrugFieldNumber;
+const int OperationDescription::kPrizeFieldNumber;
 const int OperationDescription::kPlantimeFieldNumber;
 const int OperationDescription::kNotesFieldNumber;
 const int OperationDescription::kOdidFieldNumber;
@@ -21827,10 +21163,12 @@ OperationDescription::OperationDescription(const OperationDescription& from)
 
 void OperationDescription::SharedCtor() {
   _cached_size_ = 0;
-  chargerid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   registerid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   pdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   op_ = NULL;
+  crop_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  drug_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  prize_ = 0;
   plantime_ = GOOGLE_ULONGLONG(0);
   notes_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   odid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
@@ -21842,14 +21180,17 @@ OperationDescription::~OperationDescription() {
 }
 
 void OperationDescription::SharedDtor() {
-  if (chargerid_ != &::google::protobuf::internal::kEmptyString) {
-    delete chargerid_;
-  }
   if (registerid_ != &::google::protobuf::internal::kEmptyString) {
     delete registerid_;
   }
   if (pdid_ != &::google::protobuf::internal::kEmptyString) {
     delete pdid_;
+  }
+  if (crop_ != &::google::protobuf::internal::kEmptyString) {
+    delete crop_;
+  }
+  if (drug_ != &::google::protobuf::internal::kEmptyString) {
+    delete drug_;
   }
   if (notes_ != &::google::protobuf::internal::kEmptyString) {
     delete notes_;
@@ -21885,11 +21226,6 @@ OperationDescription* OperationDescription::New() const {
 
 void OperationDescription::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (has_chargerid()) {
-      if (chargerid_ != &::google::protobuf::internal::kEmptyString) {
-        chargerid_->clear();
-      }
-    }
     if (has_registerid()) {
       if (registerid_ != &::google::protobuf::internal::kEmptyString) {
         registerid_->clear();
@@ -21903,19 +21239,31 @@ void OperationDescription::Clear() {
     if (has_op()) {
       if (op_ != NULL) op_->::das::proto::OperationPlan::Clear();
     }
+    if (has_crop()) {
+      if (crop_ != &::google::protobuf::internal::kEmptyString) {
+        crop_->clear();
+      }
+    }
+    if (has_drug()) {
+      if (drug_ != &::google::protobuf::internal::kEmptyString) {
+        drug_->clear();
+      }
+    }
+    prize_ = 0;
     plantime_ = GOOGLE_ULONGLONG(0);
     if (has_notes()) {
       if (notes_ != &::google::protobuf::internal::kEmptyString) {
         notes_->clear();
       }
     }
+  }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
     if (has_odid()) {
       if (odid_ != &::google::protobuf::internal::kEmptyString) {
         odid_->clear();
       }
     }
   }
-  operatorid_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
@@ -21926,27 +21274,10 @@ bool OperationDescription::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required string chargerid = 1;
+      // required string registerid = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_chargerid()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->chargerid().data(), this->chargerid().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(18)) goto parse_registerid;
-        break;
-      }
-
-      // required string registerid = 2;
-      case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_registerid:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_registerid()));
           ::google::protobuf::internal::WireFormat::VerifyUTF8String(
@@ -21955,31 +21286,12 @@ bool OperationDescription::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(26)) goto parse_operatorid;
+        if (input->ExpectTag(18)) goto parse_pdid;
         break;
       }
 
-      // repeated string operatorid = 3;
-      case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_operatorid:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->add_operatorid()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->operatorid(this->operatorid_size() - 1).data(),
-            this->operatorid(this->operatorid_size() - 1).length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(26)) goto parse_operatorid;
-        if (input->ExpectTag(34)) goto parse_pdid;
-        break;
-      }
-
-      // required string pdid = 4;
-      case 4: {
+      // required string pdid = 2;
+      case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_pdid:
@@ -21991,12 +21303,12 @@ bool OperationDescription::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(42)) goto parse_op;
+        if (input->ExpectTag(26)) goto parse_op;
         break;
       }
 
-      // required .das.proto.OperationPlan op = 5;
-      case 5: {
+      // required .das.proto.OperationPlan op = 3;
+      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_op:
@@ -22005,12 +21317,62 @@ bool OperationDescription::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(48)) goto parse_plantime;
+        if (input->ExpectTag(34)) goto parse_crop;
         break;
       }
 
-      // optional uint64 plantime = 6;
+      // required string crop = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_crop:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_crop()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->crop().data(), this->crop().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(42)) goto parse_drug;
+        break;
+      }
+
+      // required string drug = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_drug:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_drug()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->drug().data(), this->drug().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(53)) goto parse_prize;
+        break;
+      }
+
+      // required float prize = 6;
       case 6: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_prize:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &prize_)));
+          set_has_prize();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(56)) goto parse_plantime;
+        break;
+      }
+
+      // optional uint64 plantime = 7;
+      case 7: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_plantime:
@@ -22021,12 +21383,12 @@ bool OperationDescription::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(58)) goto parse_notes;
+        if (input->ExpectTag(66)) goto parse_notes;
         break;
       }
 
-      // optional string notes = 7;
-      case 7: {
+      // optional string notes = 8;
+      case 8: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_notes:
@@ -22038,12 +21400,12 @@ bool OperationDescription::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(66)) goto parse_odid;
+        if (input->ExpectTag(74)) goto parse_odid;
         break;
       }
 
-      // optional string odid = 8;
-      case 8: {
+      // optional string odid = 9;
+      case 9: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_odid:
@@ -22077,69 +21439,74 @@ bool OperationDescription::MergePartialFromCodedStream(
 
 void OperationDescription::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // required string chargerid = 1;
-  if (has_chargerid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->chargerid().data(), this->chargerid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      1, this->chargerid(), output);
-  }
-
-  // required string registerid = 2;
+  // required string registerid = 1;
   if (has_registerid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->registerid().data(), this->registerid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      2, this->registerid(), output);
+      1, this->registerid(), output);
   }
 
-  // repeated string operatorid = 3;
-  for (int i = 0; i < this->operatorid_size(); i++) {
-  ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-    this->operatorid(i).data(), this->operatorid(i).length(),
-    ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      3, this->operatorid(i), output);
-  }
-
-  // required string pdid = 4;
+  // required string pdid = 2;
   if (has_pdid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->pdid().data(), this->pdid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      4, this->pdid(), output);
+      2, this->pdid(), output);
   }
 
-  // required .das.proto.OperationPlan op = 5;
+  // required .das.proto.OperationPlan op = 3;
   if (has_op()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      5, this->op(), output);
+      3, this->op(), output);
   }
 
-  // optional uint64 plantime = 6;
+  // required string crop = 4;
+  if (has_crop()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->crop().data(), this->crop().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      4, this->crop(), output);
+  }
+
+  // required string drug = 5;
+  if (has_drug()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->drug().data(), this->drug().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      5, this->drug(), output);
+  }
+
+  // required float prize = 6;
+  if (has_prize()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(6, this->prize(), output);
+  }
+
+  // optional uint64 plantime = 7;
   if (has_plantime()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(6, this->plantime(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(7, this->plantime(), output);
   }
 
-  // optional string notes = 7;
+  // optional string notes = 8;
   if (has_notes()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->notes().data(), this->notes().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      7, this->notes(), output);
+      8, this->notes(), output);
   }
 
-  // optional string odid = 8;
+  // optional string odid = 9;
   if (has_odid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->odid().data(), this->odid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      8, this->odid(), output);
+      9, this->odid(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -22150,75 +21517,81 @@ void OperationDescription::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* OperationDescription::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // required string chargerid = 1;
-  if (has_chargerid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->chargerid().data(), this->chargerid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->chargerid(), target);
-  }
-
-  // required string registerid = 2;
+  // required string registerid = 1;
   if (has_registerid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->registerid().data(), this->registerid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->registerid(), target);
+        1, this->registerid(), target);
   }
 
-  // repeated string operatorid = 3;
-  for (int i = 0; i < this->operatorid_size(); i++) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->operatorid(i).data(), this->operatorid(i).length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteStringToArray(3, this->operatorid(i), target);
-  }
-
-  // required string pdid = 4;
+  // required string pdid = 2;
   if (has_pdid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->pdid().data(), this->pdid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        4, this->pdid(), target);
+        2, this->pdid(), target);
   }
 
-  // required .das.proto.OperationPlan op = 5;
+  // required .das.proto.OperationPlan op = 3;
   if (has_op()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        5, this->op(), target);
+        3, this->op(), target);
   }
 
-  // optional uint64 plantime = 6;
+  // required string crop = 4;
+  if (has_crop()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->crop().data(), this->crop().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        4, this->crop(), target);
+  }
+
+  // required string drug = 5;
+  if (has_drug()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->drug().data(), this->drug().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        5, this->drug(), target);
+  }
+
+  // required float prize = 6;
+  if (has_prize()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(6, this->prize(), target);
+  }
+
+  // optional uint64 plantime = 7;
   if (has_plantime()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(6, this->plantime(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(7, this->plantime(), target);
   }
 
-  // optional string notes = 7;
+  // optional string notes = 8;
   if (has_notes()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->notes().data(), this->notes().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        7, this->notes(), target);
+        8, this->notes(), target);
   }
 
-  // optional string odid = 8;
+  // optional string odid = 9;
   if (has_odid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->odid().data(), this->odid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        8, this->odid(), target);
+        9, this->odid(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -22232,49 +21605,63 @@ int OperationDescription::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required string chargerid = 1;
-    if (has_chargerid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->chargerid());
-    }
-
-    // required string registerid = 2;
+    // required string registerid = 1;
     if (has_registerid()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->registerid());
     }
 
-    // required string pdid = 4;
+    // required string pdid = 2;
     if (has_pdid()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->pdid());
     }
 
-    // required .das.proto.OperationPlan op = 5;
+    // required .das.proto.OperationPlan op = 3;
     if (has_op()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           this->op());
     }
 
-    // optional uint64 plantime = 6;
+    // required string crop = 4;
+    if (has_crop()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->crop());
+    }
+
+    // required string drug = 5;
+    if (has_drug()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->drug());
+    }
+
+    // required float prize = 6;
+    if (has_prize()) {
+      total_size += 1 + 4;
+    }
+
+    // optional uint64 plantime = 7;
     if (has_plantime()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt64Size(
           this->plantime());
     }
 
-    // optional string notes = 7;
+    // optional string notes = 8;
     if (has_notes()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->notes());
     }
 
-    // optional string odid = 8;
+  }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    // optional string odid = 9;
     if (has_odid()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
@@ -22282,13 +21669,6 @@ int OperationDescription::ByteSize() const {
     }
 
   }
-  // repeated string operatorid = 3;
-  total_size += 1 * this->operatorid_size();
-  for (int i = 0; i < this->operatorid_size(); i++) {
-    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
-      this->operatorid(i));
-  }
-
   if (!unknown_fields().empty()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -22314,11 +21694,7 @@ void OperationDescription::MergeFrom(const ::google::protobuf::Message& from) {
 
 void OperationDescription::MergeFrom(const OperationDescription& from) {
   GOOGLE_CHECK_NE(&from, this);
-  operatorid_.MergeFrom(from.operatorid_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_chargerid()) {
-      set_chargerid(from.chargerid());
-    }
     if (from.has_registerid()) {
       set_registerid(from.registerid());
     }
@@ -22328,12 +21704,23 @@ void OperationDescription::MergeFrom(const OperationDescription& from) {
     if (from.has_op()) {
       mutable_op()->::das::proto::OperationPlan::MergeFrom(from.op());
     }
+    if (from.has_crop()) {
+      set_crop(from.crop());
+    }
+    if (from.has_drug()) {
+      set_drug(from.drug());
+    }
+    if (from.has_prize()) {
+      set_prize(from.prize());
+    }
     if (from.has_plantime()) {
       set_plantime(from.plantime());
     }
     if (from.has_notes()) {
       set_notes(from.notes());
     }
+  }
+  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
     if (from.has_odid()) {
       set_odid(from.odid());
     }
@@ -22354,7 +21741,7 @@ void OperationDescription::CopyFrom(const OperationDescription& from) {
 }
 
 bool OperationDescription::IsInitialized() const {
-  if ((_has_bits_[0] & 0x0000001b) != 0x0000001b) return false;
+  if ((_has_bits_[0] & 0x0000003f) != 0x0000003f) return false;
 
   if (has_op()) {
     if (!this->op().IsInitialized()) return false;
@@ -22364,11 +21751,12 @@ bool OperationDescription::IsInitialized() const {
 
 void OperationDescription::Swap(OperationDescription* other) {
   if (other != this) {
-    std::swap(chargerid_, other->chargerid_);
     std::swap(registerid_, other->registerid_);
-    operatorid_.Swap(&other->operatorid_);
     std::swap(pdid_, other->pdid_);
     std::swap(op_, other->op_);
+    std::swap(crop_, other->crop_);
+    std::swap(drug_, other->drug_);
+    std::swap(prize_, other->prize_);
     std::swap(plantime_, other->plantime_);
     std::swap(notes_, other->notes_);
     std::swap(odid_, other->odid_);
@@ -22956,9 +22344,7 @@ void AckPostOperationDescription::Swap(AckPostOperationDescription* other) {
 const int RequestOperationDescriptions::kSeqnoFieldNumber;
 const int RequestOperationDescriptions::kOdidFieldNumber;
 const int RequestOperationDescriptions::kPdidFieldNumber;
-const int RequestOperationDescriptions::kChargemanidFieldNumber;
 const int RequestOperationDescriptions::kRegisteridFieldNumber;
-const int RequestOperationDescriptions::kOperatoridFieldNumber;
 #endif  // !_MSC_VER
 
 RequestOperationDescriptions::RequestOperationDescriptions()
@@ -22980,9 +22366,7 @@ void RequestOperationDescriptions::SharedCtor() {
   seqno_ = 0u;
   odid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   pdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  chargemanid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   registerid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  operatorid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -22997,14 +22381,8 @@ void RequestOperationDescriptions::SharedDtor() {
   if (pdid_ != &::google::protobuf::internal::kEmptyString) {
     delete pdid_;
   }
-  if (chargemanid_ != &::google::protobuf::internal::kEmptyString) {
-    delete chargemanid_;
-  }
   if (registerid_ != &::google::protobuf::internal::kEmptyString) {
     delete registerid_;
-  }
-  if (operatorid_ != &::google::protobuf::internal::kEmptyString) {
-    delete operatorid_;
   }
   if (this != default_instance_) {
   }
@@ -23044,19 +22422,9 @@ void RequestOperationDescriptions::Clear() {
         pdid_->clear();
       }
     }
-    if (has_chargemanid()) {
-      if (chargemanid_ != &::google::protobuf::internal::kEmptyString) {
-        chargemanid_->clear();
-      }
-    }
     if (has_registerid()) {
       if (registerid_ != &::google::protobuf::internal::kEmptyString) {
         registerid_->clear();
-      }
-    }
-    if (has_operatorid()) {
-      if (operatorid_ != &::google::protobuf::internal::kEmptyString) {
-        operatorid_->clear();
       }
     }
   }
@@ -23115,29 +22483,12 @@ bool RequestOperationDescriptions::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(34)) goto parse_chargemanid;
+        if (input->ExpectTag(34)) goto parse_registerid;
         break;
       }
 
-      // optional string chargemanid = 4;
+      // optional string registerid = 4;
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_chargemanid:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_chargemanid()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->chargemanid().data(), this->chargemanid().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(42)) goto parse_registerid;
-        break;
-      }
-
-      // optional string registerid = 5;
-      case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_registerid:
@@ -23145,23 +22496,6 @@ bool RequestOperationDescriptions::MergePartialFromCodedStream(
                 input, this->mutable_registerid()));
           ::google::protobuf::internal::WireFormat::VerifyUTF8String(
             this->registerid().data(), this->registerid().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(50)) goto parse_operatorid;
-        break;
-      }
-
-      // optional string operatorid = 6;
-      case 6: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_operatorid:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_operatorid()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->operatorid().data(), this->operatorid().length(),
             ::google::protobuf::internal::WireFormat::PARSE);
         } else {
           goto handle_uninterpreted;
@@ -23211,31 +22545,13 @@ void RequestOperationDescriptions::SerializeWithCachedSizes(
       3, this->pdid(), output);
   }
 
-  // optional string chargemanid = 4;
-  if (has_chargemanid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->chargemanid().data(), this->chargemanid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      4, this->chargemanid(), output);
-  }
-
-  // optional string registerid = 5;
+  // optional string registerid = 4;
   if (has_registerid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->registerid().data(), this->registerid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      5, this->registerid(), output);
-  }
-
-  // optional string operatorid = 6;
-  if (has_operatorid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->operatorid().data(), this->operatorid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      6, this->operatorid(), output);
+      4, this->registerid(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -23271,34 +22587,14 @@ void RequestOperationDescriptions::SerializeWithCachedSizes(
         3, this->pdid(), target);
   }
 
-  // optional string chargemanid = 4;
-  if (has_chargemanid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->chargemanid().data(), this->chargemanid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        4, this->chargemanid(), target);
-  }
-
-  // optional string registerid = 5;
+  // optional string registerid = 4;
   if (has_registerid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->registerid().data(), this->registerid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        5, this->registerid(), target);
-  }
-
-  // optional string operatorid = 6;
-  if (has_operatorid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->operatorid().data(), this->operatorid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        6, this->operatorid(), target);
+        4, this->registerid(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -23333,25 +22629,11 @@ int RequestOperationDescriptions::ByteSize() const {
           this->pdid());
     }
 
-    // optional string chargemanid = 4;
-    if (has_chargemanid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->chargemanid());
-    }
-
-    // optional string registerid = 5;
+    // optional string registerid = 4;
     if (has_registerid()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->registerid());
-    }
-
-    // optional string operatorid = 6;
-    if (has_operatorid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->operatorid());
     }
 
   }
@@ -23390,14 +22672,8 @@ void RequestOperationDescriptions::MergeFrom(const RequestOperationDescriptions&
     if (from.has_pdid()) {
       set_pdid(from.pdid());
     }
-    if (from.has_chargemanid()) {
-      set_chargemanid(from.chargemanid());
-    }
     if (from.has_registerid()) {
       set_registerid(from.registerid());
-    }
-    if (from.has_operatorid()) {
-      set_operatorid(from.operatorid());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -23426,9 +22702,7 @@ void RequestOperationDescriptions::Swap(RequestOperationDescriptions* other) {
     std::swap(seqno_, other->seqno_);
     std::swap(odid_, other->odid_);
     std::swap(pdid_, other->pdid_);
-    std::swap(chargemanid_, other->chargemanid_);
     std::swap(registerid_, other->registerid_);
-    std::swap(operatorid_, other->operatorid_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -24254,13 +23528,449 @@ void AckDeleteOperationDescription::Swap(AckDeleteOperationDescription* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int BillInformation::kServicechargeFieldNumber;
+const int BillInformation::kPesticidechargeFieldNumber;
+const int BillInformation::kOtherchargeFieldNumber;
+const int BillInformation::kSumchargeFieldNumber;
+const int BillInformation::kPesticideFieldNumber;
+const int BillInformation::kCropFieldNumber;
+#endif  // !_MSC_VER
+
+BillInformation::BillInformation()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void BillInformation::InitAsDefaultInstance() {
+}
+
+BillInformation::BillInformation(const BillInformation& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void BillInformation::SharedCtor() {
+  _cached_size_ = 0;
+  servicecharge_ = 0;
+  pesticidecharge_ = 0;
+  othercharge_ = 0;
+  sumcharge_ = 0;
+  pesticide_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  crop_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+BillInformation::~BillInformation() {
+  SharedDtor();
+}
+
+void BillInformation::SharedDtor() {
+  if (pesticide_ != &::google::protobuf::internal::kEmptyString) {
+    delete pesticide_;
+  }
+  if (crop_ != &::google::protobuf::internal::kEmptyString) {
+    delete crop_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void BillInformation::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* BillInformation::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return BillInformation_descriptor_;
+}
+
+const BillInformation& BillInformation::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
+  return *default_instance_;
+}
+
+BillInformation* BillInformation::default_instance_ = NULL;
+
+BillInformation* BillInformation::New() const {
+  return new BillInformation;
+}
+
+void BillInformation::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    servicecharge_ = 0;
+    pesticidecharge_ = 0;
+    othercharge_ = 0;
+    sumcharge_ = 0;
+    if (has_pesticide()) {
+      if (pesticide_ != &::google::protobuf::internal::kEmptyString) {
+        pesticide_->clear();
+      }
+    }
+    if (has_crop()) {
+      if (crop_ != &::google::protobuf::internal::kEmptyString) {
+        crop_->clear();
+      }
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool BillInformation::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // optional float servicecharge = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &servicecharge_)));
+          set_has_servicecharge();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(21)) goto parse_pesticidecharge;
+        break;
+      }
+
+      // optional float pesticidecharge = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_pesticidecharge:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &pesticidecharge_)));
+          set_has_pesticidecharge();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(29)) goto parse_othercharge;
+        break;
+      }
+
+      // optional float othercharge = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_othercharge:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &othercharge_)));
+          set_has_othercharge();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(37)) goto parse_sumcharge;
+        break;
+      }
+
+      // required float sumcharge = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_sumcharge:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &sumcharge_)));
+          set_has_sumcharge();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(42)) goto parse_pesticide;
+        break;
+      }
+
+      // required string pesticide = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_pesticide:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_pesticide()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->pesticide().data(), this->pesticide().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(50)) goto parse_crop;
+        break;
+      }
+
+      // required string crop = 6;
+      case 6: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_crop:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_crop()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->crop().data(), this->crop().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void BillInformation::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // optional float servicecharge = 1;
+  if (has_servicecharge()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(1, this->servicecharge(), output);
+  }
+
+  // optional float pesticidecharge = 2;
+  if (has_pesticidecharge()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(2, this->pesticidecharge(), output);
+  }
+
+  // optional float othercharge = 3;
+  if (has_othercharge()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->othercharge(), output);
+  }
+
+  // required float sumcharge = 4;
+  if (has_sumcharge()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(4, this->sumcharge(), output);
+  }
+
+  // required string pesticide = 5;
+  if (has_pesticide()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->pesticide().data(), this->pesticide().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      5, this->pesticide(), output);
+  }
+
+  // required string crop = 6;
+  if (has_crop()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->crop().data(), this->crop().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      6, this->crop(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* BillInformation::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // optional float servicecharge = 1;
+  if (has_servicecharge()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(1, this->servicecharge(), target);
+  }
+
+  // optional float pesticidecharge = 2;
+  if (has_pesticidecharge()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(2, this->pesticidecharge(), target);
+  }
+
+  // optional float othercharge = 3;
+  if (has_othercharge()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->othercharge(), target);
+  }
+
+  // required float sumcharge = 4;
+  if (has_sumcharge()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(4, this->sumcharge(), target);
+  }
+
+  // required string pesticide = 5;
+  if (has_pesticide()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->pesticide().data(), this->pesticide().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        5, this->pesticide(), target);
+  }
+
+  // required string crop = 6;
+  if (has_crop()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->crop().data(), this->crop().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        6, this->crop(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int BillInformation::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional float servicecharge = 1;
+    if (has_servicecharge()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float pesticidecharge = 2;
+    if (has_pesticidecharge()) {
+      total_size += 1 + 4;
+    }
+
+    // optional float othercharge = 3;
+    if (has_othercharge()) {
+      total_size += 1 + 4;
+    }
+
+    // required float sumcharge = 4;
+    if (has_sumcharge()) {
+      total_size += 1 + 4;
+    }
+
+    // required string pesticide = 5;
+    if (has_pesticide()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->pesticide());
+    }
+
+    // required string crop = 6;
+    if (has_crop()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->crop());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void BillInformation::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const BillInformation* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const BillInformation*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void BillInformation::MergeFrom(const BillInformation& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_servicecharge()) {
+      set_servicecharge(from.servicecharge());
+    }
+    if (from.has_pesticidecharge()) {
+      set_pesticidecharge(from.pesticidecharge());
+    }
+    if (from.has_othercharge()) {
+      set_othercharge(from.othercharge());
+    }
+    if (from.has_sumcharge()) {
+      set_sumcharge(from.sumcharge());
+    }
+    if (from.has_pesticide()) {
+      set_pesticide(from.pesticide());
+    }
+    if (from.has_crop()) {
+      set_crop(from.crop());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void BillInformation::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void BillInformation::CopyFrom(const BillInformation& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool BillInformation::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000038) != 0x00000038) return false;
+
+  return true;
+}
+
+void BillInformation::Swap(BillInformation* other) {
+  if (other != this) {
+    std::swap(servicecharge_, other->servicecharge_);
+    std::swap(pesticidecharge_, other->pesticidecharge_);
+    std::swap(othercharge_, other->othercharge_);
+    std::swap(sumcharge_, other->sumcharge_);
+    std::swap(pesticide_, other->pesticide_);
+    std::swap(crop_, other->crop_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata BillInformation::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = BillInformation_descriptor_;
+  metadata.reflection = BillInformation_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
 const int OperationRoute::kGsidFieldNumber;
 const int OperationRoute::kUavidFieldNumber;
+const int OperationRoute::kRpidFieldNumber;
 const int OperationRoute::kCreatetimeFieldNumber;
 const int OperationRoute::kMaxvoyageFieldNumber;
 const int OperationRoute::kMissionsFieldNumber;
 const int OperationRoute::kBoundarysFieldNumber;
-const int OperationRoute::kTimestampFieldNumber;
+const int OperationRoute::kBiFieldNumber;
 #endif  // !_MSC_VER
 
 OperationRoute::OperationRoute()
@@ -24269,6 +23979,7 @@ OperationRoute::OperationRoute()
 }
 
 void OperationRoute::InitAsDefaultInstance() {
+  bi_ = const_cast< ::das::proto::BillInformation*>(&::das::proto::BillInformation::default_instance());
 }
 
 OperationRoute::OperationRoute(const OperationRoute& from)
@@ -24281,9 +23992,10 @@ void OperationRoute::SharedCtor() {
   _cached_size_ = 0;
   gsid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  rpid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   createtime_ = GOOGLE_ULONGLONG(0);
   maxvoyage_ = 0;
-  timestamp_ = GOOGLE_ULONGLONG(0);
+  bi_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -24298,7 +24010,11 @@ void OperationRoute::SharedDtor() {
   if (uavid_ != &::google::protobuf::internal::kEmptyString) {
     delete uavid_;
   }
+  if (rpid_ != &::google::protobuf::internal::kEmptyString) {
+    delete rpid_;
+  }
   if (this != default_instance_) {
+    delete bi_;
   }
 }
 
@@ -24335,9 +24051,16 @@ void OperationRoute::Clear() {
         uavid_->clear();
       }
     }
+    if (has_rpid()) {
+      if (rpid_ != &::google::protobuf::internal::kEmptyString) {
+        rpid_->clear();
+      }
+    }
     createtime_ = GOOGLE_ULONGLONG(0);
     maxvoyage_ = 0;
-    timestamp_ = GOOGLE_ULONGLONG(0);
+    if (has_bi()) {
+      if (bi_ != NULL) bi_->::das::proto::BillInformation::Clear();
+    }
   }
   missions_.Clear();
   boundarys_.Clear();
@@ -24363,74 +24086,12 @@ bool OperationRoute::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(16)) goto parse_createtime;
+        if (input->ExpectTag(18)) goto parse_uavid;
         break;
       }
 
-      // required uint64 createtime = 2;
+      // required string uavid = 2;
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_createtime:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
-                 input, &createtime_)));
-          set_has_createtime();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(29)) goto parse_maxvoyage;
-        break;
-      }
-
-      // required float maxvoyage = 3;
-      case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
-         parse_maxvoyage:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
-                 input, &maxvoyage_)));
-          set_has_maxvoyage();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(34)) goto parse_missions;
-        break;
-      }
-
-      // repeated bytes missions = 4;
-      case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_missions:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
-                input, this->add_missions()));
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(34)) goto parse_missions;
-        if (input->ExpectTag(42)) goto parse_boundarys;
-        break;
-      }
-
-      // repeated bytes boundarys = 5;
-      case 5: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_boundarys:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
-                input, this->add_boundarys()));
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(42)) goto parse_boundarys;
-        if (input->ExpectTag(50)) goto parse_uavid;
-        break;
-      }
-
-      // required string uavid = 6;
-      case 6: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_uavid:
@@ -24442,19 +24103,96 @@ bool OperationRoute::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(56)) goto parse_timestamp;
+        if (input->ExpectTag(26)) goto parse_rpid;
         break;
       }
 
-      // required uint64 timestamp = 7;
-      case 7: {
+      // required string rpid = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_rpid:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_rpid()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->rpid().data(), this->rpid().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(32)) goto parse_createtime;
+        break;
+      }
+
+      // required uint64 createtime = 4;
+      case 4: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_timestamp:
+         parse_createtime:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
-                 input, &timestamp_)));
-          set_has_timestamp();
+                 input, &createtime_)));
+          set_has_createtime();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(45)) goto parse_maxvoyage;
+        break;
+      }
+
+      // required float maxvoyage = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_maxvoyage:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &maxvoyage_)));
+          set_has_maxvoyage();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(50)) goto parse_missions;
+        break;
+      }
+
+      // repeated bytes missions = 6;
+      case 6: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_missions:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->add_missions()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(50)) goto parse_missions;
+        if (input->ExpectTag(58)) goto parse_boundarys;
+        break;
+      }
+
+      // repeated bytes boundarys = 7;
+      case 7: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_boundarys:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->add_boundarys()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(58)) goto parse_boundarys;
+        if (input->ExpectTag(66)) goto parse_bi;
+        break;
+      }
+
+      // optional .das.proto.BillInformation bi = 8;
+      case 8: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_bi:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_bi()));
         } else {
           goto handle_uninterpreted;
         }
@@ -24489,40 +24227,50 @@ void OperationRoute::SerializeWithCachedSizes(
       1, this->gsid(), output);
   }
 
-  // required uint64 createtime = 2;
-  if (has_createtime()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(2, this->createtime(), output);
-  }
-
-  // required float maxvoyage = 3;
-  if (has_maxvoyage()) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(3, this->maxvoyage(), output);
-  }
-
-  // repeated bytes missions = 4;
-  for (int i = 0; i < this->missions_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteBytes(
-      4, this->missions(i), output);
-  }
-
-  // repeated bytes boundarys = 5;
-  for (int i = 0; i < this->boundarys_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteBytes(
-      5, this->boundarys(i), output);
-  }
-
-  // required string uavid = 6;
+  // required string uavid = 2;
   if (has_uavid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->uavid().data(), this->uavid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      6, this->uavid(), output);
+      2, this->uavid(), output);
   }
 
-  // required uint64 timestamp = 7;
-  if (has_timestamp()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(7, this->timestamp(), output);
+  // required string rpid = 3;
+  if (has_rpid()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->rpid().data(), this->rpid().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      3, this->rpid(), output);
+  }
+
+  // required uint64 createtime = 4;
+  if (has_createtime()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(4, this->createtime(), output);
+  }
+
+  // required float maxvoyage = 5;
+  if (has_maxvoyage()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(5, this->maxvoyage(), output);
+  }
+
+  // repeated bytes missions = 6;
+  for (int i = 0; i < this->missions_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytes(
+      6, this->missions(i), output);
+  }
+
+  // repeated bytes boundarys = 7;
+  for (int i = 0; i < this->boundarys_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytes(
+      7, this->boundarys(i), output);
+  }
+
+  // optional .das.proto.BillInformation bi = 8;
+  if (has_bi()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      8, this->bi(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -24543,41 +24291,53 @@ void OperationRoute::SerializeWithCachedSizes(
         1, this->gsid(), target);
   }
 
-  // required uint64 createtime = 2;
-  if (has_createtime()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(2, this->createtime(), target);
-  }
-
-  // required float maxvoyage = 3;
-  if (has_maxvoyage()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(3, this->maxvoyage(), target);
-  }
-
-  // repeated bytes missions = 4;
-  for (int i = 0; i < this->missions_size(); i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteBytesToArray(4, this->missions(i), target);
-  }
-
-  // repeated bytes boundarys = 5;
-  for (int i = 0; i < this->boundarys_size(); i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteBytesToArray(5, this->boundarys(i), target);
-  }
-
-  // required string uavid = 6;
+  // required string uavid = 2;
   if (has_uavid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->uavid().data(), this->uavid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        6, this->uavid(), target);
+        2, this->uavid(), target);
   }
 
-  // required uint64 timestamp = 7;
-  if (has_timestamp()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(7, this->timestamp(), target);
+  // required string rpid = 3;
+  if (has_rpid()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->rpid().data(), this->rpid().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->rpid(), target);
+  }
+
+  // required uint64 createtime = 4;
+  if (has_createtime()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(4, this->createtime(), target);
+  }
+
+  // required float maxvoyage = 5;
+  if (has_maxvoyage()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(5, this->maxvoyage(), target);
+  }
+
+  // repeated bytes missions = 6;
+  for (int i = 0; i < this->missions_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteBytesToArray(6, this->missions(i), target);
+  }
+
+  // repeated bytes boundarys = 7;
+  for (int i = 0; i < this->boundarys_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteBytesToArray(7, this->boundarys(i), target);
+  }
+
+  // optional .das.proto.BillInformation bi = 8;
+  if (has_bi()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        8, this->bi(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -24598,41 +24358,48 @@ int OperationRoute::ByteSize() const {
           this->gsid());
     }
 
-    // required string uavid = 6;
+    // required string uavid = 2;
     if (has_uavid()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->uavid());
     }
 
-    // required uint64 createtime = 2;
+    // required string rpid = 3;
+    if (has_rpid()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->rpid());
+    }
+
+    // required uint64 createtime = 4;
     if (has_createtime()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt64Size(
           this->createtime());
     }
 
-    // required float maxvoyage = 3;
+    // required float maxvoyage = 5;
     if (has_maxvoyage()) {
       total_size += 1 + 4;
     }
 
-    // required uint64 timestamp = 7;
-    if (has_timestamp()) {
+    // optional .das.proto.BillInformation bi = 8;
+    if (has_bi()) {
       total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt64Size(
-          this->timestamp());
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          this->bi());
     }
 
   }
-  // repeated bytes missions = 4;
+  // repeated bytes missions = 6;
   total_size += 1 * this->missions_size();
   for (int i = 0; i < this->missions_size(); i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::BytesSize(
       this->missions(i));
   }
 
-  // repeated bytes boundarys = 5;
+  // repeated bytes boundarys = 7;
   total_size += 1 * this->boundarys_size();
   for (int i = 0; i < this->boundarys_size(); i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::BytesSize(
@@ -24673,14 +24440,17 @@ void OperationRoute::MergeFrom(const OperationRoute& from) {
     if (from.has_uavid()) {
       set_uavid(from.uavid());
     }
+    if (from.has_rpid()) {
+      set_rpid(from.rpid());
+    }
     if (from.has_createtime()) {
       set_createtime(from.createtime());
     }
     if (from.has_maxvoyage()) {
       set_maxvoyage(from.maxvoyage());
     }
-    if (from.has_timestamp()) {
-      set_timestamp(from.timestamp());
+    if (from.has_bi()) {
+      mutable_bi()->::das::proto::BillInformation::MergeFrom(from.bi());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -24699,8 +24469,11 @@ void OperationRoute::CopyFrom(const OperationRoute& from) {
 }
 
 bool OperationRoute::IsInitialized() const {
-  if ((_has_bits_[0] & 0x0000004f) != 0x0000004f) return false;
+  if ((_has_bits_[0] & 0x0000001f) != 0x0000001f) return false;
 
+  if (has_bi()) {
+    if (!this->bi().IsInitialized()) return false;
+  }
   return true;
 }
 
@@ -24708,11 +24481,12 @@ void OperationRoute::Swap(OperationRoute* other) {
   if (other != this) {
     std::swap(gsid_, other->gsid_);
     std::swap(uavid_, other->uavid_);
+    std::swap(rpid_, other->rpid_);
     std::swap(createtime_, other->createtime_);
     std::swap(maxvoyage_, other->maxvoyage_);
     missions_.Swap(&other->missions_);
     boundarys_.Swap(&other->boundarys_);
-    std::swap(timestamp_, other->timestamp_);
+    std::swap(bi_, other->bi_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
