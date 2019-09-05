@@ -127,7 +127,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>./src;C:\Program Files (x86)\MySQL\MySQL Connector C 6.1\include;../tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;$(MYSQL)\include;../tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>obj\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -167,7 +167,7 @@
       <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;SHARE_LIBRARY;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <QtMoc>
-      <IncludePath>./src;C:\Program Files (x86)\MySQL\MySQL Connector C 6.1\include;../tinyxml;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>./src;$(MYSQL)\include;../tinyxml;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>_WIN32;SHARE_LIBRARY;%(PreprocessorDefinitions)</Define>
     </QtMoc>
   </ItemDefinitionGroup>
