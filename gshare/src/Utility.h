@@ -56,7 +56,7 @@ public:
     SHARED_DECL static bool IsBigEndian(void);
     SHARED_DECL static void toBigendian(int s, void *buff);
     SHARED_DECL static int fromBigendian(const void *buff);
-    SHARED_DECL static int64_t nsTimeTick();
+    SHARED_DECL static int64_t usTimeTick();
     SHARED_DECL static int64_t msTimeTick();
     SHARED_DECL static long secTimeCount();
 

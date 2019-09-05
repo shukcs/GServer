@@ -19,20 +19,18 @@ public:
     typedef std::list<std::string> StringList;
 public:
     ~VGDBManager();
-
-    SHARED_SQL std::string Load(const TiXmlDocument &doc, StringList &tbs);
-    SHARED_SQL VGTable *GetTableByName(const std::string &name)const;
-    SHARED_SQL ExecutItem *GetSqlByName(const std::string &name)const;
-    SHARED_SQL VGTrigger *GetTriggerByName(const std::string &name)const;
-    SHARED_SQL const char *GetMysqlHost(const std::string &db ="")const;
-    SHARED_SQL int GetMysqlPort(const std::string &db="")const;
-    SHARED_SQL const char *GetMysqlUser(const std::string &db="")const;
-    SHARED_SQL const char *GetMysqlPswd(const std::string &db = "")const;
-    SHARED_SQL const char *GetMysqlCharSet(const std::string &db = "")const;
-    SHARED_SQL StringList GetDatabases()const;
-    SHARED_SQL StringList GetTriggers()const;
 public:
-    static SHARED_SQL VGDBManager &Instance();
+    static SHARED_SQL std::string Load(const TiXmlDocument &doc, StringList &tbs);
+    static SHARED_SQL VGTable *GetTableByName(const std::string &name);
+    static SHARED_SQL ExecutItem *GetSqlByName(const std::string &name);
+    static SHARED_SQL VGTrigger *GetTriggerByName(const std::string &name);
+    static SHARED_SQL const char *GetMysqlHost(const std::string &db = "");
+    static SHARED_SQL int GetMysqlPort(const std::string &db = "");
+    static SHARED_SQL const char *GetMysqlUser(const std::string &db = "");
+    static SHARED_SQL const char *GetMysqlPswd(const std::string &db = "");
+    static SHARED_SQL const char *GetMysqlCharSet(const std::string &db = "");
+    static SHARED_SQL StringList GetDatabases();
+    static SHARED_SQL StringList GetTriggers();
     static SHARED_SQL long str2int(const std::string &str, unsigned radix=10, bool *suc=NULL);
     static SHARED_SQL StringList SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty = true);
     template<typename T, typename Contianer = std::list<T> >
@@ -53,6 +51,8 @@ private:
     void parseSqls(const TiXmlNode *node);
     void parseTriggers(const TiXmlNode *node);
     MySqlStruct *_getDbStruct(const std::string &)const;
+private:
+    static VGDBManager &Instance();
 private:
     std::list<VGTable*>     m_tables;
     std::list<ExecutItem*>  m_sqls;

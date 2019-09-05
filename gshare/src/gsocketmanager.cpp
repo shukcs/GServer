@@ -92,15 +92,18 @@ GSocketManager::~GSocketManager()
     Utility::Sleep(100);
 }
 
+ISocketManager *GSocketManager::CreateManager(int nThread, int maxSock)
+{
+    return new GSocketManager(nThread, maxSock);
+}
+
 bool GSocketManager::AddSocket(ISocket *s)
 {
     if (int(m_sockets.size()+1) >= m_openMax)
         return false;
 
     s->SetMutex(m_mtxSock);
-    m_mtx->Lock();
     m_socketsAdd.push_back(s);
-    m_mtx->Unlock();
     s->SetPrcsManager(this);
     return true;
 }
@@ -128,7 +131,7 @@ bool GSocketManager::Poll(unsigned ms)
 
 void GSocketManager::AddProcessThread()
 {
-    GSocketManager *m = new GSocketManager();
+    GSocketManager *m = new GSocketManager(0, m_openMax);
     ThreadMgr *t = new ThreadMgr(m);
     if (m &&t)
     {
@@ -140,7 +143,7 @@ void GSocketManager::AddProcessThread()
 
 bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
 {
-    m_mtx->Lock();
+    m_mtx->Lock();      //应对不同线程
     m_socketsPrcs.push_back(SocketPrcs(s,true));
     m_mtx->Unlock();
     return true;
@@ -164,13 +167,10 @@ void GSocketManager::InitThread(int nThread)
 
 void GSocketManager::PrcsAddSockets()
 {
-    if (m_socketsAdd.size() <= 0)
-        return;
-
-    int handle = -1;
-    for (ISocket *s : m_socketsAdd)
+    while (m_socketsAdd.size() > 0)
     {
-        handle = s->GetHandle();
+        ISocket *s = m_socketsAdd.front();
+        int handle = s->GetHandle();
         switch (s->GetSocketStat())
         {
         case ISocket::Binding:
@@ -187,25 +187,17 @@ void GSocketManager::PrcsAddSockets()
             _addSocketHandle(handle, s->IsListenSocket());
             m_sockets[handle] = s;
         }
+        m_socketsAdd.pop_front();
     }
-    m_mtx->Lock();
-    m_socketsAdd.clear();
-    m_mtx->Unlock();
 }
 
 void GSocketManager::PrcsDestroySockets()
 {
-    if (m_socketsRemove.size() <= 0)
-        return;
-
-    for (ISocket *s : m_socketsRemove)
+    while (m_socketsRemove.size() > 0)
     {
-        delete s;
+        delete m_socketsRemove.front();
+        m_socketsRemove.pop_front();
     }
-
-    m_mtx->Lock();
-    m_socketsRemove.clear();
-    m_mtx->Unlock();
 }
 
 void GSocketManager::PrcsSockets()
@@ -213,7 +205,7 @@ void GSocketManager::PrcsSockets()
     if (m_socketsPrcs.size() <= 0)
         return;
 
-    list<SocketPrcs>::iterator itr = m_socketsPrcs.begin();
+    SocketPrcsQue::iterator itr = m_socketsPrcs.begin();
     while (itr != m_socketsPrcs.end())
     {
         ISocket *s = itr->first;
@@ -228,9 +220,7 @@ void GSocketManager::PrcsSockets()
             }
             if (!s->IsListenSocket() && ISocket::Connected == st)
             {
-                int64_t tm = Utility::nsTimeTick();
                 _send(s);
-                printf("_send() use us %d\n", int(Utility::nsTimeTick() - tm));
                 if (s->GetSendLength() == 0)
                     itr->second = false;
             }
@@ -239,16 +229,14 @@ void GSocketManager::PrcsSockets()
         if (!itr->second)
         {
             list<SocketPrcs>::iterator itrTmp = itr++;
-            m_mtx->Lock();
             m_socketsPrcs.erase(itrTmp);
-            m_mtx->Unlock();
             continue;
         }
         ++itr;
     }
 }
 
-ISocket * GSocketManager::GetSockByHandle(int handle) const
+ISocket *GSocketManager::GetSockByHandle(int handle) const
 {
     map<int, ISocket*>::const_iterator itr = m_sockets.find(handle);
     if (itr != m_sockets.end())
@@ -286,22 +274,19 @@ void GSocketManager::SokectPoll(unsigned ms)
     if (m_maxsock <= 0)
         return;
     fd_set rfds = m_ep_fd;
-    fd_set efds = m_ep_fd;
     struct timeval tv;
-    tv.tv_sec = ms>1000?ms/1000:0;
-    tv.tv_usec = (ms%1000)*1000;
-    int n = select((int)(m_maxsock + 1), &rfds, NULL, &efds, &tv);
-    if (n > 0)
+    tv.tv_sec = ms / 1000;
+    tv.tv_usec = (ms % 1000) * 1000;
+    int n = select((int)(m_maxsock + 1), &rfds, NULL, NULL, &tv);
+    for (int i=0; i<n; ++i)
     {
-        for (const pair<int, ISocket*> &itr : m_sockets)
+        ISocket *sock = GetSockByHandle(rfds.fd_array[i]);
+        if (sock)
         {
-            if (FD_ISSET(itr.first, &rfds))
-            {
-                if (itr.second->IsListenSocket())
-                    _accept(itr.first);
-                else if(!_recv(itr.second))
-                    lsRm.push_back(itr.second);
-            }
+            if (sock->IsListenSocket())
+                _accept(rfds.fd_array[i]);
+            else if (!_recv(sock))
+                lsRm.push_back(sock);
         }
     }
 #else
@@ -363,12 +348,17 @@ void GSocketManager::InitEpoll()
     static WSAInitializer s;
 #if defined _WIN32 || defined _WIN64
     FD_ZERO(&m_ep_fd);
-    if (m_openMax > 64)
-        m_openMax = 64;
+    if (m_openMax > FD_SETSIZE)
+        m_openMax = FD_SETSIZE;
     m_maxsock = 0;
 #else
     m_ep_fd = epoll_create(m_openMax);       /* 创建epoll模型,ep_fd指向红黑树根节点 */
 #endif
+}
+
+void GSocketManager::Release()
+{
+    delete this;
 }
 
 void GSocketManager::Log(int err, const std::string &obj, int evT, const char *fmt, ...)

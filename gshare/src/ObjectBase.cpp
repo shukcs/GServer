@@ -16,12 +16,10 @@ using namespace SOCKETS_NAMESPACE;
 class ObjectMetuxs {
 public:
     ObjectMetuxs() :
-        m_mtx(new Mutex), m_mtxMsg(new Mutex)
-        , m_mtxSend(new Mutex) {};
+        m_mtx(new Mutex), m_mtxMsg(new Mutex){};
 public:
     IMutex                  *m_mtx;
     IMutex                  *m_mtxMsg;
-    IMutex                  *m_mtxSend;
 };
 //////////////////////////////////////////////////////////////////
 //BussinessThread
@@ -63,8 +61,7 @@ private:
 //////////////////////////////////////////////////////////////////
 IObject::IObject(ISocket *sock, const string &id)
 : m_sock(sock), m_id(id), m_bRelease(false)
-, m_mtx(NULL), m_mtxMsg(NULL)
-, m_mtxSend(NULL), m_idThread(-1)
+, m_mtx(NULL), m_mtxMsg(NULL), m_idThread(-1)
 {
     SetBuffSize(1024 * 4);
 }
@@ -144,25 +141,16 @@ bool IObject::PrcsBussiness()
     while (m_lsMsg.size())
     {
         IMessage *msg = m_lsMsg.front();
-        m_mtxMsg->Lock();
         m_lsMsg.pop_front();
-        m_mtxMsg->Unlock();
         if (msg->IsValid())
-        {
             ProcessMassage(*msg);
-            msg->Release();
-        }
+        msg->Release();
     }
 
-    if (m_lsMsgRelease.size() > 0)
+    while (m_lsMsgRelease.size() > 0)
     {
-        for (IMessage *msg : m_lsMsgRelease)
-        {
-            delete msg;
-        }
-        m_mtxMsg->Lock();
-        m_lsMsgRelease.clear();
-        m_mtxMsg->Unlock();
+        delete m_lsMsgRelease.front();
+        m_lsMsgRelease.pop_front();
     }
     return ret;
 }
@@ -287,30 +275,23 @@ bool IObjectManager::Receive(ISocket *s, const BaseBuff &buff)
 
 void IObjectManager::RemoveRcvMsg(IMessage *msg)
 {
-    m_mtx->Lock();
     m_lsMsg.remove(msg);
-    m_mtx->Unlock();
 }
 
 void IObjectManager::AddRelease(IMessage *msg)
 {
-    m_mtx->Lock();
+    m_mtx->Lock(); //这个来自不同线程，需要加锁
     m_lsMsgRelease.push_back(msg);
     m_mtx->Unlock();
 }
 
 void IObjectManager::PrcsReleaseMsg()
 {
-    if (m_lsMsgRelease.size() < 1)
-        return;
-
-    m_mtx->Lock();
-    for (IMessage *itr : m_lsMsgRelease)
+    while (m_lsMsgRelease.size() > 0)
     {
-        delete itr;
+        delete *m_lsMsgRelease.begin();
+        m_lsMsgRelease.pop_front();
     }
-    m_lsMsgRelease.clear();
-    m_mtx->Unlock();
 }
 
 bool IObjectManager::PrcsRemainMsg(const IMessage &)
@@ -419,7 +400,6 @@ bool IObjectManager::AddObject(IObject *obj)
     {
         obj->m_mtx = itr->second->m_mtx;
         obj->m_mtxMsg = itr->second->m_mtxMsg;
-        obj->m_mtxSend = itr->second->m_mtxSend;
     }
 
     m_mtx->Lock();
@@ -495,6 +475,7 @@ int IObjectManager::GetPropertyThread() const
 
 void IObjectManager::AddMessage(IMessage *msg)
 {
-    Lock l(m_mtx);
+    m_mtx->Lock();
     m_lsMsg.push_back(msg);
+    m_mtx->Unlock();
 }

@@ -92,9 +92,8 @@ protected:
     BaseBuff                m_buff;
     IMutex                  *m_mtx;
     IMutex                  *m_mtxMsg;
-    IMutex                  *m_mtxSend;
-    std::list<IMessage*>    m_lsMsg;
-    std::list<IMessage*>    m_lsMsgRelease;
+    std::list<IMessage*>    m_lsMsg;            //接收消息队列
+    std::list<IMessage*>    m_lsMsgRelease;     //消息释放队列
     int                     m_idThread;
 };
 
@@ -134,8 +133,8 @@ protected:
 private:
     friend class ObjectManagers;
     IMutex                          *m_mtx;
-    std::list<IMessage*>            m_lsMsg;
-    std::list<IMessage*>            m_lsMsgRelease;
+    std::list<IMessage*>            m_lsMsg;            //接收消息队列
+    std::list<IMessage*>            m_lsMsgRelease;     //消息释放队列
     std::list<BussinessThread*>     m_lsThread;
     ObjectsMap                      m_mapThreadObject;
     std::map<int, ObjectMetuxs*>    m_threadMutexts;

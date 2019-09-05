@@ -15,26 +15,29 @@ class Thread;
 class ILog;
 class GSocketManager : public ISocketManager {
     typedef std::pair<ISocket*, bool> SocketPrcs;
+    typedef std::list<ISocket *> SocketQue;
+    typedef std::list<SocketPrcs> SocketPrcsQue;
 public:
+    SHARED_DECL static ISocketManager *CreateManager(int nThread = 0, int maxSock = 100000);
+protected:
 /***********************************************************************
 GSocketManager是个线程池，管理secket整个生存周期
 使用epoll模型GSocketManager(nThread, maxSock)
 nThread:创建子线程个数,0将不创建新线程，一般当客户端使用
 maxSock:支持最大连接数
 ************************************************************************/
-    SHARED_DECL GSocketManager(int nThread=0, int maxSock=100000);
-    SHARED_DECL ~GSocketManager();
+    GSocketManager(int nThread, int maxSock);
+    ~GSocketManager();
 
-    SHARED_DECL bool AddSocket(ISocket *);
-    SHARED_DECL void ReleaseSocket(ISocket *);
-    SHARED_DECL bool IsMainManager()const;
-    SHARED_DECL bool Poll(unsigned ms);
-    SHARED_DECL void AddProcessThread();
-    SHARED_DECL bool AddWaitPrcsSocket(ISocket *);
-    SHARED_DECL void SetLog(ILog *log);
-    SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
-    SHARED_DECL bool IsRun()const;
-protected:
+    bool AddSocket(ISocket *);
+    void ReleaseSocket(ISocket *);
+    bool IsMainManager()const;
+    bool Poll(unsigned ms);
+    void AddProcessThread();
+    bool AddWaitPrcsSocket(ISocket *);
+    void SetLog(ILog *log);
+    void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
+    bool IsRun()const;
     void Exit();
     void InitThread(int nThread);
     void PrcsAddSockets();
@@ -47,6 +50,7 @@ protected:
     bool SetNonblocking(ISocket *sock);
     bool IsOpenEpoll()const;
     void InitEpoll();
+    void Release();
 private:
     int _bind(ISocket *sock);
     int _connect(ISocket *sock);
@@ -62,9 +66,9 @@ private:
     void setISocketInvalid(ISocket *s);
 private:
     std::map<int, ISocket*>     m_sockets;
-    std::list<SocketPrcs>       m_socketsPrcs;
-    std::list<ISocket*>         m_socketsRemove;
-    std::list<ISocket*>         m_socketsAdd;
+    SocketPrcsQue               m_socketsPrcs;      //等待处理队列
+    SocketQue                   m_socketsRemove;    //等待销毁队列
+    SocketQue                   m_socketsAdd;       //等待监控队列
     std::list<GSocketManager*>  m_othManagers;
     IMutex                      *m_mtx;
     IMutex                      *m_mtxSock;

@@ -50,7 +50,7 @@ public:
         if (!tmp)
             return NULL;
 
-        if (VGTable *tb = VGDBManager::Instance().GetTableByName(tmp))
+        if (VGTable *tb = VGDBManager::GetTableByName(tmp))
         {
             if (!tb->FindFieldByName(foreign))
                 return NULL;
@@ -279,7 +279,7 @@ void VGTable::AddForeign(VGForeignKey *f)
 {
     if (f)
     {
-        if (VGTable *tb = VGDBManager::Instance().GetTableByName(f->GetGetForeignTable()))
+        if (VGTable *tb = VGDBManager::GetTableByName(f->GetGetForeignTable()))
             tb->m_bForeignRef = true;
 
         m_foreigns.push_back(f);

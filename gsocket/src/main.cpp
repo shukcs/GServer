@@ -8,13 +8,13 @@ int main()
 {
     GLibrary l2("uavandqgc", GLibrary::CurrentPath());
     GSocket s(NULL);
-    GSocketManager m(1);
+    ISocketManager *m = GSocketManager::CreateManager(1);
     s.Bind(1003, "");
-    m.AddSocket(&s);
+    m->AddSocket(&s);
 
-    while (m.IsRun())
+    while (m->IsRun())
     {
-        m.Poll(50);
+        m->Poll(50);
     }
 
     return 0;

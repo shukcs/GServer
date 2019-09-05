@@ -117,12 +117,12 @@
 			<item name="LandInfo.id" param="PlanInfo.landId" type="Condition" />
 		</SQL>
 		<SQL name="InsertPlan" table="PlanInfo" type="Insert" >
-			<item name="id" ref="PlanInfo" type="Write" />
-			<item name="landId" ref="PlanInfo" type="Write" />
+			<item name="landId" type="Write" />
+			<item name="planuser" type="Write" />
+			<item name="notes" type="Write" />
 			<item name="planTime" ref="PlanInfo" type="Write" />
-			<item name="planuser" ref="PlanInfo" type="Write" />
 			<item name="planParam" ref="PlanInfo" type="Write" />
-			<item name="notes" ref="PlanInfo" type="Write" />
+			<item type="AutoIncrement" />
 		</SQL>
 		<SQL name="UpdatePlan" table="PlanInfo" type="Update" >
 			<item name="landId" ref="PlanInfo" type="Write" />
@@ -134,6 +134,17 @@
 		</SQL>
 		<SQL name="UpdatePlan" table="PlanInfo" type="Delete" >
 			<item name="id" ref="PlanInfo" type="Condition" />
+		</SQL>
+		<SQL name="queryPlan" table="PlanInfo" type="Select" >
+			<item name="id" ref="PlanInfo" type="Read" />
+			<item name="landId" ref="PlanInfo" type="Read" />
+			<item name="planTime" ref="PlanInfo" type="Read" />
+			<item name="planuser" ref="PlanInfo" type="Read" />
+			<item name="planParam" ref="PlanInfo" type="Read" />
+			<item name="notes" ref="PlanInfo" type="Read" />
+			<item name="id" type="Condition" />
+			<item name="landId" type="Condition" />
+			<item name="planuser" type="Condition" />
 		</SQL>
 	</SQLs>
 	<!--Triggers>

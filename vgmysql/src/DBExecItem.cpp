@@ -156,7 +156,7 @@ void FiledValueItem::parse(const TiXmlElement *e, ExecutItem *sql)
     const char *tmp = e->Attribute("ref");
     if (tmp)
     {
-        VGTable *tb = VGDBManager::Instance().GetTableByName(tmp);
+        VGTable *tb = VGDBManager::GetTableByName(tmp);
         if (tb)
         {
             if (VGTableField *fd = tb->FindFieldByName(name))
@@ -264,7 +264,7 @@ void ExecutItem::AddExecutTable(const std::string &t)
     }
     if (!m_bHasForeignRefTable)
     {
-        VGTable *tb = VGDBManager::Instance().GetTableByName(t);
+        VGTable *tb = VGDBManager::GetTableByName(t);
         if (tb && tb->IsForeignRef())
             m_bHasForeignRefTable = true;
     }
@@ -496,7 +496,7 @@ void ExecutItem::_parseItems(const TiXmlElement *e)
     {
         for (const string &itr : m_tables)
         {
-            if (VGTable *tb = VGDBManager::Instance().GetTableByName(itr.c_str()))
+            if (VGTable *tb = VGDBManager::GetTableByName(itr.c_str()))
             {
                 for (VGTableField *f : tb->Fields())
                 {

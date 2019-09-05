@@ -128,28 +128,30 @@ list<string> VGDBManager::SplitString(const std::string &str, const std::string 
 
 string VGDBManager::Load(const TiXmlDocument &doc, StringList &tbs)
 {
+    VGDBManager &mgr = Instance();
     if (const TiXmlElement *rootElement = doc.RootElement())
     {
         const TiXmlNode *node = rootElement->FirstChild("Database");
         if (!node)
             return string();
 
-        tbs = parseTables(rootElement->FirstChild("Tables"));
-        parseSqls(rootElement->FirstChild("SQLs"));
-        parseTriggers(rootElement->FirstChild("Triggers"));
+        tbs = mgr.parseTables(rootElement->FirstChild("Tables"));
+        mgr.parseSqls(rootElement->FirstChild("SQLs"));
+        mgr.parseTriggers(rootElement->FirstChild("Triggers"));
 
-        return parseDatabase(node->ToElement());
+        return mgr.parseDatabase(node->ToElement());
     }
 
     return string();
 }
 
-VGTable *VGDBManager::GetTableByName(const std::string &name) const
+VGTable *VGDBManager::GetTableByName(const std::string &name)
 {
     if (name.length() < 1)
         return NULL;
 
-    for (VGTable *itr : m_tables)
+    VGDBManager &mgr = Instance();
+    for (VGTable *itr : mgr.m_tables)
     {
         if (itr->GetName() == name)
             return itr;
@@ -157,12 +159,13 @@ VGTable *VGDBManager::GetTableByName(const std::string &name) const
     return NULL;
 }
 
-ExecutItem *VGDBManager::GetSqlByName(const std::string &name) const
+ExecutItem *VGDBManager::GetSqlByName(const std::string &name)
 {
     if (name.empty())
         return NULL;
 
-    for (ExecutItem *itr : m_sqls)
+    VGDBManager &mgr = Instance();
+    for (ExecutItem *itr : mgr.m_sqls)
     {
         if (itr->GetName() == name)
             return itr;
@@ -170,12 +173,13 @@ ExecutItem *VGDBManager::GetSqlByName(const std::string &name) const
     return NULL;
 }
 
-VGTrigger *VGDBManager::GetTriggerByName(const std::string &name) const
+VGTrigger *VGDBManager::GetTriggerByName(const std::string &name)
 {
     if (name.empty())
         return NULL;
 
-    for (VGTrigger *itr : m_triggers)
+    VGDBManager &mgr = Instance();
+    for (VGTrigger *itr : mgr.m_triggers)
     {
         if (itr->GetName() == name)
             return itr;
@@ -183,50 +187,50 @@ VGTrigger *VGDBManager::GetTriggerByName(const std::string &name) const
     return NULL;
 }
 
-const char *VGDBManager::GetMysqlHost(const std::string &db) const
+const char *VGDBManager::GetMysqlHost(const std::string &db)
 {
-    if (MySqlStruct *dbs = _getDbStruct(db))
+    if (MySqlStruct *dbs = Instance()._getDbStruct(db))
         return dbs->m_host.c_str();
 
     return sDefualtDb[0];
 }
 
-int VGDBManager::GetMysqlPort(const std::string &db/*=""*/) const
+int VGDBManager::GetMysqlPort(const std::string &db/*=""*/)
 {
-    if (MySqlStruct *dbs = _getDbStruct(db))
+    if (MySqlStruct *dbs = Instance()._getDbStruct(db))
         return dbs->m_port;
 
     return 3306;
 }
 
-const char *VGDBManager::GetMysqlUser(const std::string &db/*=""*/) const
+const char *VGDBManager::GetMysqlUser(const std::string &db/*=""*/)
 {
-    if (MySqlStruct *dbs = _getDbStruct(db))
+    if (MySqlStruct *dbs = Instance()._getDbStruct(db))
         return dbs->m_user.c_str();
 
     return sDefualtDb[2];
 }
 
-const char *VGDBManager::GetMysqlPswd(const std::string &db/*=""*/) const
+const char *VGDBManager::GetMysqlPswd(const std::string &db/*=""*/)
 {
-    if (MySqlStruct *dbs = _getDbStruct(db))
+    if (MySqlStruct *dbs = Instance()._getDbStruct(db))
         return dbs->m_pswd.c_str();
 
     return sDefualtDb[3];
 }
 
-const char *VGDBManager::GetMysqlCharSet(const std::string &db) const
+const char *VGDBManager::GetMysqlCharSet(const std::string &db)
 {
-    if (MySqlStruct *dbs = _getDbStruct(db))
+    if (MySqlStruct *dbs = Instance()._getDbStruct(db))
         return dbs->m_charSet.c_str();
 
      return sDefualtDb[4];;
 }
 
-list<string> VGDBManager::GetDatabases() const
+list<string> VGDBManager::GetDatabases()
 {
     list<string> ret;
-    for (MySqlStruct *itr : m_mysqls)
+    for (MySqlStruct *itr : Instance().m_mysqls)
     {
         if(itr)
             ret.push_back(itr->m_database);
@@ -235,10 +239,10 @@ list<string> VGDBManager::GetDatabases() const
     return ret;
 }
 
-StringList VGDBManager::GetTriggers() const
+StringList VGDBManager::GetTriggers()
 {
     StringList ret;
-    for (VGTrigger *itr : m_triggers)
+    for (VGTrigger *itr : Instance().m_triggers)
     {
         ret.push_back(itr->GetName());
     }

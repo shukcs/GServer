@@ -24,6 +24,12 @@
     <ClCompile Include="src\Messages.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\ObjectGS.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectUav.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\UavManager.h">
@@ -39,6 +45,12 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Messages.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectGS.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectUav.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

@@ -9,7 +9,6 @@ using namespace SOCKETS_NAMESPACE;
 #endif
 
 using namespace das::proto;
-#define PROTOFLAG "das.proto."
 using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 //ProtoMsg
@@ -160,7 +159,7 @@ int ProtoMsg::CopySend(char *buff, int len, unsigned from) const
 void ProtoMsg::SetSended(int n)
 {
     if (n < 0)
-        _reset();
+        m_len = -1;
     else
         m_sended += n;
 }

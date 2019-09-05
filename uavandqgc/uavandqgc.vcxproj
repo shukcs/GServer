@@ -14,6 +14,8 @@
     <ClInclude Include="proto\das.pb.h" />
     <ClInclude Include="src\GSManager.h" />
     <ClInclude Include="src\Messages.h" />
+    <ClInclude Include="src\ObjectGS.h" />
+    <ClInclude Include="src\ObjectUav.h" />
     <ClInclude Include="src\ProtoMsg.h" />
     <ClInclude Include="src\UavManager.h" />
   </ItemGroup>
@@ -21,6 +23,8 @@
     <ClCompile Include="proto\das.pb.cc" />
     <ClCompile Include="src\GSManager.cpp" />
     <ClCompile Include="src\Messages.cpp" />
+    <ClCompile Include="src\ObjectGS.cpp" />
+    <ClCompile Include="src\ObjectUav.cpp" />
     <ClCompile Include="src\ProtoMsg.cpp" />
     <ClCompile Include="src\UavManager.cpp" />
   </ItemGroup>

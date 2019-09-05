@@ -17,6 +17,7 @@ class ISocket;
 }
 #endif
 
+#define PROTOFLAG "das.proto."
 #define d_p_ClassName(_cls) _cls::descriptor()->full_name()
 class ProtoMsg
 {

@@ -256,7 +256,7 @@ bool VGMySql::_selectItem(ExecutItem *item)
     else if (mysql_stmt_store_result(stmt))
         fprintf(stderr, " mysql_stmt_store_result() failed %s\n", mysql_stmt_error(stmt));
     else if (mysql_stmt_fetch(stmt))
-        fprintf(stderr, " mysql_stmt_fetch() failed %s\n", mysql_stmt_error(stmt));
+        fprintf(stderr, "no record fit SQL '%s'!\n", item->GetName().c_str());
     else
         ret = true;
 

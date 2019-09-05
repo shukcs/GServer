@@ -116,7 +116,7 @@ void VGTrigger::_addSqls(const list<string> &items)
 {
     for (const string &itr : items)
     {
-        ExecutItem *sql= VGDBManager::Instance().GetSqlByName(itr);
+        ExecutItem *sql= VGDBManager::GetSqlByName(itr);
         if (sql && AddExecuteItem(sql))
             sql->SetRef(true);     
     }

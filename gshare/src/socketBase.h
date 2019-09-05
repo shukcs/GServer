@@ -76,8 +76,10 @@ public:
     virtual bool IsRun()const = 0;
     virtual void Exit() = 0;
     virtual void Log(int err, const std::string &obj, int evT, const char *fmt, ...) = 0;
+    virtual void Release() = 0;
     virtual ~ISocketManager() {}
 };
+
 #ifdef SOCKETS_NAMESPACE
 }
 #endif

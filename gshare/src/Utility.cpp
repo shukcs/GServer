@@ -392,7 +392,7 @@ int Utility::fromBigendian(const void *buff)
     return value;
 }
 
-int64_t Utility::nsTimeTick()
+int64_t Utility::usTimeTick()
 {
     chrono::system_clock::time_point now = chrono::system_clock::now();
     auto ns = chrono::duration_cast<chrono::microseconds>(now.time_since_epoch());
