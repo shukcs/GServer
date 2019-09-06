@@ -146,6 +146,10 @@ int ObjectGS::ProcessReceive(void *buf, int len)
             _prcsDeleteLand((DeleteParcelDescription *)m_p->GetProtoMessage());
         else if (strMsg == d_p_ClassName(PostOperationDescription))
             _prcsPostPlan((PostOperationDescription *)m_p->GetProtoMessage());
+        else if (strMsg == d_p_ClassName(RequestOperationDescriptions))
+            _prcsReqPlan((RequestOperationDescriptions *)m_p->GetProtoMessage());
+        else if (strMsg == d_p_ClassName(DeleteOperationDescription))
+            _prcsDelPlan(( DeleteOperationDescription*)m_p->GetProtoMessage());
     }
     pos += l;
     return pos;
@@ -444,7 +448,7 @@ int64_t ObjectGS::_savePlan(ExecutItem *item, const OperationDescription &msg)
     fd = item->GetWriteItem("drug");
     if (!fd || msg.drug().empty())
         return -1;
-    fd->SetParam(msg.crop());
+    fd->SetParam(msg.drug());
 
     fd = item->GetWriteItem("prize");
     if (!fd)
@@ -459,7 +463,7 @@ int64_t ObjectGS::_savePlan(ExecutItem *item, const OperationDescription &msg)
     if (FiledValueItem *fdTmp = item->GetWriteItem("planParam"))
     {
         fdTmp->InitBuff(msg.op().ByteSize());
-        msg.op().SerializeToArray(fd->GetBuff(), fd->GetMaxLen());
+        msg.op().SerializeToArray(fdTmp->GetBuff(), fdTmp->GetMaxLen());
     }
     return _executeInsertSql(item);
 }
@@ -468,10 +472,10 @@ void ObjectGS::_initialPlan(das::proto::OperationDescription *msg, const ExecutI
 {
     FiledValueItem *fd = item.GetReadItem("id");
     if (fd && fd->GetValidLen() > 0)
-        msg->set_odid((char*)fd->GetBuff());
+        msg->set_odid(Utility::bigint2string(fd->GetValue()));
     fd = item.GetReadItem("landId");
     if (fd && fd->GetValidLen() > 0)
-        msg->set_pdid((char*)fd->GetBuff());
+        msg->set_pdid(Utility::bigint2string(fd->GetValue()));
     fd = item.GetReadItem("planTime");
     if (fd && fd->GetValidLen() > 0)
         msg->set_plantime(fd->GetValue());
@@ -565,9 +569,9 @@ void ObjectGS::_prcsPostPlan(PostOperationDescription *msg)
     _send(ack);
 }
 
-void ObjectGS::_prcsReqPlan(das::proto::RequestOperationDescriptions *msg)
+void ObjectGS::_prcsReqPlan(RequestOperationDescriptions *msg)
 {
-    if (!msg || (!msg->has_odid() || !msg->has_pdid() || !msg->has_registerid()))
+    if (!msg || (!msg->has_odid() && !msg->has_pdid() && !msg->has_registerid()))
         return;
 
     AckRequestOperationDescriptions ack;
@@ -604,6 +608,32 @@ void ObjectGS::_prcsReqPlan(das::proto::RequestOperationDescriptions *msg)
     }
     ack.set_result(res);
     _send(ack);
+}
+
+void ObjectGS::_prcsDelPlan(das::proto::DeleteOperationDescription *msg)
+{
+    if (!msg)
+        return;
+
+    const std::string &id = msg->odid();
+    AckDeleteOperationDescription ackDD;
+    ackDD.set_seqno(msg->seqno());
+    int res = 0;
+    ExecutItem *item = VGDBManager::GetSqlByName("deletePlan");
+    if (item && !id.empty())
+    {
+        item->ClearData();
+        FiledValueItem *fd = item->GetConditionItem("id");
+        if (fd)
+            fd->SetParam(id);
+
+        VGMySql *sql = ((GSManager*)GetManager())->GetMySql();
+        if (sql && sql->Execut(item))
+            res = 1;
+    }
+
+    ackDD.set_result(res);
+    _send(ackDD);
 }
 
 void ObjectGS::_send(const google::protobuf::Message &msg)

@@ -35,4 +35,4 @@
   4.protobuf Google的c++ protobuf，根据需要自行下载，可以自行构建需要的protobuf
   5.uavandqgc 飞机及地面站及管理对象GSManager/UavManager；动态库，动态加载
   
-  使用代码请帮忙点赞，您的支持是我前进的动力
+  使用代码请帮忙点赞，您的支持是我前进的动力；E-mail：hsj8262@163.com

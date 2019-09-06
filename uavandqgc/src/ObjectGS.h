@@ -15,6 +15,7 @@ namespace das {
         class OperationDescription;
         class PostOperationDescription;
         class RequestOperationDescriptions;
+        class DeleteOperationDescription;
         class PostOperationRoute;
         class PostControl2Uav;
         class ParcelDescription;
@@ -65,6 +66,7 @@ private:
     void _prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg);
     void _prcsPostPlan(das::proto::PostOperationDescription *msg);
     void _prcsReqPlan(das::proto::RequestOperationDescriptions *msg);
+    void _prcsDelPlan(das::proto::DeleteOperationDescription *msg);
 
     void _initialParcelDescription(das::proto::ParcelDescription *msg, const ExecutItem &item);
     uint64_t _saveContact(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id);

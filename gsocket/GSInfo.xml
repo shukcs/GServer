@@ -141,7 +141,7 @@
 			<item name="prize" ref="PlanInfo" type="Write" />
 			<item name="id" type="Condition" />
 		</SQL>
-		<SQL name="UpdatePlan" table="PlanInfo" type="Delete" >
+		<SQL name="deletePlan" table="PlanInfo" type="Delete" >
 			<item name="id" type="Condition" />
 		</SQL>
 		<SQL name="queryPlan" table="PlanInfo" type="Select" >
