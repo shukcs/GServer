@@ -21,7 +21,7 @@ using namespace ::google::protobuf;
 ObjectUav::ObjectUav(const std::string &id): IObject(NULL, id)
 , m_bBind(false), m_bConnected(false), m_lat(0), m_lon(0)
 , m_tmLastInfo(0), m_tmLastBind(0)
-, m_p(new ProtoMsg)
+, m_p(new ProtoMsg), m_mission(NULL)
 {
 }
 
@@ -137,6 +137,8 @@ void ObjectUav::ProcessMassage(const IMessage &msg)
         processBind((RequestBindUav*)msg.GetContent());
     else if (msg.GetMessgeType() == ControlUav)
         processControl2Uav((PostControl2Uav*)msg.GetContent());
+    else if (msg.GetMessgeType() == PostOR)
+        processPostOr((PostOperationRoute*)msg.GetContent());
 }
 
 int ObjectUav::ProcessReceive(void *buf, int len)
@@ -152,6 +154,8 @@ int ObjectUav::ProcessReceive(void *buf, int len)
             prcsRcvPostOperationInfo((PostOperationInformation *)m_p->DeatachProto());
         else if (name == d_p_ClassName(PostStatus2GroundStation))
             prcsRcvPost2Gs((PostStatus2GroundStation *)m_p->GetProtoMessage());
+        else if (name == d_p_ClassName(RequestRouteMissions))
+            prcsRcvReqMissions((RequestRouteMissions *)m_p->GetProtoMessage());
 
         pos += l;
         l = len - pos;
@@ -221,8 +225,48 @@ void ObjectUav::prcsRcvPost2Gs(PostStatus2GroundStation *msg)
 
     if (GSMessage *ms = new GSMessage(this, m_lastBinder))
     {
-        ms->SetGSContent(*msg);
+        ms->SetPBContentPB(*msg);
         SendMsg(ms);
+    }
+}
+
+void ObjectUav::prcsRcvReqMissions(RequestRouteMissions *msg)
+{
+    if (!msg)
+        return;
+
+    AckRequestRouteMissions ack;
+    bool hasItem = _hasMission(*msg);
+    int offset = msg->offset();
+    ack.set_seqno(msg->seqno());
+    ack.set_result(hasItem ? 1 : 0);
+    ack.set_boundary(msg->boundary());
+    ack.set_offset(hasItem ? offset : -1);
+    if (m_mission)
+    {
+        int count = msg->boundary() ? m_mission->boundarys_size() : m_mission->missions_size();
+        for (int i = offset; i < count; ++i)
+        {
+            const string &msItem = msg->boundary() ? m_mission->boundarys(i):m_mission->missions(i);
+            ack.add_missions(msItem.c_str(), msItem.size());
+        }
+    }
+    _send(ack);
+    if (!_isBind(m_lastBinder))
+        return;
+
+    if (SyscOperationRoutes *sys = new SyscOperationRoutes())
+    {
+        int off = offset < 0 ? -1 : (offset + (msg->boundary() ? m_mission->missions_size() : 0));
+        sys->set_seqno(msg->seqno());
+        sys->set_result(hasItem);
+        sys->set_uavid(GetObjectID());
+        sys->set_index(off);
+        sys->set_count(m_mission->missions_size()+ m_mission->boundarys_size());
+
+        GSMessage *gsm = new GSMessage(this, m_lastBinder);
+        gsm->AttachProto(sys);
+        SendMsg(gsm);
     }
 }
 
@@ -253,8 +297,54 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
     AckControl2Uav(*msg, res, this);
 }
 
+void ObjectUav::processPostOr(PostOperationRoute *msg)
+{
+    if(!msg)
+        return;
+
+    ReleasePointer(m_mission);
+    const OperationRoute mission = msg->or_();
+    int ret = 0;
+    if (_isBind(mission.gsid()) && (m_mission = new OperationRoute()))
+    {
+        m_mission->CopyFrom(mission);
+        if (m_mission->createtime() == 0)
+            m_mission->set_createtime(Utility::msTimeTick());
+        UploadOperationRoutes upload;
+        upload.set_seqno(msg->seqno());
+        upload.set_uavid(mission.uavid());
+        upload.set_userid(mission.gsid());
+        upload.set_timestamp(m_mission->createtime());
+        upload.set_countmission(mission.missions_size());
+        upload.set_countboundary(mission.boundarys_size());
+        _send(upload);
+        ret = 1;
+    }
+    if (GSMessage *ms = new GSMessage(this, mission.gsid()))
+    {
+        AckPostOperationRoute ack;
+        ack.set_seqno(msg->seqno());
+        ack.set_result(ret);
+        ms->SetPBContentPB(ack);
+        SendMsg(ms);
+    }
+}
+
 void ObjectUav::_send(const google::protobuf::Message &msg)
 {
     if (m_p && m_sock)
         m_p->SendProto(msg, m_sock);
+}
+
+bool ObjectUav::_isBind(const std::string &gs) const
+{
+    return m_bBind && m_lastBinder == gs && !m_lastBinder.empty();
+}
+
+bool ObjectUav::_hasMission(const das::proto::RequestRouteMissions &req) const
+{
+    if (m_mission || req.offset()<0 || req.count()<=0)
+        return false;
+
+    return (req.offset() + req.count()) < (req.boundary() ? m_mission->boundarys_size() : m_mission->missions_size());
 }

@@ -7,66 +7,36 @@ using namespace google::protobuf;
 using namespace das::proto;
 using namespace std;
 
-/////////////////////////////////////////////////////////////////////////////
-//GSMessage
-/////////////////////////////////////////////////////////////////////////////
-GSMessage::GSMessage(IObject *sender, const std::string &idRcv)
-    :IMessage(sender, idRcv, IObject::GroundStation, Unknown), m_msg(NULL)
+
+/////////////////////////////////////////////////////////////////////////////////
+//GSOrUavMessage
+/////////////////////////////////////////////////////////////////////////////////
+GSOrUavMessage::GSOrUavMessage(IObject *sender, const std::string &idRcv, int rcv)
+    :IMessage(sender, idRcv, rcv, Unknown), m_msg(NULL)
 {
 }
 
-GSMessage::GSMessage(IObjectManager *sender, const std::string &idRcv)
-    : IMessage(sender, idRcv, IObject::GroundStation, Unknown), m_msg(NULL)
+GSOrUavMessage::GSOrUavMessage(IObjectManager *sender, const std::string &idRcv, int rcv)
+    : IMessage(sender, idRcv, rcv, Unknown), m_msg(NULL)
 {
 }
 
-GSMessage::~GSMessage()
+GSOrUavMessage::~GSOrUavMessage()
 {
     delete m_msg;
 }
 
-void * GSMessage::GetContent() const
+void *GSOrUavMessage::GetContent() const
 {
     return m_msg;
 }
 
-void GSMessage::SetGSContent(const Message &msg)
+int GSOrUavMessage::GetContentLength() const
 {
-    delete m_msg;
-    m_msg = NULL;
-    m_tpMsg = getMessageType(msg);
-    switch (m_tpMsg)
-    {
-    case BindUavRes:
-        m_msg = new AckRequestBindUav;
-        break;
-    case ControlUavRes:
-        m_msg = new AckPostControl2Uav;
-        break;
-    case SychMissionRes:
-        m_msg = new RequestRouteMissions;
-        break;
-    case PushUavSndInfo:
-        m_msg = new PostOperationInformation;
-        break;
-    case ControlGs:
-        m_msg = new PostStatus2GroundStation;
-        break;
-    case QueryUavRes:
-        m_msg = new AckRequestUavStatus;
-        break;
-    case UavAllocationRes:
-        m_msg = new AckIdentityAllocation;
-        break;
-    default:
-        break;
-    }
-
-    if (m_msg && m_tpMsg != Unknown)
-        m_msg->CopyFrom(msg);
+    return m_msg ? m_msg->ByteSize() : 0;
 }
 
-void GSMessage::AttachProto(google::protobuf::Message *msg)
+void GSOrUavMessage::AttachProto(google::protobuf::Message *msg)
 {
     delete m_msg;
     m_msg = NULL;
@@ -77,9 +47,25 @@ void GSMessage::AttachProto(google::protobuf::Message *msg)
     m_msg = msg;
 }
 
-int GSMessage::GetContentLength() const
+void GSOrUavMessage::_copyMsg(const Message &msg)
 {
-    return m_msg ? m_msg->ByteSize() : 0;
+    m_tpMsg = getMessageType(msg);
+    if (m_msg && Unknown != m_tpMsg)
+        m_msg->CopyFrom(msg);
+    else if (m_tpMsg)
+        ReleasePointer(m_msg);
+}
+/////////////////////////////////////////////////////////////////////////////
+//GSMessage
+/////////////////////////////////////////////////////////////////////////////
+GSMessage::GSMessage(IObject *sender, const std::string &idRcv)
+    :GSOrUavMessage(sender, idRcv, IObject::GroundStation), m_msg(NULL)
+{
+}
+
+GSMessage::GSMessage(IObjectManager *sender, const std::string &idRcv)
+    : GSOrUavMessage(sender, idRcv, IObject::GroundStation), m_msg(NULL)
+{
 }
 
 MessageType GSMessage::getMessageType(const Message &msg)
@@ -90,6 +76,8 @@ MessageType GSMessage::getMessageType(const Message &msg)
         ret = BindUavRes;
     else if (name == d_p_ClassName(AckPostControl2Uav))
         ret = ControlUavRes;
+    else if (name == d_p_ClassName(AckPostOperationRoute))
+        ret = PostORRes;
     else if (name == d_p_ClassName(SyscOperationRoutes))
         ret = SychMissionRes;
     else if (name == d_p_ClassName(PostOperationInformation))
@@ -107,69 +95,13 @@ MessageType GSMessage::getMessageType(const Message &msg)
 //UAVMessage
 /////////////////////////////////////////////////////////////////////////////
 UAVMessage::UAVMessage(IObject *sender, const std::string &idRcv)
-    :IMessage(sender, idRcv, IObject::Plant, Unknown), m_msg(NULL)
+    :GSOrUavMessage(sender, idRcv, IObject::Plant)
 {
 }
 
 UAVMessage::UAVMessage(IObjectManager *sender, const std::string &idRcv)
-    : IMessage(sender, idRcv, IObject::Plant, Unknown), m_msg(NULL)
+    : GSOrUavMessage(sender, idRcv, IObject::Plant)
 {
-}
-
-UAVMessage::~UAVMessage()
-{
-    delete m_msg;
-}
-
-void * UAVMessage::GetContent() const
-{
-    return m_msg;
-}
-
-void UAVMessage::SetContent(const google::protobuf::Message &msg)
-{
-    delete m_msg;
-    m_msg = NULL;
-    m_tpMsg = getMessageType(msg);
-    switch (m_tpMsg)
-    {
-    case BindUav:
-        m_msg = new RequestBindUav;
-        break;
-    case ControlUav:
-        m_msg = new PostControl2Uav;
-        break;
-    case SychMission:
-        m_msg = new RequestRouteMissions;
-        break;
-    case QueryUav:
-        m_msg = new RequestUavStatus;
-        break;
-    case UavAllocation:
-        m_msg = new RequestIdentityAllocation;
-        break;
-    default:
-        break;
-    }
-
-    if (m_msg && m_tpMsg != Unknown)
-        m_msg->CopyFrom(msg);
-}
-
-void UAVMessage::AttachProto(google::protobuf::Message *msg)
-{
-    delete m_msg;
-    m_msg = NULL;
-    if (!msg)
-        return;
-    
-    m_tpMsg = getMessageType(*msg);
-    m_msg = msg;
-}
-
-int UAVMessage::GetContentLength() const
-{
-    return m_msg ? m_msg->ByteSize() : 0;
 }
 
 MessageType UAVMessage::getMessageType(const google::protobuf::Message &msg)
@@ -178,6 +110,8 @@ MessageType UAVMessage::getMessageType(const google::protobuf::Message &msg)
     const string &name = msg.GetTypeName();
     if (name == d_p_ClassName(RequestBindUav))
         ret = BindUav;
+    if (name == d_p_ClassName(PostOperationRoute))
+        ret = PostOR;
     else if (name == d_p_ClassName(PostControl2Uav))
         ret = ControlUav;
     else if (name == d_p_ClassName(RequestRouteMissions))

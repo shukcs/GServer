@@ -93,4 +93,9 @@
 #  define SHARED_DECL  DECL_IMPORT
 #endif
 
+#define ReleasePointer(p) {\
+    delete p;\
+    p = NULL;\
+}
+
 #endif // _SOCKETS_CONFIG_H

@@ -13,6 +13,7 @@ enum MessageType
 {
     Unknown,
     BindUav,
+    PostOR,
     ControlUav,
     SychMission,
     QueryUav,
@@ -21,37 +22,53 @@ enum MessageType
     BindUavRes,
     ControlUavRes,
     SychMissionRes,
+    PostORRes,
     PushUavSndInfo,
     ControlGs,
     QueryUavRes,
     UavAllocationRes,
 };
-class GSMessage : public IMessage
+
+class GSOrUavMessage : public IMessage
+{
+public:
+    GSOrUavMessage(IObject *sender, const std::string &idRcv, int rcv);
+    GSOrUavMessage(IObjectManager *sender, const std::string &idRcv, int rcv);
+    ~GSOrUavMessage();
+
+    void *GetContent() const;
+    int GetContentLength() const;
+    void AttachProto(google::protobuf::Message *msg);
+    template<class E>
+    void SetPBContentPB(const E &msg)
+    {
+        delete m_msg;
+        m_msg = new E;
+        _copyMsg(msg);
+    }
+protected:
+    virtual MessageType getMessageType(const google::protobuf::Message &msg) = 0;
+    void _copyMsg(const google::protobuf::Message &msg);
+protected:
+    google::protobuf::Message  *m_msg;
+};
+
+class GSMessage : public GSOrUavMessage
 {
 public:
     GSMessage(IObject *sender, const std::string &idRcv);
     GSMessage(IObjectManager *sender, const std::string &idRcv);
-    ~GSMessage();
-    void *GetContent() const;
-    void SetGSContent(const google::protobuf::Message &msg);
-    void AttachProto(google::protobuf::Message *msg);
-    int GetContentLength() const;
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);
 private:
     google::protobuf::Message  *m_msg;
 };
 
-class UAVMessage : public IMessage
+class UAVMessage : public GSOrUavMessage
 {
 public:
     UAVMessage(IObject *sender, const std::string &idRcv);
     UAVMessage(IObjectManager *sender, const std::string &idRcv);
-    ~UAVMessage();
-    void *GetContent() const;
-    void SetContent(const google::protobuf::Message &msg);
-    void AttachProto(google::protobuf::Message *msg);
-    int GetContentLength() const;
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);
 private:

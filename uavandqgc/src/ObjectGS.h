@@ -67,6 +67,7 @@ private:
     void _prcsPostPlan(das::proto::PostOperationDescription *msg);
     void _prcsReqPlan(das::proto::RequestOperationDescriptions *msg);
     void _prcsDelPlan(das::proto::DeleteOperationDescription *msg);
+    void _prcsPostMission(das::proto::PostOperationRoute *msg);
 
     void _initialParcelDescription(das::proto::ParcelDescription *msg, const ExecutItem &item);
     uint64_t _saveContact(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id);

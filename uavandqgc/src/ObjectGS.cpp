@@ -150,6 +150,8 @@ int ObjectGS::ProcessReceive(void *buf, int len)
             _prcsReqPlan((RequestOperationDescriptions *)m_p->GetProtoMessage());
         else if (strMsg == d_p_ClassName(DeleteOperationDescription))
             _prcsDelPlan(( DeleteOperationDescription*)m_p->GetProtoMessage());
+        else if (strMsg == d_p_ClassName(PostOperationRoute))
+            _prcsPostMission((PostOperationRoute*)m_p->GetProtoMessage());
     }
     pos += l;
     return pos;
@@ -634,6 +636,18 @@ void ObjectGS::_prcsDelPlan(das::proto::DeleteOperationDescription *msg)
 
     ackDD.set_result(res);
     _send(ackDD);
+}
+
+void ObjectGS::_prcsPostMission(PostOperationRoute *msg)
+{
+    if (!msg)
+        return;
+    const OperationRoute &ort = msg->or_();
+    if (UAVMessage *ms = new UAVMessage(this, ort.uavid()))
+    {
+        ms->AttachProto(msg);
+        SendMsg(ms);
+    }
 }
 
 void ObjectGS::_send(const google::protobuf::Message &msg)

@@ -304,7 +304,7 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, const std::string &g
 
     if (GSMessage *ms = new GSMessage(this, gs))
     {
-        ms->SetGSContent(as);
+        ms->SetPBContentPB(as);
         SendMsg(ms);
     }
 }
