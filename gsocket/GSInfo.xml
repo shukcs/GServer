@@ -158,6 +158,9 @@
 			<item name="landId" type="Condition" />
 			<item name="planuser" type="Condition" />
 		</SQL>
+		<SQL name="checkGS" table="GSInfo" type="Select" >
+			<item name="user" type="Condition" />
+		</SQL>
 	</SQLs>
 	<!--Triggers>
 		<Trigger name="trigger_bef" table="LandInfo" event="Insert" before="false" refsql="updatePos" />

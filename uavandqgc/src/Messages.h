@@ -46,6 +46,9 @@ public:
         m_msg = new E;
         _copyMsg(msg);
     }
+public:
+    static std::string GenCheckString();
+    static bool IsGSUserValide(const std::string &user);
 protected:
     virtual MessageType getMessageType(const google::protobuf::Message &msg) = 0;
     void _copyMsg(const google::protobuf::Message &msg);

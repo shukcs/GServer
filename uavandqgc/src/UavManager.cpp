@@ -98,7 +98,7 @@ int UavManager::GetObjectType() const
     return IObject::Plant;
 }
 
-IObject *UavManager::PrcsReceiveByMrg(ISocket *s, const char *buf, int &len)
+IObject *UavManager::PrcsReceiveByMgr(ISocket *s, const char *buf, int &len)
 {
     int pos = 0;
     int l = len;
@@ -235,6 +235,7 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
             ret = new ObjectUav(uia.uavid());
             ret->InitBySqlResult(*item);
             while (m_sqlEng->GetResult());
+            ret->OnConnected(true);
             res = 1;
         }
     }

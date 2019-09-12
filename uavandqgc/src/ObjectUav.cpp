@@ -262,7 +262,7 @@ void ObjectUav::prcsRcvReqMissions(RequestRouteMissions *msg)
         sys->set_result(hasItem);
         sys->set_uavid(GetObjectID());
         sys->set_index(off);
-        sys->set_count(m_mission->missions_size()+ m_mission->boundarys_size());
+        sys->set_count(m_mission->missions_size() + m_mission->boundarys_size());
 
         GSMessage *gsm = new GSMessage(this, m_lastBinder);
         gsm->AttachProto(sys);

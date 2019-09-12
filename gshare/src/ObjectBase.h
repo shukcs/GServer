@@ -129,13 +129,14 @@ protected:
     void AddMessage(IMessage *msg);
     void PrcsReleaseMsg();
 protected:
-    virtual IObject *PrcsReceiveByMrg(ISocket *s, const char *buf, int &len) = 0;
+    virtual IObject *PrcsReceiveByMgr(ISocket *s, const char *buf, int &len) = 0;
 private:
     friend class ObjectManagers;
     IMutex                          *m_mtx;
     std::list<IMessage*>            m_lsMsg;            //接收消息队列
     std::list<IMessage*>            m_lsMsgRelease;     //消息释放队列
     std::list<BussinessThread*>     m_lsThread;
+    std::list<IObject*>             m_lsObjRelease;     //IObject释放队列
     ObjectsMap                      m_mapThreadObject;
     std::map<int, ObjectMetuxs*>    m_threadMutexts;
 };

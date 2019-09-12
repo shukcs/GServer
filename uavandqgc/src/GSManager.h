@@ -6,6 +6,7 @@
 namespace das {
     namespace proto {
         class RequestGSIdentityAuthentication;
+        class RequestNewGS;
     }
 }
 
@@ -32,11 +33,16 @@ public:
     ~GSManager();
     
     VGMySql *GetMySql()const;
+public:
+    static int ExecutNewGsSql(GSManager *mgr, const std::string &gs);
 protected:
     int GetObjectType()const;
-    IObject *PrcsReceiveByMrg(ISocket *s, const char *buf, int &len);
+    IObject *PrcsReceiveByMgr(ISocket *s, const char *buf, int &len);
 
     bool PrcsRemainMsg(const IMessage &msg);
+
+    IObject *prcsPBLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication *msg);
+    IObject *prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg);
 private:
     IObject *_checkLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication &rgi);
     void _parseConfig();

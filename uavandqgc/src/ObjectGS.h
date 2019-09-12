@@ -6,6 +6,7 @@
 namespace das {
     namespace proto {
         class RequestGSIdentityAuthentication;
+        class RequestNewGS;
         class PostHeartBeat;
         class RequestUavStatus;
         class RequestBindUav;
@@ -54,6 +55,8 @@ protected:
     virtual int GetSenLength()const;
     virtual int CopySend(char *buf, int sz, unsigned form = 0);
     virtual void SetSended(int sended = -1);//-1,·¢ËÍÍê
+    
+    void SetCheck(const std::string &str);
 private:
     void _prcsLogin(das::proto::RequestGSIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
@@ -68,6 +71,7 @@ private:
     void _prcsReqPlan(das::proto::RequestOperationDescriptions *msg);
     void _prcsDelPlan(das::proto::DeleteOperationDescription *msg);
     void _prcsPostMission(das::proto::PostOperationRoute *msg);
+    void _prcsReqNewGs(das::proto::RequestNewGS *msg);
 
     void _initialParcelDescription(das::proto::ParcelDescription *msg, const ExecutItem &item);
     uint64_t _saveContact(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id);
@@ -83,6 +87,7 @@ private:
     bool            m_bConnect;
     int             m_auth;
     std::string     m_pswd;
+    std::string     m_check;
     ProtoMsg        *m_p;
 };
 

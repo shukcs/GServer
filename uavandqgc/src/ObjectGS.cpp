@@ -49,16 +49,19 @@ int ObjectGS::GetObjectType() const
 
 void ObjectGS::OnConnected(bool bConnected)
 {
-    if (m_sock && !bConnected)
-    {
-        if(ISocketManager *m = m_sock->GetManager())
-        {
-            m->Log(0, GetObjectID(), 0, "disconnect");
-            m_sock->Close();
-            m_sock = NULL;
-        }
-    }
     m_bConnect = bConnected;
+    if (bConnected)
+        return;
+
+    if (ISocketManager *m = m_sock ? m_sock->GetManager() : NULL)
+    {
+        m->Log(0, GetObjectID(), 0, "(%s:%d) disconnect", m_sock->GetHost().c_str(), m_sock->GetPort());
+        m_sock->Close();
+        m_sock = NULL;
+    }
+
+    if (Utility::SplitString(m_id,":").size()==2)
+        Release();
 }
 
 void ObjectGS::SetPswd(const std::string &pswd)
@@ -128,6 +131,8 @@ int ObjectGS::ProcessReceive(void *buf, int len)
 
         if (strMsg == d_p_ClassName(RequestGSIdentityAuthentication))
             _prcsLogin((RequestGSIdentityAuthentication*)m_p->GetProtoMessage());
+        else if (strMsg == d_p_ClassName(RequestNewGS))
+            _prcsReqNewGs((RequestNewGS*)m_p->GetProtoMessage());
         else if (strMsg == d_p_ClassName(PostHeartBeat))
             _prcsHeartBeat((PostHeartBeat *)m_p->GetProtoMessage());
         else if (strMsg == d_p_ClassName(RequestBindUav))
@@ -177,6 +182,11 @@ void ObjectGS::SetSended(int sended /*= -1*/)
 {
     if (m_p)
         m_p->SetSended(sended);
+}
+
+void ObjectGS::SetCheck(const std::string &str)
+{
+    m_check = str;
 }
 
 void ObjectGS::_prcsReqUavs(RequestUavStatus *msg)
@@ -648,6 +658,27 @@ void ObjectGS::_prcsPostMission(PostOperationRoute *msg)
         ms->AttachProto(msg);
         SendMsg(ms);
     }
+}
+
+void ObjectGS::_prcsReqNewGs(RequestNewGS *msg)
+{
+    if (!msg)
+        return;
+
+    int res = -1;
+    if (msg->userid() != m_id)
+        res = GSManager::ExecutNewGsSql((GSManager*)GetManager(), m_id);
+
+    if (res != -2 && msg->check() == m_check && !msg->password().empty())
+    {
+
+    }
+
+    
+
+    AckNewGS ack;
+    ack.set_seqno(msg->seqno());
+    ack.set_result(res);
 }
 
 void ObjectGS::_send(const google::protobuf::Message &msg)

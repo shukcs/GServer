@@ -1,4 +1,5 @@
 #include "Messages.h"
+#include <math.h>
 #include "das.pb.h"
 #include "ProtoMsg.h"
 #include "ObjectBase.h"
@@ -7,10 +8,10 @@ using namespace google::protobuf;
 using namespace das::proto;
 using namespace std;
 
-
-/////////////////////////////////////////////////////////////////////////////////
+static const char *sRandStrTab = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
+////////////////////////////////////////////////////////////////////////////////////////
 //GSOrUavMessage
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
 GSOrUavMessage::GSOrUavMessage(IObject *sender, const std::string &idRcv, int rcv)
     :IMessage(sender, idRcv, rcv, Unknown), m_msg(NULL)
 {
@@ -45,6 +46,54 @@ void GSOrUavMessage::AttachProto(google::protobuf::Message *msg)
 
     m_tpMsg = getMessageType(*msg);
     m_msg = msg;
+}
+
+string GSOrUavMessage::GenCheckString()
+{
+    string ret;
+    uint32 rd = rand();
+    char strTmp[3] = { 0 };
+    for (int i = 0; i < 3; ++i)
+    {
+        int tmp1 = rd % (8+i);
+        int tmp2 = rd % (50-i);
+        if (tmp2 % (8 + i) > tmp1)
+        {
+            strTmp[0] = sRandStrTab[tmp2];
+            strTmp[1] = '0'+ tmp1;
+        }
+        else
+        {
+            strTmp[1] = sRandStrTab[tmp2];
+            strTmp[0] = '0' + tmp1;
+        }
+        ret += strTmp;
+        if ((rd%3+i)%2 == 0)
+            rd = rand();
+    }
+    return ret;
+}
+
+bool GSOrUavMessage::IsGSUserValide(const std::string &user)
+{
+    size_t count = user.length();
+    if (count==0 || count > 24)
+        return false;
+
+    const uint8_t *tmp = (uint8_t *)user.c_str();
+    for (size_t i = 0; i < count; ++i)
+    {
+        if (tmp[i] >= 'A' && tmp[i] <= 'Z')
+            continue;
+        if (tmp[i] >= 'a' && tmp[i] <= 'z')
+            continue;
+        if (tmp[i] >= '0' && tmp[i] <= '9')
+            continue;
+
+        if(i == 0 || tmp[i] != '_')
+            return false;
+    }
+    return true;
 }
 
 void GSOrUavMessage::_copyMsg(const Message &msg)

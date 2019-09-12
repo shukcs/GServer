@@ -8,7 +8,6 @@
 #include "DBExecItem.h"
 #include "Utility.h"
 #include "IMutex.h"
-#include "IMessage.h"
 #include "tinyxml.h"
 #include "ObjectGS.h"
 #include "ObjectManagers.h"
@@ -36,12 +35,36 @@ VGMySql *GSManager::GetMySql() const
     return m_sqlEng;
 }
 
+int GSManager::ExecutNewGsSql(GSManager *mgr, const string &gs)
+{
+    if (!mgr)
+        return -1;
+
+    //-2:名字不合法，-1:服务错误，0：名字存在
+    int res = GSOrUavMessage::IsGSUserValide(gs) ? -1 : -2;
+    ExecutItem *item = VGDBManager::GetSqlByName("checkGS");
+    if (item && res != -2)
+    {
+        if (FiledValueItem *fd = item->GetConditionItem("user"))
+        {
+            fd->SetParam(gs);
+            res = 1;
+        }
+        if (mgr->m_sqlEng->Execut(item))
+        {
+            while (mgr->m_sqlEng->GetResult());
+            res = 0;
+        }
+    }
+    return res;
+}
+
 int GSManager::GetObjectType() const
 {
     return IObject::GroundStation;
 }
 
-IObject *GSManager::PrcsReceiveByMrg(ISocket *s, const char *buf, int &len)
+IObject *GSManager::PrcsReceiveByMgr(ISocket *s, const char *buf, int &len)
 {
     int pos = 0;
     int l = len;
@@ -51,16 +74,15 @@ IObject *GSManager::PrcsReceiveByMrg(ISocket *s, const char *buf, int &len)
     {
         pos = l;
         l = len - pos;
-        if (m_p->GetMsgName() == d_p_ClassName(RequestGSIdentityAuthentication))
+        const string &name = m_p->GetMsgName();
+        if (name == d_p_ClassName(RequestGSIdentityAuthentication))
         {
-            RequestGSIdentityAuthentication *msg = (RequestGSIdentityAuthentication *)m_p->GetProtoMessage();
-            o = _checkLogin(s, *msg);
+            o = prcsPBLogin(s, (RequestGSIdentityAuthentication *)m_p->GetProtoMessage());
             len = pos;
-
-            if (ISocketManager *m = s->GetManager())
-                m->Log(0, msg->userid(), 0, o ? "login success" : "login fail");
-
-            break;
+        }
+        else if(name == d_p_ClassName(RequestNewGS))
+        {
+            len = l;
         }
     }
     return o;
@@ -69,6 +91,38 @@ IObject *GSManager::PrcsReceiveByMrg(ISocket *s, const char *buf, int &len)
 bool GSManager::PrcsRemainMsg(const IMessage &)
 {
     return true;
+}
+
+IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthentication *msg)
+{
+    if (!msg)
+        return NULL;
+
+    IObject *o = _checkLogin(s, *msg);
+    if (ISocketManager *m = s->GetManager())
+        m->Log(0, msg->userid(), 0, o ? "login success" : "login fail");
+    return o;
+}
+
+IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
+{
+    if(!msg || msg->userid().empty())
+        return NULL;
+
+    int res = ExecutNewGsSql(this, msg->userid());
+    ObjectGS *o = NULL;
+    AckNewGS ack;
+    ack.set_seqno(msg->seqno());
+    ack.set_result(res);
+    if (1 == res)
+    {
+        string check = GSOrUavMessage::GenCheckString();
+        if (o = new ObjectGS(msg->userid()))
+            o->SetCheck(check);
+        ack.set_check(check);
+    }
+    ProtoMsg::SendProtoTo(ack, s);
+    return o;
 }
 
 IObject *GSManager::_checkLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication &rgi)
@@ -101,6 +155,7 @@ IObject *GSManager::_checkLogin(ISocket *s, const das::proto::RequestGSIdentityA
                 o->SetPswd(pswd);
                 if (FiledValueItem *fd = item->GetReadItem("auth"))
                     o->SetAuth(fd->GetValue<int>());
+                o->OnConnected(true);
                 res = 1;
             }
 

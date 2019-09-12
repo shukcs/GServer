@@ -39,7 +39,7 @@ public:
     static uint32_t toIntID(const std::string &uavid);
 protected:
     int GetObjectType()const;
-    IObject *PrcsReceiveByMrg(ISocket *s, const char *buf, int &len);
+    IObject *PrcsReceiveByMgr(ISocket *s, const char *buf, int &len);
     bool PrcsRemainMsg(const IMessage &msg);
 private:
     void _parseConfig();

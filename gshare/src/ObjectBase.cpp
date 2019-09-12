@@ -176,7 +176,6 @@ void IObject::Release()
     if (IObjectManager *m = GetManager())
         m->RemoveObject(this);
 
-    ObjectManagers::Instance().Destroy(this);
     m_bRelease = true;
 }
 
@@ -260,7 +259,7 @@ bool IObjectManager::Receive(ISocket *s, const BaseBuff &buff)
     if (!s || !buf || len <= 0)
         return false;
 
-    IObject *o = PrcsReceiveByMrg(s, (char*)buf, len);
+    IObject *o = PrcsReceiveByMgr(s, (char*)buf, len);
     if (o)
     {
         AddObject(o);
@@ -320,7 +319,16 @@ bool IObjectManager::ProcessBussiness()
             ret = true;
         }
     }
+    while (m_lsObjRelease.size() > 0)
+    {
+        IObject *o = m_lsObjRelease.front();
+        ObjectsMap::iterator itr = m_mapThreadObject.find(o->GetThreadId());
+        if (itr != m_mapThreadObject.end())
+            itr->second.erase(o->GetObjectID());
 
+        ObjectManagers::Instance().Destroy(o);
+        m_lsObjRelease.pop_front();
+    }
     if(!HasIndependThread())
     {
         for (const pair<int, ThreadObjects> &itr : m_mapThreadObject)
@@ -341,13 +349,9 @@ void IObjectManager::RemoveObject(IObject *o)
     if (!o)
         return;
 
-    ObjectsMap::iterator itr = m_mapThreadObject.find(o->GetThreadId());
-    if (itr != m_mapThreadObject.end())
-    {
-        m_mtx->Lock();
-        itr->second.erase(o->GetObjectID());
-        m_mtx->Unlock();
-    }
+    m_mtx->Lock();
+    m_lsObjRelease.push_back(o);
+    m_mtx->Unlock();
 }
 
 const IObjectManager::ThreadObjects &IObjectManager::GetThreadObject(int t) const
