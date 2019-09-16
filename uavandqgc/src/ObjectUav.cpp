@@ -18,36 +18,29 @@ using namespace ::google::protobuf;
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
-ObjectUav::ObjectUav(const std::string &id): IObject(NULL, id)
-, m_bBind(false), m_bConnected(false), m_lat(0), m_lon(0)
-, m_tmLastInfo(0), m_tmLastBind(0)
-, m_p(new ProtoMsg), m_mission(NULL)
+ObjectUav::ObjectUav(const std::string &id): ObjectAbsPB(id)
+, m_bBind(false), m_lat(0), m_lon(0), m_tmLastInfo(0)
+, m_tmLastBind(0), m_mission(NULL)
 {
 }
 
 ObjectUav::~ObjectUav()
 {
-    delete m_p;
-}
-
-bool ObjectUav::IsConnect() const
-{
-    return m_bConnected;
 }
 
 void ObjectUav::InitBySqlResult(const ExecutItem &sql)
 {
-    if (FiledValueItem *fd = sql.GetReadItem("binded"))
+    if (FiledVal *fd = sql.GetReadItem("binded"))
         m_bBind = fd->GetValue<char>()==1;
-    if (FiledValueItem *fd = sql.GetReadItem("binder"))
+    if (FiledVal *fd = sql.GetReadItem("binder"))
         m_lastBinder = string((char*)fd->GetBuff(), fd->GetValidLen());
-    if (FiledValueItem *fd = sql.GetReadItem("lat"))
+    if (FiledVal *fd = sql.GetReadItem("lat"))
         m_lat = fd->GetValue<double>();
-    if (FiledValueItem *fd = sql.GetReadItem("lon"))
+    if (FiledVal *fd = sql.GetReadItem("lon"))
         m_lon = fd->GetValue<double>();
-    if (FiledValueItem *fd = sql.GetReadItem("timeBind"))
+    if (FiledVal *fd = sql.GetReadItem("timeBind"))
         m_tmLastBind = fd->GetValue<int64_t>();
-    if (FiledValueItem *fd = sql.GetReadItem("timePos"))
+    if (FiledVal *fd = sql.GetReadItem("timePos"))
         m_tmLastInfo = fd->GetValue<int64_t>();
 }
 
@@ -78,20 +71,7 @@ int ObjectUav::GetObjectType() const
 
 void ObjectUav::OnConnected(bool bConnected)
 {
-    m_bConnected = bConnected;
-    if (!bConnected)
-    {
-        ((UavManager *)GetManager())->UpdatePos(GetObjectID(), m_lat, m_lon);
-
-        ISocketManager *m = m_sock ? m_sock->GetManager() : NULL;
-        if (m)
-        {
-            m->Log(0, GetObjectID(), 0, "disconnect");
-            m_sock->Close();
-            m_sock = NULL;
-        }
-    }
-    
+    ObjectAbsPB::OnConnected(bConnected);
     m_tmLastInfo = Utility::msTimeTick();
 }
 
@@ -102,7 +82,7 @@ void ObjectUav::RespondLogin(int seq, int res)
         AckUavIdentityAuthentication ack;
         ack.set_seqno(seq);
         ack.set_result(res);
-        _send(ack);
+        send(ack);
     }
 }
 
@@ -164,26 +144,9 @@ int ObjectUav::ProcessReceive(void *buf, int len)
     return pos;
 }
 
-int ObjectUav::GetSenLength() const
+VGMySql *ObjectUav::GetMySql() const
 {
-    if (m_p)
-        return m_p->RemaimedLength();
-
-    return 0;
-}
-
-int ObjectUav::CopySend(char *buf, int sz, unsigned form)
-{
-    if (m_p)
-        return m_p->CopySend(buf, sz, form);
-
-    return 0;
-}
-
-void ObjectUav::SetSended(int sended /*= -1*/)
-{
-    if (m_p)
-        m_p->SetSended(sended);
+    return ((UavManager*)GetManager())->GetMySql();
 }
 
 void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
@@ -215,7 +178,7 @@ void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
     AckOperationInformation ack;
     ack.set_seqno(msg->seqno());
     ack.set_result(1);
-    _send(ack);
+    send(ack);
 }
 
 void ObjectUav::prcsRcvPost2Gs(PostStatus2GroundStation *msg)
@@ -251,7 +214,7 @@ void ObjectUav::prcsRcvReqMissions(RequestRouteMissions *msg)
             ack.add_missions(msItem.c_str(), msItem.size());
         }
     }
-    _send(ack);
+    send(ack);
     if (!_isBind(m_lastBinder))
         return;
 
@@ -291,7 +254,7 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
     if (m_lastBinder == msg->userid() && m_bBind)
     {
         res = 1;
-        _send(*msg);
+        send(*msg);
     }
     
     AckControl2Uav(*msg, res, this);
@@ -317,7 +280,7 @@ void ObjectUav::processPostOr(PostOperationRoute *msg)
         upload.set_timestamp(m_mission->createtime());
         upload.set_countmission(mission.missions_size());
         upload.set_countboundary(mission.boundarys_size());
-        _send(upload);
+        send(upload);
         ret = 1;
     }
     if (GSMessage *ms = new GSMessage(this, mission.gsid()))
@@ -328,12 +291,6 @@ void ObjectUav::processPostOr(PostOperationRoute *msg)
         ms->SetPBContentPB(ack);
         SendMsg(ms);
     }
-}
-
-void ObjectUav::_send(const google::protobuf::Message &msg)
-{
-    if (m_p && m_sock)
-        m_p->SendProto(msg, m_sock);
 }
 
 bool ObjectUav::_isBind(const std::string &gs) const

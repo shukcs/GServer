@@ -19,6 +19,8 @@ class IMutex;
 class IMessage;
 class ObjectMetuxs;
 
+typedef std::map<std::string, IObject*> ThreadObjects;
+typedef std::map<int, ThreadObjects> ObjectsMap;
 class IObject
 {
 public:
@@ -100,9 +102,6 @@ protected:
 class IObjectManager
 {
 public:
-    typedef std::map<std::string, IObject*> ThreadObjects;
-    typedef std::map<int, ThreadObjects> ObjectsMap;
-public:
     virtual int GetObjectType()const = 0;
     SHARED_DECL bool AddObject(IObject *obj);
     SHARED_DECL IObject *GetObjectByID(const std::string &id)const;
@@ -112,8 +111,7 @@ public:
     void AddRelease(IMessage *);
     bool HasIndependThread()const;
     bool ProcessBussiness();
-    void RemoveObject(IObject *);
-    const ThreadObjects &GetThreadObject(int t)const;
+    bool PrcsObjectsOfThread(int nThread);
     bool Exist(IObject *obj)const;
 public:
     SHARED_DECL static bool SendMsg(IMessage *msg);
@@ -128,6 +126,7 @@ protected:
     int GetPropertyThread()const;
     void AddMessage(IMessage *msg);
     void PrcsReleaseMsg();
+    void removeObject(ThreadObjects &objs, const std::string &id);
 protected:
     virtual IObject *PrcsReceiveByMgr(ISocket *s, const char *buf, int &len) = 0;
 private:
@@ -136,7 +135,6 @@ private:
     std::list<IMessage*>            m_lsMsg;            //接收消息队列
     std::list<IMessage*>            m_lsMsgRelease;     //消息释放队列
     std::list<BussinessThread*>     m_lsThread;
-    std::list<IObject*>             m_lsObjRelease;     //IObject释放队列
     ObjectsMap                      m_mapThreadObject;
     std::map<int, ObjectMetuxs*>    m_threadMutexts;
 };

@@ -11,7 +11,7 @@ typedef struct st_mysql_stmt MYSQL_STMT;
 typedef struct st_mysql_bind MYSQL_BIND;
 typedef struct st_mysql_res MYSQL_RES;
 
-class FiledValueItem;
+class FiledVal;
 class ExecutItem;
 class VGTable;
 class VGTrigger;
@@ -37,7 +37,7 @@ public:
     MYSQL_RES *Query(const std::string &sql);
 protected:
 	bool _canOperaterDB();
-	bool _executChange(const std::string &sql, MYSQL_BIND *binds, FiledValueItem *i=NULL);
+	bool _executChange(const std::string &sql, MYSQL_BIND *binds, FiledVal *i=NULL);
     bool _changeItem(ExecutItem *item);
     bool _selectItem(ExecutItem *item);
     std::string _getTablesString(const ExecutItem &item);

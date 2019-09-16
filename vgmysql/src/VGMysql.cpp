@@ -182,7 +182,7 @@ bool VGMySql::ConnectMySql( const char *host, int port, const char *user, const 
 	return m_bValid = false;
 }
 
-bool VGMySql::_executChange(const string &sql, MYSQL_BIND *binds, FiledValueItem *i)
+bool VGMySql::_executChange(const string &sql, MYSQL_BIND *binds, FiledVal *i)
 {
     MYSQL_STMT *stmt = _prepareMySql(sql, binds);
     if (!stmt)

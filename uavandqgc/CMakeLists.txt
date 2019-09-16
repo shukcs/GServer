@@ -14,10 +14,12 @@ INCLUDE_DIRECTORIES(
 set(SRC_LIST
 	src/GSManager.cpp
 	src/GSManager.h
-	src/ObjectGS.cpp
-	src/ObjectGS.h
 	src/UavManager.cpp
 	src/UavManager.h
+	src/ObjectAbsPB.cpp
+	src/ObjectAbsPB.h
+	src/ObjectGS.cpp
+	src/ObjectGS.h
 	src/ObjectUav.cpp
 	src/ObjectUav.h
 	src/ProtoMsg.cpp

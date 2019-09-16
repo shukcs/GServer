@@ -24,22 +24,13 @@ enum GSAuthorizeType
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
-ObjectGS::ObjectGS(const std::string &id)
-: IObject(NULL, id), m_bConnect(false)
-, m_auth(1), m_p(new ProtoMsg)
+ObjectGS::ObjectGS(const std::string &id): ObjectAbsPB(id)
+, m_auth(1)
 {
-    if (m_p)
-        m_p->InitSize();
 }
 
 ObjectGS::~ObjectGS()
 {
-    delete m_p;
-}
-
-bool ObjectGS::IsConnect() const
-{
-    return m_sock!=NULL;
 }
 
 int ObjectGS::GetObjectType() const
@@ -49,18 +40,8 @@ int ObjectGS::GetObjectType() const
 
 void ObjectGS::OnConnected(bool bConnected)
 {
-    m_bConnect = bConnected;
-    if (bConnected)
-        return;
-
-    if (ISocketManager *m = m_sock ? m_sock->GetManager() : NULL)
-    {
-        m->Log(0, GetObjectID(), 0, "(%s:%d) disconnect", m_sock->GetHost().c_str(), m_sock->GetPort());
-        m_sock->Close();
-        m_sock = NULL;
-    }
-
-    if (Utility::SplitString(m_id,":").size()==2)
+    ObjectAbsPB::OnConnected(bConnected);
+    if (!m_check.empty())
         Release();
 }
 
@@ -86,7 +67,7 @@ void ObjectGS::_prcsLogin(RequestGSIdentityAuthentication *msg)
         AckGSIdentityAuthentication ack;
         ack.set_seqno(msg->seqno());
         ack.set_result(m_pswd == msg->password() ? 1 : -1);
-        _send(ack);
+        send(ack);
     }
 }
 
@@ -94,7 +75,7 @@ void ObjectGS::_prcsHeartBeat(das::proto::PostHeartBeat *msg)
 {
     AckHeartBeat ahb;
     ahb.set_seqno(msg->seqno());
-    _send(ahb);
+    send(ahb);
 }
 
 void ObjectGS::ProcessMassage(const IMessage &msg)
@@ -111,7 +92,7 @@ void ObjectGS::ProcessMassage(const IMessage &msg)
         case PushUavSndInfo:
         case ControlGs:
             if (Message *ms = (Message *)msg.GetContent())
-                _send(*ms);
+                send(*ms);
             break;
         default:
             break;
@@ -162,26 +143,9 @@ int ObjectGS::ProcessReceive(void *buf, int len)
     return pos;
 }
 
-int ObjectGS::GetSenLength() const
+VGMySql * ObjectGS::GetMySql() const
 {
-    if (m_p)
-        return m_p->RemaimedLength();
-
-    return 0;
-}
-
-int ObjectGS::CopySend(char *buf, int sz, unsigned form)
-{
-    if (m_p)
-        return m_p->CopySend(buf, sz, form);
-
-    return 0;
-}
-
-void ObjectGS::SetSended(int sended /*= -1*/)
-{
-    if (m_p)
-        m_p->SetSended(sended);
+    return ((GSManager*)GetManager())->GetMySql();
 }
 
 void ObjectGS::SetCheck(const std::string &str)
@@ -253,7 +217,7 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
         nCon = _saveContact(land, *itemOwner, nCon);
         if (nCon)
         {
-            if (FiledValueItem *fd = itemLand->GetWriteItem("ownerID"))
+            if (FiledVal *fd = itemLand->GetWriteItem("ownerID"))
                 fd->InitOf(nCon);
             nLand = _saveLand(land, *itemLand, nLand);
         }
@@ -265,13 +229,13 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
     appd.set_psiid(Utility::bigint2string(nLand));
     appd.set_pcid(Utility::bigint2string(nCon));
     appd.set_pdid(Utility::bigint2string(nLand));
-    _send(appd);
+    send(appd);
 }
 
 uint64_t ObjectGS::_saveContact(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id)
 {
     const ParcelContracter &pc = msg.pc();
-    FiledValueItem *fd = item.GetWriteItem("name");
+    FiledVal *fd = item.GetWriteItem("name");
     if (fd && pc.has_name())
         fd->SetParam(pc.name());
     fd = item.GetWriteItem("birthdate");
@@ -293,12 +257,12 @@ uint64_t ObjectGS::_saveContact(const das::proto::ParcelDescription &msg, Execut
     if (item.GetType()==ExecutItem::Update && (fd=item.GetWriteItem("id")))
         fd->InitOf(uint64_t(id));
 
-    return _executeInsertSql(&item);
+    return executeInsertSql(&item);
 }
 
 uint64_t ObjectGS::_saveLand(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id)
 {
-    FiledValueItem *fd = item.GetWriteItem("name");
+    FiledVal *fd = item.GetWriteItem("name");
     if (fd && msg.has_name())
         fd->SetParam(msg.name());
     fd = item.GetWriteItem("gsuser");
@@ -310,9 +274,9 @@ uint64_t ObjectGS::_saveLand(const das::proto::ParcelDescription &msg, ExecutIte
 
     if (msg.has_coordinate())
     {
-        if (FiledValueItem *tdTmp = item.GetWriteItem("lat"))
+        if (FiledVal *tdTmp = item.GetWriteItem("lat"))
             tdTmp->InitOf(double(msg.coordinate().latitude() / 1e7));
-        if (FiledValueItem *tdTmp = item.GetWriteItem("lon"))
+        if (FiledVal *tdTmp = item.GetWriteItem("lon"))
             tdTmp->InitOf(double(msg.coordinate().longitude() / 1e7));
     }
 
@@ -323,7 +287,7 @@ uint64_t ObjectGS::_saveLand(const das::proto::ParcelDescription &msg, ExecutIte
         msg.psi().SerializeToArray(fd->GetBuff(), fd->GetMaxLen());
     }
 
-    int64_t tmp = _executeInsertSql(&item);
+    int64_t tmp = executeInsertSql(&item);
     return tmp > 0 ? tmp : id;
 }
 
@@ -341,7 +305,7 @@ void ObjectGS::_prcsReqLand(RequestParcelDescriptions *msg)
     if (user.length()>0 && item)
     {
         item->ClearData();
-        if (FiledValueItem *tdTmp = item->GetConditionItem("LandInfo.gsuser"))
+        if (FiledVal *tdTmp = item->GetConditionItem("LandInfo.gsuser"))
             tdTmp->SetParam(user);
 
         VGMySql *sql = ((GSManager*)GetManager())->GetMySql();
@@ -355,7 +319,7 @@ void ObjectGS::_prcsReqLand(RequestParcelDescriptions *msg)
         }
     }
     ack.set_result(res);
-    _send(ack);
+    send(ack);
 }
 
 void ObjectGS::_initialParcelDescription(ParcelDescription *pd, const ExecutItem &item)
@@ -366,7 +330,7 @@ void ObjectGS::_initialParcelDescription(ParcelDescription *pd, const ExecutItem
     if (ParcelContracter *pc = _transPC(item))
         pd->set_allocated_pc(pc);
 
-    FiledValueItem *fd = item.GetReadItem("LandInfo.name");
+    FiledVal *fd = item.GetReadItem("LandInfo.name");
     if (fd && fd->GetValidLen() > 0)
         pd->set_name((char*)fd->GetBuff());
     fd = item.GetReadItem("LandInfo.gsuser");
@@ -375,7 +339,7 @@ void ObjectGS::_initialParcelDescription(ParcelDescription *pd, const ExecutItem
     fd = item.GetReadItem("LandInfo.acreage");
     pd->set_acreage((fd && fd->GetValidLen() > 0)?fd->GetValue<float>():0);
     fd = item.GetReadItem("LandInfo.lat");
-    FiledValueItem *tdTmp = item.GetReadItem("LandInfo.lon");
+    FiledVal *tdTmp = item.GetReadItem("LandInfo.lon");
     if (fd && fd->GetValidLen() > 0 && tdTmp&&tdTmp->GetValidLen() > 0)
     {
         double lat = fd->GetValue<double>();
@@ -410,7 +374,7 @@ ParcelContracter *ObjectGS::_transPC(const ExecutItem &item)
     if (!pc)
         return NULL;
 
-    FiledValueItem *fd = item.GetReadItem("OwnerInfo.name");
+    FiledVal *fd = item.GetReadItem("OwnerInfo.name");
     if (fd && fd->GetValidLen() > 0)
         pc->set_name(string((char*)fd->GetBuff(), fd->GetValidLen()));
 
@@ -442,7 +406,7 @@ int64_t ObjectGS::_savePlan(ExecutItem *item, const OperationDescription &msg)
         return -1;
 
     item->ClearData();
-    FiledValueItem *fd = item->GetWriteItem("landId");
+    FiledVal *fd = item->GetWriteItem("landId");
     if (!fd || msg.pdid().empty())
         return -1;
     fd->SetParam(msg.pdid());
@@ -470,19 +434,19 @@ int64_t ObjectGS::_savePlan(ExecutItem *item, const OperationDescription &msg)
     fd = item->GetWriteItem("notes");
     if (fd && msg.has_notes())
         fd->SetParam(msg.notes());
-    if (FiledValueItem *fdTmp = item->GetWriteItem("planTime"))
+    if (FiledVal *fdTmp = item->GetWriteItem("planTime"))
         fdTmp->InitOf(msg.has_plantime() ? msg.plantime() : Utility::msTimeTick());
-    if (FiledValueItem *fdTmp = item->GetWriteItem("planParam"))
+    if (FiledVal *fdTmp = item->GetWriteItem("planParam"))
     {
         fdTmp->InitBuff(msg.op().ByteSize());
         msg.op().SerializeToArray(fdTmp->GetBuff(), fdTmp->GetMaxLen());
     }
-    return _executeInsertSql(item);
+    return executeInsertSql(item);
 }
 
 void ObjectGS::_initialPlan(das::proto::OperationDescription *msg, const ExecutItem &item)
 {
-    FiledValueItem *fd = item.GetReadItem("id");
+    FiledVal *fd = item.GetReadItem("id");
     if (fd && fd->GetValidLen() > 0)
         msg->set_odid(Utility::bigint2string(fd->GetValue()));
     fd = item.GetReadItem("landId");
@@ -516,6 +480,25 @@ void ObjectGS::_initialPlan(das::proto::OperationDescription *msg, const ExecutI
     }
 }
 
+int ObjectGS::_addDatabaseUser(const std::string &user, const std::string &pswd)
+{
+    ExecutItem *sql = VGDBManager::GetSqlByName("insertGSInfo");
+    if (!sql)
+        return -1;
+
+    FiledVal *fv = sql->GetWriteItem("user");
+    if (fv)
+        return -1;
+    fv->SetParam(user);
+
+    fv = sql->GetWriteItem("pswd");
+    if (fv)
+        return -1;
+
+    m_check.clear();
+    return executeInsertSql(sql) >= 0 ? 1 : 0;
+}
+
 void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
 {
     if (msg)
@@ -530,7 +513,7 @@ void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
         if (ExecutItem *item = VGDBManager::GetSqlByName("deleteLand"))
         {
             item->ClearData();
-            FiledValueItem *fd = item->GetConditionItem("LandInfo.id");
+            FiledVal *fd = item->GetConditionItem("LandInfo.id");
             if (fd)
                 fd->SetParam(id);
 
@@ -541,7 +524,7 @@ void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
     }
 
     ackDD.set_result(res);
-    _send(ackDD);
+    send(ackDD);
 }
 
 void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
@@ -562,7 +545,7 @@ void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
     AckIdentityAllocation ack;
     ack.set_seqno(msg->seqno());
     ack.set_result(0);
-    _send(ack);
+    send(ack);
 }
 
 void ObjectGS::_prcsPostPlan(PostOperationDescription *msg)
@@ -578,7 +561,7 @@ void ObjectGS::_prcsPostPlan(PostOperationDescription *msg)
     if(res>0)
         ack.set_odid(Utility::bigint2string(res));
 
-    _send(ack);
+    send(ack);
 }
 
 void ObjectGS::_prcsReqPlan(RequestOperationDescriptions *msg)
@@ -594,17 +577,17 @@ void ObjectGS::_prcsReqPlan(RequestOperationDescriptions *msg)
         item->ClearData();
         if (msg->has_odid())
         {
-            if (FiledValueItem *tdTmp = item->GetConditionItem("id"))
+            if (FiledVal *tdTmp = item->GetConditionItem("id"))
                 tdTmp->SetParam(msg->odid());
         }
         if (msg->has_pdid())
         {
-            if (FiledValueItem *tdTmp = item->GetConditionItem("landId"))
+            if (FiledVal *tdTmp = item->GetConditionItem("landId"))
                 tdTmp->SetParam(msg->pdid());
         }
         if (msg->has_registerid())
         {
-            if (FiledValueItem *tdTmp = item->GetConditionItem("planuser"))
+            if (FiledVal *tdTmp = item->GetConditionItem("planuser"))
                 tdTmp->SetParam(msg->registerid());
         }
        
@@ -619,7 +602,7 @@ void ObjectGS::_prcsReqPlan(RequestOperationDescriptions *msg)
         }
     }
     ack.set_result(res);
-    _send(ack);
+    send(ack);
 }
 
 void ObjectGS::_prcsDelPlan(das::proto::DeleteOperationDescription *msg)
@@ -635,7 +618,7 @@ void ObjectGS::_prcsDelPlan(das::proto::DeleteOperationDescription *msg)
     if (item && !id.empty())
     {
         item->ClearData();
-        FiledValueItem *fd = item->GetConditionItem("id");
+        FiledVal *fd = item->GetConditionItem("id");
         if (fd)
             fd->SetParam(id);
 
@@ -645,7 +628,7 @@ void ObjectGS::_prcsDelPlan(das::proto::DeleteOperationDescription *msg)
     }
 
     ackDD.set_result(res);
-    _send(ackDD);
+    send(ackDD);
 }
 
 void ObjectGS::_prcsPostMission(PostOperationRoute *msg)
@@ -665,36 +648,23 @@ void ObjectGS::_prcsReqNewGs(RequestNewGS *msg)
     if (!msg)
         return;
 
-    int res = -1;
-    if (msg->userid() != m_id)
-        res = GSManager::ExecutNewGsSql((GSManager*)GetManager(), m_id);
-
-    if (res != -2 && msg->check() == m_check && !msg->password().empty())
-    {
-
-    }
-
-    
-
+    int res = 1;
     AckNewGS ack;
     ack.set_seqno(msg->seqno());
+    if (msg->userid() != m_id)
+    {
+        res = GSManager::ExecutNewGsSql((GSManager*)GetManager(), m_id);
+        if (res == 1)
+        {
+            m_check = GSOrUavMessage::GenCheckString();
+            ack.set_check(m_check);
+        }
+    }
+    if (!m_check.empty() && msg->check() != m_check)
+        res = -3;
+    else if (res == 1 && msg->check() == m_check && !msg->password().empty())
+        res = _addDatabaseUser(msg->userid(), msg->password());
+
     ack.set_result(res);
-}
-
-void ObjectGS::_send(const google::protobuf::Message &msg)
-{
-    if (m_p)
-        m_p->SendProto(msg, m_sock);
-}
-
-int64_t ObjectGS::_executeInsertSql(ExecutItem *item)
-{
-    if (!item)
-        return 0;
-
-    VGMySql *sql = ((GSManager*)GetManager())->GetMySql();
-    if (sql && sql->Execut(item) && item->GetIncrement())
-        return item->GetIncrement()->GetValue();
-
-    return 0;
+    send(ack);
 }

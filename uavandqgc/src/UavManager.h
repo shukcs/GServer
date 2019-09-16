@@ -35,6 +35,7 @@ public:
 public:
     int PrcsBind(const das::proto::RequestBindUav *msg, const std::string &gsOld);
     void UpdatePos(const std::string &uav, double lat, double lon);
+    VGMySql *GetMySql()const;
 public:
     static uint32_t toIntID(const std::string &uavid);
 protected:

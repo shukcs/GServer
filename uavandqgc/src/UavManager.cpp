@@ -53,12 +53,12 @@ int UavManager::PrcsBind(const RequestBindUav *msg, const std::string &gsOld)
         if (ExecutItem *item = VGDBManager::GetSqlByName("updateBinded"))
         {
             item->ClearData();
-            if (FiledValueItem *fd = item->GetConditionItem("id"))
+            if (FiledVal *fd = item->GetConditionItem("id"))
                 fd->SetParam(uav);
 
-            if (FiledValueItem *fd = item->GetWriteItem("binded"))
+            if (FiledVal *fd = item->GetWriteItem("binded"))
                 fd->InitOf<char>(1 == op);
-            if (FiledValueItem *fd = item->GetWriteItem("binder"))
+            if (FiledVal *fd = item->GetWriteItem("binder"))
                 fd->SetParam(binder);
             m_sqlEng->Execut(item);
             printf("%s %s %s\n", binder.c_str(), 1 == op ? "bind" : "unbind", uav.c_str());
@@ -73,16 +73,21 @@ void UavManager::UpdatePos(const std::string &uav, double lat, double lon)
     if (ExecutItem *item = VGDBManager::GetSqlByName("updatePos"))
     {
         item->ClearData();
-        if (FiledValueItem *fd = item->GetConditionItem("id"))
+        if (FiledVal *fd = item->GetConditionItem("id"))
             fd->SetParam(uav);
 
-        if (FiledValueItem *fd = item->GetWriteItem("lat"))
+        if (FiledVal *fd = item->GetWriteItem("lat"))
             fd->InitOf(lat);
-        if (FiledValueItem *fd = item->GetWriteItem("lon"))
+        if (FiledVal *fd = item->GetWriteItem("lon"))
             fd->InitOf(lon);
 
         m_sqlEng->Execut(item);
     }
+}
+
+VGMySql *UavManager::GetMySql()const
+{
+    return m_sqlEng;
 }
 
 uint32_t UavManager::toIntID(const std::string &uavid)
@@ -227,7 +232,7 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
     else if (ExecutItem *item = VGDBManager::GetSqlByName("queryUavInfo"))
     {
         item->ClearData();
-        if (FiledValueItem *fd = item->GetConditionItem("id"))
+        if (FiledVal *fd = item->GetConditionItem("id"))
             fd->SetParam(uavid);
 
         if (m_sqlEng->Execut(item))
@@ -256,13 +261,13 @@ void UavManager::_checkBindUav(const RequestBindUav &rbu)
     if (ExecutItem *item = VGDBManager::GetSqlByName("queryUavInfo"))
     {
         item->ClearData();
-        if (FiledValueItem *fd = item->GetConditionItem("id"))
+        if (FiledVal *fd = item->GetConditionItem("id"))
             fd->SetParam(rbu.uavid());
 
         if (!m_sqlEng->Execut(item))
             return;
 
-        if (FiledValueItem *fd = item->GetReadItem("binder"))
+        if (FiledVal *fd = item->GetReadItem("binder"))
         {
             string binder((char*)fd->GetBuff(), fd->GetValidLen());
             PrcsBind(&rbu, binder);
@@ -289,7 +294,7 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, const std::string &g
         else if (ExecutItem *item = VGDBManager::GetSqlByName("queryUavInfo"))
         {
             item->ClearData();
-            if (FiledValueItem *fd = item->GetConditionItem("id"))
+            if (FiledVal *fd = item->GetConditionItem("id"))
                 fd->SetParam(uav);
 
             if (!m_sqlEng->Execut(item))
@@ -319,7 +324,7 @@ void UavManager::processAllocationUav(int seqno, const string &id)
         int res = 0;
 
         ExecutItem *sql = VGDBManager::GetSqlByName("insertUavInfo");
-        FiledValueItem *fd = sql->GetWriteItem("id");
+        FiledVal *fd = sql->GetWriteItem("id");
         char idTmp[24] = {0};
         while (sql && fd && m_lastId>0)
         {

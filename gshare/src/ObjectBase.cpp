@@ -40,16 +40,13 @@ protected:
     {
         if (!m_mgr)
             return false;
+
         bool ret = false;
         if (m_id == 0)
             ret = m_mgr->ProcessBussiness();
-
-        for (const pair<string, IObject*> &itrO : m_mgr->GetThreadObject(m_id))
-        {
-            if (itrO.second->PrcsBussiness())
-                return ret = true;
-        }
-
+        
+        if (m_mgr->PrcsObjectsOfThread(m_id))
+            ret = true;
         return ret;
     }
 private:
@@ -173,9 +170,6 @@ void IObject::OnClose(ISocket *s)
 
 void IObject::Release()
 {
-    if (IObjectManager *m = GetManager())
-        m->RemoveObject(this);
-
     m_bRelease = true;
 }
 
@@ -293,6 +287,13 @@ void IObjectManager::PrcsReleaseMsg()
     }
 }
 
+void IObjectManager::removeObject(ThreadObjects &objs, const std::string &id)
+{
+    m_mtx->Lock();
+    objs.erase(id);
+    m_mtx->Unlock();
+}
+
 bool IObjectManager::PrcsRemainMsg(const IMessage &)
 {
     return false;
@@ -319,16 +320,6 @@ bool IObjectManager::ProcessBussiness()
             ret = true;
         }
     }
-    while (m_lsObjRelease.size() > 0)
-    {
-        IObject *o = m_lsObjRelease.front();
-        ObjectsMap::iterator itr = m_mapThreadObject.find(o->GetThreadId());
-        if (itr != m_mapThreadObject.end())
-            itr->second.erase(o->GetObjectID());
-
-        ObjectManagers::Instance().Destroy(o);
-        m_lsObjRelease.pop_front();
-    }
     if(!HasIndependThread())
     {
         for (const pair<int, ThreadObjects> &itr : m_mapThreadObject)
@@ -344,29 +335,34 @@ bool IObjectManager::ProcessBussiness()
     return ret;
 }
 
-void IObjectManager::RemoveObject(IObject *o)
+bool IObjectManager::PrcsObjectsOfThread(int nThread)
 {
-    if (!o)
-        return;
+    ObjectsMap::iterator itrObjs = m_mapThreadObject.find(nThread);
+    if (itrObjs == m_mapThreadObject.end())
+        return false;
 
-    m_mtx->Lock();
-    m_lsObjRelease.push_back(o);
-    m_mtx->Unlock();
-}
+    bool ret = false;
+    ThreadObjects::iterator itr = itrObjs->second.begin();
+    while (itr != itrObjs->second.end())
+    {
+        if (itr->second->PrcsBussiness())
+            ret = true;
 
-const IObjectManager::ThreadObjects &IObjectManager::GetThreadObject(int t) const
-{
-    static ThreadObjects sLsEmpty;
-    ObjectsMap::const_iterator itr = m_mapThreadObject.find(t);
-    if (itr != m_mapThreadObject.end())
-        return itr->second;
-
-    return sLsEmpty;
+        if (itr->second->IsRealse())
+        {
+            ThreadObjects::iterator tmp = itr++;
+            removeObject(itrObjs->second, tmp->first);
+            ObjectManagers::Instance().Destroy(tmp->second);
+            continue;
+        }
+        itr++;
+    }
+    return ret;
 }
 
 bool IObjectManager::Exist(IObject *obj) const
 {
-    if (!obj || obj->GetThreadId()>=0)
+    if (!obj || obj->GetThreadId()<=0)
         return false;
 
     ObjectsMap::const_iterator itr = m_mapThreadObject.find(obj->GetThreadId());

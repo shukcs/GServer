@@ -45,7 +45,7 @@ int GSManager::ExecutNewGsSql(GSManager *mgr, const string &gs)
     ExecutItem *item = VGDBManager::GetSqlByName("checkGS");
     if (item && res != -2)
     {
-        if (FiledValueItem *fd = item->GetConditionItem("user"))
+        if (FiledVal *fd = item->GetConditionItem("user"))
         {
             fd->SetParam(gs);
             res = 1;
@@ -117,7 +117,8 @@ IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
     if (1 == res)
     {
         string check = GSOrUavMessage::GenCheckString();
-        if (o = new ObjectGS(msg->userid()))
+        o = new ObjectGS(msg->userid());
+        if (o)
             o->SetCheck(check);
         ack.set_check(check);
     }
@@ -142,18 +143,18 @@ IObject *GSManager::_checkLogin(ISocket *s, const das::proto::RequestGSIdentityA
     else if (ExecutItem *item = VGDBManager::GetSqlByName("queryGSInfo"))
     {
         item->ClearData();
-        if (FiledValueItem *fd = item->GetConditionItem("user"))
+        if (FiledVal *fd = item->GetConditionItem("user"))
             fd->SetParam(usr);
 
         if (m_sqlEng->Execut(item))
         {
             res = -1;
-            FiledValueItem *fd = item->GetReadItem("pswd");
+            FiledVal *fd = item->GetReadItem("pswd");
             if (fd && string((char*)fd->GetBuff(), fd->GetValidLen())==pswd)
             {
                 o = new ObjectGS(usr);
                 o->SetPswd(pswd);
-                if (FiledValueItem *fd = item->GetReadItem("auth"))
+                if (FiledVal *fd = item->GetReadItem("auth"))
                     o->SetAuth(fd->GetValue<int>());
                 o->OnConnected(true);
                 res = 1;

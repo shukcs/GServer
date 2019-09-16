@@ -5,7 +5,7 @@
 typedef struct st_mysql_bind MYSQL_BIND;
 class TiXmlElement;
 class ExecutItem;
-class FiledValueItem
+class FiledVal
 {
 public:
     SHARED_SQL void SetParam(const string &param, bool=true, bool =false);
@@ -51,9 +51,9 @@ public:
     static void parse(const TiXmlElement *e, ExecutItem *tb);
     static int transToType(const char *pro);
 protected:
-    FiledValueItem(int tp, const string &name = "", int len = 0);
-    FiledValueItem(VGTableField *fild, bool bOth = false);
-    ~FiledValueItem();
+    FiledVal(int tp, const string &name = "", int len = 0);
+    FiledVal(VGTableField *fild, bool bOth = false);
+    ~FiledVal();
 private:
     friend class ExecutItem;
     int             m_type;
@@ -86,10 +86,10 @@ public:
 public:
     ~ExecutItem();
 
-    SHARED_SQL FiledValueItem *GetReadItem(const string &name)const;
-    SHARED_SQL FiledValueItem *GetWriteItem(const string &name)const;
-    SHARED_SQL FiledValueItem *GetConditionItem(const string &name)const;
-    SHARED_SQL FiledValueItem *GetIncrement()const;
+    SHARED_SQL FiledVal *GetReadItem(const string &name)const;
+    SHARED_SQL FiledVal *GetWriteItem(const string &name)const;
+    SHARED_SQL FiledVal *GetConditionItem(const string &name)const;
+    SHARED_SQL FiledVal *GetIncrement()const;
     SHARED_SQL bool IsValid()const;
     SHARED_SQL int CountRead()const;
     SHARED_SQL void ClearData();
@@ -99,15 +99,15 @@ public:
     MYSQL_BIND *GetParamBinds();
     const std::string &GetName()const;
     const StringList &ExecutTables()const;
-    void AddItem(FiledValueItem *item, int tp);
-    void SetIncrement(FiledValueItem *item);
-    FiledValueItem *GetItem(const string &name, int tp)const;
+    void AddItem(FiledVal *item, int tp);
+    void SetIncrement(FiledVal *item);
+    FiledVal *GetItem(const string &name, int tp)const;
     MYSQL_BIND *TransformRead();
     bool HasForeignRefTable()const;
     void SetRef(bool b);
     bool IsRef()const;
 public:
-    static void transformBind(FiledValueItem *item, MYSQL_BIND &bind, bool=false);
+    static void transformBind(FiledVal *item, MYSQL_BIND &bind, bool=false);
     static ExecutItem *parse(const TiXmlElement *e);
     static ExecutType transToSqlType(const char *pro);
 protected:
@@ -116,7 +116,7 @@ protected:
     void AddExecutTable(const std::string &t);
 private:
     void _parseItems(const TiXmlElement *e);
-    void _addCondition(FiledValueItem *item);
+    void _addCondition(FiledVal *item);
     string _getTablesString()const;
     string _toInsert(MYSQL_BIND *bind, int &pos)const;
     string _toDelete(MYSQL_BIND *bind, int &pos)const;
@@ -129,13 +129,13 @@ private:
     ExecutType              m_type;
     string                  m_name;
     string                  m_condition;
-    FiledValueItem*         m_autoIncrement;
+    FiledVal*         m_autoIncrement;
     bool                    m_bHasForeignRefTable;
     bool                    m_bRef;
     StringList              m_tables;
-    list<FiledValueItem*>   m_itemsRead;
-    list<FiledValueItem*>   m_itemsWrite;
-    list<FiledValueItem*>   m_itemsCondition;
+    list<FiledVal*>   m_itemsRead;
+    list<FiledVal*>   m_itemsWrite;
+    list<FiledVal*>   m_itemsCondition;
 };
 
 #endif //__DB_EXEC_ITEM__;

@@ -30,6 +30,9 @@
     <ClCompile Include="src\ObjectUav.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\ObjectAbsPB.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\UavManager.h">
@@ -51,6 +54,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\ObjectUav.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectAbsPB.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,7 +1,7 @@
 #ifndef  __OBJECT_GS_H__
 #define __OBJECT_GS_H__
 
-#include "ObjectBase.h"
+#include "ObjectAbsPB.h"
 
 namespace das {
     namespace proto {
@@ -25,38 +25,29 @@ namespace das {
     }
 }
 
-namespace google {
-    namespace protobuf {
-        class Message;
-    }
-}
-
 class ExecutItem;
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
 #endif
 
 class ProtoMsg;
-class ObjectGS : public IObject
+class ObjectGS : public ObjectAbsPB
 {
 public:
     ObjectGS(const std::string &id);
     ~ObjectGS();
-    bool IsConnect()const;
 
-    virtual void OnConnected(bool bConnected);
     void SetPswd(const std::string &pswd);
+    void SetCheck(const std::string &str);
     const std::string &GetPswd()const;
     void SetAuth(int);
 protected:
+    virtual void OnConnected(bool bConnected);
     virtual int GetObjectType()const;
     virtual void ProcessMassage(const IMessage &msg);
     virtual int ProcessReceive(void *buf, int len);
-    virtual int GetSenLength()const;
-    virtual int CopySend(char *buf, int sz, unsigned form = 0);
-    virtual void SetSended(int sended = -1);//-1,·¢ËÍÍê
-    
-    void SetCheck(const std::string &str);
+
+    VGMySql *GetMySql()const;
 private:
     void _prcsLogin(das::proto::RequestGSIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
@@ -79,16 +70,12 @@ private:
     das::proto::ParcelContracter *_transPC(const ExecutItem &item);
     int64_t _savePlan(ExecutItem *item, const das::proto::OperationDescription &msg);
     void _initialPlan(das::proto::OperationDescription *msg, const ExecutItem &item);
-
-    void _send(const google::protobuf::Message &msg);
-    int64_t _executeInsertSql(ExecutItem *item);
+    int _addDatabaseUser(const std::string &user, const std::string &pswd);
 private:
     friend class GSManager;
-    bool            m_bConnect;
     int             m_auth;
     std::string     m_pswd;
     std::string     m_check;
-    ProtoMsg        *m_p;
 };
 
 #endif // __OBJECT_UAV_H__

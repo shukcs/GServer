@@ -45,8 +45,8 @@
 	</Tables>
 	<SQLs>
 		<SQL name="insertGSInfo" table="GSInfo" type="Insert" >
-			<item name="user" ref="GSInfo" type="Write" />
-			<item name="pswd" ref="GSInfo" type="Write" />
+			<item name="user" type="Write" />
+			<item name="pswd" type="Write" />
 		</SQL>
 		<SQL name="queryGSInfo" table="GSInfo" type="Select" >
 			<item name="pswd" ref="GSInfo" type="Read" />

@@ -11,16 +11,16 @@
 #include <string.h>
 
 ///////////////////////////////////////////////////////////////////////////////////////
-//FiledValueItem
+//FiledVal
 ///////////////////////////////////////////////////////////////////////////////////////
-FiledValueItem::FiledValueItem(int tp, const std::string &name, int len)
+FiledVal::FiledVal(int tp, const std::string &name, int len)
 : m_type(tp), m_bEmpty(true), m_bStatic(false), m_buff(NULL)
 , m_lenMax(0), m_len(0), m_name(name), m_condition("=")
 {
     InitBuff(len);
 }
 
-FiledValueItem::FiledValueItem(VGTableField *fild, bool bOth)
+FiledVal::FiledVal(VGTableField *fild, bool bOth)
 : m_type(-1), m_bEmpty(true), m_bStatic(false), m_buff(NULL)
 , m_lenMax(0), m_len(0), m_condition("=")
 {
@@ -32,22 +32,22 @@ FiledValueItem::FiledValueItem(VGTableField *fild, bool bOth)
     }
 }
 
-FiledValueItem::~FiledValueItem()
+FiledVal::~FiledVal()
 {
     delete m_buff;
 }
 
-void FiledValueItem::SetFieldName(const std::string &name)
+void FiledVal::SetFieldName(const std::string &name)
 {
     m_name = name;
 }
 
-const std::string & FiledValueItem::GetFieldName() const
+const std::string & FiledVal::GetFieldName() const
 {
     return m_name;
 }
 
-void FiledValueItem::SetParam(const string &param, bool val, bool bStatic)
+void FiledVal::SetParam(const string &param, bool val, bool bStatic)
 {
     if(param.length() > 0)
     {
@@ -67,12 +67,12 @@ void FiledValueItem::SetParam(const string &param, bool val, bool bStatic)
     }
 }
 
-const string & FiledValueItem::GetParam() const
+const string & FiledVal::GetParam() const
 {
     return m_param;
 }
 
-void FiledValueItem::InitBuff(unsigned len, const void *buf)
+void FiledVal::InitBuff(unsigned len, const void *buf)
 {
     if (len > m_lenMax)
     {
@@ -89,53 +89,53 @@ void FiledValueItem::InitBuff(unsigned len, const void *buf)
     m_bEmpty = false;
 }
 
-const string &FiledValueItem::GetCondition() const
+const string &FiledVal::GetCondition() const
 {
     return m_condition;
 }
 
-unsigned FiledValueItem::GetMaxLen() const
+unsigned FiledVal::GetMaxLen() const
 {
     return m_buff ? m_lenMax : 0;
 }
 
-unsigned FiledValueItem::GetValidLen() const
+unsigned FiledVal::GetValidLen() const
 {
     return m_buff ? m_len : 0;
 }
 
-void *FiledValueItem::GetBuff() const
+void *FiledVal::GetBuff() const
 {
     return m_buff;
 }
 
-int FiledValueItem::GetType() const
+int FiledVal::GetType() const
 {
     return m_type;
 }
 
-unsigned long &FiledValueItem::ReadLength()
+unsigned long &FiledVal::ReadLength()
 {
     return m_len;
 }
 
-bool FiledValueItem::IsStaticParam() const
+bool FiledVal::IsStaticParam() const
 {
     return m_len<=0 && m_param.length()>0;
 }
 
-bool FiledValueItem::IsEmpty() const
+bool FiledVal::IsEmpty() const
 {
     return m_bEmpty;
 }
 
-void FiledValueItem::SetEmpty()
+void FiledVal::SetEmpty()
 {
     if(!IsStaticParam() || !m_bStatic)
         m_bEmpty = true;
 }
 
-void FiledValueItem::parse(const TiXmlElement *e, ExecutItem *sql)
+void FiledVal::parse(const TiXmlElement *e, ExecutItem *sql)
 {
     if (!e || !sql)
         return;
@@ -144,7 +144,7 @@ void FiledValueItem::parse(const TiXmlElement *e, ExecutItem *sql)
     if (tp == ExecutItem::AutoIncrement)
     {
         if(!sql->GetIncrement())
-            sql->SetIncrement(new FiledValueItem(-1, "", sizeof(int64_t)));
+            sql->SetIncrement(new FiledVal(-1, "", sizeof(int64_t)));
 
         return;
     }
@@ -152,7 +152,7 @@ void FiledValueItem::parse(const TiXmlElement *e, ExecutItem *sql)
     if (!name || tp > ExecutItem::Condition || tp < ExecutItem::Read)
         return;
 
-    FiledValueItem *item = NULL;
+    FiledVal *item = NULL;
     const char *tmp = e->Attribute("ref");
     if (tmp)
     {
@@ -161,7 +161,7 @@ void FiledValueItem::parse(const TiXmlElement *e, ExecutItem *sql)
         {
             if (VGTableField *fd = tb->FindFieldByName(name))
             {
-                item = new FiledValueItem(fd, sql->ExecutTables().size() > 1);
+                item = new FiledVal(fd, sql->ExecutTables().size() > 1);
                 sql->AddItem(item, tp);
             }
         }
@@ -171,13 +171,13 @@ void FiledValueItem::parse(const TiXmlElement *e, ExecutItem *sql)
         int tpSql = tmpTp ? VGDBManager::str2int(tmpTp) : -1;
         tmpTp = e->Attribute("length");
         int len = tmpTp ? VGDBManager::str2int(tmpTp) : 0;
-        item = new FiledValueItem(tpSql, name, len);
+        item = new FiledVal(tpSql, name, len);
         sql->AddItem(item, tp);
     }
     else
     {
         tmp = e->Attribute("param");
-        item = new FiledValueItem(-1, name, 0);
+        item = new FiledVal(-1, name, 0);
         if (tmp)
             item->SetParam(tmp, false, true);
         else if (const char *val = e->Attribute("paramVal"))
@@ -191,7 +191,7 @@ void FiledValueItem::parse(const TiXmlElement *e, ExecutItem *sql)
         item->m_condition = tmp;
 }
 
-int FiledValueItem::transToType(const char *pro)
+int FiledVal::transToType(const char *pro)
 {
     int ret = -1;
 
@@ -220,12 +220,12 @@ ExecutItem::ExecutItem(ExecutType tp, const std::string &name)
 
 ExecutItem::~ExecutItem()
 {
-    for (FiledValueItem *itr : m_itemsRead)
+    for (FiledVal *itr : m_itemsRead)
     {
         delete itr;
     }
 
-    for (FiledValueItem *itr : m_itemsWrite)
+    for (FiledVal *itr : m_itemsWrite)
     {
         delete itr;
     }
@@ -271,7 +271,7 @@ void ExecutItem::AddExecutTable(const std::string &t)
     m_tables.push_back(t);
 }
 
-void ExecutItem::AddItem(FiledValueItem *item, int tp)
+void ExecutItem::AddItem(FiledVal *item, int tp)
 {
     if (!item)
         return;
@@ -284,7 +284,7 @@ void ExecutItem::AddItem(FiledValueItem *item, int tp)
         _addCondition(item);
 }
 
-void ExecutItem::SetIncrement(FiledValueItem *item)
+void ExecutItem::SetIncrement(FiledVal *item)
 {
     if (m_autoIncrement && item)
         return;
@@ -295,9 +295,9 @@ void ExecutItem::SetIncrement(FiledValueItem *item)
     m_autoIncrement = item;
 }
 
-FiledValueItem *ExecutItem::GetReadItem(const string &name)const
+FiledVal *ExecutItem::GetReadItem(const string &name)const
 {
-    for (FiledValueItem *itr : m_itemsRead)
+    for (FiledVal *itr : m_itemsRead)
     {
         if (name == itr->GetFieldName())
             return itr;
@@ -305,9 +305,9 @@ FiledValueItem *ExecutItem::GetReadItem(const string &name)const
     return NULL;
 }
 
-FiledValueItem *ExecutItem::GetWriteItem(const string &name) const
+FiledVal *ExecutItem::GetWriteItem(const string &name) const
 {
-    for (FiledValueItem *itr : m_itemsWrite)
+    for (FiledVal *itr : m_itemsWrite)
     {
         if (name == itr->GetFieldName())
             return itr;
@@ -316,9 +316,9 @@ FiledValueItem *ExecutItem::GetWriteItem(const string &name) const
     return NULL;
 }
 
-FiledValueItem *ExecutItem::GetConditionItem(const string &name) const
+FiledVal *ExecutItem::GetConditionItem(const string &name) const
 {
-    for (FiledValueItem *itr : m_itemsCondition)
+    for (FiledVal *itr : m_itemsCondition)
     {
         if (name == itr->GetFieldName())
             return itr;
@@ -326,7 +326,7 @@ FiledValueItem *ExecutItem::GetConditionItem(const string &name) const
     return NULL;
 }
 
-FiledValueItem *ExecutItem::GetIncrement() const
+FiledVal *ExecutItem::GetIncrement() const
 {
     return m_autoIncrement;
 }
@@ -336,7 +336,7 @@ bool ExecutItem::IsValid() const
     return (m_type > Unknown && m_type <= Select && m_tables.size() > 0);
 }
 
- FiledValueItem *ExecutItem::GetItem(const string &name, int tp) const
+ FiledVal *ExecutItem::GetItem(const string &name, int tp) const
 {
      if (ExecutItem::Read == tp)
          return GetReadItem(name);
@@ -351,12 +351,12 @@ bool ExecutItem::IsValid() const
 MYSQL_BIND *ExecutItem::GetParamBinds()
 {
     int count = 0;
-    for (FiledValueItem *itr : m_itemsWrite)
+    for (FiledVal *itr : m_itemsWrite)
     {
         if (!itr->IsEmpty() && !itr->IsStaticParam())
             count++;
     }
-    for (FiledValueItem *itr : m_itemsCondition)
+    for (FiledVal *itr : m_itemsCondition)
     {
         if (!itr->IsEmpty() && !itr->IsStaticParam())
             count++;
@@ -396,17 +396,17 @@ string ExecutItem::GetSqlString(MYSQL_BIND *paramBinds) const
 
 void ExecutItem::ClearData()
 {
-    for (FiledValueItem *itr : m_itemsRead)
+    for (FiledVal *itr : m_itemsRead)
     {
         itr->InitBuff(0);
     }
 
-    for (FiledValueItem *itr : m_itemsWrite)
+    for (FiledVal *itr : m_itemsWrite)
     {
         itr->SetEmpty();
     }
 
-    for (FiledValueItem *itr : m_itemsCondition)
+    for (FiledVal *itr : m_itemsCondition)
     {
         itr->SetEmpty();
     }
@@ -423,7 +423,7 @@ MYSQL_BIND *ExecutItem::TransformRead()
         return NULL;
     memset(binds, 0, sz * sizeof(MYSQL_BIND));
     int pos = 0;
-    for (FiledValueItem *item : m_itemsRead)
+    for (FiledVal *item : m_itemsRead)
     {
         ExecutItem::transformBind(item, binds[pos++], true);
     }
@@ -445,7 +445,7 @@ bool ExecutItem::IsRef() const
     return m_bRef;
 }
 
-void ExecutItem::transformBind(FiledValueItem *item, MYSQL_BIND &bind, bool bRead)
+void ExecutItem::transformBind(FiledVal *item, MYSQL_BIND &bind, bool bRead)
 {
     if (item)
     {
@@ -501,7 +501,7 @@ void ExecutItem::_parseItems(const TiXmlElement *e)
                 for (VGTableField *f : tb->Fields())
                 {
                     int tp = m_type == ExecutItem::Select ? ExecutItem::Read : ExecutItem::Write;
-                    AddItem(new FiledValueItem(f, m_tables.size() > 1), tp);
+                    AddItem(new FiledVal(f, m_tables.size() > 1), tp);
                 }
             }
         }
@@ -511,17 +511,17 @@ void ExecutItem::_parseItems(const TiXmlElement *e)
         const TiXmlNode *node = e->FirstChild("item");
         while (node)
         {
-            FiledValueItem::parse(node->ToElement(), this);
+            FiledVal::parse(node->ToElement(), this);
             node = node->NextSibling("item");
         }
     }
 
 }
 
-void ExecutItem::_addCondition(FiledValueItem *item)
+void ExecutItem::_addCondition(FiledVal *item)
 {
     string tmp = item ? item->GetFieldName() : string();
-    for (FiledValueItem *itr : m_itemsCondition)
+    for (FiledVal *itr : m_itemsCondition)
     {
         if (itr == item || itr->GetFieldName() == tmp)
             return;
@@ -548,7 +548,7 @@ string ExecutItem::_toInsert(MYSQL_BIND *binds, int &pos)const
 
     string fields;
     string values;
-    for (FiledValueItem *item : m_itemsWrite)
+    for (FiledVal *item : m_itemsWrite)
     {
         if(item->IsEmpty())
             continue;
@@ -601,7 +601,7 @@ string ExecutItem::_toUpdate(MYSQL_BIND *bind, int &pos) const
     sql += _getTablesString();
 
     string updates;
-    for (FiledValueItem *item : m_itemsWrite)
+    for (FiledVal *item : m_itemsWrite)
     {
         if (item->IsEmpty())
             continue;
@@ -636,7 +636,7 @@ string ExecutItem::_toUpdate(MYSQL_BIND *bind, int &pos) const
 std::string ExecutItem::_toSelect(MYSQL_BIND *param, int &pos) const
 {
     string fields;
-    for (FiledValueItem *item : m_itemsRead)
+    for (FiledVal *item : m_itemsRead)
     {
         if (fields.length() > 0)
             fields += ",";
@@ -649,7 +649,7 @@ std::string ExecutItem::_toSelect(MYSQL_BIND *param, int &pos) const
 string ExecutItem::_conditionsString(MYSQL_BIND *bind, int &pos) const
 {
     string conditions;
-    for (FiledValueItem *itr : m_itemsCondition)
+    for (FiledVal *itr : m_itemsCondition)
     {
         if(itr->IsEmpty())
             continue;

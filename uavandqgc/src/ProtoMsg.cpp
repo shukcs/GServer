@@ -244,11 +244,7 @@ bool ProtoMsg::_resureSz(uint16_t sz)
 
 void ProtoMsg::_clear()
 {
-    if (m_msg)
-    {
-        delete m_msg;
-        m_msg = NULL;
-    }
+    ReleasePointer(m_msg);
     m_name.clear();
 }
 
