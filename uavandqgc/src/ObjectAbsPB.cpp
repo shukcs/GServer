@@ -85,7 +85,7 @@ int64_t ObjectAbsPB::executeInsertSql(ExecutItem *item)
         return -1;
 
     VGMySql *sql = GetMySql();
-    if (sql && sql->Execut(item) && item->GetIncrement())
+    if (sql && sql->Execut(item))
         return item->GetIncrement() ? item->GetIncrement()->GetValue() : 0;
 
     return -1;

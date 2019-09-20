@@ -68,11 +68,10 @@ IObject *GSManager::PrcsReceiveByMgr(ISocket *s, const char *buf, int &len)
 {
     int pos = 0;
     int l = len;
-    len = 0;
     IObject *o = NULL;
     while (m_p && m_p->Parse(buf + pos, l))
     {
-        pos = l;
+        pos += l;
         l = len - pos;
         const string &name = m_p->GetMsgName();
         if (name == d_p_ClassName(RequestGSIdentityAuthentication))
@@ -82,7 +81,8 @@ IObject *GSManager::PrcsReceiveByMgr(ISocket *s, const char *buf, int &len)
         }
         else if(name == d_p_ClassName(RequestNewGS))
         {
-            len = l;
+            o = prcsPBNewGs(s, (RequestNewGS *)m_p->GetProtoMessage());
+            len = pos;
         }
     }
     return o;

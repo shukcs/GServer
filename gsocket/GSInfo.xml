@@ -159,6 +159,7 @@
 			<item name="planuser" type="Condition" />
 		</SQL>
 		<SQL name="checkGS" table="GSInfo" type="Select" >
+			<item name="user" ref="GSInfo" type="Read" />
 			<item name="user" type="Condition" />
 		</SQL>
 	</SQLs>

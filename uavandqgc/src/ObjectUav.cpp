@@ -19,8 +19,8 @@ using namespace ::google::protobuf;
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
 ObjectUav::ObjectUav(const std::string &id): ObjectAbsPB(id)
-, m_bBind(false), m_lat(0), m_lon(0), m_tmLastInfo(0)
-, m_tmLastBind(0), m_mission(NULL)
+, m_bBind(false), m_lastORNotify(0), m_lat(0), m_lon(0), m_tmLastInfo(0)
+, m_tmLastBind(0), m_mission(NULL), m_bSys(false)
 {
 }
 
@@ -72,7 +72,8 @@ int ObjectUav::GetObjectType() const
 void ObjectUav::OnConnected(bool bConnected)
 {
     ObjectAbsPB::OnConnected(bConnected);
-    m_tmLastInfo = Utility::msTimeTick();
+    if(bConnected)
+        m_tmLastInfo = Utility::msTimeTick();
 }
 
 void ObjectUav::RespondLogin(int seq, int res)
@@ -149,6 +150,15 @@ VGMySql *ObjectUav::GetMySql() const
     return ((UavManager*)GetManager())->GetMySql();
 }
 
+void ObjectUav::CheckTimer(uint64_t ms)
+{
+    if (m_mission && !m_bSys && (uint32_t)ms-m_lastORNotify > 500)
+        _notifyUavUOR(*m_mission);
+
+    if (ms+1000-m_tmLastInfo>6000 && m_sock)//³¬Ê±¹Ø±Õ
+        m_sock->Close();
+}
+
 void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
 {
     if (!msg)
@@ -214,6 +224,7 @@ void ObjectUav::prcsRcvReqMissions(RequestRouteMissions *msg)
             ack.add_missions(msItem.c_str(), msItem.size());
         }
     }
+    m_bSys = true;
     send(ack);
     if (!_isBind(m_lastBinder))
         return;
@@ -273,15 +284,10 @@ void ObjectUav::processPostOr(PostOperationRoute *msg)
         m_mission->CopyFrom(mission);
         if (m_mission->createtime() == 0)
             m_mission->set_createtime(Utility::msTimeTick());
-        UploadOperationRoutes upload;
-        upload.set_seqno(msg->seqno());
-        upload.set_uavid(mission.uavid());
-        upload.set_userid(mission.gsid());
-        upload.set_timestamp(m_mission->createtime());
-        upload.set_countmission(mission.missions_size());
-        upload.set_countboundary(mission.boundarys_size());
-        send(upload);
+
+        m_bSys = false;
         ret = 1;
+        _notifyUavUOR(*m_mission);
     }
     if (GSMessage *ms = new GSMessage(this, mission.gsid()))
     {
@@ -304,4 +310,18 @@ bool ObjectUav::_hasMission(const das::proto::RequestRouteMissions &req) const
         return false;
 
     return (req.offset() + req.count()) < (req.boundary() ? m_mission->boundarys_size() : m_mission->missions_size());
+}
+
+void ObjectUav::_notifyUavUOR(const OperationRoute &or)
+{
+    static uint32_t sSeqno = 1;
+    UploadOperationRoutes upload;
+    upload.set_seqno(sSeqno++);
+    upload.set_uavid(or.uavid());
+    upload.set_userid(or.gsid());
+    upload.set_timestamp(or.createtime());
+    upload.set_countmission(or.missions_size());
+    upload.set_countboundary(or.boundarys_size());
+    send(upload);
+    m_lastORNotify = (uint32_t)Utility::msTimeTick();
 }

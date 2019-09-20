@@ -182,7 +182,7 @@ void GSocket::OnClose()
 {
     m_stat = ISocket::Closed;
     if (m_object)
-        m_object->OnClose(this);
+        m_object->OnSockClose(this);
     else
         ObjectManagers::Instance().OnSocketClose(this);
 

@@ -219,9 +219,6 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* UploadOperationRoutes_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   UploadOperationRoutes_reflection_ = NULL;
-const ::google::protobuf::Descriptor* AckUploadOperationRoutes_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  AckUploadOperationRoutes_reflection_ = NULL;
 const ::google::protobuf::Descriptor* SyscOperationRoutes_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   SyscOperationRoutes_reflection_ = NULL;
@@ -1460,23 +1457,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UploadOperationRoutes));
-  AckUploadOperationRoutes_descriptor_ = file->message_type(66);
-  static const int AckUploadOperationRoutes_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUploadOperationRoutes, seqno_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUploadOperationRoutes, result_),
-  };
-  AckUploadOperationRoutes_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
-      AckUploadOperationRoutes_descriptor_,
-      AckUploadOperationRoutes::default_instance_,
-      AckUploadOperationRoutes_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUploadOperationRoutes, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUploadOperationRoutes, _unknown_fields_),
-      -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(AckUploadOperationRoutes));
-  SyscOperationRoutes_descriptor_ = file->message_type(67);
+  SyscOperationRoutes_descriptor_ = file->message_type(66);
   static const int SyscOperationRoutes_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SyscOperationRoutes, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SyscOperationRoutes, result_),
@@ -1495,7 +1476,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(SyscOperationRoutes));
-  RequestRouteMissions_descriptor_ = file->message_type(68);
+  RequestRouteMissions_descriptor_ = file->message_type(67);
   static const int RequestRouteMissions_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestRouteMissions, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestRouteMissions, uavid_),
@@ -1514,7 +1495,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestRouteMissions));
-  AckRequestRouteMissions_descriptor_ = file->message_type(69);
+  AckRequestRouteMissions_descriptor_ = file->message_type(68);
   static const int AckRequestRouteMissions_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestRouteMissions, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestRouteMissions, result_),
@@ -1533,7 +1514,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestRouteMissions));
-  UavStatus_descriptor_ = file->message_type(70);
+  UavStatus_descriptor_ = file->message_type(69);
   static const int UavStatus_offsets_[11] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavStatus, uavid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavStatus, result_),
@@ -1558,7 +1539,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UavStatus));
-  RequestUavStatus_descriptor_ = file->message_type(71);
+  RequestUavStatus_descriptor_ = file->message_type(70);
   static const int RequestUavStatus_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavStatus, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavStatus, uavid_),
@@ -1574,7 +1555,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestUavStatus));
-  AckRequestUavStatus_descriptor_ = file->message_type(72);
+  AckRequestUavStatus_descriptor_ = file->message_type(71);
   static const int AckRequestUavStatus_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavStatus, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavStatus, status_),
@@ -1590,7 +1571,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestUavStatus));
-  RequestBindUav_descriptor_ = file->message_type(73);
+  RequestBindUav_descriptor_ = file->message_type(72);
   static const int RequestBindUav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestBindUav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestBindUav, opid_),
@@ -1608,7 +1589,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestBindUav));
-  AckRequestBindUav_descriptor_ = file->message_type(74);
+  AckRequestBindUav_descriptor_ = file->message_type(73);
   static const int AckRequestBindUav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestBindUav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestBindUav, opid_),
@@ -1626,7 +1607,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestBindUav));
-  UavProductInfo_descriptor_ = file->message_type(75);
+  UavProductInfo_descriptor_ = file->message_type(74);
   static const int UavProductInfo_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavProductInfo, uavid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavProductInfo, producttype_),
@@ -1646,7 +1627,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UavProductInfo));
-  RequestUavProductInfos_descriptor_ = file->message_type(76);
+  RequestUavProductInfos_descriptor_ = file->message_type(75);
   static const int RequestUavProductInfos_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavProductInfos, productid_),
@@ -1663,7 +1644,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestUavProductInfos));
-  AckRequestUavProductInfos_descriptor_ = file->message_type(77);
+  AckRequestUavProductInfos_descriptor_ = file->message_type(76);
   static const int AckRequestUavProductInfos_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavProductInfos, result_),
@@ -1680,7 +1661,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestUavProductInfos));
-  PostUavProductInfos_descriptor_ = file->message_type(78);
+  PostUavProductInfos_descriptor_ = file->message_type(77);
   static const int PostUavProductInfos_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostUavProductInfos, upi_),
@@ -1696,7 +1677,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostUavProductInfos));
-  AckPostUavProductInfos_descriptor_ = file->message_type(79);
+  AckPostUavProductInfos_descriptor_ = file->message_type(78);
   static const int AckPostUavProductInfos_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostUavProductInfos, result_),
@@ -1712,7 +1693,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostUavProductInfos));
-  PostControl2Uav_descriptor_ = file->message_type(80);
+  PostControl2Uav_descriptor_ = file->message_type(79);
   static const int PostControl2Uav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostControl2Uav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostControl2Uav, uavid_),
@@ -1730,7 +1711,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostControl2Uav));
-  AckPostControl2Uav_descriptor_ = file->message_type(81);
+  AckPostControl2Uav_descriptor_ = file->message_type(80);
   static const int AckPostControl2Uav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostControl2Uav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostControl2Uav, result_),
@@ -1748,7 +1729,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostControl2Uav));
-  PostStatus2GroundStation_descriptor_ = file->message_type(82);
+  PostStatus2GroundStation_descriptor_ = file->message_type(81);
   static const int PostStatus2GroundStation_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostStatus2GroundStation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostStatus2GroundStation, uavid_),
@@ -1910,8 +1891,6 @@ void protobuf_RegisterTypes(const ::std::string&) {
     AckPostOperationRoute_descriptor_, &AckPostOperationRoute::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     UploadOperationRoutes_descriptor_, &UploadOperationRoutes::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    AckUploadOperationRoutes_descriptor_, &AckUploadOperationRoutes::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     SyscOperationRoutes_descriptor_, &SyscOperationRoutes::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -2081,8 +2060,6 @@ void protobuf_ShutdownFile_das_2eproto() {
   delete AckPostOperationRoute_reflection_;
   delete UploadOperationRoutes::default_instance_;
   delete UploadOperationRoutes_reflection_;
-  delete AckUploadOperationRoutes::default_instance_;
-  delete AckUploadOperationRoutes_reflection_;
   delete SyscOperationRoutes::default_instance_;
   delete SyscOperationRoutes_reflection_;
   delete RequestRouteMissions::default_instance_;
@@ -2150,14 +2127,14 @@ void protobuf_AddDesc_das_2eproto() {
     "2\030\007 \001(\r\022\017\n\007release\030\010 \001(\010\"/\n\016AckPostProgr"
     "am\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"j\n\rNot"
     "ifyProgram\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t"
-    "\022\014\n\004name\030\003 \002(\t\022\016\n\006fwtype\030\005 \002(\005\022\016\n\006length"
-    "\030\006 \002(\005\022\r\n\005crc32\030\007 \002(\r\"1\n\020AckNotifyProgra"
+    "\022\014\n\004name\030\003 \002(\t\022\016\n\006fwtype\030\004 \002(\005\022\016\n\006length"
+    "\030\005 \002(\005\022\r\n\005crc32\030\006 \002(\r\"1\n\020AckNotifyProgra"
     "m\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"M\n\016Requ"
     "estProgram\022\r\n\005seqno\030\001 \002(\r\022\014\n\004name\030\002 \002(\t\022"
     "\016\n\006offset\030\003 \002(\005\022\016\n\006length\030\004 \002(\005\"^\n\021AckRe"
     "questProgram\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 "
     "\002(\005\022\014\n\004name\030\003 \002(\t\022\016\n\006offset\030\004 \002(\005\022\014\n\004dat"
-    "a\030\006 \001(\014\"e\n\035RequestPositionAuthentication"
+    "a\030\005 \001(\014\"e\n\035RequestPositionAuthentication"
     "\022\r\n\005seqno\030\001 \002(\r\022\r\n\005devid\030\002 \002(\t\022&\n\003pos\030\003 "
     "\002(\0132\031.das.proto.GpsInformation\"I\n\031AckPos"
     "itionAuthentication\022\r\n\005seqno\030\001 \002(\r\022\016\n\006re"
@@ -2287,49 +2264,48 @@ void protobuf_AddDesc_das_2eproto() {
     "onRoute\"6\n\025AckPostOperationRoute\022\r\n\005seqn"
     "o\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"\205\001\n\025UploadOperat"
     "ionRoutes\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022"
-    "\016\n\006userid\030\004 \002(\t\022\021\n\ttimestamp\030\005 \002(\004\022\024\n\014co"
-    "untmission\030\006 \002(\005\022\025\n\rcountboundary\030\007 \002(\005\""
-    "9\n\030AckUploadOperationRoutes\022\r\n\005seqno\030\001 \002"
-    "(\r\022\016\n\006result\030\002 \002(\005\"a\n\023SyscOperationRoute"
-    "s\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005uavi"
-    "d\030\003 \002(\t\022\r\n\005index\030\005 \001(\005\022\r\n\005count\030\006 \001(\005\"e\n"
-    "\024RequestRouteMissions\022\r\n\005seqno\030\001 \002(\r\022\r\n\005"
-    "uavid\030\002 \002(\t\022\020\n\010boundary\030\003 \002(\010\022\016\n\006offset\030"
-    "\004 \002(\005\022\r\n\005count\030\005 \002(\005\"l\n\027AckRequestRouteM"
-    "issions\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\020"
-    "\n\010boundary\030\003 \002(\010\022\016\n\006offset\030\004 \002(\005\022\020\n\010miss"
-    "ions\030\005 \003(\014\"\335\001\n\tUavStatus\022\r\n\005uavid\030\001 \002(\t\022"
-    "\016\n\006result\030\002 \002(\005\022\016\n\006online\030\003 \001(\010\022\016\n\006lande"
-    "d\030\004 \001(\010\022\020\n\010deadline\030\005 \001(\004\022\016\n\006binded\030\006 \001("
-    "\010\022\016\n\006binder\030\007 \001(\t\022\020\n\010bindtime\030\010 \001(\004\022\022\n\nu"
-    "nbindtime\030\t \001(\004\022&\n\003pos\030\n \001(\0132\031.das.proto"
-    ".GpsInformation\022\021\n\ttimestamp\030\013 \001(\004\"0\n\020Re"
-    "questUavStatus\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002"
-    " \003(\t\"J\n\023AckRequestUavStatus\022\r\n\005seqno\030\001 \002"
-    "(\r\022$\n\006status\030\002 \003(\0132\024.das.proto.UavStatus"
-    "\"L\n\016RequestBindUav\022\r\n\005seqno\030\001 \002(\r\022\014\n\004opi"
-    "d\030\002 \002(\r\022\r\n\005uavid\030\003 \002(\t\022\016\n\006binder\030\004 \002(\t\"f"
-    "\n\021AckRequestBindUav\022\r\n\005seqno\030\001 \002(\r\022\014\n\004op"
-    "id\030\002 \002(\r\022\016\n\006result\030\003 \002(\005\022$\n\006status\030\004 \001(\013"
-    "2\024.das.proto.UavStatus\"\177\n\016UavProductInfo"
-    "\022\r\n\005uavid\030\001 \001(\t\022\023\n\013producttype\030\002 \001(\t\022\021\n\t"
-    "productid\030\003 \001(\t\022\024\n\014organization\030\004 \001(\t\022\017\n"
-    "\007manager\030\005 \001(\t\022\017\n\007contact\030\006 \001(\t\"I\n\026Reque"
-    "stUavProductInfos\022\r\n\005seqno\030\001 \002(\r\022\021\n\tprod"
-    "uctid\030\002 \003(\t\022\r\n\005uavid\030\003 \003(\t\"b\n\031AckRequest"
-    "UavProductInfos\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result"
-    "\030\002 \002(\005\022&\n\003upi\030\003 \003(\0132\031.das.proto.UavProdu"
-    "ctInfo\"L\n\023PostUavProductInfos\022\r\n\005seqno\030\001"
-    " \002(\r\022&\n\003upi\030\002 \003(\0132\031.das.proto.UavProduct"
-    "Info\"7\n\026AckPostUavProductInfos\022\r\n\005seqno\030"
-    "\001 \002(\r\022\016\n\006result\030\002 \002(\005\"M\n\017PostControl2Uav"
-    "\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\016\n\006userid"
-    "\030\003 \002(\t\022\014\n\004data\030\004 \003(\014\"R\n\022AckPostControl2U"
-    "av\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005uav"
-    "id\030\003 \002(\t\022\016\n\006userid\030\004 \002(\t\"F\n\030PostStatus2G"
-    "roundStation\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002"
-    "(\t\022\014\n\004data\030\003 \003(\014*1\n\020SurveryPrecision\022\007\n\003"
-    "LOW\020\001\022\n\n\006MEDIUM\020\002\022\010\n\004HIGH\020\003", 8227);
+    "\016\n\006userid\030\003 \002(\t\022\021\n\ttimestamp\030\004 \002(\004\022\024\n\014co"
+    "untmission\030\005 \002(\005\022\025\n\rcountboundary\030\006 \002(\005\""
+    "a\n\023SyscOperationRoutes\022\r\n\005seqno\030\001 \002(\r\022\016\n"
+    "\006result\030\002 \002(\005\022\r\n\005uavid\030\003 \002(\t\022\r\n\005index\030\005 "
+    "\001(\005\022\r\n\005count\030\006 \001(\005\"e\n\024RequestRouteMissio"
+    "ns\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\020\n\010boun"
+    "dary\030\003 \002(\010\022\016\n\006offset\030\004 \002(\005\022\r\n\005count\030\005 \002("
+    "\005\"l\n\027AckRequestRouteMissions\022\r\n\005seqno\030\001 "
+    "\002(\r\022\016\n\006result\030\002 \002(\005\022\020\n\010boundary\030\003 \002(\010\022\016\n"
+    "\006offset\030\004 \002(\005\022\020\n\010missions\030\005 \003(\014\"\335\001\n\tUavS"
+    "tatus\022\r\n\005uavid\030\001 \002(\t\022\016\n\006result\030\002 \002(\005\022\016\n\006"
+    "online\030\003 \001(\010\022\016\n\006landed\030\004 \001(\010\022\020\n\010deadline"
+    "\030\005 \001(\004\022\016\n\006binded\030\006 \001(\010\022\016\n\006binder\030\007 \001(\t\022\020"
+    "\n\010bindtime\030\010 \001(\004\022\022\n\nunbindtime\030\t \001(\004\022&\n\003"
+    "pos\030\n \001(\0132\031.das.proto.GpsInformation\022\021\n\t"
+    "timestamp\030\013 \001(\004\"0\n\020RequestUavStatus\022\r\n\005s"
+    "eqno\030\001 \002(\r\022\r\n\005uavid\030\002 \003(\t\"J\n\023AckRequestU"
+    "avStatus\022\r\n\005seqno\030\001 \002(\r\022$\n\006status\030\002 \003(\0132"
+    "\024.das.proto.UavStatus\"L\n\016RequestBindUav\022"
+    "\r\n\005seqno\030\001 \002(\r\022\014\n\004opid\030\002 \002(\r\022\r\n\005uavid\030\003 "
+    "\002(\t\022\016\n\006binder\030\004 \002(\t\"f\n\021AckRequestBindUav"
+    "\022\r\n\005seqno\030\001 \002(\r\022\014\n\004opid\030\002 \002(\r\022\016\n\006result\030"
+    "\003 \002(\005\022$\n\006status\030\004 \001(\0132\024.das.proto.UavSta"
+    "tus\"\177\n\016UavProductInfo\022\r\n\005uavid\030\001 \001(\t\022\023\n\013"
+    "producttype\030\002 \001(\t\022\021\n\tproductid\030\003 \001(\t\022\024\n\014"
+    "organization\030\004 \001(\t\022\017\n\007manager\030\005 \001(\t\022\017\n\007c"
+    "ontact\030\006 \001(\t\"I\n\026RequestUavProductInfos\022\r"
+    "\n\005seqno\030\001 \002(\r\022\021\n\tproductid\030\002 \003(\t\022\r\n\005uavi"
+    "d\030\003 \003(\t\"b\n\031AckRequestUavProductInfos\022\r\n\005"
+    "seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022&\n\003upi\030\003 \003(\013"
+    "2\031.das.proto.UavProductInfo\"L\n\023PostUavPr"
+    "oductInfos\022\r\n\005seqno\030\001 \002(\r\022&\n\003upi\030\002 \003(\0132\031"
+    ".das.proto.UavProductInfo\"7\n\026AckPostUavP"
+    "roductInfos\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002"
+    "(\005\"M\n\017PostControl2Uav\022\r\n\005seqno\030\001 \002(\r\022\r\n\005"
+    "uavid\030\002 \002(\t\022\016\n\006userid\030\003 \002(\t\022\014\n\004data\030\004 \003("
+    "\014\"R\n\022AckPostControl2Uav\022\r\n\005seqno\030\001 \002(\r\022\016"
+    "\n\006result\030\002 \002(\005\022\r\n\005uavid\030\003 \002(\t\022\016\n\006userid\030"
+    "\004 \002(\t\"F\n\030PostStatus2GroundStation\022\r\n\005seq"
+    "no\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\014\n\004data\030\003 \003(\014*1\n"
+    "\020SurveryPrecision\022\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\002\022\010"
+    "\n\004HIGH\020\003", 8168);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "das.proto", &protobuf_RegisterTypes);
   PostHeartBeat::default_instance_ = new PostHeartBeat();
@@ -2398,7 +2374,6 @@ void protobuf_AddDesc_das_2eproto() {
   PostOperationRoute::default_instance_ = new PostOperationRoute();
   AckPostOperationRoute::default_instance_ = new AckPostOperationRoute();
   UploadOperationRoutes::default_instance_ = new UploadOperationRoutes();
-  AckUploadOperationRoutes::default_instance_ = new AckUploadOperationRoutes();
   SyscOperationRoutes::default_instance_ = new SyscOperationRoutes();
   RequestRouteMissions::default_instance_ = new RequestRouteMissions();
   AckRequestRouteMissions::default_instance_ = new AckRequestRouteMissions();
@@ -2481,7 +2456,6 @@ void protobuf_AddDesc_das_2eproto() {
   PostOperationRoute::default_instance_->InitAsDefaultInstance();
   AckPostOperationRoute::default_instance_->InitAsDefaultInstance();
   UploadOperationRoutes::default_instance_->InitAsDefaultInstance();
-  AckUploadOperationRoutes::default_instance_->InitAsDefaultInstance();
   SyscOperationRoutes::default_instance_->InitAsDefaultInstance();
   RequestRouteMissions::default_instance_->InitAsDefaultInstance();
   AckRequestRouteMissions::default_instance_->InitAsDefaultInstance();
@@ -6774,12 +6748,12 @@ bool NotifyProgram::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(40)) goto parse_fwtype;
+        if (input->ExpectTag(32)) goto parse_fwtype;
         break;
       }
 
-      // required int32 fwtype = 5;
-      case 5: {
+      // required int32 fwtype = 4;
+      case 4: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_fwtype:
@@ -6790,12 +6764,12 @@ bool NotifyProgram::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(48)) goto parse_length;
+        if (input->ExpectTag(40)) goto parse_length;
         break;
       }
 
-      // required int32 length = 6;
-      case 6: {
+      // required int32 length = 5;
+      case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_length:
@@ -6806,12 +6780,12 @@ bool NotifyProgram::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(56)) goto parse_crc32;
+        if (input->ExpectTag(48)) goto parse_crc32;
         break;
       }
 
-      // required uint32 crc32 = 7;
-      case 7: {
+      // required uint32 crc32 = 6;
+      case 6: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_crc32:
@@ -6867,19 +6841,19 @@ void NotifyProgram::SerializeWithCachedSizes(
       3, this->name(), output);
   }
 
-  // required int32 fwtype = 5;
+  // required int32 fwtype = 4;
   if (has_fwtype()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->fwtype(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->fwtype(), output);
   }
 
-  // required int32 length = 6;
+  // required int32 length = 5;
   if (has_length()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->length(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->length(), output);
   }
 
-  // required uint32 crc32 = 7;
+  // required uint32 crc32 = 6;
   if (has_crc32()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(7, this->crc32(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(6, this->crc32(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -6915,19 +6889,19 @@ void NotifyProgram::SerializeWithCachedSizes(
         3, this->name(), target);
   }
 
-  // required int32 fwtype = 5;
+  // required int32 fwtype = 4;
   if (has_fwtype()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->fwtype(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->fwtype(), target);
   }
 
-  // required int32 length = 6;
+  // required int32 length = 5;
   if (has_length()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->length(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->length(), target);
   }
 
-  // required uint32 crc32 = 7;
+  // required uint32 crc32 = 6;
   if (has_crc32()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(7, this->crc32(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(6, this->crc32(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -6962,21 +6936,21 @@ int NotifyProgram::ByteSize() const {
           this->name());
     }
 
-    // required int32 fwtype = 5;
+    // required int32 fwtype = 4;
     if (has_fwtype()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->fwtype());
     }
 
-    // required int32 length = 6;
+    // required int32 length = 5;
     if (has_length()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->length());
     }
 
-    // required uint32 crc32 = 7;
+    // required uint32 crc32 = 6;
     if (has_crc32()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt32Size(
@@ -7824,12 +7798,12 @@ bool AckRequestProgram::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(50)) goto parse_data;
+        if (input->ExpectTag(42)) goto parse_data;
         break;
       }
 
-      // optional bytes data = 6;
-      case 6: {
+      // optional bytes data = 5;
+      case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_data:
@@ -7884,10 +7858,10 @@ void AckRequestProgram::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->offset(), output);
   }
 
-  // optional bytes data = 6;
+  // optional bytes data = 5;
   if (has_data()) {
     ::google::protobuf::internal::WireFormatLite::WriteBytes(
-      6, this->data(), output);
+      5, this->data(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -7923,11 +7897,11 @@ void AckRequestProgram::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->offset(), target);
   }
 
-  // optional bytes data = 6;
+  // optional bytes data = 5;
   if (has_data()) {
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
-        6, this->data(), target);
+        5, this->data(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -7969,7 +7943,7 @@ int AckRequestProgram::ByteSize() const {
           this->offset());
     }
 
-    // optional bytes data = 6;
+    // optional bytes data = 5;
     if (has_data()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::BytesSize(
@@ -25135,12 +25109,12 @@ bool UploadOperationRoutes::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(34)) goto parse_userid;
+        if (input->ExpectTag(26)) goto parse_userid;
         break;
       }
 
-      // required string userid = 4;
-      case 4: {
+      // required string userid = 3;
+      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_userid:
@@ -25152,12 +25126,12 @@ bool UploadOperationRoutes::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(40)) goto parse_timestamp;
+        if (input->ExpectTag(32)) goto parse_timestamp;
         break;
       }
 
-      // required uint64 timestamp = 5;
-      case 5: {
+      // required uint64 timestamp = 4;
+      case 4: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_timestamp:
@@ -25168,12 +25142,12 @@ bool UploadOperationRoutes::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(48)) goto parse_countmission;
+        if (input->ExpectTag(40)) goto parse_countmission;
         break;
       }
 
-      // required int32 countmission = 6;
-      case 6: {
+      // required int32 countmission = 5;
+      case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_countmission:
@@ -25184,12 +25158,12 @@ bool UploadOperationRoutes::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(56)) goto parse_countboundary;
+        if (input->ExpectTag(48)) goto parse_countboundary;
         break;
       }
 
-      // required int32 countboundary = 7;
-      case 7: {
+      // required int32 countboundary = 6;
+      case 6: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_countboundary:
@@ -25236,28 +25210,28 @@ void UploadOperationRoutes::SerializeWithCachedSizes(
       2, this->uavid(), output);
   }
 
-  // required string userid = 4;
+  // required string userid = 3;
   if (has_userid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->userid().data(), this->userid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      4, this->userid(), output);
+      3, this->userid(), output);
   }
 
-  // required uint64 timestamp = 5;
+  // required uint64 timestamp = 4;
   if (has_timestamp()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(5, this->timestamp(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(4, this->timestamp(), output);
   }
 
-  // required int32 countmission = 6;
+  // required int32 countmission = 5;
   if (has_countmission()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->countmission(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->countmission(), output);
   }
 
-  // required int32 countboundary = 7;
+  // required int32 countboundary = 6;
   if (has_countboundary()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(7, this->countboundary(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->countboundary(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -25283,29 +25257,29 @@ void UploadOperationRoutes::SerializeWithCachedSizes(
         2, this->uavid(), target);
   }
 
-  // required string userid = 4;
+  // required string userid = 3;
   if (has_userid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->userid().data(), this->userid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        4, this->userid(), target);
+        3, this->userid(), target);
   }
 
-  // required uint64 timestamp = 5;
+  // required uint64 timestamp = 4;
   if (has_timestamp()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(5, this->timestamp(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(4, this->timestamp(), target);
   }
 
-  // required int32 countmission = 6;
+  // required int32 countmission = 5;
   if (has_countmission()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->countmission(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->countmission(), target);
   }
 
-  // required int32 countboundary = 7;
+  // required int32 countboundary = 6;
   if (has_countboundary()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(7, this->countboundary(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->countboundary(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -25333,28 +25307,28 @@ int UploadOperationRoutes::ByteSize() const {
           this->uavid());
     }
 
-    // required string userid = 4;
+    // required string userid = 3;
     if (has_userid()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->userid());
     }
 
-    // required uint64 timestamp = 5;
+    // required uint64 timestamp = 4;
     if (has_timestamp()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt64Size(
           this->timestamp());
     }
 
-    // required int32 countmission = 6;
+    // required int32 countmission = 5;
     if (has_countmission()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->countmission());
     }
 
-    // required int32 countboundary = 7;
+    // required int32 countboundary = 6;
     if (has_countboundary()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
@@ -25447,255 +25421,6 @@ void UploadOperationRoutes::Swap(UploadOperationRoutes* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = UploadOperationRoutes_descriptor_;
   metadata.reflection = UploadOperationRoutes_reflection_;
-  return metadata;
-}
-
-
-// ===================================================================
-
-#ifndef _MSC_VER
-const int AckUploadOperationRoutes::kSeqnoFieldNumber;
-const int AckUploadOperationRoutes::kResultFieldNumber;
-#endif  // !_MSC_VER
-
-AckUploadOperationRoutes::AckUploadOperationRoutes()
-  : ::google::protobuf::Message() {
-  SharedCtor();
-}
-
-void AckUploadOperationRoutes::InitAsDefaultInstance() {
-}
-
-AckUploadOperationRoutes::AckUploadOperationRoutes(const AckUploadOperationRoutes& from)
-  : ::google::protobuf::Message() {
-  SharedCtor();
-  MergeFrom(from);
-}
-
-void AckUploadOperationRoutes::SharedCtor() {
-  _cached_size_ = 0;
-  seqno_ = 0u;
-  result_ = 0;
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-AckUploadOperationRoutes::~AckUploadOperationRoutes() {
-  SharedDtor();
-}
-
-void AckUploadOperationRoutes::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void AckUploadOperationRoutes::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* AckUploadOperationRoutes::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return AckUploadOperationRoutes_descriptor_;
-}
-
-const AckUploadOperationRoutes& AckUploadOperationRoutes::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
-  return *default_instance_;
-}
-
-AckUploadOperationRoutes* AckUploadOperationRoutes::default_instance_ = NULL;
-
-AckUploadOperationRoutes* AckUploadOperationRoutes::New() const {
-  return new AckUploadOperationRoutes;
-}
-
-void AckUploadOperationRoutes::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    seqno_ = 0u;
-    result_ = 0;
-  }
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
-}
-
-bool AckUploadOperationRoutes::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
-  ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required uint32 seqno = 1;
-      case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &seqno_)));
-          set_has_seqno();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(16)) goto parse_result;
-        break;
-      }
-
-      // required int32 result = 2;
-      case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_result:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &result_)));
-          set_has_result();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectAtEnd()) return true;
-        break;
-      }
-
-      default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-  return true;
-#undef DO_
-}
-
-void AckUploadOperationRoutes::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // required uint32 seqno = 1;
-  if (has_seqno()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
-  }
-
-  // required int32 result = 2;
-  if (has_result()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->result(), output);
-  }
-
-  if (!unknown_fields().empty()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
-}
-
-::google::protobuf::uint8* AckUploadOperationRoutes::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
-  // required uint32 seqno = 1;
-  if (has_seqno()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
-  }
-
-  // required int32 result = 2;
-  if (has_result()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->result(), target);
-  }
-
-  if (!unknown_fields().empty()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  return target;
-}
-
-int AckUploadOperationRoutes::ByteSize() const {
-  int total_size = 0;
-
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required uint32 seqno = 1;
-    if (has_seqno()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->seqno());
-    }
-
-    // required int32 result = 2;
-    if (has_result()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->result());
-    }
-
-  }
-  if (!unknown_fields().empty()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void AckUploadOperationRoutes::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const AckUploadOperationRoutes* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const AckUploadOperationRoutes*>(
-      &from);
-  if (source == NULL) {
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-    MergeFrom(*source);
-  }
-}
-
-void AckUploadOperationRoutes::MergeFrom(const AckUploadOperationRoutes& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_seqno()) {
-      set_seqno(from.seqno());
-    }
-    if (from.has_result()) {
-      set_result(from.result());
-    }
-  }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
-}
-
-void AckUploadOperationRoutes::CopyFrom(const ::google::protobuf::Message& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void AckUploadOperationRoutes::CopyFrom(const AckUploadOperationRoutes& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool AckUploadOperationRoutes::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
-
-  return true;
-}
-
-void AckUploadOperationRoutes::Swap(AckUploadOperationRoutes* other) {
-  if (other != this) {
-    std::swap(seqno_, other->seqno_);
-    std::swap(result_, other->result_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
-}
-
-::google::protobuf::Metadata AckUploadOperationRoutes::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = AckUploadOperationRoutes_descriptor_;
-  metadata.reflection = AckUploadOperationRoutes_reflection_;
   return metadata;
 }
 

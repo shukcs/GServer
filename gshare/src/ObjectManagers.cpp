@@ -186,9 +186,11 @@ bool ObjectManagers::PrcsRcvBuff()
         BaseBuff *buff = itr.second;
         if (buff && buff->IsChanged())
         {
+            int prcs = buff->Count();
             for (const pair<int, IObjectManager*> &mgr : m_managersMap)
             {
-                if (mgr.second->Receive(itr.first, *buff))
+                int n=0;
+                if (mgr.second->Receive(itr.first, *buff, n))
                 {
                     m_mtx->Lock();
                     m_keysRemove.push_back(itr.first);
@@ -196,7 +198,10 @@ bool ObjectManagers::PrcsRcvBuff()
                     ret = true;
                     break;
                 }
+                if (n < prcs)
+                    prcs = n;
             }
+            buff->Clear(prcs);
             buff->SetNoChange();
         }
     }

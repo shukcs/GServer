@@ -226,6 +226,7 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
         if (!ret->IsConnect())
         {
             ret->SetSocket(s);
+            ret->OnConnected(true);
             res = 1;
         }
     }

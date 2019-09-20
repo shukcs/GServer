@@ -487,13 +487,14 @@ int ObjectGS::_addDatabaseUser(const std::string &user, const std::string &pswd)
         return -1;
 
     FiledVal *fv = sql->GetWriteItem("user");
-    if (fv)
+    if (!fv)
         return -1;
     fv->SetParam(user);
 
     fv = sql->GetWriteItem("pswd");
-    if (fv)
+    if (!fv)
         return -1;
+    fv->SetParam(pswd);
 
     m_check.clear();
     return executeInsertSql(sql) >= 0 ? 1 : 0;
@@ -652,18 +653,19 @@ void ObjectGS::_prcsReqNewGs(RequestNewGS *msg)
     AckNewGS ack;
     ack.set_seqno(msg->seqno());
     if (msg->userid() != m_id)
-    {
+        res = -4;
+    else if (msg->check().empty())
         res = GSManager::ExecutNewGsSql((GSManager*)GetManager(), m_id);
-        if (res == 1)
-        {
-            m_check = GSOrUavMessage::GenCheckString();
-            ack.set_check(m_check);
-        }
-    }
-    if (!m_check.empty() && msg->check() != m_check)
+    else if (msg->check() != m_check)
         res = -3;
-    else if (res == 1 && msg->check() == m_check && !msg->password().empty())
-        res = _addDatabaseUser(msg->userid(), msg->password());
+    else if (msg->check() == m_check && !msg->password().empty())
+        res = _addDatabaseUser(m_id, msg->password());
+    
+    if (1 != res || msg->check().empty())
+    {
+        m_check = GSOrUavMessage::GenCheckString();
+        ack.set_check(m_check);
+    }
 
     ack.set_result(res);
     send(ack);

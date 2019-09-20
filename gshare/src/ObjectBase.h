@@ -40,26 +40,26 @@ public:
     SHARED_DECL void SetBuffSize(uint16_t sz);
     SHARED_DECL IObjectManager *GetManager()const;
     SHARED_DECL bool Receive(const void *buf, int len);
-public:
-    bool RcvMassage(IMessage *msg);
-    void RemoveRcvMsg(IMessage *);
-    void AddRelease(IMessage *);
-    bool PrcsBussiness();
-    int GetThreadId()const;
-    void SetThreadId(int id);
 
     virtual int GetObjectType()const = 0;
     virtual void OnConnected(bool bConnected) = 0;
 public:
-    SHARED_DECL virtual void OnClose(ISocket *);    //这是可以重载的，可能有多个连接
+    bool RcvMassage(IMessage *msg);
+    void RemoveRcvMsg(IMessage *);
+    void AddRelease(IMessage *);
+    bool PrcsBussiness(uint64_t ms);
+    int GetThreadId()const;
+    void SetThreadId(int id);
+public:
     SHARED_DECL virtual void SetSocket(ISocket *);
-    SHARED_DECL virtual int GetSenLength()const;
-    SHARED_DECL virtual int CopySend(char *buf, int sz, unsigned form = 0);
-    SHARED_DECL virtual void SetSended(int sended=-1);//-1,发送完
+    SHARED_DECL virtual void OnSockClose(ISocket *);    //这是可以重载的，可能有多个连接
+
+    virtual int GetSenLength()const;
+    virtual int CopySend(char *buf, int sz, unsigned form = 0);
+    virtual void SetSended(int sended=-1);//-1,发送完
 public:
     SHARED_DECL static bool SendMsg(IMessage *msg);
     SHARED_DECL static IObjectManager *GetManagerByType(int);
-public:
 public:
     template<typename T, typename Contianer = std::list<T> >
     static bool IsContainsInList(const Contianer ls, const T &e)
@@ -74,6 +74,7 @@ public:
 protected:
     virtual void ProcessMassage(const IMessage &msg) = 0;
     virtual int ProcessReceive(void *buf, int len) = 0;
+    SHARED_DECL virtual void CheckTimer(uint64_t ms);
 protected:
 /*******************************************************************************************
 这是个连接实体抽象类
@@ -105,7 +106,7 @@ public:
     virtual int GetObjectType()const = 0;
     SHARED_DECL bool AddObject(IObject *obj);
     SHARED_DECL IObject *GetObjectByID(const std::string &id)const;
-    SHARED_DECL bool Receive(ISocket *s, const BaseBuff &buff);
+    SHARED_DECL bool Receive(ISocket *s, const BaseBuff &buff, int &prcs);
     void ReceiveMessage(IMessage *);
     void RemoveRcvMsg(IMessage *);
     void AddRelease(IMessage *);

@@ -110,6 +110,9 @@ bool GSocketManager::AddSocket(ISocket *s)
 
 void GSocketManager::ReleaseSocket(ISocket *s)
 {
+    if (IObject::IsContainsInList(m_socketsRemove, s))
+        return;
+
     m_mtx->Lock();
     m_socketsRemove.push_back(s);
     m_mtx->Unlock();
@@ -143,6 +146,9 @@ void GSocketManager::AddProcessThread()
 
 bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
 {
+    if (!s || m_sockets.find(s->GetHandle()) == m_sockets.end())
+        return false;
+
     m_mtx->Lock();      //应对不同线程
     m_socketsPrcs.push_back(SocketPrcs(s,true));
     m_mtx->Unlock();
@@ -216,6 +222,7 @@ void GSocketManager::PrcsSockets()
             {
                 _remove(s->GetHandle());
                 s->OnClose();
+                setISocketInvalid(s);
                 itr->second = false;
             }
             if (!s->IsListenSocket() && ISocket::Connected == st)
@@ -228,7 +235,7 @@ void GSocketManager::PrcsSockets()
 
         if (!itr->second)
         {
-            list<SocketPrcs>::iterator itrTmp = itr++;
+            SocketPrcsQue::iterator itrTmp = itr++;
             m_socketsPrcs.erase(itrTmp);
             continue;
         }

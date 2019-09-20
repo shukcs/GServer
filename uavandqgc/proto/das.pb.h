@@ -101,7 +101,6 @@ class OperationRoute;
 class PostOperationRoute;
 class AckPostOperationRoute;
 class UploadOperationRoutes;
-class AckUploadOperationRoutes;
 class SyscOperationRoutes;
 class RequestRouteMissions;
 class AckRequestRouteMissions;
@@ -1667,24 +1666,24 @@ class NotifyProgram : public ::google::protobuf::Message {
   inline ::std::string* release_name();
   inline void set_allocated_name(::std::string* name);
 
-  // required int32 fwtype = 5;
+  // required int32 fwtype = 4;
   inline bool has_fwtype() const;
   inline void clear_fwtype();
-  static const int kFwtypeFieldNumber = 5;
+  static const int kFwtypeFieldNumber = 4;
   inline ::google::protobuf::int32 fwtype() const;
   inline void set_fwtype(::google::protobuf::int32 value);
 
-  // required int32 length = 6;
+  // required int32 length = 5;
   inline bool has_length() const;
   inline void clear_length();
-  static const int kLengthFieldNumber = 6;
+  static const int kLengthFieldNumber = 5;
   inline ::google::protobuf::int32 length() const;
   inline void set_length(::google::protobuf::int32 value);
 
-  // required uint32 crc32 = 7;
+  // required uint32 crc32 = 6;
   inline bool has_crc32() const;
   inline void clear_crc32();
-  static const int kCrc32FieldNumber = 7;
+  static const int kCrc32FieldNumber = 6;
   inline ::google::protobuf::uint32 crc32() const;
   inline void set_crc32(::google::protobuf::uint32 value);
 
@@ -2020,10 +2019,10 @@ class AckRequestProgram : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 offset() const;
   inline void set_offset(::google::protobuf::int32 value);
 
-  // optional bytes data = 6;
+  // optional bytes data = 5;
   inline bool has_data() const;
   inline void clear_data();
-  static const int kDataFieldNumber = 6;
+  static const int kDataFieldNumber = 5;
   inline const ::std::string& data() const;
   inline void set_data(const ::std::string& value);
   inline void set_data(const char* value);
@@ -7903,10 +7902,10 @@ class UploadOperationRoutes : public ::google::protobuf::Message {
   inline ::std::string* release_uavid();
   inline void set_allocated_uavid(::std::string* uavid);
 
-  // required string userid = 4;
+  // required string userid = 3;
   inline bool has_userid() const;
   inline void clear_userid();
-  static const int kUseridFieldNumber = 4;
+  static const int kUseridFieldNumber = 3;
   inline const ::std::string& userid() const;
   inline void set_userid(const ::std::string& value);
   inline void set_userid(const char* value);
@@ -7915,24 +7914,24 @@ class UploadOperationRoutes : public ::google::protobuf::Message {
   inline ::std::string* release_userid();
   inline void set_allocated_userid(::std::string* userid);
 
-  // required uint64 timestamp = 5;
+  // required uint64 timestamp = 4;
   inline bool has_timestamp() const;
   inline void clear_timestamp();
-  static const int kTimestampFieldNumber = 5;
+  static const int kTimestampFieldNumber = 4;
   inline ::google::protobuf::uint64 timestamp() const;
   inline void set_timestamp(::google::protobuf::uint64 value);
 
-  // required int32 countmission = 6;
+  // required int32 countmission = 5;
   inline bool has_countmission() const;
   inline void clear_countmission();
-  static const int kCountmissionFieldNumber = 6;
+  static const int kCountmissionFieldNumber = 5;
   inline ::google::protobuf::int32 countmission() const;
   inline void set_countmission(::google::protobuf::int32 value);
 
-  // required int32 countboundary = 7;
+  // required int32 countboundary = 6;
   inline bool has_countboundary() const;
   inline void clear_countboundary();
-  static const int kCountboundaryFieldNumber = 7;
+  static const int kCountboundaryFieldNumber = 6;
   inline ::google::protobuf::int32 countboundary() const;
   inline void set_countboundary(::google::protobuf::int32 value);
 
@@ -7969,98 +7968,6 @@ class UploadOperationRoutes : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static UploadOperationRoutes* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class AckUploadOperationRoutes : public ::google::protobuf::Message {
- public:
-  AckUploadOperationRoutes();
-  virtual ~AckUploadOperationRoutes();
-
-  AckUploadOperationRoutes(const AckUploadOperationRoutes& from);
-
-  inline AckUploadOperationRoutes& operator=(const AckUploadOperationRoutes& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const AckUploadOperationRoutes& default_instance();
-
-  void Swap(AckUploadOperationRoutes* other);
-
-  // implements Message ----------------------------------------------
-
-  AckUploadOperationRoutes* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const AckUploadOperationRoutes& from);
-  void MergeFrom(const AckUploadOperationRoutes& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.AckUploadOperationRoutes)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static AckUploadOperationRoutes* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -11823,7 +11730,7 @@ inline void NotifyProgram::set_allocated_name(::std::string* name) {
   }
 }
 
-// required int32 fwtype = 5;
+// required int32 fwtype = 4;
 inline bool NotifyProgram::has_fwtype() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
@@ -11845,7 +11752,7 @@ inline void NotifyProgram::set_fwtype(::google::protobuf::int32 value) {
   fwtype_ = value;
 }
 
-// required int32 length = 6;
+// required int32 length = 5;
 inline bool NotifyProgram::has_length() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
@@ -11867,7 +11774,7 @@ inline void NotifyProgram::set_length(::google::protobuf::int32 value) {
   length_ = value;
 }
 
-// required uint32 crc32 = 7;
+// required uint32 crc32 = 6;
 inline bool NotifyProgram::has_crc32() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
@@ -12217,7 +12124,7 @@ inline void AckRequestProgram::set_offset(::google::protobuf::int32 value) {
   offset_ = value;
 }
 
-// optional bytes data = 6;
+// optional bytes data = 5;
 inline bool AckRequestProgram::has_data() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
@@ -20299,7 +20206,7 @@ inline void UploadOperationRoutes::set_allocated_uavid(::std::string* uavid) {
   }
 }
 
-// required string userid = 4;
+// required string userid = 3;
 inline bool UploadOperationRoutes::has_userid() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
@@ -20369,7 +20276,7 @@ inline void UploadOperationRoutes::set_allocated_userid(::std::string* userid) {
   }
 }
 
-// required uint64 timestamp = 5;
+// required uint64 timestamp = 4;
 inline bool UploadOperationRoutes::has_timestamp() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
@@ -20391,7 +20298,7 @@ inline void UploadOperationRoutes::set_timestamp(::google::protobuf::uint64 valu
   timestamp_ = value;
 }
 
-// required int32 countmission = 6;
+// required int32 countmission = 5;
 inline bool UploadOperationRoutes::has_countmission() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
@@ -20413,7 +20320,7 @@ inline void UploadOperationRoutes::set_countmission(::google::protobuf::int32 va
   countmission_ = value;
 }
 
-// required int32 countboundary = 7;
+// required int32 countboundary = 6;
 inline bool UploadOperationRoutes::has_countboundary() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
@@ -20433,54 +20340,6 @@ inline ::google::protobuf::int32 UploadOperationRoutes::countboundary() const {
 inline void UploadOperationRoutes::set_countboundary(::google::protobuf::int32 value) {
   set_has_countboundary();
   countboundary_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// AckUploadOperationRoutes
-
-// required uint32 seqno = 1;
-inline bool AckUploadOperationRoutes::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void AckUploadOperationRoutes::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void AckUploadOperationRoutes::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void AckUploadOperationRoutes::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 AckUploadOperationRoutes::seqno() const {
-  return seqno_;
-}
-inline void AckUploadOperationRoutes::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool AckUploadOperationRoutes::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckUploadOperationRoutes::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckUploadOperationRoutes::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckUploadOperationRoutes::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 AckUploadOperationRoutes::result() const {
-  return result_;
-}
-inline void AckUploadOperationRoutes::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
 }
 
 // -------------------------------------------------------------------
