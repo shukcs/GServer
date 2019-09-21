@@ -312,16 +312,16 @@ bool ObjectUav::_hasMission(const das::proto::RequestRouteMissions &req) const
     return (req.offset() + req.count()) < (req.boundary() ? m_mission->boundarys_size() : m_mission->missions_size());
 }
 
-void ObjectUav::_notifyUavUOR(const OperationRoute &or)
+void ObjectUav::_notifyUavUOR(const OperationRoute &ort)
 {
     static uint32_t sSeqno = 1;
     UploadOperationRoutes upload;
     upload.set_seqno(sSeqno++);
-    upload.set_uavid(or.uavid());
-    upload.set_userid(or.gsid());
-    upload.set_timestamp(or.createtime());
-    upload.set_countmission(or.missions_size());
-    upload.set_countboundary(or.boundarys_size());
+    upload.set_uavid(ort.uavid());
+    upload.set_userid(ort.gsid());
+    upload.set_timestamp(ort.createtime());
+    upload.set_countmission(ort.missions_size());
+    upload.set_countboundary(ort.boundarys_size());
     send(upload);
     m_lastORNotify = (uint32_t)Utility::msTimeTick();
 }

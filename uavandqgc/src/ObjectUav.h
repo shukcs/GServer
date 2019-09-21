@@ -53,7 +53,7 @@ private:
 
     bool _isBind(const std::string &gs)const;
     bool _hasMission(const das::proto::RequestRouteMissions &req)const;
-    void _notifyUavUOR(const das::proto::OperationRoute &or);
+    void _notifyUavUOR(const das::proto::OperationRoute &ort);
 private:
     friend class UavManager;
     bool                            m_bBind;
