@@ -218,15 +218,15 @@ void ObjectUav::prcsRcvReqMissions(RequestRouteMissions *msg)
     if (m_mission)
     {
         int count = msg->boundary() ? m_mission->boundarys_size() : m_mission->missions_size();
-        for (int i = offset; i < count; ++i)
+        for (int i = 0; i<msg->count()&&count>=offset+i; ++i)
         {
-            const string &msItem = msg->boundary() ? m_mission->boundarys(i):m_mission->missions(i);
+            const string &msItem = msg->boundary() ? m_mission->boundarys(i+offset):m_mission->missions(i+offset);
             ack.add_missions(msItem.c_str(), msItem.size());
         }
     }
     m_bSys = true;
     send(ack);
-    if (!_isBind(m_lastBinder))
+    if (!m_mission || !_isBind(m_lastBinder))
         return;
 
     if (SyscOperationRoutes *sys = new SyscOperationRoutes())
@@ -306,10 +306,10 @@ bool ObjectUav::_isBind(const std::string &gs) const
 
 bool ObjectUav::_hasMission(const das::proto::RequestRouteMissions &req) const
 {
-    if (m_mission || req.offset()<0 || req.count()<=0)
+    if (!m_mission || req.offset()<0 || req.count()<=0)
         return false;
 
-    return (req.offset() + req.count()) < (req.boundary() ? m_mission->boundarys_size() : m_mission->missions_size());
+    return (req.offset() + req.count()) <= (req.boundary() ? m_mission->boundarys_size() : m_mission->missions_size());
 }
 
 void ObjectUav::_notifyUavUOR(const OperationRoute &ort)

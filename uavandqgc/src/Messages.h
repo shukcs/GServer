@@ -64,7 +64,6 @@ public:
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);
 private:
-    google::protobuf::Message  *m_msg;
 };
 
 class UAVMessage : public GSOrUavMessage
@@ -75,7 +74,6 @@ public:
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);
 private:
-    google::protobuf::Message  *m_msg;
 };
 
 #endif//__MESSGES_H__

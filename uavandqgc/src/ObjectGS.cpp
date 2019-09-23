@@ -88,6 +88,8 @@ void ObjectGS::ProcessMassage(const IMessage &msg)
         case BindUavRes:
         case QueryUavRes:
         case ControlUavRes:
+        case SychMissionRes:
+        case PostORRes:
         case UavAllocationRes:
         case PushUavSndInfo:
         case ControlGs:
@@ -137,7 +139,7 @@ int ObjectGS::ProcessReceive(void *buf, int len)
         else if (strMsg == d_p_ClassName(DeleteOperationDescription))
             _prcsDelPlan(( DeleteOperationDescription*)m_p->GetProtoMessage());
         else if (strMsg == d_p_ClassName(PostOperationRoute))
-            _prcsPostMission((PostOperationRoute*)m_p->GetProtoMessage());
+            _prcsPostMission((PostOperationRoute*)m_p->DeatachProto());
     }
     pos += l;
     return pos;

@@ -108,12 +108,12 @@ void GSOrUavMessage::_copyMsg(const Message &msg)
 //GSMessage
 /////////////////////////////////////////////////////////////////////////////
 GSMessage::GSMessage(IObject *sender, const std::string &idRcv)
-    :GSOrUavMessage(sender, idRcv, IObject::GroundStation), m_msg(NULL)
+    :GSOrUavMessage(sender, idRcv, IObject::GroundStation)
 {
 }
 
 GSMessage::GSMessage(IObjectManager *sender, const std::string &idRcv)
-    : GSOrUavMessage(sender, idRcv, IObject::GroundStation), m_msg(NULL)
+    : GSOrUavMessage(sender, idRcv, IObject::GroundStation)
 {
 }
 
@@ -125,10 +125,10 @@ MessageType GSMessage::getMessageType(const Message &msg)
         ret = BindUavRes;
     else if (name == d_p_ClassName(AckPostControl2Uav))
         ret = ControlUavRes;
-    else if (name == d_p_ClassName(AckPostOperationRoute))
-        ret = PostORRes;
     else if (name == d_p_ClassName(SyscOperationRoutes))
         ret = SychMissionRes;
+    else if (name == d_p_ClassName(AckPostOperationRoute))
+        ret = PostORRes;
     else if (name == d_p_ClassName(PostOperationInformation))
         ret = PushUavSndInfo;
     else if (name == d_p_ClassName(PostStatus2GroundStation))
