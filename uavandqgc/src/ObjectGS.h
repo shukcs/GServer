@@ -8,6 +8,7 @@ namespace das {
         class RequestGSIdentityAuthentication;
         class RequestNewGS;
         class PostHeartBeat;
+        class PostProgram;
         class RequestUavStatus;
         class RequestBindUav;
         class PostParcelDescription;
@@ -51,6 +52,7 @@ protected:
 private:
     void _prcsLogin(das::proto::RequestGSIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
+    void _prcsProgram(das::proto::PostProgram *msg);
     void _prcsReqUavs(das::proto::RequestUavStatus *msg);
     void _prcsReqBind(das::proto::RequestBindUav *msg);
     void _prcsControl2Uav(das::proto::PostControl2Uav *msg);

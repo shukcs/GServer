@@ -165,21 +165,21 @@ bool VGMySql::_canOperaterDB()
 
 bool VGMySql::ConnectMySql( const char *host, int port, const char *user, const char *pswd)
 {
-	if (!m_mysql)
-		return m_bValid = false;
+    if (!m_mysql)
+        return m_bValid = false;
 
-	if (mysql_real_connect(m_mysql, host, user, pswd, NULL, port, NULL, 0))
-	{
+    if (mysql_real_connect(m_mysql, host, user, pswd, NULL, port, NULL, 0))
+    {
         m_host = host ? host : string();
-		m_nPort = port;
+        m_nPort = port;
         m_user = user ? user : string();
         m_pswd = pswd ? pswd : string();
-		return m_bValid = true;
-	}
+        return m_bValid = true;
+    }
 
-	fprintf(stderr, " mysql_real_connect() failed %s\n", mysql_error(m_mysql));
-	string strErr = mysql_error(m_mysql);
-	return m_bValid = false;
+    fprintf(stderr, " mysql_real_connect() failed %s\n", mysql_error(m_mysql));
+    string strErr = mysql_error(m_mysql);
+    return m_bValid = false;
 }
 
 bool VGMySql::_executChange(const string &sql, MYSQL_BIND *binds, FiledVal *i)

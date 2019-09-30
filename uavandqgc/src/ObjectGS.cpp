@@ -19,6 +19,7 @@ enum GSAuthorizeType
 {
     Type_Common = 1,
     Type_UavManager = Type_Common << 1,
+    Type_Admin = Type_UavManager << 1,
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +79,22 @@ void ObjectGS::_prcsHeartBeat(das::proto::PostHeartBeat *msg)
     send(ahb);
 }
 
+void ObjectGS::_prcsProgram(das::proto::PostProgram *msg)
+{
+    if (!msg)
+        return;
+
+    AckPostProgram ack;
+    int res = (m_auth&Type_Admin) ? 1 : -1;
+    if (res > 0)
+    {
+
+    }
+    ack.set_seqno(msg->seqno());
+    ack.set_result(res);
+    send(ack);
+}
+
 void ObjectGS::ProcessMassage(const IMessage &msg)
 {
     int tp = msg.GetMessgeType();
@@ -118,6 +135,8 @@ int ObjectGS::ProcessReceive(void *buf, int len)
             _prcsReqNewGs((RequestNewGS*)m_p->GetProtoMessage());
         else if (strMsg == d_p_ClassName(PostHeartBeat))
             _prcsHeartBeat((PostHeartBeat *)m_p->GetProtoMessage());
+        else if (strMsg == d_p_ClassName(PostProgram))
+            _prcsProgram((PostProgram *)m_p->GetProtoMessage());
         else if (strMsg == d_p_ClassName(RequestBindUav))
             _prcsReqBind((RequestBindUav *)m_p->DeatachProto());
         else if (strMsg == d_p_ClassName(PostControl2Uav))

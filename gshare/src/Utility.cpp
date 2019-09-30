@@ -4,21 +4,20 @@
 #include "Ipv6Address.h"
 #include "Base64.h"
 #include <vector>
-#ifdef _WIN32
+#if defined _WIN32 || defined _WIN64
 #include <time.h>
+#include <direct.h>
 #else
 #include <netdb.h>
 #include <pthread.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#endif
 // --- stack
-#ifdef LINUX
 #include <cxxabi.h>
 #include <execinfo.h>
 #include <dlfcn.h>
 #endif
-// ---
+
 #include <map>
 #include <string.h>
 #include <chrono>
@@ -1290,17 +1289,6 @@ string Utility::ModuleDirectory()
 string Utility::CurrentDirectory()
 {
     string strRet;
-#ifdef _WIN32
-    strRet.resize(MAX_PATH + 1);
-    if (strRet.size() < MAX_PATH + 1)
-        return string();
-
-    DWORD ret = ::GetCurrentDirectoryA(MAX_PATH, &strRet.front());
-    if (!ret)
-        return string();
-
-    return strRet;
-#else
     strRet.resize(1024);
     if (strRet.size() < 1024)
         return string();
@@ -1309,8 +1297,7 @@ string Utility::CurrentDirectory()
     {
         return string(".");
     }
-    return strRet;
-#endif
+    return strRet.c_str();
 }
 
 bool Utility::ChangeDirectory(const string &to_dir)
