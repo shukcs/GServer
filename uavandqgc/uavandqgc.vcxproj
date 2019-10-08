@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="proto\das.pb.h" />
     <ClInclude Include="src\FWAssist.h" />
+    <ClInclude Include="src\FWItem.h" />
     <ClInclude Include="src\GSManager.h" />
     <ClInclude Include="src\Messages.h" />
     <ClInclude Include="src\ObjectAbsPB.h" />
@@ -24,6 +25,7 @@
   <ItemGroup>
     <ClCompile Include="proto\das.pb.cc" />
     <ClCompile Include="src\FWAssist.cpp" />
+    <ClCompile Include="src\FWItem.cpp" />
     <ClCompile Include="src\GSManager.cpp" />
     <ClCompile Include="src\Messages.cpp" />
     <ClCompile Include="src\ObjectAbsPB.cpp" />

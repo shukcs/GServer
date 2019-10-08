@@ -36,6 +36,9 @@
     <ClCompile Include="src\FWAssist.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\FWItem.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\UavManager.h">
@@ -63,6 +66,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\FWAssist.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FWItem.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

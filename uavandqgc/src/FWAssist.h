@@ -8,14 +8,22 @@ class FWItem;
 class FWAssist
 {
 public:
+    enum FWType
+    {
+        FW_Unknow = -1,
+        FW_Flight,
+        FW_FMU,
+        FW_IMU,
+    };
+public:
     FWAssist();
     ~FWAssist();
 
-    void CreateFW(const std::string &name, int tp, int size);
-    int CopyFW(void *buf, unsigned len, const std::string &name, int offset=0)const;
-    bool AddFWData(const std::string &name, const void *buf, unsigned len);
+    void ProcessFW(const std::string &name, const void *buf, unsigned len, unsigned offset=0, int tp=FW_Unknow, int size=0);
+    int GetFw(const std::string &name, void *buf, int len, unsigned offset, unsigned *sz = 0);
+    std::string LastFwName(FWType tp = FW_Flight)const;
 protected:
-    FWItem *getFWItem(const std::string &name)const;
+    FWItem *getFWItem(const std::string &name, FWType tp=FW_Unknow, unsigned sz=0);
 private:
     std::map<std::string, FWItem*> m_fws;
 };

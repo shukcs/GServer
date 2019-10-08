@@ -1,27 +1,9 @@
 #include "FWAssist.h"
+#include "FWItem.h"
 #include "Utility.h"
 
 using namespace std;
-/////////////////////////////////////////////////////////
-//FWAssist
-/////////////////////////////////////////////////////////
-class FWItem {
-public:
-    FWItem(unsigned sz, int tp):m_lenFw(sz), m_fillFw(0)
-        ,m_timeUpload(Utility::msTimeTick()),m_dataFw(NULL)
-        ,m_type(tp)
-    {
-        m_dataFw = new char[sz];
-        if (!m_dataFw)
-            m_lenFw = 0;
-    }
-private:
-    unsigned    m_lenFw;
-    unsigned    m_fillFw;
-    int64_t     m_timeUpload;
-    char        *m_dataFw;
-    int         m_type;
-};
+
 /////////////////////////////////////////////////////////
 //FWAssist
 /////////////////////////////////////////////////////////
@@ -33,26 +15,60 @@ FWAssist::~FWAssist()
 {
 }
 
-void FWAssist::CreateFW(const string &name, int tp, int size)
+void FWAssist::ProcessFW(const string &name, const void *buf, unsigned len, unsigned offset, int tp, int sz)
 {
-
+    FWItem *item = getFWItem(name, (FWType)tp, sz);
+    if (item && item->GetFilled()==offset)
+        item->AddData(buf, len);
 }
 
-int FWAssist::CopyFW(void *buf, unsigned len, const string &name, int offset/*=0*/) const
+int FWAssist::GetFw(const std::string &name, void *buf, int len, unsigned offset, unsigned *sz)
 {
-    return len;
+    if (FWItem *item = getFWItem(name))
+    {
+        if (sz)
+            *sz = item->GetFWSize();
+        if (buf)
+            return item->CopyData(buf, len, offset);
+    }
+    return -1;
 }
 
-bool FWAssist::AddFWData(const string &name, const void *buf, unsigned len)
+string FWAssist::LastFwName(FWType tp)const
 {
-    return true;
+    if (tp<FW_Flight && tp>FW_IMU)
+        return string();
+
+    const pair<string, FWItem*> *last = NULL;
+    for (const pair<string, FWItem*> &itr : m_fws)
+    {
+        if (itr.second->GetType() == tp)
+        {
+            if (!last || last->second->UploadTime() > itr.second->UploadTime())
+                last = &itr;
+        }
+    }
+
+    return last? last->first : string();
 }
 
-FWItem *FWAssist::getFWItem(const string &name) const
+FWItem *FWAssist::getFWItem(const string &name, FWType tp, unsigned sz)
 {
-    map<string, FWItem*>::const_iterator itr = m_fws.find(name);
+    if (name.empty())
+        return NULL;
+
+    map<string, FWItem*>::iterator itr = m_fws.find(name);
     if (itr != m_fws.end())
         return itr->second;
+
+    if (sz > 0 && tp > FWAssist::FW_Unknow && tp <= FWAssist::FW_IMU)
+    {
+        FWItem *item = new FWItem(sz, tp, name);
+        if (item)
+            m_fws[name] = item;
+
+        return item;
+    }
 
     return NULL;
 }

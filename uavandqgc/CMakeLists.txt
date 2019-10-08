@@ -25,6 +25,8 @@ set(SRC_LIST
 	src/ProtoMsg.cpp
 	src/ProtoMsg.h
 	src/Messages.cpp
+	src/FWItem.cpp
+	src/FWAssist.cpp
 	proto/das.pb.cc
 )
 
