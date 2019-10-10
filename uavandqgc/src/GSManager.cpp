@@ -11,6 +11,7 @@
 #include "tinyxml.h"
 #include "ObjectGS.h"
 #include "ObjectManagers.h"
+#include "FWItem.h"
 
 using namespace das::proto;
 using namespace google::protobuf;
@@ -22,6 +23,11 @@ GSManager::GSManager() : IObjectManager(0),m_sqlEng(new VGMySql)
 , m_p(new ProtoMsg)
 {
     _parseConfig();
+    FWItem p(1, 1024, "app123.data");
+    for (int i = 0; i< 64; ++i)
+    {
+        p.AddData("0123456789ABCDEF", 16);
+    }
 }
 
 GSManager::~GSManager()

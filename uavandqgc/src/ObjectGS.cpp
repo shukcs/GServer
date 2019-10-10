@@ -34,11 +34,6 @@ ObjectGS::~ObjectGS()
 {
 }
 
-int ObjectGS::GetObjectType() const
-{
-    return IObject::GroundStation;
-}
-
 void ObjectGS::OnConnected(bool bConnected)
 {
     ObjectAbsPB::OnConnected(bConnected);
@@ -59,6 +54,16 @@ const std::string &ObjectGS::GetPswd() const
 void ObjectGS::SetAuth(int a)
 {
     m_auth = a;
+}
+
+int ObjectGS::GSType()
+{
+    return IObject::GroundStation;
+}
+
+int ObjectGS::GetObjectType() const
+{
+    return GSType();
 }
 
 void ObjectGS::_prcsLogin(RequestGSIdentityAuthentication *msg)

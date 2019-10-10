@@ -32,6 +32,8 @@ protected:
     void InitBySqlResult(const ExecutItem &sql);
     void transUavStatus(das::proto::UavStatus &us);
     void RespondLogin(int seq, int res);
+public:
+    static int UAVType();
 protected:
     void OnConnected(bool bConnected);
     virtual int GetObjectType()const;

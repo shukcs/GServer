@@ -42,6 +42,8 @@ public:
     void SetCheck(const std::string &str);
     const std::string &GetPswd()const;
     void SetAuth(int);
+public:
+    static int GSType();
 protected:
     virtual void OnConnected(bool bConnected);
     virtual int GetObjectType()const;

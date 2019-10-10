@@ -3,10 +3,11 @@
 
 #include <string>
 
+class VGMySql;
 class FWItem
 {
 public:
-    FWItem(unsigned sz, int tp, const std::string &name=std::string());
+    FWItem(int tp, unsigned sz, const std::string &name=std::string());
     virtual ~FWItem();
 
     bool AddData(const void* dt, int len);
@@ -15,11 +16,14 @@ public:
     unsigned GetFilled()const;
     unsigned GetFWSize()const;
     int64_t UploadTime()const;
+    void SetUploadTime(int64_t tm);
     int GetType()const;
     void SetCrc32(unsigned crc);
     unsigned GetCrc32()const;
+    bool LoadFW(const std::string &name);
 protected:
     void creatFw(const std::string &name);
+    static VGMySql *getSqlMgr();
 private:
     int64_t     m_timeUpload;
     unsigned    m_lenFw;
@@ -27,6 +31,11 @@ private:
     unsigned    m_crc32;
     int         m_type;
     char        *m_dataFw;
+
+#if defined _WIN32 || defined _WIN64
+    void        *m_hFile;
+    void        *m_hMap;
+#endif
 };
 
 

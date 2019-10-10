@@ -12,6 +12,7 @@ INCLUDE_DIRECTORIES(
 	../tinyxml
 )
 set(SRC_LIST
+	proto/das_pb.cpp
 	src/GSManager.cpp
 	src/GSManager.h
 	src/UavManager.cpp
@@ -26,8 +27,9 @@ set(SRC_LIST
 	src/ProtoMsg.h
 	src/Messages.cpp
 	src/FWItem.cpp
+	src/FWItem.h
 	src/FWAssist.cpp
-	proto/das.pb.cc
+	src/FWAssist.h
 )
 
 add_library(${PACKAGE_NAME} SHARED ${SRC_LIST})

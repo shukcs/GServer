@@ -12,9 +12,6 @@
     <ClCompile Include="src\UavManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="proto\das.pb.cc">
-      <Filter>src\proto</Filter>
-    </ClCompile>
     <ClCompile Include="src\ProtoMsg.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -38,6 +35,9 @@
     </ClCompile>
     <ClCompile Include="src\FWItem.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="proto\das_pb.cpp">
+      <Filter>src\proto</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

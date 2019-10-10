@@ -63,7 +63,7 @@ FWItem *FWAssist::getFWItem(const string &name, FWType tp, unsigned sz)
 
     if (sz > 0 && tp > FWAssist::FW_Unknow && tp <= FWAssist::FW_IMU)
     {
-        FWItem *item = new FWItem(sz, tp, name);
+        FWItem *item = new FWItem(tp, sz, name);
         if (item)
             m_fws[name] = item;
 

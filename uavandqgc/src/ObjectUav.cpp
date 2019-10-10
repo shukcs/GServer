@@ -66,7 +66,7 @@ void ObjectUav::transUavStatus(UavStatus &us)
 
 int ObjectUav::GetObjectType() const
 {
-    return IObject::Plant;
+    return UAVType();
 }
 
 void ObjectUav::OnConnected(bool bConnected)
@@ -85,6 +85,11 @@ void ObjectUav::RespondLogin(int seq, int res)
         ack.set_result(res);
         send(ack);
     }
+}
+
+int ObjectUav::UAVType()
+{
+    return IObject::Plant;
 }
 
 void ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *obj)
