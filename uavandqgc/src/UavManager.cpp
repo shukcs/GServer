@@ -137,7 +137,7 @@ bool UavManager::PrcsRemainMsg(const IMessage &msg)
         _checkUavInfo(*(RequestUavStatus *)proto, msg.GetSenderID());
         return true;
     case ControlUav:
-        ObjectUav::AckControl2Uav(*(PostControl2Uav*)proto, 0);
+        ObjectUav::AckControl2Uav(*(PostControl2Uav*)proto, -1);
         return true;
     case UavAllocation:
         processAllocationUav(((RequestIdentityAllocation *)proto)->seqno(), msg.GetSenderID());

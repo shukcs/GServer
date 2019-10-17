@@ -54,6 +54,7 @@ public:
     bool SendMsg(IMessage *msg);
     void AddManager(IObjectManager *m);
     void RemoveManager(int type);
+    void RemoveManager(const IObjectManager *m);
     IObjectManager *GetManagerByType(int tp)const;
 
     void Destroy(IObject *o);

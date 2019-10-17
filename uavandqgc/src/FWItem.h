@@ -1,4 +1,4 @@
-#ifndef __FW_ITEM_H__
+﻿#ifndef __FW_ITEM_H__
 #define __FW_ITEM_H__
 
 #include <string>

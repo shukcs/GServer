@@ -32,7 +32,7 @@ protected:
     //向下实现
     virtual VGMySql *GetMySql()const;
  
-    void send(const google::protobuf::Message &msg);
+    bool send(const google::protobuf::Message &msg);
     int64_t executeInsertSql(ExecutItem *item);
 protected:
     bool            m_bConnect;

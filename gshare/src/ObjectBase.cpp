@@ -17,6 +17,11 @@ class ObjectMetuxs {
 public:
     ObjectMetuxs() :
         m_mtx(new Mutex), m_mtxMsg(new Mutex){};
+    ~ObjectMetuxs()
+    {
+        delete m_mtx;
+        delete m_mtxMsg;
+    }
 public:
     IMutex                  *m_mtx;
     IMutex                  *m_mtxMsg;
@@ -249,6 +254,16 @@ IObjectManager::~IObjectManager()
         t->SetRunning(false);
     }
     Utility::Sleep(100);
+    delete m_mtx;
+    for (BussinessThread *t : m_lsThread)
+    {
+        delete t;
+    }
+    for (const pair<int, ObjectMetuxs*> &t : m_threadMutexts)
+    {
+        delete t.second;
+    }
+    ObjectManagers::Instance().RemoveManager(this);
 }
 
 bool IObjectManager::Receive(ISocket *s, const BaseBuff &buff, int &prcs)

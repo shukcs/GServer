@@ -1,4 +1,4 @@
-#include "FWItem.h"
+ï»¿#include "FWItem.h"
 #include "Utility.h"
 
 #include "GSManager.h"
@@ -38,10 +38,14 @@ FWItem::~FWItem()
 
 bool FWItem::AddData(const void *dt, int len)
 {
-    if (m_dataFw && dt && len>0 && m_fillFw + len <= m_lenFw)
+    if (m_dataFw && dt && len>0 && m_fillFw+len<=m_lenFw)
     {
         memcpy(m_dataFw + m_fillFw, dt, len);
         m_fillFw += len;
+#if !defined _WIN32 && !defined _WIN64
+        if (m_fillFw == m_lenFw)
+            msync(m_dataFw, m_fillFw, MS_SYNC);
+#endif
         return true;
     }
     return false;
@@ -49,9 +53,16 @@ bool FWItem::AddData(const void *dt, int len)
 
 int FWItem::CopyData(void *dt, int len, int offset)
 {
-    int remind = m_lenFw - offset;
+    int remind = (int)m_lenFw - offset;
+    if (remind < 0 || !m_dataFw)
+        return -1;
+    if (len > remind)
+        len = remind;
 
-    return len < remind ? len : remind;
+    if (len > 0)
+        memcpy(dt, m_dataFw + offset, len);
+
+    return len;
 }
 
 bool FWItem::IsValid() const
@@ -140,16 +151,17 @@ void FWItem::creatFw(const std::string &name)
     }
 #else
     int fd = open(name.c_str(), O_RDWR);
-    if (fd == -1)//²»´æÔÚ
+    if (fd == -1)   //file not exist
     {
-        fd = open(name.c_str(), O_RDWR|O_CREAT, S_IRUSR|S_IWUSR);
+        fd = open(name.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+        if (fd == -1)
+        {
+            printf("open file '%s' fail(%s)!\n", name.c_str(), strerror(errno));
+            return;
+        }
+        static const char *sFill = "";
         lseek(fd, m_lenFw-1, SEEK_SET);
-        write(fd, "", 1);//fill empty file, if not mmap() fail;
-    }
-    if (fd == -1)
-    {
-        printf("open file '%s' fail(%s)!\n", name.c_str(), strerror(errno));
-        return;
+        write(fd, sFill, 1);    //fill empty file, if not mmap() fail;
     }
 
     m_dataFw = (char*)mmap(NULL, m_lenFw, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);

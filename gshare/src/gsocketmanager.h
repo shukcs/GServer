@@ -42,8 +42,8 @@ maxSock:支持最大连接数
     void InitThread(int nThread);
     void PrcsAddSockets();
     void PrcsDestroySockets();
-    void PrcsSockets();
-    void SokectPoll(unsigned ms);
+    bool PrcsSockets();
+    bool SokectPoll(unsigned ms);
     ISocket *GetSockByHandle(int handle)const;
     void CloseThread();
     GSocketManager *GetManagerofLeastSocket()const;
@@ -60,6 +60,7 @@ private:
     void _remove(int h);
     void _addSocketHandle(int h, bool bListen=false);
     int _createSocket(int tp=SOCK_STREAM);
+    void _close(ISocket *sock);
 #if !defined _WIN32 && !defined _WIN64
     bool _isCloseEvent(uint32_t e)const;
 #endif

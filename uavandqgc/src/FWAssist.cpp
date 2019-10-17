@@ -1,4 +1,4 @@
-#include "FWAssist.h"
+﻿#include "FWAssist.h"
 #include "FWItem.h"
 #include "Utility.h"
 
@@ -15,11 +15,20 @@ FWAssist::~FWAssist()
 {
 }
 
-void FWAssist::ProcessFW(const string &name, const void *buf, unsigned len, unsigned offset, int tp, int sz)
+FWAssist &FWAssist::Instance()
+{
+    static FWAssist sAssist;
+    return sAssist;
+}
+
+bool FWAssist::ProcessFW(const string &name, const void *buf, unsigned len, unsigned offset, int tp, int sz)
 {
     FWItem *item = getFWItem(name, (FWType)tp, sz);
-    if (item && item->GetFilled()==offset)
-        item->AddData(buf, len);
+    bool ret = item && item->GetFilled() == offset;
+    if (ret)
+        return item->AddData(buf, len);
+
+    return ret;
 }
 
 int FWAssist::GetFw(const std::string &name, void *buf, int len, unsigned offset, unsigned *sz)

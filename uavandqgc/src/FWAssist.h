@@ -1,4 +1,4 @@
-#ifndef __FW_ASSIST_H__
+﻿#ifndef __FW_ASSIST_H__
 #define __FW_ASSIST_H__
 
 #include <string>
@@ -16,13 +16,14 @@ public:
         FW_IMU,
     };
 public:
-    FWAssist();
-    ~FWAssist();
-
-    void ProcessFW(const std::string &name, const void *buf, unsigned len, unsigned offset=0, int tp=FW_Unknow, int size=0);
+    static FWAssist &Instance();
+public:
+    bool ProcessFW(const std::string &name, const void *buf, unsigned len, unsigned offset=0, int tp=FW_Unknow, int size=0);
     int GetFw(const std::string &name, void *buf, int len, unsigned offset, unsigned *sz = 0);
     std::string LastFwName(FWType tp = FW_Flight)const;
 protected:
+    FWAssist();
+    ~FWAssist();
     FWItem *getFWItem(const std::string &name, FWType tp=FW_Unknow, unsigned sz=0);
 private:
     std::map<std::string, FWItem*> m_fws;

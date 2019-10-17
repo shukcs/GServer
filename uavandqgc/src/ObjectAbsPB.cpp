@@ -73,10 +73,15 @@ void ObjectAbsPB::SetSended(int sended /*= -1*/)
         m_p->SetSended(sended);
 }
 
-void ObjectAbsPB::send(const google::protobuf::Message &msg)
+bool ObjectAbsPB::send(const google::protobuf::Message &msg)
 {
-    if (m_p)
+    if (m_p && m_sock)
+    {
         m_p->SendProto(msg, m_sock);
+        return true;
+    }
+
+    return false;
 }
 
 int64_t ObjectAbsPB::executeInsertSql(ExecutItem *item)

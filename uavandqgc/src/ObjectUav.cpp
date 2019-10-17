@@ -268,10 +268,7 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
 
     int res = 0;
     if (m_lastBinder == msg->userid() && m_bBind)
-    {
-        res = 1;
-        send(*msg);
-    }
+        res = send(*msg) ? 1 : -1;
     
     AckControl2Uav(*msg, res, this);
 }

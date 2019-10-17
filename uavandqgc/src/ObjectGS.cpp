@@ -10,6 +10,7 @@
 #include "VGMysql.h"
 #include "VGDBManager.h"
 #include "DBExecItem.h"
+#include "FWAssist.h"
 
 using namespace das::proto;
 using namespace google::protobuf;
@@ -84,16 +85,24 @@ void ObjectGS::_prcsHeartBeat(das::proto::PostHeartBeat *msg)
     send(ahb);
 }
 
-void ObjectGS::_prcsProgram(das::proto::PostProgram *msg)
+void ObjectGS::_prcsProgram(PostProgram *msg)
 {
     if (!msg)
         return;
 
     AckPostProgram ack;
     int res = (m_auth&Type_Admin) ? 1 : -1;
-    if (res > 0)
+    if (res > 0 && msg->has_name())
     {
+        bool ret = FWAssist::Instance().ProcessFW( msg->name()
+            , msg->has_data() ? msg->data().c_str() : NULL
+            , msg->has_data() ? msg->data().size() : 0
+            , msg->offset()
+            , msg->fwtype()
+            , msg->has_length() ? msg->length() : 0 );
 
+        if (!ret)
+            res = 0;
     }
     ack.set_seqno(msg->seqno());
     ack.set_result(res);

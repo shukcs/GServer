@@ -62,7 +62,6 @@ ObjectManagers::ObjectManagers():m_mtx(new Mutex)
 
 ObjectManagers::~ObjectManagers()
 {
-    m_thread->SetRunning(false);
 }
 
 ObjectManagers &ObjectManagers::Instance()
@@ -92,6 +91,20 @@ void ObjectManagers::RemoveManager(int type)
         delete itr->second;
         m_managersMap.erase(itr);
     }
+}
+
+void ObjectManagers::RemoveManager(const IObjectManager *m)
+{
+    map<int, IObjectManager*>::iterator itr = m_managersMap.begin();
+    for (; itr != m_managersMap.end(); ++itr)
+    {
+        if (m == itr->second)
+        {
+            m_managersMap.erase(itr);
+            break;
+        }
+    }
+
 }
 
 void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)

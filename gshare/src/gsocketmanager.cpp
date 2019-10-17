@@ -81,7 +81,7 @@ GSocketManager::~GSocketManager()
     if(IsOpenEpoll())
     {
 #if !defined _WIN32 && !defined _WIN64
-    close(m_ep_fd);       /* 创建epoll模型,ep_fd指向红黑树根节点 */
+        close(m_ep_fd);       /* 创建epoll模型,ep_fd指向红黑树根节点 */
 #endif
     }
 
@@ -90,6 +90,7 @@ GSocketManager::~GSocketManager()
         m->CloseThread();
     }
     Utility::Sleep(100);
+    delete m_thread;
 }
 
 ISocketManager *GSocketManager::CreateManager(int nThread, int maxSock)
@@ -127,9 +128,9 @@ bool GSocketManager::Poll(unsigned ms)
 {
     PrcsAddSockets();
     PrcsDestroySockets();
-    PrcsSockets();
-    SokectPoll(ms);
-    return m_sockets.size() > 0;
+    bool ret = PrcsSockets();
+    ret = SokectPoll(ms)?true:ret;
+    return ret;
 }
 
 void GSocketManager::AddProcessThread()
@@ -206,10 +207,10 @@ void GSocketManager::PrcsDestroySockets()
     }
 }
 
-void GSocketManager::PrcsSockets()
+bool GSocketManager::PrcsSockets()
 {
     if (m_socketsPrcs.size() <= 0)
-        return;
+        return false;
 
     SocketPrcsQue::iterator itr = m_socketsPrcs.begin();
     while (itr != m_socketsPrcs.end())
@@ -219,12 +220,8 @@ void GSocketManager::PrcsSockets()
         {
             ISocket::SocketStat st = s->GetSocketStat();
             if (ISocket::Closing == st)
-            {
-                _remove(s->GetHandle());
-                s->OnClose();
-                setISocketInvalid(s);
-                itr->second = false;
-            }
+                _close(s);
+
             if (!s->IsListenSocket() && ISocket::Connected == st)
             {
                 _send(s);
@@ -241,6 +238,7 @@ void GSocketManager::PrcsSockets()
         }
         ++itr;
     }
+    return true;
 }
 
 ISocket *GSocketManager::GetSockByHandle(int handle) const
@@ -274,12 +272,13 @@ GSocketManager *GSocketManager::GetManagerofLeastSocket() const
     return ret;
 }
 
-void GSocketManager::SokectPoll(unsigned ms)
+bool GSocketManager::SokectPoll(unsigned ms)
 {
     list<ISocket *> lsRm;
+    bool ret = false;
 #if defined _WIN32 || defined _WIN64
     if (m_maxsock <= 0)
-        return;
+        return ret;
     fd_set rfds = m_ep_fd;
     struct timeval tv;
     tv.tv_sec = ms / 1000;
@@ -294,6 +293,7 @@ void GSocketManager::SokectPoll(unsigned ms)
                 _accept(rfds.fd_array[i]);
             else if (!_recv(sock))
                 lsRm.push_back(sock);
+            ret = true;
         }
     }
 #else
@@ -316,6 +316,7 @@ void GSocketManager::SokectPoll(unsigned ms)
             lsRm.push_back(sock);
         else if (ev->events&EPOLLOUT)                      //数据发送就绪
             sock->EnableWrite(true);
+        ret = true;
     }
 #endif
     for (ISocket *s : lsRm)
@@ -324,6 +325,8 @@ void GSocketManager::SokectPoll(unsigned ms)
         s->OnClose();
         _remove(s->GetHandle());
     }
+
+    return ret;
 }
 
 bool GSocketManager::SetNonblocking(ISocket *sock)
@@ -431,6 +434,13 @@ int GSocketManager::_createSocket(int tp)
     return socket(AF_INET, tp, IPPROTO_TCP);
 }
 
+void GSocketManager::_close(ISocket *sock)
+{
+    _remove(sock->GetHandle());
+    sock->OnClose();
+    setISocketInvalid(sock);
+}
+
 #if defined _WIN32 || defined _WIN64 
 void GSocketManager::_checkMaxSock()
 {
@@ -513,7 +523,7 @@ void GSocketManager::_accept(int listenfd)
     }
 }
 
- bool GSocketManager::_recv(ISocket *sock)
+    bool GSocketManager::_recv(ISocket *sock)
 {
     int fd = sock ? sock->GetHandle() : -1;
     if (fd == -1)
@@ -560,8 +570,10 @@ void GSocketManager::_send(ISocket *sock)
         if(res < (int)sizeof(m_buff))
             break;
     }
-    if (count>0)
+    if (count > 0)
         sock->OnWrite(count);
+    else if (count < 0)
+        _close(sock);
 }
 
 void GSocketManager::setISocketInvalid(ISocket *s)
