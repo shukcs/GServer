@@ -43,13 +43,14 @@ protected:
 
     IObject *prcsPBLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication *msg);
     IObject *prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg);
+    void LoadConfig();
 private:
     IObject *_checkLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication &rgi);
-    void _parseConfig();
     void _parseMySql(const TiXmlDocument &doc);
 private:
     VGMySql         *m_sqlEng;
     ProtoMsg        *m_p;
+    bool            m_bInit;
 };
 
 #endif // __OBJECT_UAV_H__

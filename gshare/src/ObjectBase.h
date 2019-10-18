@@ -104,6 +104,7 @@ class IObjectManager
 {
 public:
     virtual int GetObjectType()const = 0;
+    SHARED_DECL virtual void LoadConfig();
     SHARED_DECL bool AddObject(IObject *obj);
     SHARED_DECL IObject *GetObjectByID(const std::string &id)const;
     SHARED_DECL bool Receive(ISocket *s, const BaseBuff &buff, int &prcs);

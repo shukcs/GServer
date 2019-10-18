@@ -266,6 +266,10 @@ IObjectManager::~IObjectManager()
     ObjectManagers::Instance().RemoveManager(this);
 }
 
+void IObjectManager::LoadConfig()
+{
+}
+
 bool IObjectManager::Receive(ISocket *s, const BaseBuff &buff, int &prcs)
 {
     void *buf = buff.GetBuffAddress();

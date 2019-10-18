@@ -20,9 +20,8 @@ using namespace std;
 //GSManager
 ////////////////////////////////////////////////////////////////////////////////
 GSManager::GSManager() : IObjectManager(0),m_sqlEng(new VGMySql)
-, m_p(new ProtoMsg)
+, m_p(new ProtoMsg), m_bInit(false)
 {
-    _parseConfig();
 }
 
 GSManager::~GSManager()
@@ -127,6 +126,27 @@ IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
     return o;
 }
 
+void GSManager::LoadConfig()
+{
+    if (m_bInit)
+        return;
+
+    TiXmlDocument doc;
+    doc.LoadFile("GSInfo.xml");
+    _parseMySql(doc);
+
+    const TiXmlElement *rootElement = doc.RootElement();
+    const TiXmlNode *node = rootElement ? rootElement->FirstChild("GSManager") : NULL;
+    const TiXmlElement *cfg = node ? node->ToElement() : NULL;
+    if (cfg)
+    {
+        const char *tmp = cfg->Attribute("thread");
+        int n = tmp ? (int)Utility::str2int(tmp) : 1;
+        InitThread(n);
+    }
+    m_bInit = true;
+}
+
 IObject *GSManager::_checkLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication &rgi)
 {
     string usr = rgi.userid();
@@ -171,23 +191,6 @@ IObject *GSManager::_checkLogin(ISocket *s, const das::proto::RequestGSIdentityA
     ProtoMsg::SendProtoTo(msg, s);
 
     return o;
-}
-
-void GSManager::_parseConfig()
-{
-    TiXmlDocument doc;
-    doc.LoadFile("GSInfo.xml");
-    _parseMySql(doc);
-
-    const TiXmlElement *rootElement = doc.RootElement();
-    const TiXmlNode *node = rootElement ? rootElement->FirstChild("GSManager") : NULL;
-    const TiXmlElement *cfg = node ? node->ToElement() : NULL;
-    if (cfg)
-    {
-        const char *tmp = cfg->Attribute("thread");
-        int n = tmp ? (int)Utility::str2int(tmp) : 1;
-        InitThread(n);
-    }
 }
 
 void GSManager::_parseMySql(const TiXmlDocument &doc)

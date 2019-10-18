@@ -42,8 +42,8 @@ protected:
     int GetObjectType()const;
     IObject *PrcsReceiveByMgr(ISocket *s, const char *buf, int &len);
     bool PrcsRemainMsg(const IMessage &msg);
+    void LoadConfig();
 private:
-    void _parseConfig();
     void _parseMySql(const TiXmlDocument &doc);
 
     void sendBindRes(const das::proto::RequestBindUav &msg, int res, bool bind);
@@ -55,6 +55,7 @@ private:
     VGMySql     *m_sqlEng;
     ProtoMsg    *m_p;
     uint32_t    m_lastId;
+    bool        m_bInit;
 };
 
 #endif//__UAV_MANAGER_H__

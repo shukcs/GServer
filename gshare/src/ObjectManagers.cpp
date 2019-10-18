@@ -80,6 +80,7 @@ void ObjectManagers::AddManager(IObjectManager *m)
             delete itr->second;
 
         m_managersMap[type] = m;
+        m->LoadConfig();
     }
 }
 

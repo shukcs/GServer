@@ -23,9 +23,8 @@ using namespace ::google::protobuf;
 ////////////////////////////////////////////////////////////////////////////////
 UavManager::UavManager() : IObjectManager(0)
 , m_sqlEng(new VGMySql), m_p(new ProtoMsg)
-, m_lastId(1)
+, m_lastId(1), m_bInit(false)
 {
-    _parseConfig();
 }
 
 UavManager::~UavManager()
@@ -149,20 +148,24 @@ bool UavManager::PrcsRemainMsg(const IMessage &msg)
     return false;
 }
 
-void UavManager::_parseConfig()
+void UavManager::LoadConfig()
 {
+    if (m_bInit)
+        return;
+
     TiXmlDocument doc;
     doc.LoadFile("UavInfo.xml");
     _parseMySql(doc);
     const TiXmlElement *rootElement = doc.RootElement();
     const TiXmlNode *node = rootElement ? rootElement->FirstChild("UavManager") : NULL;
-    const TiXmlElement *cfg = node ? node->ToElement():NULL;
+    const TiXmlElement *cfg = node ? node->ToElement() : NULL;
     if (cfg)
     {
         const char *tmp = cfg->Attribute("thread");
         int n = tmp ? (int)Utility::str2int(tmp) : 1;
         InitThread(n);
     }
+    m_bInit = true;
 }
 
 void UavManager::_parseMySql(const TiXmlDocument &doc)

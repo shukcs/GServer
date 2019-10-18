@@ -17,7 +17,7 @@ int main()
     GSocket *s = new GSocket(NULL);
     if (s)
     {
-        s->Bind(1003, "");
+        s->Bind(8198, "");
         m->AddSocket(s);
     }
 
