@@ -16,13 +16,6 @@ using namespace das::proto;
 using namespace google::protobuf;
 using namespace std;
 
-enum GSAuthorizeType
-{
-    Type_Common = 1,
-    Type_UavManager = Type_Common << 1,
-    Type_Admin = Type_UavManager << 1,
-};
-
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +48,11 @@ const std::string &ObjectGS::GetPswd() const
 void ObjectGS::SetAuth(int a)
 {
     m_auth = a;
+}
+
+bool ObjectGS::GetAuth(GSAuthorizeType auth) const
+{
+    return (auth & m_auth) == auth;
 }
 
 int ObjectGS::GSType()
@@ -530,9 +528,13 @@ int ObjectGS::_addDatabaseUser(const std::string &user, const std::string &pswd)
     if (!fv)
         return -1;
     fv->SetParam(pswd);
-
-    m_check.clear();
-    return executeInsertSql(sql) >= 0 ? 1 : 0;
+    int ret = executeInsertSql(sql) >= 0 ? 1 : 0;
+    if (ret)
+    {
+        m_check.clear();
+        m_pswd = pswd;
+    }
+    return ret;
 }
 
 void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)

@@ -253,7 +253,7 @@ void ObjectUav::processBind(RequestBindUav *msg)
 {
     if (UavManager *m = (UavManager *)GetManager())
     {
-        if (1 == m->PrcsBind(msg, m_lastBinder))
+        if (1 == m->PrcsBind(msg, m_lastBinder, m_bBind))
         {
             m_bBind = 1 == msg->opid();
             m_lastBinder = msg->binder();

@@ -33,7 +33,7 @@ public:
     UavManager();
     ~UavManager();
 public:
-    int PrcsBind(const das::proto::RequestBindUav *msg, const std::string &gsOld);
+    int PrcsBind(const das::proto::RequestBindUav *msg, const std::string &gsOld, bool binded);
     void UpdatePos(const std::string &uav, double lat, double lon);
     VGMySql *GetMySql()const;
 public:

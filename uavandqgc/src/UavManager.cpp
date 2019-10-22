@@ -33,7 +33,7 @@ UavManager::~UavManager()
     delete m_p;
 }
 
-int UavManager::PrcsBind(const RequestBindUav *msg, const std::string &gsOld)
+int UavManager::PrcsBind(const RequestBindUav *msg, const std::string &gsOld, bool binded)
 {
     int res = -1;
     string binder = msg ? msg->binder() : string();
@@ -42,7 +42,7 @@ int UavManager::PrcsBind(const RequestBindUav *msg, const std::string &gsOld)
 
     int op = msg->opid();
     if (1 == op)
-        res = (gsOld.length() == 0 || binder == gsOld) ? 1 : -3;
+        res = (!binded || gsOld.length() == 0 || binder == gsOld) ? 1 : -3;
     else if (0 == op)
         res = (binder == gsOld) ? 1 : -3;
 
@@ -270,11 +270,13 @@ void UavManager::_checkBindUav(const RequestBindUav &rbu)
 
         if (!m_sqlEng->Execut(item))
             return;
-
+        bool bind = false;
+        if (FiledVal *fd = item->GetReadItem("binded"))
+            bind = fd->GetValue<char>() != 0;
         if (FiledVal *fd = item->GetReadItem("binder"))
         {
             string binder((char*)fd->GetBuff(), fd->GetValidLen());
-            PrcsBind(&rbu, binder);
+            PrcsBind(&rbu, binder, bind);
         }
         while (m_sqlEng->GetResult());
     }

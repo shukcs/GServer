@@ -35,6 +35,13 @@ class ProtoMsg;
 class ObjectGS : public ObjectAbsPB
 {
 public:
+    enum GSAuthorizeType
+    {
+        Type_Common = 1,
+        Type_UavManager = Type_Common << 1,
+        Type_Admin = Type_UavManager << 1,
+    };
+public:
     ObjectGS(const std::string &id);
     ~ObjectGS();
 
@@ -42,6 +49,7 @@ public:
     void SetCheck(const std::string &str);
     const std::string &GetPswd()const;
     void SetAuth(int);
+    bool GetAuth(GSAuthorizeType auth=Type_Common)const;
 public:
     static int GSType();
 protected:
