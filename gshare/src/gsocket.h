@@ -57,7 +57,7 @@ protected:
     SHARED_DECL virtual void OnClose();
     SHARED_DECL virtual void OnConnect(bool);
 
-    void OnBind();
+    void OnBind(bool);
     int CopySend(char *buf, int sz, unsigned from=0)const;
     int GetSendLength()const;
     bool ResetSendBuff(uint16_t sz);

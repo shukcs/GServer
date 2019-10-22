@@ -198,9 +198,9 @@ void GSocket::OnConnect(bool b)
         m_object->OnConnected(b);
 }
 
-void GSocket::OnBind()
+void GSocket::OnBind(bool binded)
 {
-    m_stat = Binded;
+    m_stat = binded ? Binded : Closed;
 }
 
 int GSocket::CopySend(char *buf, int sz, unsigned from) const

@@ -95,7 +95,7 @@ GSocketManager::~GSocketManager()
 
 ISocketManager *GSocketManager::CreateManager(int nThread, int maxSock)
 {
-    return new GSocketManager(nThread, maxSock);
+    return  new GSocketManager(nThread, maxSock);
 }
 
 bool GSocketManager::AddSocket(ISocket *s)
@@ -371,6 +371,12 @@ void GSocketManager::Release()
     delete this;
 }
 
+void GSocketManager::SetBindedCB(ISocket *s, FuncOnBinded cb)
+{
+    if (s)
+        m_bindedCBs[s] = cb;
+}
+
 void GSocketManager::Log(int err, const std::string &obj, int evT, const char *fmt, ...)
 {
     if (m_log)
@@ -466,10 +472,12 @@ int GSocketManager::_bind(ISocket *sock)
 
     struct sockaddr_in serveraddr = {0};
     serveraddr = *(sockaddr_in*)&**sock->GetAddress();//htons(portnumber);
+    bool binded = true;
     if(SOCKET_ERROR == bind(listenfd, (sockaddr *)&serveraddr, sizeof(serveraddr)))
     {
         closesocket(listenfd);
         listenfd = -1;
+        binded = false;
     }
     else
     {
@@ -477,7 +485,9 @@ int GSocketManager::_bind(ISocket *sock)
         sock->SetHandle(listenfd);
         sock->OnBind();
     }
-    Log(listenfd>=0?0:errno, "GSocketManager", 0, "bind %s:%d %s", sock->GetHost().c_str(), sock->GetPort(), listenfd>=0?"success":"fail");
+    SocketBindedCallbacks::iterator itr = m_bindedCBs.find(sock);
+    if (itr != m_bindedCBs.end())
+        itr->second(sock, binded);
     return listenfd;
 }
 

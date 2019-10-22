@@ -35,8 +35,14 @@ private:
 ////////////////////////////////////////////////////////////
 //ManagerAbstractItem
 ////////////////////////////////////////////////////////////
+ManagerAbstractItem::ManagerAbstractItem():m_type(-1)
+, m_mgr(NULL)
+{
+}
+
 ManagerAbstractItem::~ManagerAbstractItem()
 {
+    delete m_mgr;
     Unregister();
 }
 
@@ -44,6 +50,7 @@ void ManagerAbstractItem::Register()
 {
     if (IObjectManager *m = CreateManager())
     {
+        m_type = m->GetObjectType();
         ObjectManagers::Instance().AddManager(m);
     }
 }
@@ -89,7 +96,6 @@ void ObjectManagers::RemoveManager(int type)
     map<int, IObjectManager*>::iterator itr = m_managersMap.find(type);
     if (itr != m_managersMap.end())
     {
-        delete itr->second;
         m_managersMap.erase(itr);
     }
 }

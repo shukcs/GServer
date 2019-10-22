@@ -21,13 +21,15 @@ class BaseBuff;
 class SHARED_DECL ManagerAbstractItem
 {
 public:
+    ManagerAbstractItem();
     virtual ~ManagerAbstractItem();
     void Register();
     void Unregister();
 protected:
     virtual IObjectManager *CreateManager() = 0;
 protected:
-    int m_type;
+    int             m_type;
+    IObjectManager  *m_mgr;
 };
 
 template<class Item>
@@ -72,13 +74,13 @@ private:
     void _removeBuff(ISocket *sock);
 private:
     friend class ManagerThread;
-    std::map<int, IObjectManager*> m_managersMap;
-    std::map<ISocket *, BaseBuff*> m_socksRcv;
-    std::list<ISocket *>           m_keysRemove;
-    std::list<IObject *>           m_objectsDestroy;
-    IMutex                         *m_mtx;
-    IMutex                         *m_mtxObj;
-    Thread                         *m_thread;
+    std::map<int, IObjectManager*>  m_managersMap;
+    std::map<ISocket *, BaseBuff*>  m_socksRcv;
+    std::list<ISocket *>            m_keysRemove;
+    std::list<IObject *>            m_objectsDestroy;
+    IMutex                          *m_mtx;
+    IMutex                          *m_mtxObj;
+    Thread                          *m_thread;
 };
 
 #ifdef SOCKETS_NAMESPACE

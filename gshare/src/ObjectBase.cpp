@@ -255,10 +255,6 @@ IObjectManager::~IObjectManager()
     }
     Utility::Sleep(100);
     delete m_mtx;
-    for (BussinessThread *t : m_lsThread)
-    {
-        delete t;
-    }
     for (const pair<int, ObjectMetuxs*> &t : m_threadMutexts)
     {
         delete t.second;

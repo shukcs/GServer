@@ -17,6 +17,7 @@ class GSocketManager : public ISocketManager {
     typedef std::pair<ISocket*, bool> SocketPrcs;
     typedef std::list<ISocket *> SocketQue;
     typedef std::list<SocketPrcs> SocketPrcsQue;
+    typedef std::map<ISocket *, FuncOnBinded> SocketBindedCallbacks;
 public:
     SHARED_DECL static ISocketManager *CreateManager(int nThread = 0, int maxSock = 100000);
 protected:
@@ -51,6 +52,7 @@ maxSock:支持最大连接数
     bool IsOpenEpoll()const;
     void InitEpoll();
     void Release();
+    void SetBindedCB(ISocket *s, FuncOnBinded cb);
 private:
     int _bind(ISocket *sock);
     int _connect(ISocket *sock);
@@ -76,8 +78,8 @@ private:
     int                         m_openMax;
 #if defined _WIN32 || defined _WIN64 //Windows与epoll对应的是IOCP，但不好做成epoll一样操作
     void _checkMaxSock();
-    SOCKET                  m_maxsock;
-    fd_set                  m_ep_fd;
+    SOCKET                      m_maxsock;
+    fd_set                      m_ep_fd;
 #else
     int                         m_ep_fd;
 #endif
@@ -85,6 +87,7 @@ private:
     ILog                        *m_log;
     char                        m_buff[1024];
     static bool                 s_bRun;
+    SocketBindedCallbacks       m_bindedCBs;
 };
 
 #ifdef SOCKETS_NAMESPACE

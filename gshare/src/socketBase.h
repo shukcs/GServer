@@ -40,7 +40,7 @@ public:
     virtual void OnRead(void *buf, int len) = 0;
     virtual void OnClose() = 0;
     virtual void OnConnect(bool=true) = 0;
-    virtual void OnBind() = 0;
+    virtual void OnBind(bool=true) = 0;
     virtual int CopySend(char *buff, int sz, unsigned fr=0)const = 0;
     virtual int GetSendLength()const = 0;
     virtual bool IsAccetSock()const = 0;
@@ -66,6 +66,8 @@ public:
 
 class ISocketManager
 {
+protected:
+    typedef void(*FuncOnBinded)(ISocket *sock, bool binded);
 public:
     virtual bool AddSocket(ISocket *) = 0;
     virtual bool AddWaitPrcsSocket(ISocket *) = 0;
@@ -77,6 +79,8 @@ public:
     virtual void Exit() = 0;
     virtual void Log(int err, const std::string &obj, int evT, const char *fmt, ...) = 0;
     virtual void Release() = 0;
+    virtual void SetBindedCB(ISocket *, FuncOnBinded) = 0;
+
     virtual ~ISocketManager() {}
 };
 

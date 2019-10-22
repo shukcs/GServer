@@ -103,6 +103,7 @@ protected:
 class IObjectManager
 {
 public:
+    SHARED_DECL virtual ~IObjectManager();
     virtual int GetObjectType()const = 0;
     SHARED_DECL virtual void LoadConfig();
     SHARED_DECL bool AddObject(IObject *obj);
@@ -119,7 +120,6 @@ public:
     SHARED_DECL static bool SendMsg(IMessage *msg);
 protected:
     SHARED_DECL IObjectManager(uint16_t nThread = 1);
-    SHARED_DECL virtual ~IObjectManager();
 
     SHARED_DECL virtual bool PrcsRemainMsg(const IMessage &msg);
     SHARED_DECL void InitThread(uint16_t nThread = 1);
