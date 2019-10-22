@@ -12,6 +12,7 @@
 #include "IMessage.h"
 #include "tinyxml.h"
 #include "ObjectUav.h"
+#include "ObjectGS.h"
 
 #define PROTOFLAG "das.proto."
 
@@ -33,7 +34,7 @@ UavManager::~UavManager()
     delete m_p;
 }
 
-int UavManager::PrcsBind(const RequestBindUav *msg, const std::string &gsOld, bool binded)
+int UavManager::PrcsBind(const RequestBindUav *msg, const string &gsOld, bool binded)
 {
     int res = -1;
     string binder = msg ? msg->binder() : string();
@@ -44,7 +45,7 @@ int UavManager::PrcsBind(const RequestBindUav *msg, const std::string &gsOld, bo
     if (1 == op)
         res = (!binded || gsOld.length() == 0 || binder == gsOld) ? 1 : -3;
     else if (0 == op)
-        res = (binder == gsOld) ? 1 : -3;
+        res = (binder == gsOld || gsOld.empty()) ? 1 : -3;
 
     const std::string &uav = msg->uavid();
     if(res == 1)
@@ -130,7 +131,7 @@ bool UavManager::PrcsRemainMsg(const IMessage &msg)
     switch (msg.GetMessgeType())
     {
     case BindUav:
-        _checkBindUav(*(RequestBindUav *)proto);
+        _checkBindUav(*(RequestBindUav *)proto, (ObjectGS*)msg.GetSender());
         return true;
     case QueryUav:
         _checkUavInfo(*(RequestUavStatus *)proto, msg.GetSenderID());
@@ -260,7 +261,7 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
     return ret;
 }
 
-void UavManager::_checkBindUav(const RequestBindUav &rbu)
+void UavManager::_checkBindUav(const RequestBindUav &rbu, ObjectGS *gs)
 {
     if (ExecutItem *item = VGDBManager::GetSqlByName("queryUavInfo"))
     {
@@ -276,6 +277,8 @@ void UavManager::_checkBindUav(const RequestBindUav &rbu)
         if (FiledVal *fd = item->GetReadItem("binder"))
         {
             string binder((char*)fd->GetBuff(), fd->GetValidLen());
+            if (gs->GetAuth(ObjectGS::Type_UavManager))
+                binder.clear();
             PrcsBind(&rbu, binder, bind);
         }
         while (m_sqlEng->GetResult());

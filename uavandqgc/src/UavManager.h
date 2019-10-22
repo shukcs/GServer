@@ -27,6 +27,7 @@ using namespace SOCKETS_NAMESPACE;
 #endif
 
 class ProtoMsg;
+class ObjectGS;
 class UavManager : public IObjectManager
 {
 public:
@@ -48,7 +49,7 @@ private:
 
     void sendBindRes(const das::proto::RequestBindUav &msg, int res, bool bind);
     IObject *_checkLogin(ISocket *s, const das::proto::RequestUavIdentityAuthentication &uia);
-    void _checkBindUav(const das::proto::RequestBindUav &rbu);
+    void _checkBindUav(const das::proto::RequestBindUav &rbu, ObjectGS *gs);
     void _checkUavInfo(const das::proto::RequestUavStatus &uia, const std::string &gs);
     void processAllocationUav(int seqno, const std::string &id);
 private:
