@@ -23,7 +23,7 @@ public:
     SHARED_SQL VGMySql(const char *host, int port, const char *user, const char *pswd);
     SHARED_SQL virtual ~VGMySql();
 
-    SHARED_SQL bool ConnectMySql(const char *host, int port, const char *user, const char *pswd);
+    SHARED_SQL bool ConnectMySql(const char *host, int port, const char *user, const char *pswd, const char *db=NULL);
     SHARED_SQL bool IsValid() const;
 
     SHARED_SQL bool Execut(ExecutItem *item);
@@ -48,7 +48,8 @@ private:
 	std::string			m_host;
 	int					m_nPort;
 	std::string			m_user;
-	std::string			m_pswd;
+    std::string			m_pswd;
+    std::string			m_database;
 	bool				m_bValid;
     ExecutItem          *m_execItem;
     MYSQL_BIND          *m_binds;

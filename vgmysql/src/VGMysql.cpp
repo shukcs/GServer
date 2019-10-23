@@ -85,6 +85,8 @@ bool VGMySql::EnterDatabase(const std::string &db, const char *cset)
         my_ulonglong nNum = mysql_num_rows(res);
         mysql_free_result(res);
         ret = nNum > 0;
+        //长期不连接database，在连接需要，需要保存
+        m_database = db;
     }
 
     if (MYSQL_RES *res = Query(string("use ") + db))
@@ -157,18 +159,22 @@ bool VGMySql::_canOperaterDB()
 {
 	if (m_bValid && mysql_ping(m_mysql))
 	{
-		if (mysql_real_connect(m_mysql, m_host.c_str(), m_user.c_str(), m_pswd.c_str(), NULL, m_nPort, NULL, 0))
+        const char *host = m_host.empty() ? NULL : m_host.c_str();
+        const char *user = m_user.empty() ? NULL : m_user.c_str();
+        const char *pswd = m_pswd.empty() ? NULL : m_pswd.c_str();
+        const char *db = m_database.empty() ? NULL : m_database.c_str();
+		if (mysql_real_connect(m_mysql, host, user, pswd, db, m_nPort, NULL, 0))
 			return false;
 	}
 	return m_bValid;
 }
 
-bool VGMySql::ConnectMySql( const char *host, int port, const char *user, const char *pswd)
+bool VGMySql::ConnectMySql( const char *host, int port, const char *user, const char *pswd, const char *db)
 {
     if (!m_mysql)
         return m_bValid = false;
 
-    if (mysql_real_connect(m_mysql, host, user, pswd, NULL, port, NULL, 0))
+    if (mysql_real_connect(m_mysql, host, user, pswd, db, port, NULL, 0))
     {
         m_host = host ? host : string();
         m_nPort = port;
