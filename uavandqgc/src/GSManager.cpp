@@ -93,14 +93,54 @@ bool GSManager::PrcsRemainMsg(const IMessage &)
     return true;
 }
 
-IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthentication *msg)
+IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthentication *rgi)
 {
-    if (!msg)
+    if (!rgi)
         return NULL;
 
-    IObject *o = _checkLogin(s, *msg);
+    string usr = rgi->userid();
+    string pswd = rgi->password();
+    ObjectGS *o = (ObjectGS*)GetObjectByID(usr);
+    int res = -3;
+    if (o)
+    {
+        if (!o->IsConnect() && o->m_pswd == pswd)
+        {
+            res = 1;
+            o->SetSocket(s);
+        }
+    }
+    else if (ExecutItem *item = VGDBManager::GetSqlByName("queryGSInfo"))
+    {
+        item->ClearData();
+        if (FiledVal *fd = item->GetConditionItem("user"))
+            fd->SetParam(usr);
+
+        if (m_sqlEng->Execut(item))
+        {
+            res = -1;
+            FiledVal *fd = item->GetReadItem("pswd");
+            if (fd && string((char*)fd->GetBuff(), fd->GetValidLen()) == pswd)
+            {
+                o = new ObjectGS(usr);
+                o->SetPswd(pswd);
+                if (FiledVal *fd = item->GetReadItem("auth"))
+                    o->SetAuth(fd->GetValue<int>());
+                res = 1;
+            }
+
+            while (m_sqlEng->GetResult());
+        }
+    }
+
     if (ISocketManager *m = s->GetManager())
-        m->Log(0, msg->userid(), 0, o ? "login success" : "login fail");
+        m->Log(0, usr, 0, "[%s]%s", s->GetHost().c_str(), 1 == res ? "login success" : "login fail");
+
+    AckGSIdentityAuthentication msg;
+    msg.set_seqno(rgi->seqno());
+    msg.set_result(res);
+    ProtoMsg::SendProtoTo(msg, s);
+
     return o;
 }
 
@@ -145,52 +185,6 @@ void GSManager::LoadConfig()
         InitThread(n);
     }
     m_bInit = true;
-}
-
-IObject *GSManager::_checkLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication &rgi)
-{
-    string usr = rgi.userid();
-    string pswd = rgi.password();
-    ObjectGS *o = (ObjectGS*)GetObjectByID(usr);
-    int res = -3;
-    if (o)
-    {
-        if (!o->IsConnect() && o->m_pswd == pswd)
-        {
-            res = 1;
-            o->SetSocket(s);
-        }
-    }
-    else if (ExecutItem *item = VGDBManager::GetSqlByName("queryGSInfo"))
-    {
-        item->ClearData();
-        if (FiledVal *fd = item->GetConditionItem("user"))
-            fd->SetParam(usr);
-
-        if (m_sqlEng->Execut(item))
-        {
-            res = -1;
-            FiledVal *fd = item->GetReadItem("pswd");
-            if (fd && string((char*)fd->GetBuff(), fd->GetValidLen())==pswd)
-            {
-                o = new ObjectGS(usr);
-                o->SetPswd(pswd);
-                if (FiledVal *fd = item->GetReadItem("auth"))
-                    o->SetAuth(fd->GetValue<int>());
-                o->OnConnected(true);
-                res = 1;
-            }
-
-            while (m_sqlEng->GetResult());
-        }
-    }
-
-    AckGSIdentityAuthentication msg;
-    msg.set_seqno(rgi.seqno());
-    msg.set_result(res);
-    ProtoMsg::SendProtoTo(msg, s);
-
-    return o;
 }
 
 void GSManager::_parseMySql(const TiXmlDocument &doc)

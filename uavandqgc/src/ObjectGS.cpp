@@ -31,7 +31,7 @@ ObjectGS::~ObjectGS()
 void ObjectGS::OnConnected(bool bConnected)
 {
     ObjectAbsPB::OnConnected(bConnected);
-    if (!m_check.empty())
+    if (!bConnected && !m_check.empty())
         Release();
 }
 

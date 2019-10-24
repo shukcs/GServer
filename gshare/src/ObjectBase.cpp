@@ -102,6 +102,7 @@ void IObject::SetSocket(ISocket *s)
         s->SetObject(this);
 
     m_sock = s;
+    OnConnected(s != NULL);
 }
 
 int IObject::GetSenLength() const
@@ -274,7 +275,7 @@ bool IObjectManager::Receive(ISocket *s, const BaseBuff &buff, int &prcs)
         return false;
 
     IObject *o = PrcsReceiveByMgr(s, (char*)buf, prcs);
-    if (o)
+    if (o && !o->GetSocket())
     {
         AddObject(o);
         o->SetSocket(s);

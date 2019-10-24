@@ -45,7 +45,6 @@ protected:
     IObject *prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg);
     void LoadConfig();
 private:
-    IObject *_checkLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication &rgi);
     void _parseMySql(const TiXmlDocument &doc);
 private:
     VGMySql         *m_sqlEng;

@@ -230,7 +230,6 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
         if (!ret->IsConnect())
         {
             ret->SetSocket(s);
-            ret->OnConnected(true);
             res = 1;
         }
     }
@@ -245,13 +244,12 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
             ret = new ObjectUav(uia.uavid());
             ret->InitBySqlResult(*item);
             while (m_sqlEng->GetResult());
-            ret->OnConnected(true);
             res = 1;
         }
     }
 
     if (ISocketManager *m = s->GetManager())
-        m->Log(0, uia.uavid(), 0, ret ? "login success" : "login fail");
+        m->Log(0, uia.uavid(), 0, "[%s]%s", s->GetHost().c_str(), res==1 ? "login success" : "login fail");
 
     AckUavIdentityAuthentication ack;
     ack.set_seqno(uia.seqno());
