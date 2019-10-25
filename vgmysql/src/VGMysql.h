@@ -28,7 +28,7 @@ public:
 
     SHARED_SQL bool Execut(ExecutItem *item);
     SHARED_SQL ExecutItem *GetResult();
-    SHARED_SQL bool EnterDatabase(const std::string &db, const char *cset=NULL);
+    SHARED_SQL bool EnterDatabase(const std::string &db=std::string(), const char *cset=NULL);
     SHARED_SQL bool ExistTable(const std::string &name);
     SHARED_SQL bool CreateTable(VGTable *tb);
     SHARED_SQL bool ExistTrigger(const std::string &name);

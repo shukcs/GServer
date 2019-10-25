@@ -12,6 +12,7 @@
 #include "VGTrigger.h"
 
 using namespace std;
+static const char *sCharSetFmt = "default character set %s collate %s_general_ci";
 
 VGMySql::VGMySql() : m_bValid(false)
 , m_binds(NULL) , m_stmt(NULL)
@@ -73,23 +74,26 @@ ExecutItem *VGMySql::GetResult()
 bool VGMySql::EnterDatabase(const std::string &db, const char *cset)
 {
     bool ret = false;
-    if (db.empty())
+    if (db.empty() && m_database.empty())
         return ret;
 
-    char tmp[128];
-    const char *set = cset ? cset : "utf8";
-    sprintf(tmp, "default character set %s collate %s_general_ci", set, set);
-    string sql = string("create database if not exists ") + db + " " + tmp;
-    if (MYSQL_RES *res = Query(sql))
-    {
-        my_ulonglong nNum = mysql_num_rows(res);
-        mysql_free_result(res);
-        ret = nNum > 0;
         //长期不连接database，在连接需要，需要保存
+    if (!db.empty())
+    {
         m_database = db;
+        char tmp[128];
+        const char *set = cset ? cset : "utf8";
+        sprintf(tmp, sCharSetFmt, set, set);
+        string sql = string("create database if not exists ") + m_database + " " + tmp;
+        if (MYSQL_RES *res = Query(sql))
+        {
+            my_ulonglong nNum = mysql_num_rows(res);
+            mysql_free_result(res);
+            ret = nNum > 0;
+        }
     }
 
-    if (MYSQL_RES *res = Query(string("use ") + db))
+    if (MYSQL_RES *res = Query(string("use ") + m_database))
         mysql_free_result(res);
 
     return ret;
@@ -157,22 +161,26 @@ bool VGMySql::CreateTrigger(VGTrigger *trigger)
 
 bool VGMySql::_canOperaterDB()
 {
-	if (m_bValid && mysql_ping(m_mysql))
+	if (m_bValid && mysql_ping(m_mysql)) //连接错误重来
 	{
         const char *host = m_host.empty() ? NULL : m_host.c_str();
         const char *user = m_user.empty() ? NULL : m_user.c_str();
         const char *pswd = m_pswd.empty() ? NULL : m_pswd.c_str();
-        const char *db = m_database.empty() ? NULL : m_database.c_str();
-		if (mysql_real_connect(m_mysql, host, user, pswd, db, m_nPort, NULL, 0))
-			return false;
+		if (NULL == mysql_real_connect(m_mysql, host, user, pswd, NULL, m_nPort, NULL, 0))
+        {
+            printf("mysql_real_connect() failed %s\n", mysql_error(m_mysql));
+            return false;
+        }
+        EnterDatabase();
 	}
 	return m_bValid;
 }
 
 bool VGMySql::ConnectMySql( const char *host, int port, const char *user, const char *pswd, const char *db)
 {
+    m_bValid = false;
     if (!m_mysql)
-        return m_bValid = false;
+        return m_bValid;
 
     if (mysql_real_connect(m_mysql, host, user, pswd, db, port, NULL, 0))
     {
@@ -180,12 +188,13 @@ bool VGMySql::ConnectMySql( const char *host, int port, const char *user, const 
         m_nPort = port;
         m_user = user ? user : string();
         m_pswd = pswd ? pswd : string();
-        return m_bValid = true;
+        m_bValid = true;
     }
 
-    fprintf(stderr, " mysql_real_connect() failed %s\n", mysql_error(m_mysql));
-    string strErr = mysql_error(m_mysql);
-    return m_bValid = false;
+    if(!m_bValid)
+        printf("mysql_real_connect() failed %s\n", mysql_error(m_mysql));
+
+    return m_bValid;
 }
 
 bool VGMySql::_executChange(const string &sql, MYSQL_BIND *binds, FiledVal *i)
