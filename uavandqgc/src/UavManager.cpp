@@ -347,7 +347,7 @@ int UavManager::_addUavId(const std::string &uav)
     if ( strLs.size() != 2
       || strLs.front() != "VIGAU"
       || strLs.back().length()!=8
-      || Utility::str2int(strLs.back(), 16)!=0 )
+      || Utility::str2int(strLs.back(), 16)==0 )
         return -1;
 
     ExecutItem *sql = VGDBManager::GetSqlByName("insertUavInfo");
