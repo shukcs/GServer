@@ -21,6 +21,7 @@
 #include <map>
 #include <string.h>
 #include <chrono>
+#include "zlib.h"
 
 union FlagEnddian
 {
@@ -1252,6 +1253,69 @@ string Utility::ToUtf8(const string& str)
     setlocale(LC_ALL, "C");
     return ret;
 }
+
+int Utility::GzCompress(const char *data, unsigned n, char *zdata, unsigned nz)
+{
+    z_stream c_stream;
+    int err = 0;
+    if (data && n > 0)
+    {
+        c_stream.zalloc = (alloc_func)0;
+        c_stream.zfree = (free_func)0;
+        c_stream.opaque = (voidpf)0;
+        if (deflateInit(&c_stream, Z_DEFAULT_COMPRESSION) != Z_OK) return -1;
+        c_stream.next_in = (Bytef*)data;
+        c_stream.avail_in = n;
+        c_stream.next_out = (Bytef*)zdata;
+        c_stream.avail_out = nz;
+        while (c_stream.avail_in != 0 && c_stream.total_out < nz)
+        {
+            if (deflate(&c_stream, Z_NO_FLUSH) != Z_OK)
+                return -1;
+        }
+        if (c_stream.avail_in != 0) return c_stream.avail_in;
+        for (;;)
+        {
+            if ((err = deflate(&c_stream, Z_FINISH)) == Z_STREAM_END) break;
+            if (err != Z_OK)
+                return -1;
+        }
+        if (deflateEnd(&c_stream) != Z_OK)
+            return -1;
+
+        return c_stream.total_out;
+    }
+    return 0;
+}
+
+int Utility::GzDecompress(const char *zdata, unsigned nz, char *data, unsigned n)
+{
+    int err = 0;
+    z_stream d_stream; /* decompression stream */
+
+    d_stream.zalloc = (alloc_func)0;
+    d_stream.zfree = (free_func)0;
+    d_stream.opaque = (voidpf)0;
+    d_stream.next_in = (Bytef *)zdata;
+    d_stream.avail_in = 0;
+    d_stream.next_out = (Bytef *)data;
+    if (inflateInit(&d_stream) != Z_OK)
+        return -1;
+
+    while (d_stream.total_out<n && d_stream.total_in<nz)
+    {
+        d_stream.avail_in = d_stream.avail_out = 1;
+        if ((err = inflate(&d_stream, Z_NO_FLUSH)) == Z_STREAM_END)
+            break;
+        if (err != Z_OK)
+            return -1;
+    }
+    if (inflateEnd(&d_stream) != Z_OK || d_stream.total_in > nz)
+        return -1;
+
+    return d_stream.total_out;
+}
+
 string Utility::ModuleDirectory()
 {
     string strRet;

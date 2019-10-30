@@ -45,7 +45,8 @@ namespace Utility
     /** Utf8 decrypt, encrypt. */
     SHARED_DECL std::string FromUtf8(const std::string&);
     SHARED_DECL std::string ToUtf8(const std::string&);
-
+    SHARED_DECL int GzCompress(const char *data, unsigned n, char *zdata, unsigned);
+    SHARED_DECL int GzDecompress(const char *zdata, unsigned nz, char *data, unsigned);
 	/** Checks whether a string is a valid ipv4/ipv6 ip number. */
     SHARED_DECL bool isipv4(const std::string&);
 	/** Checks whether a string is a valid ipv4/ipv6 ip number. */
@@ -58,7 +59,6 @@ namespace Utility
 #ifdef IPPROTO_IPV6
 	/** Hostname to ip resolution ipv6, not asynchronous. */
     SHARED_DECL bool u2ip(const std::string&, struct in6_addr&);
-    SHARED_DECL bool u2ip(const std::string&, struct sockaddr_in6& sa, int ai_flags = 0);
 #endif
 #endif
 	/** Reverse lookup of address to hostname */

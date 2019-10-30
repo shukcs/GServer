@@ -17,6 +17,7 @@ namespace das {
         class PostControl2Uav;
         class RequestUavIdentityAuthentication;
         class RequestUavStatus;
+        class AckRequestUavStatus;
     }
 }
 class VGMySql;
@@ -50,8 +51,10 @@ private:
     void sendBindRes(const das::proto::RequestBindUav &msg, int res, bool bind);
     IObject *_checkLogin(ISocket *s, const das::proto::RequestUavIdentityAuthentication &uia);
     void _checkBindUav(const das::proto::RequestBindUav &rbu, ObjectGS *gs);
-    void _checkUavInfo(const das::proto::RequestUavStatus &uia, const std::string &gs);
+    void _checkUavInfo(const das::proto::RequestUavStatus &uia, ObjectGS *gs);
     void processAllocationUav(int seqno, const std::string &id);
+    int _addUavId(const std::string &uav);
+    bool _queryUavInfo(das::proto::AckRequestUavStatus &aus, const std::string &);
 private:
     VGMySql     *m_sqlEng;
     ProtoMsg    *m_p;

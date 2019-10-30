@@ -35,6 +35,32 @@ VGMySql *GSManager::GetMySql() const
     return m_sqlEng;
 }
 
+int GSManager::AddDatabaseUser(const std::string &user, const std::string &pswd, int auth /*= 1*/)
+{
+    ExecutItem *sql = VGDBManager::GetSqlByName("insertGSInfo");
+    if (!sql && (auth&ObjectGS::Type_ALL) != auth)
+        return -1;
+
+    sql->ClearData();
+    FiledVal *fv = sql->GetWriteItem("user");
+    if (!fv)
+        return -1;
+    fv->SetParam(user);
+
+    fv = sql->GetWriteItem("pswd");
+    if (!fv)
+        return -1;
+    fv->SetParam(pswd);
+    fv = sql->GetWriteItem("auth");
+    if (fv && auth>ObjectGS::Type_Common)
+        fv->InitOf(auth);
+
+    if (m_sqlEng && m_sqlEng->Execut(sql))
+        return 1;
+
+    return 0;
+}
+
 int GSManager::ExecutNewGsSql(GSManager *mgr, const string &gs)
 {
     if (!mgr)
@@ -171,6 +197,7 @@ void GSManager::LoadConfig()
     if (m_bInit)
         return;
 
+    m_bInit = true;
     TiXmlDocument doc;
     doc.LoadFile("GSInfo.xml");
     _parseMySql(doc);
@@ -178,13 +205,13 @@ void GSManager::LoadConfig()
     const TiXmlElement *rootElement = doc.RootElement();
     const TiXmlNode *node = rootElement ? rootElement->FirstChild("GSManager") : NULL;
     const TiXmlElement *cfg = node ? node->ToElement() : NULL;
+    AddDatabaseUser("root", "NIhao666", ObjectGS::Type_ALL);
     if (cfg)
     {
         const char *tmp = cfg->Attribute("thread");
         int n = tmp ? (int)Utility::str2int(tmp) : 1;
         InitThread(n);
     }
-    m_bInit = true;
 }
 
 void GSManager::_parseMySql(const TiXmlDocument &doc)

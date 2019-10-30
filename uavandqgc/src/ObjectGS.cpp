@@ -515,21 +515,12 @@ void ObjectGS::_initialPlan(das::proto::OperationDescription *msg, const ExecutI
 
 int ObjectGS::_addDatabaseUser(const std::string &user, const std::string &pswd)
 {
-    ExecutItem *sql = VGDBManager::GetSqlByName("insertGSInfo");
-    if (!sql)
-        return -1;
+    GSManager *mgr = dynamic_cast<GSManager *>(GetManager());
+    int ret = -1;
+    if (mgr)
+        ret = mgr->AddDatabaseUser(user, pswd);
 
-    FiledVal *fv = sql->GetWriteItem("user");
-    if (!fv)
-        return -1;
-    fv->SetParam(user);
-
-    fv = sql->GetWriteItem("pswd");
-    if (!fv)
-        return -1;
-    fv->SetParam(pswd);
-    int ret = executeInsertSql(sql) >= 0 ? 1 : 0;
-    if (ret)
+    if (ret > 0)
     {
         m_check.clear();
         m_pswd = pswd;

@@ -40,6 +40,7 @@ public:
         Type_Common = 1,
         Type_UavManager = Type_Common << 1,
         Type_Admin = Type_UavManager << 1,
+        Type_ALL = Type_Common|Type_UavManager|Type_Admin,
     };
 public:
     ObjectGS(const std::string &id);

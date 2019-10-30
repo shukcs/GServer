@@ -33,6 +33,7 @@ public:
     ~GSManager();
     
     VGMySql *GetMySql()const;
+    int AddDatabaseUser(const std::string &user, const std::string &pswd, int auth = 1);
 public:
     static int ExecutNewGsSql(GSManager *mgr, const std::string &gs);
 protected:

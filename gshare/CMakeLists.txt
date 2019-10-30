@@ -8,6 +8,7 @@ INCLUDE_DIRECTORIES(
 	.
 	./src
 	../tinyxml
+	../zlib-1.2.11
 )
 set(SRC_LIST
 	src/Base64.cpp
@@ -52,6 +53,7 @@ add_library(${PACKAGE_NAME} SHARED ${SRC_LIST})
 
 target_link_libraries(${PACKAGE_NAME} dl)
 target_link_libraries(${PACKAGE_NAME} pthread)
+target_link_libraries(${PACKAGE_NAME} zlib)
 set_target_properties(
 	${PACKAGE_NAME}
 	PROPERTIES

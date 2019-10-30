@@ -134,7 +134,7 @@ bool UavManager::PrcsRemainMsg(const IMessage &msg)
         _checkBindUav(*(RequestBindUav *)proto, (ObjectGS*)msg.GetSender());
         return true;
     case QueryUav:
-        _checkUavInfo(*(RequestUavStatus *)proto, msg.GetSenderID());
+        _checkUavInfo(*(RequestUavStatus *)proto, (ObjectGS*)msg.GetSender());
         return true;
     case ControlUav:
         ObjectUav::AckControl2Uav(*(PostControl2Uav*)proto, -1);
@@ -283,7 +283,7 @@ void UavManager::_checkBindUav(const RequestBindUav &rbu, ObjectGS *gs)
     }
 }
 
-void UavManager::_checkUavInfo(const RequestUavStatus &uia, const std::string &gs)
+void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
 {
     AckRequestUavStatus as;
     as.set_seqno(uia.seqno());
@@ -298,25 +298,20 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, const std::string &g
             o->transUavStatus(*us);
             us = NULL;
         }
-        else if (ExecutItem *item = VGDBManager::GetSqlByName("queryUavInfo"))
+        else if (!_queryUavInfo(as, uav) && gs && gs->GetAuth(ObjectGS::Type_UavManager))
         {
-            item->ClearData();
-            if (FiledVal *fd = item->GetConditionItem("id"))
-                fd->SetParam(uav);
-
-            if (!m_sqlEng->Execut(item))
-                continue;
-
-            UavStatus *us = as.add_status();
-            ObjectUav oU(uav);
-            oU.InitBySqlResult(*item);
-            oU.transUavStatus(*us);
-            while (m_sqlEng->GetResult());
+            if (_addUavId(uav) > 0)
+            {
+                UavStatus *us = as.add_status();
+                ObjectUav oU(uav);
+                oU.transUavStatus(*us);
+            }
         }
     }
 
-    if (GSMessage *ms = new GSMessage(this, gs))
+    if (gs)
     {
+        GSMessage *ms = new GSMessage(this, gs->GetObjectID());
         ms->SetPBContentPB(as);
         SendMsg(ms);
     }
@@ -329,17 +324,11 @@ void UavManager::processAllocationUav(int seqno, const string &id)
     if (UAVMessage *ms = new UAVMessage(this, id))
     {
         int res = 0;
-
-        ExecutItem *sql = VGDBManager::GetSqlByName("insertUavInfo");
-        FiledVal *fd = sql->GetWriteItem("id");
         char idTmp[24] = {0};
-        while (sql && fd && m_lastId>0)
+        while (m_lastId>0)
         {
-            sql->ClearData();
             sprintf(idTmp, "VIGAU:%08X", m_lastId);
-            fd->SetParam(idTmp);
-            ++m_lastId;
-            if(m_sqlEng->Execut(sql))
+            if(_addUavId(idTmp) != 0)
                 break;
         }
 
@@ -350,6 +339,47 @@ void UavManager::processAllocationUav(int seqno, const string &id)
         ms->AttachProto(ack);
         SendMsg(ms);
     }
+}
+
+int UavManager::_addUavId(const std::string &uav)
+{
+    StringList strLs = Utility::SplitString(uav, ":");
+    if ( strLs.size() != 2
+      || strLs.front() != "VIGAU"
+      || strLs.back().length()!=8
+      || Utility::str2int(strLs.back(), 16)!=0 )
+        return -1;
+
+    ExecutItem *sql = VGDBManager::GetSqlByName("insertUavInfo");
+    FiledVal *fd = sql->GetWriteItem("id");
+    if (sql && fd)
+    {
+        sql->ClearData();
+        fd->SetParam(uav);
+        return m_sqlEng->Execut(sql) ? 1 : 0;
+    }
+    return -1;
+}
+
+bool UavManager::_queryUavInfo(das::proto::AckRequestUavStatus &aus, const string &uav)
+{
+    if (ExecutItem *item = VGDBManager::GetSqlByName("queryUavInfo"))
+    {
+        item->ClearData();
+        if (FiledVal *fd = item->GetConditionItem("id"))
+            fd->SetParam(uav);
+
+        if (!m_sqlEng->Execut(item))
+            return false;
+
+        UavStatus *us = aus.add_status();
+        ObjectUav oU(uav);
+        oU.InitBySqlResult(*item);
+        oU.transUavStatus(*us);
+        while (m_sqlEng->GetResult());
+        return true;
+    }
+    return false;
 }
 
 DECLARE_MANAGER_ITEM(UavManager)

@@ -19,7 +19,7 @@ using namespace ::google::protobuf;
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
 ObjectUav::ObjectUav(const std::string &id): ObjectAbsPB(id)
-, m_bBind(false), m_lastORNotify(0), m_lat(0), m_lon(0), m_tmLastInfo(0)
+, m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0), m_tmLastInfo(0)
 , m_tmLastBind(0), m_mission(NULL), m_bSys(false)
 {
 }
