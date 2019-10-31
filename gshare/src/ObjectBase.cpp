@@ -102,7 +102,10 @@ ISocket * IObject::GetSocket() const
 void IObject::SetSocket(ISocket *s)
 {
     if (s)
+    {
         s->SetObject(this);
+        m_tmLastInfo = Utility::msTimeTick();
+    }
 
     m_sock = s;
     OnConnected(s != NULL);
