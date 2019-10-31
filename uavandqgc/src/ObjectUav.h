@@ -62,7 +62,6 @@ private:
     uint32_t                        m_lastORNotify;
     double                          m_lat;
     double                          m_lon;
-    int64_t                         m_tmLastInfo;
     int64_t                         m_tmLastBind;
     das::proto::OperationRoute      *m_mission;
     bool                            m_bSys;

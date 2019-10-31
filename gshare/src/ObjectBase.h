@@ -40,9 +40,14 @@ public:
     SHARED_DECL void SetBuffSize(uint16_t sz);
     SHARED_DECL IObjectManager *GetManager()const;
     SHARED_DECL bool Receive(const void *buf, int len);
+    SHARED_DECL virtual void SetSocket(ISocket *);
+    SHARED_DECL virtual void OnSockClose(ISocket *);    //这是可以重载的，可能有多个连接
 
     virtual int GetObjectType()const = 0;
     virtual void OnConnected(bool bConnected) = 0;
+    virtual int GetSenLength()const;
+    virtual int CopySend(char *buf, int sz, unsigned form = 0);
+    virtual void SetSended(int sended=-1);//-1,发送完
 public:
     bool RcvMassage(IMessage *msg);
     void RemoveRcvMsg(IMessage *);
@@ -51,16 +56,8 @@ public:
     int GetThreadId()const;
     void SetThreadId(int id);
 public:
-    SHARED_DECL virtual void SetSocket(ISocket *);
-    SHARED_DECL virtual void OnSockClose(ISocket *);    //这是可以重载的，可能有多个连接
-
-    virtual int GetSenLength()const;
-    virtual int CopySend(char *buf, int sz, unsigned form = 0);
-    virtual void SetSended(int sended=-1);//-1,发送完
-public:
     SHARED_DECL static bool SendMsg(IMessage *msg);
     SHARED_DECL static IObjectManager *GetManagerByType(int);
-public:
     template<typename T, typename Contianer = std::list<T> >
     static bool IsContainsInList(const Contianer ls, const T &e)
     {
@@ -98,6 +95,7 @@ protected:
     std::list<IMessage*>    m_lsMsg;            //接收消息队列
     std::list<IMessage*>    m_lsMsgRelease;     //消息释放队列
     int                     m_idThread;
+    int64_t                 m_tmLastInfo;
 };
 
 class IObjectManager

@@ -130,7 +130,7 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
     int res = -3;
     if (o)
     {
-        if (!o->IsConnect() && o->m_pswd == pswd)
+        if (!o->IsConnect() && o->m_pswd==pswd)
         {
             res = 1;
             o->SetSocket(s);

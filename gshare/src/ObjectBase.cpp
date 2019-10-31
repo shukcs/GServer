@@ -59,8 +59,10 @@ private:
     int             m_id;
 };
 
-void IObject::CheckTimer(uint64_t)
+void IObject::CheckTimer(uint64_t ms)
 {
+    if (ms-m_tmLastInfo>30000 && m_sock)//³¬Ê±¹Ø±Õ
+        m_sock->Close();
 }
 //////////////////////////////////////////////////////////////////
 //IObject
@@ -68,6 +70,7 @@ void IObject::CheckTimer(uint64_t)
 IObject::IObject(ISocket *sock, const string &id)
 : m_sock(sock), m_id(id), m_bRelease(false)
 , m_mtx(NULL), m_mtxMsg(NULL), m_idThread(-1)
+, m_tmLastInfo(Utility::msTimeTick())
 {
     SetBuffSize(1024 * 4);
 }
@@ -227,6 +230,7 @@ bool IObject::Receive(const void *buf, int len)
         Lock l(m_mtx);
         ret = m_buff.Add(buf, len);
     }
+    m_tmLastInfo = Utility::msTimeTick();
     return ret;
 }
 //////////////////////////////////////////////////////////////////

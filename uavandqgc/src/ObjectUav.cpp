@@ -19,7 +19,7 @@ using namespace ::google::protobuf;
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
 ObjectUav::ObjectUav(const std::string &id): ObjectAbsPB(id)
-, m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0), m_tmLastInfo(0)
+, m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0)
 , m_tmLastBind(0), m_mission(NULL), m_bSys(false)
 {
 }
@@ -160,7 +160,7 @@ void ObjectUav::CheckTimer(uint64_t ms)
     if (m_mission && !m_bSys && (uint32_t)ms-m_lastORNotify > 500)
         _notifyUavUOR(*m_mission);
 
-    if (ms+1000-m_tmLastInfo>6000 && m_sock)//超时关闭
+    if (ms-m_tmLastInfo>6000 && m_sock)//超时关闭
         m_sock->Close();
 }
 
