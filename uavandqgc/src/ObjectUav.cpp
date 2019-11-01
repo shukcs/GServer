@@ -120,7 +120,7 @@ void ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *o
 void ObjectUav::ProcessMassage(const IMessage &msg)
 {
     if (msg.GetMessgeType() == BindUav)
-        processBind((RequestBindUav*)msg.GetContent());
+        processBind((RequestBindUav*)msg.GetContent(), msg.GetSender());
     else if (msg.GetMessgeType() == ControlUav)
         processControl2Uav((PostControl2Uav*)msg.GetContent());
     else if (msg.GetMessgeType() == PostOR)
@@ -249,11 +249,11 @@ void ObjectUav::prcsRcvReqMissions(RequestRouteMissions *msg)
     }
 }
 
-void ObjectUav::processBind(RequestBindUav *msg)
+void ObjectUav::processBind(RequestBindUav *msg, IObject *sender)
 {
     if (UavManager *m = (UavManager *)GetManager())
     {
-        if (1 == m->PrcsBind(msg, m_lastBinder, m_bBind))
+        if (1 == m->PrcsBind(msg, m_lastBinder, m_bBind, (ObjectGS*)sender))
         {
             m_bBind = 1 == msg->opid();
             m_lastBinder = msg->binder();

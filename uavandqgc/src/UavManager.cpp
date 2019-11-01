@@ -34,18 +34,19 @@ UavManager::~UavManager()
     delete m_p;
 }
 
-int UavManager::PrcsBind(const RequestBindUav *msg, const string &gsOld, bool binded)
+int UavManager::PrcsBind(const RequestBindUav *msg, const string &gsOld, bool binded, ObjectGS *sender)
 {
     int res = -1;
     string binder = msg ? msg->binder() : string();
     if (binder.length() == 0)
         return res;
 
+    bool bForceUnbind = sender && sender->GetAuth(ObjectGS::Type_UavManager);
     int op = msg->opid();
-    if (1 == op)
+    if (1 == op && !bForceUnbind)
         res = (!binded || gsOld.length() == 0 || binder == gsOld) ? 1 : -3;
     else if (0 == op)
-        res = (binder == gsOld || gsOld.empty()) ? 1 : -3;
+        res = (bForceUnbind || binder == gsOld || gsOld.empty()) ? 1 : -3;
 
     const std::string &uav = msg->uavid();
     if(res == 1)
@@ -273,12 +274,8 @@ void UavManager::_checkBindUav(const RequestBindUav &rbu, ObjectGS *gs)
         if (FiledVal *fd = item->GetReadItem("binded"))
             bind = fd->GetValue<char>() != 0;
         if (FiledVal *fd = item->GetReadItem("binder"))
-        {
-            string binder((char*)fd->GetBuff(), fd->GetValidLen());
-            if (gs->GetAuth(ObjectGS::Type_UavManager))
-                binder.clear();
-            PrcsBind(&rbu, binder, bind);
-        }
+            PrcsBind(&rbu, string((char*)fd->GetBuff(), fd->GetValidLen()), bind, gs);
+
         while (m_sqlEng->GetResult());
     }
 }

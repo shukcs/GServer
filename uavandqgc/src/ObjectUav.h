@@ -49,7 +49,7 @@ private:
     void prcsRcvPost2Gs(das::proto::PostStatus2GroundStation *msg);
     void prcsRcvReqMissions(das::proto::RequestRouteMissions *msg);
 
-    void processBind(das::proto::RequestBindUav *msg);
+    void processBind(das::proto::RequestBindUav *msg, IObject *sender);
     void processControl2Uav(das::proto::PostControl2Uav *msg);
     void processPostOr(das::proto::PostOperationRoute *msg);
 
