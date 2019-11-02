@@ -20,7 +20,7 @@ using namespace ::google::protobuf;
 ////////////////////////////////////////////////////////////////////////////////
 ObjectUav::ObjectUav(const std::string &id): ObjectAbsPB(id)
 , m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0)
-, m_tmLastBind(0), m_mission(NULL), m_bSys(false)
+, m_tmLastBind(0), m_tmLastPos(0), m_mission(NULL), m_bSys(false)
 {
 }
 
@@ -41,7 +41,7 @@ void ObjectUav::InitBySqlResult(const ExecutItem &sql)
     if (FiledVal *fd = sql.GetReadItem("timeBind"))
         m_tmLastBind = fd->GetValue<int64_t>();
     if (FiledVal *fd = sql.GetReadItem("timePos"))
-        m_tmLastInfo = fd->GetValue<int64_t>();
+        m_tmLastPos = fd->GetValue<int64_t>();
 }
 
 void ObjectUav::transUavStatus(UavStatus &us)
@@ -67,13 +67,6 @@ void ObjectUav::transUavStatus(UavStatus &us)
 int ObjectUav::GetObjectType() const
 {
     return UAVType();
-}
-
-void ObjectUav::OnConnected(bool bConnected)
-{
-    ObjectAbsPB::OnConnected(bConnected);
-    if(bConnected)
-        m_tmLastInfo = Utility::msTimeTick();
 }
 
 void ObjectUav::RespondLogin(int seq, int res)
@@ -157,11 +150,23 @@ VGMySql *ObjectUav::GetMySql() const
 
 void ObjectUav::CheckTimer(uint64_t ms)
 {
-    if (m_mission && !m_bSys && (uint32_t)ms-m_lastORNotify > 500)
-        _notifyUavUOR(*m_mission);
+    if (m_sock)
+    { 
+        if (m_mission && !m_bSys && (uint32_t)ms-m_lastORNotify > 500)
+            _notifyUavUOR(*m_mission);
+        int64_t n = ms - m_tmLastPos;
+        if (n>6000)//超时关闭
+            m_sock->Close();
+    }
+}
 
-    if (ms-m_tmLastInfo>6000 && m_sock)//超时关闭
-        m_sock->Close();
+void ObjectUav::OnConnected(bool bConnected)
+{
+    ObjectAbsPB::OnConnected(bConnected);
+    if (bConnected)
+        m_tmLastPos = Utility::msTimeTick();
+    else
+        ((UavManager*)GetManager())->SaveUavPos(*this);
 }
 
 void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
@@ -169,7 +174,7 @@ void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
     if (!msg)
         return;
 
-    m_tmLastInfo = Utility::msTimeTick();
+    m_tmLastPos = Utility::msTimeTick();
     int nCount = msg->oi_size();
     for (int i = 0; i < nCount; i++)
     {

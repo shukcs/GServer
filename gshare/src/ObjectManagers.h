@@ -16,6 +16,7 @@ class IMessage;
 class IObject;
 class IObjectManager;
 class BaseBuff;
+class ILog;
 
 //数据处理工厂元素抽象
 class SHARED_DECL ManagerAbstractItem
@@ -52,6 +53,7 @@ class ObjectManagers
 {
 public:
     static ObjectManagers &Instance();
+    static ILog &GetLog();
 public:
     bool SendMsg(IMessage *msg);
     void AddManager(IObjectManager *m);

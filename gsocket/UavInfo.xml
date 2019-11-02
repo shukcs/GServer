@@ -31,7 +31,7 @@
 		<SQL name="updateBinded" table="UavInfo" type="Update">
 			<item name="binded" ref="UavInfo" type="Write"/>
 			<item name="binder" ref="UavInfo" type="Write" />
-			<item name="timeBind" type="Write" param="unix_timestamp()"/>
+			<item name="timeBind" ref="UavInfo" type="Write"/>
 			<item name="id" type="Condition" />
 		</SQL>
 		<SQL name="deleteUavInfo" table="UavInfo" type="Delete" >
@@ -40,7 +40,7 @@
 		<SQL name="updatePos" table="UavInfo" type="Update">
 			<item name="lat" ref="UavInfo" type="Write"/>
 			<item name="lon" ref="UavInfo" type="Write" />
-			<item name="timePos" param="unix_timestamp()" type="Write" />
+			<item name="timePos" ref="UavInfo" type="Write" />
 			<item name="id" type="Condition" />
 		</SQL>
 	</SQLs>

@@ -18,6 +18,7 @@ class BussinessThread;
 class IMutex;
 class IMessage;
 class ObjectMetuxs;
+class ILog;
 
 typedef std::map<std::string, IObject*> ThreadObjects;
 typedef std::map<int, ThreadObjects> ObjectsMap;
@@ -42,7 +43,6 @@ public:
     SHARED_DECL bool Receive(const void *buf, int len);
     SHARED_DECL virtual void SetSocket(ISocket *);
     SHARED_DECL virtual void OnSockClose(ISocket *);    //这是可以重载的，可能有多个连接
-
     virtual int GetObjectType()const = 0;
     virtual void OnConnected(bool bConnected) = 0;
     virtual int GetSenLength()const;
@@ -114,6 +114,8 @@ public:
     bool ProcessBussiness();
     bool PrcsObjectsOfThread(int nThread);
     bool Exist(IObject *obj)const;
+    SHARED_DECL void SetLog(ILog *);
+    SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
 public:
     SHARED_DECL static bool SendMsg(IMessage *msg);
 protected:
@@ -132,6 +134,7 @@ protected:
 private:
     friend class ObjectManagers;
     IMutex                          *m_mtx;
+    ILog                            *m_log;
     std::list<IMessage*>            m_lsMsg;            //接收消息队列
     std::list<IMessage*>            m_lsMsgRelease;     //消息释放队列
     std::list<BussinessThread*>     m_lsThread;

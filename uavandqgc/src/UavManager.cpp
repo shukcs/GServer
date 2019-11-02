@@ -48,7 +48,7 @@ int UavManager::PrcsBind(const RequestBindUav *msg, const string &gsOld, bool bi
     else if (0 == op)
         res = (bForceUnbind || binder == gsOld || gsOld.empty()) ? 1 : -3;
 
-    const std::string &uav = msg->uavid();
+    const std::string &uav = Utility::Upper(msg->uavid());
     if(res == 1)
     {
         if (ExecutItem *item = VGDBManager::GetSqlByName("updateBinded"))
@@ -61,8 +61,10 @@ int UavManager::PrcsBind(const RequestBindUav *msg, const string &gsOld, bool bi
                 fd->InitOf<char>(1 == op);
             if (FiledVal *fd = item->GetWriteItem("binder"))
                 fd->SetParam(binder);
+            if (FiledVal *fd = item->GetReadItem("timeBind"))
+                fd->InitOf(Utility::msTimeTick());
             m_sqlEng->Execut(item);
-            printf("%s %s %s\n", binder.c_str(), 1 == op ? "bind" : "unbind", uav.c_str());
+            Log(0, binder, 0, "%s %s", 1==op?"bind":"unbind", uav.c_str());
         }
     }
     sendBindRes(*msg, res, 1 == op);
@@ -91,12 +93,34 @@ VGMySql *UavManager::GetMySql()const
     return m_sqlEng;
 }
 
+void UavManager::SaveUavPos(const ObjectUav &uav)
+{
+    if (ExecutItem *item = VGDBManager::GetSqlByName("updatePos"))
+    {
+        item->ClearData();
+        if (FiledVal *fd = item->GetConditionItem("id"))
+            fd->SetParam(uav.GetObjectID());
+
+        if (FiledVal *fd = item->GetWriteItem("lat"))
+            fd->InitOf(uav.m_lat);
+        if (FiledVal *fd = item->GetWriteItem("lon"))
+            fd->InitOf(uav.m_lon);
+        if (FiledVal *fd = item->GetWriteItem("timePos"))
+            fd->InitOf(uav.m_tmLastPos);
+
+        m_sqlEng->Execut(item);
+    }
+}
+
 uint32_t UavManager::toIntID(const std::string &uavid)
 {
-    if (0 == uavid.compare("VIGAU:"))
-        return (uint32_t)Utility::str2int(uavid.substr(6 + 1));
-    
-    return 0;
+    StringList strLs = Utility::SplitString(uavid, ":");
+    if (strLs.size() != 2
+        || !Utility::Compare(strLs.front(), "VIGAU", false)
+        || strLs.back().length() != 8)
+        return 0;
+
+    return (uint32_t)Utility::str2int(strLs.back(), 16);
 }
 
 int UavManager::GetObjectType() const
@@ -223,7 +247,7 @@ void UavManager::sendBindRes(const RequestBindUav &msg, int res, bool bind)
 
 IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthentication &uia)
 {
-    string uavid = uia.uavid();
+    string uavid = Utility::Upper(uia.uavid());
     ObjectUav *ret = (ObjectUav *)GetObjectByID(uavid);
     int res = -1;
     if (ret)
@@ -242,16 +266,14 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
 
         if (m_sqlEng->Execut(item))
         {
-            ret = new ObjectUav(uia.uavid());
+            ret = new ObjectUav(uavid);
             ret->InitBySqlResult(*item);
             while (m_sqlEng->GetResult());
             res = 1;
         }
     }
-
-    if (ISocketManager *m = s->GetManager())
-        m->Log(0, uia.uavid(), 0, "[%s]%s", s->GetHost().c_str(), res==1 ? "login success" : "login fail");
-
+    Log(0, uia.uavid(), 0, "[%s]%s", s->GetHost().c_str(), res==1 ? "login success" : "login fail");
+    
     AckUavIdentityAuthentication ack;
     ack.set_seqno(uia.seqno());
     ack.set_result(res);
@@ -287,7 +309,7 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
 
     for (int i = 0; i < uia.uavid_size(); ++i)
     {
-        const string &uav = uia.uavid(i);
+        const string &uav = Utility::Upper(uia.uavid(i));
         ObjectUav *o = (ObjectUav *)GetObjectByID(uav);
         if (o)
         {
@@ -340,11 +362,7 @@ void UavManager::processAllocationUav(int seqno, const string &id)
 
 int UavManager::_addUavId(const std::string &uav)
 {
-    StringList strLs = Utility::SplitString(uav, ":");
-    if ( strLs.size() != 2
-      || strLs.front() != "VIGAU"
-      || strLs.back().length()!=8
-      || Utility::str2int(strLs.back(), 16)==0 )
+    if (toIntID(uav)<1)
         return -1;
 
     ExecutItem *sql = VGDBManager::GetSqlByName("insertUavInfo");

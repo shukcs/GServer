@@ -5,7 +5,9 @@
 #include "ObjectBase.h"
 #include "ObjectManagers.h"
 #include "Lock.h"
+#include "ILog.h"
 #include <string.h>
+#include <stdarg.h>
 
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE
@@ -248,4 +250,14 @@ void GSocket::SetPrcsManager(ISocketManager *h)
 void GSocket::SetMutex(IMutex *mtx)
 {
     m_mtx = mtx;
+}
+
+void GSocket::Log(int err, const std::string &obj, int evT, const char *fmt, ...)
+{
+    char slask[1024];
+    va_list ap;
+    va_start(ap, fmt);
+    vsnprintf(slask, 1023, fmt, ap);
+    va_end(ap);
+    ObjectManagers::GetLog().Log(slask, obj, evT, err);
 }

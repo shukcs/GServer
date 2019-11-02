@@ -10,8 +10,8 @@
 static ISocketManager *sSockMgr = NULL;
 void OnBindFinish(ISocket *sock, bool binded)
 {
-    if(sock && sSockMgr)
-        sSockMgr->Log(binded ? 0 : errno, "Listen", 0, "bind %s:%d %s",
+    if(sock)
+        GSocket::Log(binded ? 0 : errno, "Listen", 0, "bind %s:%d %s",
             sock->GetHost().c_str(), sock->GetPort(), binded ? "success" : "fail");
 
     if (!binded && sSockMgr)

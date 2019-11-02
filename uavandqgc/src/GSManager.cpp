@@ -124,7 +124,7 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
     if (!rgi)
         return NULL;
 
-    string usr = rgi->userid();
+    string usr = Utility::Lower(rgi->userid());
     string pswd = rgi->password();
     ObjectGS *o = (ObjectGS*)GetObjectByID(usr);
     int res = -3;
@@ -158,9 +158,7 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
             while (m_sqlEng->GetResult());
         }
     }
-
-    if (ISocketManager *m = s->GetManager())
-        m->Log(0, usr, 0, "[%s]%s", s->GetHost().c_str(), 1 == res ? "login success" : "login fail");
+    Log(0, usr, 0, "[%s]%s", s->GetHost().c_str(), 1 == res ? "login success" : "login fail");
 
     AckGSIdentityAuthentication msg;
     msg.set_seqno(rgi->seqno());
@@ -174,8 +172,8 @@ IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
 {
     if(!msg || msg->userid().empty())
         return NULL;
-
-    int res = ExecutNewGsSql(this, msg->userid());
+    string userId = Utility::Lower(msg->userid());
+    int res = ExecutNewGsSql(this, userId);
     ObjectGS *o = NULL;
     AckNewGS ack;
     ack.set_seqno(msg->seqno());
@@ -183,7 +181,7 @@ IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
     if (1 == res)
     {
         string check = GSOrUavMessage::GenCheckString();
-        o = new ObjectGS(msg->userid());
+        o = new ObjectGS(userId);
         if (o)
             o->SetCheck(check);
         ack.set_check(check);

@@ -6,6 +6,8 @@
 #include "Utility.h"
 #include "Lock.h"
 #include "IMessage.h"
+#include "ILog.h"
+#include <stdarg.h>
 
 using namespace std;
 
@@ -61,7 +63,9 @@ private:
 
 void IObject::CheckTimer(uint64_t ms)
 {
-    if (ms-m_tmLastInfo>30000 && m_sock)//超时关闭
+    if (ms - m_tmLastInfo > 3600000)
+        Release();
+    else if (m_sock && ms-m_tmLastInfo>30000)//超时关闭
         m_sock->Close();
 }
 //////////////////////////////////////////////////////////////////
@@ -239,7 +243,8 @@ bool IObject::Receive(const void *buf, int len)
 //////////////////////////////////////////////////////////////////
 //IObjectManager
 //////////////////////////////////////////////////////////////////
-IObjectManager::IObjectManager(uint16_t nThread):m_mtx(new Mutex)
+IObjectManager::IObjectManager(uint16_t nThread) :m_mtx(new Mutex)
+, m_log(NULL)
 {
     InitThread(nThread);
 }
@@ -408,6 +413,22 @@ bool IObjectManager::Exist(IObject *obj) const
             return true;
     }
     return false;
+}
+
+void IObjectManager::SetLog(ILog *l)
+{
+    m_log = l;
+}
+
+void IObjectManager::Log(int err, const std::string &obj, int evT, const char *fmt, ...)
+{
+    char slask[1024];
+    va_list ap;
+    va_start(ap, fmt);
+    vsnprintf(slask, 1023, fmt, ap);
+    va_end(ap);
+    ILog *log = m_log ? m_log : &ObjectManagers::GetLog();
+    log->Log(slask, obj, evT, err);
 }
 
 void IObjectManager::ProcessMassage(const IMessage &msg)

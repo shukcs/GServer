@@ -36,8 +36,6 @@ maxSock:支持最大连接数
     bool Poll(unsigned ms);
     void AddProcessThread();
     bool AddWaitPrcsSocket(ISocket *);
-    void SetLog(ILog *log);
-    void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
     bool IsRun()const;
     void Exit();
     void InitThread(int nThread);
@@ -84,7 +82,6 @@ private:
     int                         m_ep_fd;
 #endif
     Thread                      *m_thread;
-    ILog                        *m_log;
     char                        m_buff[1024];
     static bool                 s_bRun;
     SocketBindedCallbacks       m_bindedCBs;

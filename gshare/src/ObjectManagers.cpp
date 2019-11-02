@@ -5,6 +5,7 @@
 #include "Lock.h"
 #include "socketBase.h"
 #include "IMessage.h"
+#include "GOutLog.h"
 
 using namespace std;
 
@@ -75,6 +76,12 @@ ObjectManagers &ObjectManagers::Instance()
 {
     static ObjectManagers sOM;
     return sOM;
+}
+
+ILog &ObjectManagers::GetLog()
+{
+    static GOutLog sLog;
+    return sLog;
 }
 
 void ObjectManagers::AddManager(IObjectManager *m)

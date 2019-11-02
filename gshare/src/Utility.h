@@ -45,6 +45,10 @@ namespace Utility
     /** Utf8 decrypt, encrypt. */
     SHARED_DECL std::string FromUtf8(const std::string&);
     SHARED_DECL std::string ToUtf8(const std::string&);
+    SHARED_DECL std::string Upper(const std::string&);
+    SHARED_DECL std::string Lower(const std::string&);
+    SHARED_DECL bool Compare(const std::string&, const std::string&, bool=true);
+
     SHARED_DECL int GzCompress(const char *data, unsigned n, char *zdata, unsigned);
     SHARED_DECL int GzDecompress(const char *zdata, unsigned nz, char *data, unsigned);
 	/** Checks whether a string is a valid ipv4/ipv6 ip number. */
@@ -111,15 +115,7 @@ namespace Utility
     SHARED_DECL std::string Sa2String(struct sockaddr *sa);
 
     SHARED_DECL unsigned long ThreadID();
-
-    SHARED_DECL std::string ToLower(const std::string& str);
-    SHARED_DECL std::string ToUpper(const std::string& str);
-
     SHARED_DECL std::string ToString(double d);
-
-	/** Returns a random 32-bit integer */
-    SHARED_DECL unsigned long Rnd();
-
     /** File system stuff */
     SHARED_DECL std::string ModuleDirectory();
     SHARED_DECL std::string CurrentDirectory();

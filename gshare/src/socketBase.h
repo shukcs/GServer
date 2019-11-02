@@ -11,6 +11,7 @@ class IMutex;
 class IObject;
 class ISocketManager;
 class SocketAddress;
+class ILog;
 
 class ISocket
 {
@@ -77,7 +78,6 @@ public:
     virtual void AddProcessThread() = 0;
     virtual bool IsRun()const = 0;
     virtual void Exit() = 0;
-    virtual void Log(int err, const std::string &obj, int evT, const char *fmt, ...) = 0;
     virtual void Release() = 0;
     virtual void SetBindedCB(ISocket *, FuncOnBinded) = 0;
 

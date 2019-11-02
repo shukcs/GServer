@@ -29,6 +29,8 @@ using namespace SOCKETS_NAMESPACE;
 
 class ProtoMsg;
 class ObjectGS;
+class ObjectUav;
+
 class UavManager : public IObjectManager
 {
 public:
@@ -38,6 +40,7 @@ public:
     int PrcsBind(const das::proto::RequestBindUav *msg, const std::string &gsOld, bool binded, ObjectGS *sender);
     void UpdatePos(const std::string &uav, double lat, double lon);
     VGMySql *GetMySql()const;
+    void SaveUavPos(const ObjectUav &uav);
 public:
     static uint32_t toIntID(const std::string &uavid);
 protected:

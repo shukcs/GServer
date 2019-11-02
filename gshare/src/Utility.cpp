@@ -23,6 +23,11 @@
 #include <chrono>
 #include "zlib.h"
 
+#if !defined _WIN32 && !defined _WIN64
+#include <strings.h>
+#define strnicmp strncasecmp
+#endif
+
 union FlagEnddian
 {
     int     nFlag;
@@ -42,6 +47,10 @@ using namespace SOCKETS_NAMESPACE;
 #define MATRIX_A        0x9908B0DF
 #define TWIST(b,i,j)   ((b)[i] & UMASK) | ((b)[j] & LMASK)
 #define MAGIC_TWIST(s) (((s) & 1) * MATRIX_A)
+enum
+{
+    UperSpace = 'a' - 'A',
+}; 
 
 using namespace std;
 // statics
@@ -1086,32 +1095,6 @@ unsigned long Utility::ThreadID()
 #endif
 }
 
-string Utility::ToLower(const string& str)
-{
-	string r;
-	for (size_t i = 0; i < str.size(); ++i)
-	{
-		if (str[i] >= 'A' && str[i] <= 'Z')
-			r += str[i] | 32;
-		else
-			r += str[i];
-	}
-	return r;
-}
-
-string Utility::ToUpper(const string& str)
-{
-	string r;
-	for (size_t i = 0; i < str.size(); ++i)
-	{
-		if (str[i] >= 'a' && str[i] <= 'z')
-			r += (char)(str[i] - 32);
-		else
-			r += str[i];
-	}
-	return r;
-}
-
 string Utility::ToString(double d)
 {
 	char tmp[100];
@@ -1252,6 +1235,47 @@ string Utility::ToUtf8(const string& str)
     }
     setlocale(LC_ALL, "C");
     return ret;
+}
+
+string Utility::Upper(const string &str)
+{
+    string ret = str;
+    int count = ret.length();
+    char *p = &ret.at(0);
+    for (int i = 0; i< count; ++i)
+    {
+        if ('a' <= p[i] && p[i] <= 'z')
+            p[i] -= UperSpace;
+    }
+    return ret;
+}
+
+string Utility::Lower(const std::string &str)
+{
+    string ret = str;
+    int count = ret.length();
+    char *p = &ret.at(0);
+    for (int i = 0; i < count; ++i)
+    {
+        if ('A' <= p[i] && p[i] <= 'Z')
+            p[i] += UperSpace;
+    }
+    return ret;
+}
+
+bool Utility::Compare(const string &str1, const string &str2, bool bCase)
+{
+    int len = str1.length();
+    if (len != str2.length())
+        return false;
+
+    if (len == 0)
+        return true;
+
+    if (bCase)
+        return 0 == strcmp(str1.c_str(), str2.c_str());
+
+    return 0 == strnicmp(str1.c_str(), str2.c_str(), len);
 }
 
 int Utility::GzCompress(const char *data, unsigned n, char *zdata, unsigned nz)

@@ -43,9 +43,10 @@ void ObjectAbsPB::OnConnected(bool bConnected)
     if (bConnected)
         return;
 
-    if (ISocketManager *m = m_sock ? m_sock->GetManager() : NULL)
+    IObjectManager *mgr = GetManager();
+    if (m_sock && mgr)
     {
-        m->Log(0, GetObjectID(), 0, "(%s:%d) disconnect", m_sock->GetHost().c_str(), m_sock->GetPort());
+        mgr->Log(0, GetObjectID(), 0, "(%s:%d) disconnect", m_sock->GetHost().c_str(), m_sock->GetPort());
         m_sock->Close();
         m_sock = NULL;
     }

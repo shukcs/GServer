@@ -680,7 +680,7 @@ void ObjectGS::_prcsReqNewGs(RequestNewGS *msg)
     int res = 1;
     AckNewGS ack;
     ack.set_seqno(msg->seqno());
-    if (msg->userid() != m_id)
+    if (Utility::Lower(msg->userid()) != m_id)
         res = -4;
     else if (msg->check().empty())
         res = GSManager::ExecutNewGsSql((GSManager*)GetManager(), m_id);

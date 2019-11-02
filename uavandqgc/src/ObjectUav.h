@@ -35,13 +35,13 @@ protected:
 public:
     static int UAVType();
 protected:
-    void OnConnected(bool bConnected);
     virtual int GetObjectType()const;
     virtual void ProcessMassage(const IMessage &msg);
     virtual int ProcessReceive(void *buf, int len);
     VGMySql *GetMySql()const;
 
     void CheckTimer(uint64_t ms);
+    void OnConnected(bool bConnected);
 protected:
     static void AckControl2Uav(const das::proto::PostControl2Uav &msg, int res, ObjectUav *obj=NULL);
 private:
@@ -63,6 +63,7 @@ private:
     double                          m_lat;
     double                          m_lon;
     int64_t                         m_tmLastBind;
+    int64_t                         m_tmLastPos;
     das::proto::OperationRoute      *m_mission;
     bool                            m_bSys;
     std::string                     m_lastBinder;

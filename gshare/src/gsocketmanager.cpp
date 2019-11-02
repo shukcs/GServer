@@ -4,11 +4,9 @@
 #include "Thread.h"
 #include "Utility.h"
 #include "Ipv4Address.h"
-#include "GOutLog.h"
 #include "Lock.h"
 #include "ObjectBase.h"
 #include "socket_include.h"
-#include <stdarg.h>
 #include <stdio.h>
 #if !defined _WIN32 && !defined _WIN64
 #include <sys/epoll.h>
@@ -64,13 +62,12 @@ private:
     ISocketManager *m_mgr;
 };
 
-static GOutLog s_log;
 bool GSocketManager::s_bRun = true;
 ////////////////////////////////////////////////////////////////////////////
 //GSocketManager
 ////////////////////////////////////////////////////////////////////////////
 GSocketManager::GSocketManager(int nThread, int maxSock) : m_mtx(new Mutex)
-, m_mtxSock(new Mutex), m_openMax(maxSock), m_thread(NULL), m_log(&s_log)
+, m_mtxSock(new Mutex), m_openMax(maxSock), m_thread(NULL)
 {
     InitEpoll();
     InitThread(nThread);
@@ -154,11 +151,6 @@ bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
     m_socketsPrcs.push_back(SocketPrcs(s,true));
     m_mtx->Unlock();
     return true;
-}
-
-void GSocketManager::SetLog(ILog *log)
-{
-    m_log = log;
 }
 
 void GSocketManager::InitThread(int nThread)
@@ -375,20 +367,6 @@ void GSocketManager::SetBindedCB(ISocket *s, FuncOnBinded cb)
 {
     if (s)
         m_bindedCBs[s] = cb;
-}
-
-void GSocketManager::Log(int err, const std::string &obj, int evT, const char *fmt, ...)
-{
-    if (m_log)
-    {
-        char slask[1024];
-        va_list ap;
-        va_start(ap, fmt);
-        vsnprintf(slask, 1023, fmt, ap);
-        va_end(ap);
-
-        m_log->Log(slask, obj, evT, err);
-    }
 }
 
 bool GSocketManager::IsRun() const
