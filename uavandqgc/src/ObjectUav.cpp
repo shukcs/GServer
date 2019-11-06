@@ -20,7 +20,8 @@ using namespace ::google::protobuf;
 ////////////////////////////////////////////////////////////////////////////////
 ObjectUav::ObjectUav(const std::string &id): ObjectAbsPB(id)
 , m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0)
-, m_tmLastBind(0), m_tmLastPos(0), m_mission(NULL), m_bSys(false)
+, m_tmLastBind(0), m_tmLastPos(0),m_tmValidLast(-1)
+,m_mission(NULL), m_bSys(false)
 {
 }
 
@@ -80,6 +81,16 @@ void ObjectUav::RespondLogin(int seq, int res)
     }
 }
 
+bool ObjectUav::IsValid() const
+{
+    return m_tmValidLast<0 || m_tmValidLast>Utility::msTimeTick();
+}
+
+void ObjectUav::SetValideTime(int64_t tmV)
+{
+    m_tmValidLast = tmV;
+}
+
 int ObjectUav::UAVType()
 {
     return IObject::Plant;
@@ -135,6 +146,8 @@ int ObjectUav::ProcessReceive(void *buf, int len)
             prcsRcvPost2Gs((PostStatus2GroundStation *)m_p->GetProtoMessage());
         else if (name == d_p_ClassName(RequestRouteMissions))
             prcsRcvReqMissions((RequestRouteMissions *)m_p->GetProtoMessage());
+        else if (name == d_p_ClassName(RequestPositionAuthentication))
+            prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
 
         pos += l;
         l = len - pos;
@@ -254,6 +267,19 @@ void ObjectUav::prcsRcvReqMissions(RequestRouteMissions *msg)
     }
 }
 
+void ObjectUav::prcsPosAuth(RequestPositionAuthentication *msg)
+{
+    if (!msg || !msg->has_pos() || Utility::Upper(msg->devid())!=GetObjectID())
+        return;
+
+    const GpsInformation &pos = msg->pos();
+    AckPositionAuthentication ack;
+    ack.set_seqno(msg->seqno());
+    ack.set_result(_checkPos(pos.latitude()/10e7, pos.longitude()/10e7, pos.altitude()/10e3));
+    ack.set_devid(GetObjectID());
+    send(ack);
+}
+
 void ObjectUav::processBind(RequestBindUav *msg, IObject *sender)
 {
     if (UavManager *m = (UavManager *)GetManager())
@@ -272,7 +298,7 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
         return;
 
     int res = 0;
-    if (m_lastBinder == msg->userid() && m_bBind)
+    if (m_lastBinder == msg->userid() && m_bBind && IsValid())
         res = send(*msg) ? 1 : -1;
     
     AckControl2Uav(*msg, res, this);
@@ -331,4 +357,12 @@ void ObjectUav::_notifyUavUOR(const OperationRoute &ort)
     upload.set_countboundary(ort.boundarys_size());
     send(upload);
     m_lastORNotify = (uint32_t)Utility::msTimeTick();
+}
+
+int ObjectUav::_checkPos(double lat, double lon, double alt)
+{
+    if (UavManager *m = (UavManager *)GetManager())
+        return m->CanFlight(lat, lon, alt) ? 1 : 0;
+
+    return 0;
 }

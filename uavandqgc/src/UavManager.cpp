@@ -112,6 +112,11 @@ void UavManager::SaveUavPos(const ObjectUav &uav)
     }
 }
 
+bool UavManager::CanFlight(double, double, double)
+{
+    return true;
+}
+
 uint32_t UavManager::toIntID(const std::string &uavid)
 {
     StringList strLs = Utility::SplitString(uavid, ":");

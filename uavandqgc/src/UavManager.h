@@ -41,6 +41,7 @@ public:
     void UpdatePos(const std::string &uav, double lat, double lon);
     VGMySql *GetMySql()const;
     void SaveUavPos(const ObjectUav &uav);
+    bool CanFlight(double lat, double lon, double alt);
 public:
     static uint32_t toIntID(const std::string &uavid);
 protected:
