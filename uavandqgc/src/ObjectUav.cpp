@@ -27,6 +27,7 @@ ObjectUav::ObjectUav(const std::string &id): ObjectAbsPB(id)
 
 ObjectUav::~ObjectUav()
 {
+    delete m_mission;
 }
 
 void ObjectUav::InitBySqlResult(const ExecutItem &sql)
@@ -43,6 +44,8 @@ void ObjectUav::InitBySqlResult(const ExecutItem &sql)
         m_tmLastBind = fd->GetValue<int64_t>();
     if (FiledVal *fd = sql.GetReadItem("timePos"))
         m_tmLastPos = fd->GetValue<int64_t>();
+    if (FiledVal *fd = sql.GetReadItem("valid"))
+        m_tmValidLast = fd->GetValue<int64_t>();
 }
 
 void ObjectUav::transUavStatus(UavStatus &us)
@@ -298,7 +301,7 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
         return;
 
     int res = 0;
-    if (m_lastBinder == msg->userid() && m_bBind && IsValid())
+    if (m_lastBinder == msg->userid() && m_bBind)
         res = send(*msg) ? 1 : -1;
     
     AckControl2Uav(*msg, res, this);
@@ -361,6 +364,9 @@ void ObjectUav::_notifyUavUOR(const OperationRoute &ort)
 
 int ObjectUav::_checkPos(double lat, double lon, double alt)
 {
+    if (!IsValid())
+        return 0;
+
     if (UavManager *m = (UavManager *)GetManager())
         return m->CanFlight(lat, lon, alt) ? 1 : 0;
 

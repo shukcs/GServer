@@ -126,13 +126,13 @@ private:
     string _conditionsString(MYSQL_BIND *bind, int &pos)const;
     string _deleteBegin()const;
 private:
-    ExecutType              m_type;
-    string                  m_name;
-    string                  m_condition;
-    FiledVal*         m_autoIncrement;
-    bool                    m_bHasForeignRefTable;
-    bool                    m_bRef;
-    StringList              m_tables;
+    ExecutType        m_type;
+    string            m_name;
+    string            m_condition;
+    FiledVal          *m_autoIncrement;
+    bool              m_bHasForeignRefTable;
+    bool              m_bRef;
+    StringList        m_tables;
     list<FiledVal*>   m_itemsRead;
     list<FiledVal*>   m_itemsWrite;
     list<FiledVal*>   m_itemsCondition;

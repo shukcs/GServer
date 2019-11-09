@@ -24,7 +24,7 @@ using namespace ::google::protobuf;
 ////////////////////////////////////////////////////////////////////////////////
 UavManager::UavManager() : IObjectManager(0)
 , m_sqlEng(new VGMySql), m_p(new ProtoMsg)
-, m_lastId(1), m_bInit(false)
+, m_lastId(0), m_bInit(false)
 {
 }
 
@@ -187,6 +187,8 @@ void UavManager::LoadConfig()
     TiXmlDocument doc;
     doc.LoadFile("UavInfo.xml");
     _parseMySql(doc);
+    _getLastId();
+
     const TiXmlElement *rootElement = doc.RootElement();
     const TiXmlNode *node = rootElement ? rootElement->FirstChild("UavManager") : NULL;
     const TiXmlElement *cfg = node ? node->ToElement() : NULL;
@@ -219,6 +221,20 @@ void UavManager::_parseMySql(const TiXmlDocument &doc)
     {
         m_sqlEng->CreateTrigger(VGDBManager::GetTriggerByName(trigger));
     }
+}
+
+void UavManager::_getLastId()
+{
+    ExecutItem *sql = VGDBManager::GetSqlByName("maxUavId");
+    if (!sql)
+        return;
+
+    if (!m_sqlEng->Execut(sql))
+        return;
+    if (FiledVal *fd = sql->GetReadItem("max(id)"))
+        m_lastId = toIntID((char*)fd->GetBuff());
+
+    while (m_sqlEng->GetResult());
 }
 
 void UavManager::sendBindRes(const RequestBindUav &msg, int res, bool bind)
@@ -349,7 +365,7 @@ void UavManager::processAllocationUav(int seqno, const string &id)
     {
         int res = 0;
         char idTmp[24] = {0};
-        while (m_lastId>0)
+        while (++m_lastId>0)
         {
             sprintf(idTmp, "VIGAU:%08X", m_lastId);
             if(_addUavId(idTmp) != 0)

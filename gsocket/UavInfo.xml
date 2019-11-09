@@ -6,7 +6,7 @@
 		<table name="UavInfo">
 			<field name="id" type="char(16)" constraint="primary key"/>
 			<field name="binded" type="TINYINT" />
-			<field name="valid" type="TINYINT" constraint="DEFAULT '1'" />
+			<field name="valid" type="BIGINT" constraint="DEFAULT '-1'" />
 			<field name="binder" type="char(32)" />
 			<field name="timeBind" type="BIGINT" />
 			<field name="lat" type="double" />
@@ -17,6 +17,9 @@
 	<SQLs>
 		<SQL name="insertUavInfo" table="UavInfo" type="Insert" >
 			<item name="id" type="Write" />
+		</SQL>
+		<SQL name="maxUavId" table="UavInfo" type="Select" >
+			<item name="max(id)" type="Read" sqlTp="char(16)" />
 		</SQL>
 		<SQL name="queryUavInfo" table="UavInfo" type="Select">
 			<item name="binded" ref="UavInfo" type="Read"/>

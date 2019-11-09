@@ -3,12 +3,13 @@
 #include "das.pb.h"
 #include "ProtoMsg.h"
 #include "ObjectBase.h"
+#include "Utility.h"
 
 using namespace google::protobuf;
 using namespace das::proto;
 using namespace std;
 
-static const char *sRandStrTab = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm";
+static const char *sRandStrTab = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789";
 ////////////////////////////////////////////////////////////////////////////////////////
 //GSOrUavMessage
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -48,28 +49,30 @@ void GSOrUavMessage::AttachProto(google::protobuf::Message *msg)
     m_msg = msg;
 }
 
-string GSOrUavMessage::GenCheckString()
+string GSOrUavMessage::GenCheckString(int len)
 {
-    string ret;
-    uint32 rd = rand();
-    char strTmp[3] = { 0 };
-    for (int i = 0; i < 3; ++i)
+    if (len > 16)
+        return string();
+
+    int64_t tm = rand()+Utility::usTimeTick();
+    char ret[17] = { 0 };
+    uint32_t n = tm / 1023;
+    char c = '0' + n % 10;
+    ret[n % 6] = c;
+    n = tm / 0xffff;
+    c = '0' + n % 10;
+    n %= 6;
+    if (ret[n] == 0)
+        ret[n] = c;
+    else if(n<5)
+        ret[n+1] = c;
+    else
+        ret[n-1] = c;
+
+    for (int i = 0; i < len; ++i)
     {
-        int tmp1 = rd % (8+i);
-        int tmp2 = rd % (50-i);
-        if (tmp2 % (8 + i) > tmp1)
-        {
-            strTmp[0] = sRandStrTab[tmp2];
-            strTmp[1] = '0'+ tmp1;
-        }
-        else
-        {
-            strTmp[1] = sRandStrTab[tmp2];
-            strTmp[0] = '0' + tmp1;
-        }
-        ret += strTmp;
-        if ((rd%3+i)%2 == 0)
-            rd = rand();
+        if (ret[i] == 0)
+            ret[i] = sRandStrTab[tm / (19 + i) % 62];
     }
     return ret;
 }

@@ -23,7 +23,6 @@ public:
     void SetConstrains(const string &n);
     const StringList &GetConstrains()const;
     const string &GetTypeName()const;
-    void SetTypeName(const string &type);
 
     int GetType();
     int GetLength()const;
@@ -31,14 +30,17 @@ public:
     string ToString()const;
 public:
     static VGTableField *ParseFiled(const TiXmlElement &e, VGTable *parent);
+    static int GetTypeByName(const string &type);
+    static int TransSqlType(int t);
+    static int TransBuffLength(int t);
 protected:
     VGTableField(VGTable *tb, const string &n = string());
 private:
-    void _parseBits(const string &n);
-    void _parseChar(const string &n);
-    void _parseVarChar(const string &n);
-    void _parseBinary(const string &n);
-    void _parseVarBinary(const string &n);
+    static int _parseBits(const string &n);
+    static int _parseChar(const string &n);
+    static int _parseVarChar(const string &n);
+    static int _parseBinary(const string &n);
+    static int _parseVarBinary(const string &n);
 private:
     VGTable     *m_table;
     int         m_type;

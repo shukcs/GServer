@@ -51,6 +51,7 @@ protected:
     void LoadConfig();
 private:
     void _parseMySql(const TiXmlDocument &doc);
+    void _getLastId();
 
     void sendBindRes(const das::proto::RequestBindUav &msg, int res, bool bind);
     IObject *_checkLogin(ISocket *s, const das::proto::RequestUavIdentityAuthentication &uia);

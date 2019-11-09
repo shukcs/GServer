@@ -156,8 +156,7 @@ void FiledVal::parse(const TiXmlElement *e, ExecutItem *sql)
     const char *tmp = e->Attribute("ref");
     if (tmp)
     {
-        VGTable *tb = VGDBManager::GetTableByName(tmp);
-        if (tb)
+        if (VGTable *tb = VGDBManager::GetTableByName(tmp))
         {
             if (VGTableField *fd = tb->FindFieldByName(name))
             {
@@ -168,11 +167,12 @@ void FiledVal::parse(const TiXmlElement *e, ExecutItem *sql)
     }
     else if (const char *tmpTp = e->Attribute("sqlTp"))
     {
-        int tpSql = tmpTp ? VGDBManager::str2int(tmpTp) : -1;
-        tmpTp = e->Attribute("length");
-        int len = tmpTp ? VGDBManager::str2int(tmpTp) : 0;
-        item = new FiledVal(tpSql, name, len);
-        sql->AddItem(item, tp);
+        int tpSql = VGTableField::GetTypeByName(tmpTp);
+        if (tpSql)
+        {
+            item = new FiledVal(VGTableField::TransSqlType(tpSql), name, VGTableField::TransBuffLength(tpSql));
+            sql->AddItem(item, tp);
+        }
     }
     else
     {

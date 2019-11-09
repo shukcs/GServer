@@ -199,11 +199,11 @@ void GSManager::LoadConfig()
     TiXmlDocument doc;
     doc.LoadFile("GSInfo.xml");
     _parseMySql(doc);
+    AddDatabaseUser("root", "NIhao666", ObjectGS::Type_ALL);
 
     const TiXmlElement *rootElement = doc.RootElement();
     const TiXmlNode *node = rootElement ? rootElement->FirstChild("GSManager") : NULL;
     const TiXmlElement *cfg = node ? node->ToElement() : NULL;
-    AddDatabaseUser("root", "NIhao666", ObjectGS::Type_ALL);
     if (cfg)
     {
         const char *tmp = cfg->Attribute("thread");

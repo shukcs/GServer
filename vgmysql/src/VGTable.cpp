@@ -124,57 +124,64 @@ const string &VGTableField::GetTypeName()const
     return m_typeName;
 }
 
-void VGTableField::SetTypeName(const string &type)
+int VGTableField::GetTypeByName(const string &type)
 {
-    m_type = 0;
-
+    int ret = 0;
     if (0 == strnicmp(type.c_str(), "BIT", 3))
-        _parseBits(type.substr(3));
+        ret = _parseBits(type.substr(3));
     else if (0 == strnicmp(type.c_str(), "TINYINT", 8))
-        m_type = (1 << 16) | MYSQL_TYPE_TINY;
+        ret = (1 << 16) | MYSQL_TYPE_TINY;
     else if (0 == strnicmp(type.c_str(), "SMALLINT", 9))
-        m_type = (2 << 16) | MYSQL_TYPE_SHORT;
+        ret = (2 << 16) | MYSQL_TYPE_SHORT;
     else if (0 == strnicmp(type.c_str(), "INTEGER", 8) || 0 == strnicmp(type.c_str(), "INT", 4))
-        m_type = (4 << 16) | MYSQL_TYPE_LONG;
+        ret = (4 << 16) | MYSQL_TYPE_LONG;
     else if (0 == strnicmp(type.c_str(), "BIGINT", 8))
-        m_type = (8 << 16) | MYSQL_TYPE_LONGLONG;
+        ret = (8 << 16) | MYSQL_TYPE_LONGLONG;
     else if (0 == strnicmp(type.c_str(), "FLOAT", 6))
-        m_type = (4 << 16) | MYSQL_TYPE_FLOAT;
+        ret = (4 << 16) | MYSQL_TYPE_FLOAT;
     else if (0 == strnicmp(type.c_str(), "DOUBLE", 6))
-        m_type = (8 << 16) | MYSQL_TYPE_DOUBLE;
+        ret = (8 << 16) | MYSQL_TYPE_DOUBLE;
     else if (0 == strnicmp(type.c_str(), "DATE", 5))
-        m_type = (4 << 16) | MYSQL_TYPE_DATE;
+        ret = (4 << 16) | MYSQL_TYPE_DATE;
     else if (0 == strnicmp(type.c_str(), "TIME", 5))
-        m_type = (4 << 16) | MYSQL_TYPE_TIME;
+        ret = (4 << 16) | MYSQL_TYPE_TIME;
     else if (0 == strnicmp(type.c_str(), "DATETIME", 9))
-        m_type = (8 << 16) | MYSQL_TYPE_DATETIME;
+        ret = (8 << 16) | MYSQL_TYPE_DATETIME;
     else if (0 == strnicmp(type.c_str(), "TIMESTAMP", 10))
-        m_type = (4 << 16) | MYSQL_TYPE_DATETIME;
+        ret = (4 << 16) | MYSQL_TYPE_DATETIME;
     else if (0 == strnicmp(type.c_str(), "CHAR", 4))
-        _parseChar(type.substr(4));
+        ret = _parseChar(type.substr(4));
     else if (0 == strnicmp(type.c_str(), "VARCHAR", 7))
-        _parseVarChar(type.substr(7));
+        ret = _parseVarChar(type.substr(7));
     else if (0 == strnicmp(type.c_str(), "BINARY", 6))
-        _parseBinary(type.substr(6));
+        ret = _parseBinary(type.substr(6));
     else if (0 == strnicmp(type.c_str(), "VARBINARY", 9))
-        _parseVarBinary(type.substr(9));
+        ret = _parseVarBinary(type.substr(9));
     else if (0 == strnicmp(type.c_str(), "BLOB", 8))
-        m_type = (1 << 16) | MYSQL_TYPE_BLOB;
+        ret = (1 << 16) | MYSQL_TYPE_BLOB;
     else if (0 == strnicmp(type.c_str(), "TEXT", 5))
-        m_type = (1 << 16) | MYSQL_TYPE_STRING;
+        ret = (1 << 16) | MYSQL_TYPE_STRING;
+    return ret;
+}
 
-    if (m_type != 0)
-        m_typeName = type;
+int VGTableField::TransSqlType(int t)
+{
+    return t & 0xff;
+}
+
+int VGTableField::TransBuffLength(int t)
+{
+    return (t >> 16) & 0xffff;
 }
 
 int VGTableField::GetType()
 {
-    return m_type & 0xff;
+    return TransSqlType(m_type);
 }
 
 int VGTableField::GetLength() const
 {
-    return (m_type >> 16) & 0x00ffff;
+    return TransBuffLength(m_type);
 }
 
 bool VGTableField::IsValid() const
@@ -204,7 +211,10 @@ VGTableField *VGTableField::ParseFiled(const TiXmlElement &e, VGTable *parent)
     if (VGTableField *fd = new VGTableField(parent, tmp))
     {
         if (const char *s = e.Attribute("type"))
-            fd->SetTypeName(s);
+        {
+            if(fd->m_type = GetTypeByName(s))
+                fd->m_typeName = s;
+        }
         if (const char *s = e.Attribute("constraint"))
             fd->SetConstrains(s);
 
@@ -217,55 +227,63 @@ VGTableField *VGTableField::ParseFiled(const TiXmlElement &e, VGTable *parent)
     return NULL;
 }
 
-void VGTableField::_parseBits(const string &n)
+int VGTableField::_parseBits(const string &n)
 {
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
-        return;
+        return 0;
 
     int nTmp = VGDBManager::str2int(n.substr(1, n.length() - 2));
     if (nTmp > 0 && nTmp < 256)
-        m_type = (nTmp << 16) | MYSQL_TYPE_BIT;
+        return (nTmp << 16) | MYSQL_TYPE_BIT;
+
+    return 0;
 }
 
-void VGTableField::_parseChar(const string &n)
+int VGTableField::_parseChar(const string &n)
 {
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
-        return;
+        return 0;
 
     int nTmp = VGDBManager::str2int(n.substr(1, n.length()-2));
     if(nTmp>0 && nTmp<256)
-        m_type = (nTmp << 16) | MYSQL_TYPE_STRING;
+        return (nTmp << 16) | MYSQL_TYPE_STRING;
+
+    return 0;
 }
 
-void VGTableField::_parseVarChar(const string &n)
+int VGTableField::_parseVarChar(const string &n)
 {
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
-        return;
+        return 0;
 
     int nTmp = VGDBManager::str2int(n.substr(1, n.length() - 2));
     nTmp = (nTmp + 7) / 8;
     if (nTmp > 0 && nTmp<0xffff)
-        m_type = (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
+        return (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
+
+    return 0;
 }
 
-void VGTableField::_parseBinary(const string &n)
+int VGTableField::_parseBinary(const string &n)
 {
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
-        return;
+        return 0;
 
     int nTmp = VGDBManager::str2int(n.substr(1, n.length() - 2));
     if (nTmp > 0 && nTmp<256)
-        m_type = (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
+        return (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
+    return 0;
 }
 
-void VGTableField::_parseVarBinary(const string &n)
+int VGTableField::_parseVarBinary(const string &n)
 {
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
-        return;
+        return 0;
 
     int nTmp = VGDBManager::str2int(n.substr(1, n.length() - 2));
     if (nTmp > 0 && nTmp<0xffff)
-        m_type = (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
+        return (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
+    return 0;
 }
 ////////////////////////////////////////////////////////////////////////////////
 //VGTableField
