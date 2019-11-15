@@ -69,13 +69,13 @@ public:
         return false;
     }
 protected:
-    virtual void ProcessMassage(const IMessage &msg) = 0;
+    virtual void ProcessMessage(const IMessage &msg) = 0;
     virtual int ProcessReceive(void *buf, int len) = 0;
     SHARED_DECL virtual void CheckTimer(uint64_t ms);
 protected:
 /*******************************************************************************************
 这是个连接实体抽象类
-ProcessMassage():处理对象之间消息的
+ProcessMessage():处理对象之间消息的
 ProcessReceive():处理网络数据，ret:已处理数据长度
 GetObjectType():连接实体类型，返回值需要与对应的IObjectManager::GetObjectType()相同
 OnConnected(bConnected):连接断开处理
@@ -124,7 +124,7 @@ protected:
     SHARED_DECL virtual bool PrcsRemainMsg(const IMessage &msg);
     SHARED_DECL void InitThread(uint16_t nThread = 1);
 
-    void ProcessMassage(const IMessage &msg);
+    void ProcessMessage(const IMessage &msg);
     int GetPropertyThread()const;
     void AddMessage(IMessage *msg);
     void PrcsReleaseMsg();

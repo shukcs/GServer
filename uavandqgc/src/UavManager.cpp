@@ -19,6 +19,9 @@
 using namespace std;
 using namespace das::proto;
 using namespace ::google::protobuf;
+#ifdef SOCKETS_NAMESPACE
+using namespace SOCKETS_NAMESPACE;
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 //UavManager
 ////////////////////////////////////////////////////////////////////////////////
@@ -34,40 +37,31 @@ UavManager::~UavManager()
     delete m_p;
 }
 
-int UavManager::PrcsBind(const RequestBindUav *msg, const string &gsOld, bool binded, ObjectGS *sender)
+int UavManager::PrcsBind(ObjectUav &uav, int ack, bool bBind, ObjectGS *sender)
 {
     int res = -1;
-    string binder = msg ? msg->binder() : string();
-    if (binder.length() == 0)
+    string gs = sender ? sender->GetObjectID() : string();
+    if (gs.length() == 0)
         return res;
+    string &gsOld = uav.m_lastBinder;
 
     bool bForceUnbind = sender && sender->GetAuth(ObjectGS::Type_UavManager);
-    int op = msg->opid();
-    if (1 == op && !bForceUnbind)
-        res = (!binded || gsOld.length() == 0 || binder == gsOld) ? 1 : -3;
-    else if (0 == op)
-        res = (bForceUnbind || binder == gsOld || gsOld.empty()) ? 1 : -3;
+    if (!uav.m_bExist)
+        res = -2;
+    else if (bBind && !bForceUnbind)
+        res = (!uav.m_bBind || uav.m_lastBinder.empty() || gs==uav.m_lastBinder) ? 1 : -3;
+    else if (!bBind)
+        res = (bForceUnbind || gs == gsOld || gsOld.empty()) ? 1 : -3;
 
-    const std::string &uav = Utility::Upper(msg->uavid());
-    if(res == 1)
+    if (res == 1 && bBind!=uav.m_bBind)
     {
-        if (ExecutItem *item = VGDBManager::GetSqlByName("updateBinded"))
-        {
-            item->ClearData();
-            if (FiledVal *fd = item->GetConditionItem("id"))
-                fd->SetParam(uav);
-
-            if (FiledVal *fd = item->GetWriteItem("binded"))
-                fd->InitOf<char>(1 == op);
-            if (FiledVal *fd = item->GetWriteItem("binder"))
-                fd->SetParam(binder);
-            if (FiledVal *fd = item->GetReadItem("timeBind"))
-                fd->InitOf(Utility::msTimeTick());
-            m_sqlEng->Execut(item);
-            Log(0, binder, 0, "%s %s", 1==op?"bind":"unbind", uav.c_str());
-        }
+        uav.m_bBind = bBind;
+        _saveBind(uav.GetObjectID(), bBind, gs);
     }
-    sendBindRes(*msg, res, 1 == op);
+    if (gsOld != gs)
+        gsOld = gs;
+
+    sendBindAck(uav, ack, res, bBind, gs);
     return res;
 }
 
@@ -237,30 +231,22 @@ void UavManager::_getLastId()
     while (m_sqlEng->GetResult());
 }
 
-void UavManager::sendBindRes(const RequestBindUav &msg, int res, bool bind)
+void UavManager::sendBindAck(const ObjectUav &uav, int ack, int res, bool bind, const std::string &gs)
 {
-    if (GSMessage *ms = new GSMessage(this, msg.binder()))
+    if (Uav2GSMessage *ms = new Uav2GSMessage(this, gs))
     {
         AckRequestBindUav *proto = new AckRequestBindUav();
         if (!proto)
             return;
 
-        UavStatus *s = new UavStatus;
-        s->set_result(proto->result());
-        s->set_uavid(msg.uavid().c_str());
-        s->set_binder(msg.binder());
-        s->set_binded(bind);
-        if (res == 1)
-        {
-            if (bind)
-                s->set_bindtime(Utility::secTimeCount());
-            else
-                s->set_unbindtime(Utility::secTimeCount());
-        }
-        proto->set_seqno(msg.seqno());
-        proto->set_opid(msg.opid());
+        proto->set_seqno(ack);
+        proto->set_opid(bind?1:0);
         proto->set_result(res);
-        proto->set_allocated_status(s);
+        if (UavStatus *s = new UavStatus)
+        {
+            uav.transUavStatus(*s);
+            proto->set_allocated_status(s);
+        }
         ms->AttachProto(proto);
         SendMsg(ms);
     }
@@ -305,22 +291,19 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
 
 void UavManager::_checkBindUav(const RequestBindUav &rbu, ObjectGS *gs)
 {
+    ObjectUav obj(rbu.uavid());
     if (ExecutItem *item = VGDBManager::GetSqlByName("queryUavInfo"))
     {
         item->ClearData();
         if (FiledVal *fd = item->GetConditionItem("id"))
             fd->SetParam(rbu.uavid());
 
-        if (!m_sqlEng->Execut(item))
-            return;
-        bool bind = false;
-        if (FiledVal *fd = item->GetReadItem("binded"))
-            bind = fd->GetValue<char>() != 0;
-        if (FiledVal *fd = item->GetReadItem("binder"))
-            PrcsBind(&rbu, string((char*)fd->GetBuff(), fd->GetValidLen()), bind, gs);
+        if (m_sqlEng->Execut(item))
+            obj.InitBySqlResult(*item);
 
         while (m_sqlEng->GetResult());
     }
+    PrcsBind(obj, rbu.seqno(),rbu.opid()==1, gs);
 }
 
 void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
@@ -332,26 +315,27 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
     {
         const string &uav = Utility::Upper(uia.uavid(i));
         ObjectUav *o = (ObjectUav *)GetObjectByID(uav);
+        bool bMgr = gs && gs->GetAuth(ObjectGS::Type_UavManager);
         if (o)
         {
             UavStatus *us = as.add_status();
-            o->transUavStatus(*us);
+            o->transUavStatus(*us, bMgr);
             us = NULL;
         }
-        else if (!_queryUavInfo(as, uav) && gs && gs->GetAuth(ObjectGS::Type_UavManager))
+        else if (!_queryUavInfo(as, uav) && bMgr)
         {
             if (_addUavId(uav) > 0)
             {
                 UavStatus *us = as.add_status();
                 ObjectUav oU(uav);
-                oU.transUavStatus(*us);
+                oU.transUavStatus(*us, bMgr);
             }
         }
     }
 
     if (gs)
     {
-        GSMessage *ms = new GSMessage(this, gs->GetObjectID());
+        Uav2GSMessage *ms = new Uav2GSMessage(this, gs->GetObjectID());
         ms->SetPBContentPB(as);
         SendMsg(ms);
     }
@@ -361,13 +345,14 @@ void UavManager::processAllocationUav(int seqno, const string &id)
 {
     if (id.empty() && !m_sqlEng)
         return;
-    if (UAVMessage *ms = new UAVMessage(this, id))
+
+    if (GS2UavMessage *ms = new GS2UavMessage(this, id))
     {
         int res = 0;
         char idTmp[24] = {0};
-        while (++m_lastId>0)
+        while (m_lastId > 0)
         {
-            sprintf(idTmp, "VIGAU:%08X", m_lastId);
+            sprintf(idTmp, "VIGAU:%08X", m_lastId+1);
             if(_addUavId(idTmp) != 0)
                 break;
         }
@@ -383,7 +368,8 @@ void UavManager::processAllocationUav(int seqno, const string &id)
 
 int UavManager::_addUavId(const std::string &uav)
 {
-    if (toIntID(uav)<1)
+    uint32_t id = toIntID(uav);
+    if (id < 1)
         return -1;
 
     ExecutItem *sql = VGDBManager::GetSqlByName("insertUavInfo");
@@ -392,7 +378,15 @@ int UavManager::_addUavId(const std::string &uav)
     {
         sql->ClearData();
         fd->SetParam(uav);
-        return m_sqlEng->Execut(sql) ? 1 : 0;
+        if (FiledVal *fdTmp = sql->GetWriteItem("authCheck"))
+            fdTmp->SetParam(GSOrUavMessage::GenCheckString(8));
+        if (m_sqlEng->Execut(sql))
+        {
+            if (m_lastId < id)
+                m_lastId = id;
+            return id;
+        }
+        return 0;
     }
     return -1;
 }
@@ -416,6 +410,25 @@ bool UavManager::_queryUavInfo(das::proto::AckRequestUavStatus &aus, const strin
         return true;
     }
     return false;
+}
+
+void UavManager::_saveBind(const std::string &uav, bool bBind, const std::string gs)
+{
+    if (ExecutItem *item = VGDBManager::GetSqlByName("updateBinded"))
+    {
+        item->ClearData();
+        if (FiledVal *fd = item->GetConditionItem("id"))
+            fd->SetParam(uav);
+
+        if (FiledVal *fd = item->GetWriteItem("binded"))
+            fd->InitOf<char>(bBind);
+        if (FiledVal *fd = item->GetWriteItem("binder"))
+            fd->SetParam(gs);
+        if (FiledVal *fd = item->GetWriteItem("timeBind"))
+            fd->InitOf(Utility::msTimeTick());
+        m_sqlEng->Execut(item);
+        Log(0, gs, 0, "%s %s", bBind ? "bind" : "unbind", uav.c_str());
+    }
 }
 
 DECLARE_MANAGER_ITEM(UavManager)

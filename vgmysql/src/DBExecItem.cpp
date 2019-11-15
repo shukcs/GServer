@@ -89,9 +89,9 @@ void FiledVal::InitBuff(unsigned len, const void *buf)
     m_bEmpty = false;
 }
 
-const string &FiledVal::GetCondition() const
+string FiledVal::ToConditionString()const
 {
-    return m_condition;
+    return GetFieldName() + m_condition + (IsStaticParam() ? GetParam() : "?");
 }
 
 unsigned FiledVal::GetMaxLen() const
@@ -152,43 +152,12 @@ void FiledVal::parse(const TiXmlElement *e, ExecutItem *sql)
     if (!name || tp > ExecutItem::Condition || tp < ExecutItem::Read)
         return;
 
-    FiledVal *item = NULL;
-    const char *tmp = e->Attribute("ref");
-    if (tmp)
+    if (FiledVal *item = parseFiled(*e, sql->ExecutTables().size() > 1))
     {
-        if (VGTable *tb = VGDBManager::GetTableByName(tmp))
-        {
-            if (VGTableField *fd = tb->FindFieldByName(name))
-            {
-                item = new FiledVal(fd, sql->ExecutTables().size() > 1);
-                sql->AddItem(item, tp);
-            }
-        }
-    }
-    else if (const char *tmpTp = e->Attribute("sqlTp"))
-    {
-        int tpSql = VGTableField::GetTypeByName(tmpTp);
-        if (tpSql)
-        {
-            item = new FiledVal(VGTableField::TransSqlType(tpSql), name, VGTableField::TransBuffLength(tpSql));
-            sql->AddItem(item, tp);
-        }
-    }
-    else
-    {
-        tmp = e->Attribute("param");
-        item = new FiledVal(-1, name, 0);
-        if (tmp)
-            item->SetParam(tmp, false, true);
-        else if (const char *val = e->Attribute("paramVal"))
-            item->SetParam(val, true, true);
-
+        if (const char *tmp = e->Attribute("condition"))
+            item->m_condition = tmp;
         sql->AddItem(item, tp);
     }
-
-    tmp = e->Attribute("condition");
-    if (item && tmp)
-        item->m_condition = tmp;
 }
 
 int FiledVal::transToType(const char *pro)
@@ -208,6 +177,37 @@ int FiledVal::transToType(const char *pro)
         return ExecutItem::AutoIncrement;
 
     return ret;
+}
+
+FiledVal *FiledVal::parseFiled(const TiXmlElement &e, bool oth)
+{
+    const char *name = e.Attribute("name");
+    if (const char *tmp = e.Attribute("ref"))
+    {
+        if (VGTable *tb = VGDBManager::GetTableByName(tmp))
+        {
+            if (VGTableField *fd = tb->FindFieldByName(name))
+                return new FiledVal(fd, oth);
+        }
+    }
+    else if (const char *tmpTp = e.Attribute("sqlTp"))
+    {
+        int tpSql = VGTableField::GetTypeByName(tmpTp);
+        if (tpSql)
+             return new FiledVal(VGTableField::TransSqlType(tpSql), name, VGTableField::TransBuffLength(tpSql));
+    }
+    else
+    {
+        const char *tmp = e.Attribute("param");
+        FiledVal *item = new FiledVal(-1, name, 0);
+        if (tmp)
+            item->SetParam(tmp, false, true);
+        else if (const char *val = e.Attribute("paramVal"))
+            item->SetParam(val, true, true);
+        return item;
+    }
+
+    return NULL;
 }
 ///////////////////////////////////////////////////////////////////////////////////////
 //ExecutItem
@@ -382,6 +382,8 @@ string ExecutItem::GetSqlString(MYSQL_BIND *paramBinds) const
     {
     case ExecutItem::Insert:
         return _toInsert(paramBinds, pos);
+    case ExecutItem::Replace:
+        return _toReplace(paramBinds, pos);
     case ExecutItem::Delete:
         return _toDelete(paramBinds, pos);
     case ExecutItem::Update:
@@ -545,44 +547,16 @@ string ExecutItem::_toInsert(MYSQL_BIND *binds, int &pos)const
 {
     string sql = "insert";
     sql += _getTablesString();
+    sql += _genWrite(binds, pos) + _conditionsString(binds, pos);
 
-    string fields;
-    string values;
-    for (FiledVal *item : m_itemsWrite)
-    {
-        if(item->IsEmpty())
-            continue;
+    return sql;
+}
 
-        bool bStatic = item->IsStaticParam();
-        string field = item->GetFieldName();
-        if (field.length() < 1)
-            return string();
-
-        if (fields.length() < 1)
-        {
-            fields = "(";
-            fields += field;
-            if (bStatic)
-                values = string(" value(") + item->GetParam();
-            else
-                values = " value(?";
-        }
-        else
-        {
-            fields += ",";
-            fields += field;
-            if (bStatic)
-                values += string(", ") + item->GetParam();
-            else
-                values += ", ?";
-        }
-        if(!bStatic && binds)
-            transformBind(item, binds[pos++]);
-    }
-    fields += ")";
-    values += ")";
-    sql += fields + values;
-    sql += _conditionsString(binds, pos);
+std::string ExecutItem::_toReplace(MYSQL_BIND *binds, int &pos) const
+{
+    string sql = "replace";
+    sql += _getTablesString();
+    sql +=_genWrite(binds, pos) + _conditionsString(binds, pos);
 
     return sql;
 }
@@ -654,15 +628,13 @@ string ExecutItem::_conditionsString(MYSQL_BIND *bind, int &pos) const
         if(itr->IsEmpty())
             continue;
 
-        bool bStatic = itr->IsStaticParam();
-        string tmp = itr->GetFieldName() + itr->GetCondition() + (bStatic ? itr->GetParam() : "?");
-
+        string tmp = itr->ToConditionString();
         if (conditions.length() < 1)
             conditions = string(" where ")+tmp;
         else
             conditions += m_condition + tmp;
 
-        if(!bStatic && bind)
+        if(bind && !itr->IsStaticParam())
             transformBind(itr, bind[pos++]);
     }
     return conditions;
@@ -684,6 +656,46 @@ std::string ExecutItem::_deleteBegin() const
     return ret + " from";
 }
 
+std::string ExecutItem::_genWrite(MYSQL_BIND *binds, int &pos)const
+{
+    string fields;
+    string values;
+    for (FiledVal *item : m_itemsWrite)
+    {
+        if (item->IsEmpty())
+            continue;
+
+        bool bStatic = item->IsStaticParam();
+        string field = item->GetFieldName();
+        if (field.length() < 1)
+            return string();
+
+        if (fields.length() < 1)
+        {
+            fields = "(";
+            fields += field;
+            if (bStatic)
+                values = string(" value(") + item->GetParam();
+            else
+                values = " value(?";
+        }
+        else
+        {
+            fields += ",";
+            fields += field;
+            if (bStatic)
+                values += string(", ") + item->GetParam();
+            else
+                values += ", ?";
+        }
+        if (!bStatic && binds)
+            transformBind(item, binds[pos++]);
+    }
+    fields += ")";
+    values += ")";
+    return fields + values;
+}
+
 ExecutItem::ExecutType ExecutItem::transToSqlType(const char *pro)
 {
     if (!pro)
@@ -691,6 +703,8 @@ ExecutItem::ExecutType ExecutItem::transToSqlType(const char *pro)
 
     if (0 == strnicmp(pro, "Insert", 7))
         return ExecutItem::Insert;
+    if (0 == strnicmp(pro, "Replace", 8))
+        return ExecutItem::Replace;
     else if (0 == strnicmp(pro, "Delete", 7))
         return ExecutItem::Delete;
     else if (0 == strnicmp(pro, "Update", 7))

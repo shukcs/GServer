@@ -52,6 +52,7 @@ bool VGMySql::Execut(ExecutItem *item)
     switch (item->GetType())
     {
     case ExecutItem::Insert:
+    case ExecutItem::Replace:
     case ExecutItem::Delete:
     case ExecutItem::Update:
         return _changeItem(item);

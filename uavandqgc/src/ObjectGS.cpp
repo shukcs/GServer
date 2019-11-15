@@ -15,12 +15,14 @@
 using namespace das::proto;
 using namespace google::protobuf;
 using namespace std;
-
+#ifdef SOCKETS_NAMESPACE
+using namespace SOCKETS_NAMESPACE;
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
 ObjectGS::ObjectGS(const std::string &id): ObjectAbsPB(id)
-, m_auth(1)
+, m_auth(1), m_bInitFriends(false)
 {
 }
 
@@ -31,7 +33,9 @@ ObjectGS::~ObjectGS()
 void ObjectGS::OnConnected(bool bConnected)
 {
     ObjectAbsPB::OnConnected(bConnected);
-    if (!bConnected && !m_check.empty())
+    if(bConnected)
+        initFriend();
+    if (!m_check.empty())
         Release();
 }
 
@@ -107,7 +111,7 @@ void ObjectGS::_prcsProgram(PostProgram *msg)
     send(ack);
 }
 
-void ObjectGS::ProcessMassage(const IMessage &msg)
+void ObjectGS::ProcessMessage(const IMessage &msg)
 {
     int tp = msg.GetMessgeType();
     if(m_p)
@@ -124,6 +128,10 @@ void ObjectGS::ProcessMassage(const IMessage &msg)
         case ControlGs:
             if (Message *ms = (Message *)msg.GetContent())
                 send(*ms);
+            break;
+        case Gs2GsMsg:
+        case Gs2GsAck:
+            processGs2Gs(*(Message*)msg.GetContent(), tp);
             break;
         default:
             break;
@@ -171,6 +179,10 @@ int ObjectGS::ProcessReceive(void *buf, int len)
             _prcsDelPlan(( DeleteOperationDescription*)m_p->GetProtoMessage());
         else if (strMsg == d_p_ClassName(PostOperationRoute))
             _prcsPostMission((PostOperationRoute*)m_p->DeatachProto());
+        else if (strMsg == d_p_ClassName(GroundStationsMessage))
+            _prcsGsMessage((GroundStationsMessage*)m_p->DeatachProto());
+        else if (strMsg == d_p_ClassName(RequestFriends))
+            _prcsReqFriends((RequestFriends*)m_p->GetProtoMessage());
     }
     pos += l;
     return pos;
@@ -179,6 +191,28 @@ int ObjectGS::ProcessReceive(void *buf, int len)
 VGMySql * ObjectGS::GetMySql() const
 {
     return ((GSManager*)GetManager())->GetMySql();
+}
+
+void ObjectGS::processGs2Gs(const Message &msg, int tp)
+{
+    if (tp == Gs2GsMsg)
+    {
+        auto gsmsg = (const GroundStationsMessage *)&msg;
+        if (Gs2GsMessage *ms = new Gs2GsMessage(this, gsmsg->from()))
+        {
+            auto ack = new AckGroundStationsMessage;
+            ack->set_seqno(gsmsg->seqno());
+            ack->set_res(1);
+            ms->AttachProto(ack);
+            SendMsg(ms);
+        }
+        if (gsmsg->type() == DeleteFriend)
+            m_friends.remove(gsmsg->from());
+        else if (gsmsg->type() == AgreeFriend)
+            m_friends.push_back(gsmsg->from());
+    }
+
+    send(msg);
 }
 
 void ObjectGS::SetCheck(const std::string &str)
@@ -191,7 +225,7 @@ void ObjectGS::_prcsReqUavs(RequestUavStatus *msg)
     if (!msg)
         return;
 
-    if (UAVMessage *ms = new UAVMessage(this, string()))
+    if (GS2UavMessage *ms = new GS2UavMessage(this, string()))
     {
         ms->AttachProto(msg);
         SendMsg(ms);
@@ -203,7 +237,7 @@ void ObjectGS::_prcsReqBind(das::proto::RequestBindUav *msg)
     if (!msg)
         return;
 
-    if (UAVMessage *ms = new UAVMessage(this, msg->uavid()))
+    if (GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid()))
     {
         ms->AttachProto(msg);
         SendMsg(ms);
@@ -215,7 +249,7 @@ void ObjectGS::_prcsControl2Uav(das::proto::PostControl2Uav *msg)
     if (!msg)
         return;
 
-    if (UAVMessage *ms = new UAVMessage(this, msg->uavid()))
+    if (GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid()))
     {
         ms->AttachProto(msg);
         SendMsg(ms);
@@ -528,6 +562,16 @@ int ObjectGS::_addDatabaseUser(const std::string &user, const std::string &pswd)
     return ret;
 }
 
+void ObjectGS::initFriend()
+{
+    if (m_bInitFriends)
+        return;
+
+    m_bInitFriends = true;
+    if (GSManager *mgr = (GSManager *)(GetManager()))
+        m_friends = mgr->GetDBFriend(GetObjectID());
+}
+
 void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
 {
     if (msg)
@@ -563,7 +607,7 @@ void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
 
     if (m_auth & Type_UavManager)
     {
-        if (UAVMessage *ms = new UAVMessage(this, string()))
+        if (GS2UavMessage *ms = new GS2UavMessage(this, string()))
         {
             ms->AttachProto(msg);
             SendMsg(ms);
@@ -665,7 +709,7 @@ void ObjectGS::_prcsPostMission(PostOperationRoute *msg)
     if (!msg)
         return;
     const OperationRoute &ort = msg->or_();
-    if (UAVMessage *ms = new UAVMessage(this, ort.uavid()))
+    if (GS2UavMessage *ms = new GS2UavMessage(this, ort.uavid()))
     {
         ms->AttachProto(msg);
         SendMsg(ms);
@@ -696,5 +740,53 @@ void ObjectGS::_prcsReqNewGs(RequestNewGS *msg)
     }
 
     ack.set_result(res);
+    send(ack);
+}
+
+void ObjectGS::_prcsGsMessage(GroundStationsMessage *msg)
+{
+    if (!msg)
+        return;
+
+    if (msg->type()>RejectFriend && !IsContainsInList(m_friends, msg->to()))
+    {
+        AckGroundStationsMessage ack;
+        ack.set_seqno(msg->seqno());
+        ack.set_res(-1);
+        send(ack);
+        return;
+    }
+
+    if (msg->type() == AgreeFriend && !IsContainsInList(m_friends, msg->to()))
+    {
+        m_friends.push_back(msg->to());
+        if (GSManager *mgr = (GSManager *)GetManager())
+            mgr->AddDBFriend(GetObjectID(), msg->to());
+    }
+    else if (msg->type() == DeleteFriend)
+    {
+        m_friends.remove(msg->to());
+        if (GSManager *mgr = (GSManager *)GetManager())
+            mgr->RemoveDBFriend(GetObjectID(), msg->to());
+    }
+
+    if (Gs2GsMessage *ms = new Gs2GsMessage(this, msg->to()))
+    {
+        ms->AttachProto(msg);
+        SendMsg(ms);
+    }
+}
+
+void ObjectGS::_prcsReqFriends(das::proto::RequestFriends *msg)
+{
+    if (!msg)
+        return;
+
+    AckFriends ack;
+    ack.set_seqno(msg->seqno());
+    for (const string &itr : m_friends)
+    {
+        ack.add_friends(itr);
+    }
     send(ack);
 }

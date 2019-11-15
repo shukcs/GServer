@@ -11,15 +11,18 @@ namespace SOCKETS_NAMESPACE {
 //IMessage
 ///////////////////////////////////////////////////////////////////////////////////////
 IMessage::IMessage(IObject *sender, const std::string &id, int rcv, int tpMsg)
-: m_idRcv(id), m_tpRcv(rcv), m_tpMsg(tpMsg), m_tpSender(IObject::UnKnow), m_sender(sender)
-, m_bRelease(false)
+: m_tpRcv(rcv), m_tpMsg(tpMsg), m_tpSender(IObject::UnKnow)
+, m_bRelease(false), m_idRcv(id)
 {
     if (sender)
+    {
         m_tpSender = sender->GetObjectType();
+        m_idSnd = sender->GetObjectID();
+    }
 }
 
 IMessage::IMessage(IObjectManager *sender, const std::string &id, int rcv, int tpMsg)
-: m_idRcv(id), m_tpRcv(rcv), m_tpMsg(tpMsg), m_tpSender(IObject::UnKnow), m_sender(NULL)
+: m_idRcv(id), m_tpRcv(rcv), m_tpMsg(tpMsg), m_tpSender(IObject::UnKnow)
 , m_bRelease(false)
 {
     if (sender)
@@ -43,23 +46,27 @@ const std::string &IMessage::GetReceiverID() const
 
 int IMessage::GetSenderType() const
 {
-    return  m_sender ? m_sender->GetObjectType() : m_tpSender;
+    return  m_tpSender;
 }
 
 const std::string &IMessage::GetSenderID() const
 {
     static const string def;
-    return m_sender ? m_sender->GetObjectID() : def;
+    return m_idSnd;
 }
 
 IObject *IMessage::GetSender() const
 {
-    return m_sender;
+    if (m_idSnd.empty())
+        return NULL;
+
+    IObjectManager *om = ObjectManagers::Instance().GetManagerByType(GetSenderType());
+    return om->GetObjectByID(m_idSnd);
 }
 
 bool IMessage::IsValid() const
 {
-    return (m_sender||m_tpSender>IObject::UnKnow) && m_tpRcv>IObject::UnKnow && !m_bRelease;
+    return m_tpSender>IObject::UnKnow && m_tpRcv>IObject::UnKnow && !m_bRelease;
 }
 
 void IMessage::Release()
@@ -76,8 +83,8 @@ void IMessage::Release()
     else
         om->RemoveRcvMsg(this);
 
-    if (m_sender)
-        m_sender->AddRelease(this);
+    if (IObject *obj = GetSender())
+        obj->AddRelease(this);
     else if (IObjectManager *m = ObjectManagers::Instance().GetManagerByType(m_tpSender))
         m->AddRelease(this);
 }

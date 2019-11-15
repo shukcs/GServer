@@ -23,7 +23,7 @@
     <ClInclude Include="src\UavManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="proto\das_pb.cpp" />
+    <ClCompile Include="proto\das.pb.cc" />
     <ClCompile Include="src\FWAssist.cpp" />
     <ClCompile Include="src\FWItem.cpp" />
     <ClCompile Include="src\GSManager.cpp" />

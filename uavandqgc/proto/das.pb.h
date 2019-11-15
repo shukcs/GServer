@@ -54,14 +54,16 @@ class RequestProgram;
 class AckRequestProgram;
 class RequestPositionAuthentication;
 class AckPositionAuthentication;
-class Request3rdIdentityAuthentication;
-class Ack3rdIdentityAuthentication;
 class RequestUavIdentityAuthentication;
 class AckUavIdentityAuthentication;
 class RequestNewGS;
 class AckNewGS;
 class RequestGSIdentityAuthentication;
 class AckGSIdentityAuthentication;
+class GroundStationsMessage;
+class AckGroundStationsMessage;
+class RequestFriends;
+class AckFriends;
 class GpsInformation;
 class UavAttitude;
 class OperationStatus;
@@ -118,6 +120,29 @@ class PostControl2Uav;
 class AckPostControl2Uav;
 class PostStatus2GroundStation;
 
+enum GSMsgType {
+  DeleteFriend = 1,
+  RequestFriend = 2,
+  AgreeFriend = 3,
+  RejectFriend = 4,
+  Text = 5,
+  Land = 6
+};
+bool GSMsgType_IsValid(int value);
+const GSMsgType GSMsgType_MIN = DeleteFriend;
+const GSMsgType GSMsgType_MAX = Land;
+const int GSMsgType_ARRAYSIZE = GSMsgType_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* GSMsgType_descriptor();
+inline const ::std::string& GSMsgType_Name(GSMsgType value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    GSMsgType_descriptor(), value);
+}
+inline bool GSMsgType_Parse(
+    const ::std::string& name, GSMsgType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<GSMsgType>(
+    GSMsgType_descriptor(), name, value);
+}
 enum SurveryPrecision {
   LOW = 1,
   MEDIUM = 2,
@@ -2280,240 +2305,6 @@ class AckPositionAuthentication : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
-class Request3rdIdentityAuthentication : public ::google::protobuf::Message {
- public:
-  Request3rdIdentityAuthentication();
-  virtual ~Request3rdIdentityAuthentication();
-
-  Request3rdIdentityAuthentication(const Request3rdIdentityAuthentication& from);
-
-  inline Request3rdIdentityAuthentication& operator=(const Request3rdIdentityAuthentication& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const Request3rdIdentityAuthentication& default_instance();
-
-  void Swap(Request3rdIdentityAuthentication* other);
-
-  // implements Message ----------------------------------------------
-
-  Request3rdIdentityAuthentication* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const Request3rdIdentityAuthentication& from);
-  void MergeFrom(const Request3rdIdentityAuthentication& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required string identification = 2;
-  inline bool has_identification() const;
-  inline void clear_identification();
-  static const int kIdentificationFieldNumber = 2;
-  inline const ::std::string& identification() const;
-  inline void set_identification(const ::std::string& value);
-  inline void set_identification(const char* value);
-  inline void set_identification(const char* value, size_t size);
-  inline ::std::string* mutable_identification();
-  inline ::std::string* release_identification();
-  inline void set_allocated_identification(::std::string* identification);
-
-  // required string secretkey = 3;
-  inline bool has_secretkey() const;
-  inline void clear_secretkey();
-  static const int kSecretkeyFieldNumber = 3;
-  inline const ::std::string& secretkey() const;
-  inline void set_secretkey(const ::std::string& value);
-  inline void set_secretkey(const char* value);
-  inline void set_secretkey(const char* value, size_t size);
-  inline ::std::string* mutable_secretkey();
-  inline ::std::string* release_secretkey();
-  inline void set_allocated_secretkey(::std::string* secretkey);
-
-  // optional string extradata = 4;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 4;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
-
-  // @@protoc_insertion_point(class_scope:das.proto.Request3rdIdentityAuthentication)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_identification();
-  inline void clear_has_identification();
-  inline void set_has_secretkey();
-  inline void clear_has_secretkey();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::std::string* identification_;
-  ::std::string* secretkey_;
-  ::std::string* extradata_;
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static Request3rdIdentityAuthentication* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class Ack3rdIdentityAuthentication : public ::google::protobuf::Message {
- public:
-  Ack3rdIdentityAuthentication();
-  virtual ~Ack3rdIdentityAuthentication();
-
-  Ack3rdIdentityAuthentication(const Ack3rdIdentityAuthentication& from);
-
-  inline Ack3rdIdentityAuthentication& operator=(const Ack3rdIdentityAuthentication& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const Ack3rdIdentityAuthentication& default_instance();
-
-  void Swap(Ack3rdIdentityAuthentication* other);
-
-  // implements Message ----------------------------------------------
-
-  Ack3rdIdentityAuthentication* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const Ack3rdIdentityAuthentication& from);
-  void MergeFrom(const Ack3rdIdentityAuthentication& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 result = 2;
-  inline bool has_result() const;
-  inline void clear_result();
-  static const int kResultFieldNumber = 2;
-  inline ::google::protobuf::int32 result() const;
-  inline void set_result(::google::protobuf::int32 value);
-
-  // optional string extradata = 3;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 3;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
-
-  // @@protoc_insertion_point(class_scope:das.proto.Ack3rdIdentityAuthentication)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_result();
-  inline void clear_has_result();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 result_;
-  ::std::string* extradata_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static Ack3rdIdentityAuthentication* default_instance_;
-};
-// -------------------------------------------------------------------
-
 class RequestUavIdentityAuthentication : public ::google::protobuf::Message {
  public:
   RequestUavIdentityAuthentication();
@@ -2713,17 +2504,17 @@ class AckUavIdentityAuthentication : public ::google::protobuf::Message {
   inline ::google::protobuf::uint64 deadline() const;
   inline void set_deadline(::google::protobuf::uint64 value);
 
-  // optional string extradata = 5;
-  inline bool has_extradata() const;
-  inline void clear_extradata();
-  static const int kExtradataFieldNumber = 5;
-  inline const ::std::string& extradata() const;
-  inline void set_extradata(const ::std::string& value);
-  inline void set_extradata(const char* value);
-  inline void set_extradata(const char* value, size_t size);
-  inline ::std::string* mutable_extradata();
-  inline ::std::string* release_extradata();
-  inline void set_allocated_extradata(::std::string* extradata);
+  // optional string authString = 5;
+  inline bool has_authstring() const;
+  inline void clear_authstring();
+  static const int kAuthStringFieldNumber = 5;
+  inline const ::std::string& authstring() const;
+  inline void set_authstring(const ::std::string& value);
+  inline void set_authstring(const char* value);
+  inline void set_authstring(const char* value, size_t size);
+  inline ::std::string* mutable_authstring();
+  inline ::std::string* release_authstring();
+  inline void set_allocated_authstring(::std::string* authstring);
 
   // @@protoc_insertion_point(class_scope:das.proto.AckUavIdentityAuthentication)
  private:
@@ -2735,8 +2526,8 @@ class AckUavIdentityAuthentication : public ::google::protobuf::Message {
   inline void clear_has_result();
   inline void set_has_deadline();
   inline void clear_has_deadline();
-  inline void set_has_extradata();
-  inline void clear_has_extradata();
+  inline void set_has_authstring();
+  inline void clear_has_authstring();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -2744,7 +2535,7 @@ class AckUavIdentityAuthentication : public ::google::protobuf::Message {
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 result_;
   ::google::protobuf::uint64 deadline_;
-  ::std::string* extradata_;
+  ::std::string* authstring_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
@@ -3253,6 +3044,416 @@ class AckGSIdentityAuthentication : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static AckGSIdentityAuthentication* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class GroundStationsMessage : public ::google::protobuf::Message {
+ public:
+  GroundStationsMessage();
+  virtual ~GroundStationsMessage();
+
+  GroundStationsMessage(const GroundStationsMessage& from);
+
+  inline GroundStationsMessage& operator=(const GroundStationsMessage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const GroundStationsMessage& default_instance();
+
+  void Swap(GroundStationsMessage* other);
+
+  // implements Message ----------------------------------------------
+
+  GroundStationsMessage* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const GroundStationsMessage& from);
+  void MergeFrom(const GroundStationsMessage& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required .das.proto.GSMsgType type = 2;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 2;
+  inline ::das::proto::GSMsgType type() const;
+  inline void set_type(::das::proto::GSMsgType value);
+
+  // required string from = 3;
+  inline bool has_from() const;
+  inline void clear_from();
+  static const int kFromFieldNumber = 3;
+  inline const ::std::string& from() const;
+  inline void set_from(const ::std::string& value);
+  inline void set_from(const char* value);
+  inline void set_from(const char* value, size_t size);
+  inline ::std::string* mutable_from();
+  inline ::std::string* release_from();
+  inline void set_allocated_from(::std::string* from);
+
+  // required string to = 4;
+  inline bool has_to() const;
+  inline void clear_to();
+  static const int kToFieldNumber = 4;
+  inline const ::std::string& to() const;
+  inline void set_to(const ::std::string& value);
+  inline void set_to(const char* value);
+  inline void set_to(const char* value, size_t size);
+  inline ::std::string* mutable_to();
+  inline ::std::string* release_to();
+  inline void set_allocated_to(::std::string* to);
+
+  // optional bytes content = 5;
+  inline bool has_content() const;
+  inline void clear_content();
+  static const int kContentFieldNumber = 5;
+  inline const ::std::string& content() const;
+  inline void set_content(const ::std::string& value);
+  inline void set_content(const char* value);
+  inline void set_content(const void* value, size_t size);
+  inline ::std::string* mutable_content();
+  inline ::std::string* release_content();
+  inline void set_allocated_content(::std::string* content);
+
+  // @@protoc_insertion_point(class_scope:das.proto.GroundStationsMessage)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_type();
+  inline void clear_has_type();
+  inline void set_has_from();
+  inline void clear_has_from();
+  inline void set_has_to();
+  inline void clear_has_to();
+  inline void set_has_content();
+  inline void clear_has_content();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  int type_;
+  ::std::string* from_;
+  ::std::string* to_;
+  ::std::string* content_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static GroundStationsMessage* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckGroundStationsMessage : public ::google::protobuf::Message {
+ public:
+  AckGroundStationsMessage();
+  virtual ~AckGroundStationsMessage();
+
+  AckGroundStationsMessage(const AckGroundStationsMessage& from);
+
+  inline AckGroundStationsMessage& operator=(const AckGroundStationsMessage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckGroundStationsMessage& default_instance();
+
+  void Swap(AckGroundStationsMessage* other);
+
+  // implements Message ----------------------------------------------
+
+  AckGroundStationsMessage* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckGroundStationsMessage& from);
+  void MergeFrom(const AckGroundStationsMessage& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required uint32 res = 2;
+  inline bool has_res() const;
+  inline void clear_res();
+  static const int kResFieldNumber = 2;
+  inline ::google::protobuf::uint32 res() const;
+  inline void set_res(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckGroundStationsMessage)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_res();
+  inline void clear_has_res();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::uint32 res_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckGroundStationsMessage* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class RequestFriends : public ::google::protobuf::Message {
+ public:
+  RequestFriends();
+  virtual ~RequestFriends();
+
+  RequestFriends(const RequestFriends& from);
+
+  inline RequestFriends& operator=(const RequestFriends& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RequestFriends& default_instance();
+
+  void Swap(RequestFriends* other);
+
+  // implements Message ----------------------------------------------
+
+  RequestFriends* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RequestFriends& from);
+  void MergeFrom(const RequestFriends& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.RequestFriends)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static RequestFriends* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckFriends : public ::google::protobuf::Message {
+ public:
+  AckFriends();
+  virtual ~AckFriends();
+
+  AckFriends(const AckFriends& from);
+
+  inline AckFriends& operator=(const AckFriends& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckFriends& default_instance();
+
+  void Swap(AckFriends* other);
+
+  // implements Message ----------------------------------------------
+
+  AckFriends* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckFriends& from);
+  void MergeFrom(const AckFriends& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // repeated string friends = 2;
+  inline int friends_size() const;
+  inline void clear_friends();
+  static const int kFriendsFieldNumber = 2;
+  inline const ::std::string& friends(int index) const;
+  inline ::std::string* mutable_friends(int index);
+  inline void set_friends(int index, const ::std::string& value);
+  inline void set_friends(int index, const char* value);
+  inline void set_friends(int index, const char* value, size_t size);
+  inline ::std::string* add_friends();
+  inline void add_friends(const ::std::string& value);
+  inline void add_friends(const char* value);
+  inline void add_friends(const char* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& friends() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_friends();
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckFriends)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::RepeatedPtrField< ::std::string> friends_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckFriends* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -6620,17 +6821,24 @@ class OperationDescription : public ::google::protobuf::Message {
   inline float prize() const;
   inline void set_prize(float value);
 
-  // optional uint64 plantime = 7;
+  // required int32 ridge = 7;
+  inline bool has_ridge() const;
+  inline void clear_ridge();
+  static const int kRidgeFieldNumber = 7;
+  inline ::google::protobuf::int32 ridge() const;
+  inline void set_ridge(::google::protobuf::int32 value);
+
+  // optional uint64 plantime = 8;
   inline bool has_plantime() const;
   inline void clear_plantime();
-  static const int kPlantimeFieldNumber = 7;
+  static const int kPlantimeFieldNumber = 8;
   inline ::google::protobuf::uint64 plantime() const;
   inline void set_plantime(::google::protobuf::uint64 value);
 
-  // optional string notes = 8;
+  // optional string notes = 9;
   inline bool has_notes() const;
   inline void clear_notes();
-  static const int kNotesFieldNumber = 8;
+  static const int kNotesFieldNumber = 9;
   inline const ::std::string& notes() const;
   inline void set_notes(const ::std::string& value);
   inline void set_notes(const char* value);
@@ -6639,10 +6847,10 @@ class OperationDescription : public ::google::protobuf::Message {
   inline ::std::string* release_notes();
   inline void set_allocated_notes(::std::string* notes);
 
-  // optional string odid = 9;
+  // optional string odid = 10;
   inline bool has_odid() const;
   inline void clear_odid();
-  static const int kOdidFieldNumber = 9;
+  static const int kOdidFieldNumber = 10;
   inline const ::std::string& odid() const;
   inline void set_odid(const ::std::string& value);
   inline void set_odid(const char* value);
@@ -6665,6 +6873,8 @@ class OperationDescription : public ::google::protobuf::Message {
   inline void clear_has_drug();
   inline void set_has_prize();
   inline void clear_has_prize();
+  inline void set_has_ridge();
+  inline void clear_has_ridge();
   inline void set_has_plantime();
   inline void clear_has_plantime();
   inline void set_has_notes();
@@ -6679,13 +6889,14 @@ class OperationDescription : public ::google::protobuf::Message {
   ::das::proto::OperationPlan* op_;
   ::std::string* crop_;
   ::std::string* drug_;
+  float prize_;
+  ::google::protobuf::int32 ridge_;
   ::google::protobuf::uint64 plantime_;
   ::std::string* notes_;
   ::std::string* odid_;
-  float prize_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(9 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(10 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -8467,35 +8678,40 @@ class UavStatus : public ::google::protobuf::Message {
   inline ::std::string* release_binder();
   inline void set_allocated_binder(::std::string* binder);
 
-  // optional uint64 bindtime = 8;
-  inline bool has_bindtime() const;
-  inline void clear_bindtime();
-  static const int kBindtimeFieldNumber = 8;
-  inline ::google::protobuf::uint64 bindtime() const;
-  inline void set_bindtime(::google::protobuf::uint64 value);
+  // optional uint64 time = 8;
+  inline bool has_time() const;
+  inline void clear_time();
+  static const int kTimeFieldNumber = 8;
+  inline ::google::protobuf::uint64 time() const;
+  inline void set_time(::google::protobuf::uint64 value);
 
-  // optional uint64 unbindtime = 9;
-  inline bool has_unbindtime() const;
-  inline void clear_unbindtime();
-  static const int kUnbindtimeFieldNumber = 9;
-  inline ::google::protobuf::uint64 unbindtime() const;
-  inline void set_unbindtime(::google::protobuf::uint64 value);
-
-  // optional .das.proto.GpsInformation pos = 10;
+  // optional .das.proto.GpsInformation pos = 9;
   inline bool has_pos() const;
   inline void clear_pos();
-  static const int kPosFieldNumber = 10;
+  static const int kPosFieldNumber = 9;
   inline const ::das::proto::GpsInformation& pos() const;
   inline ::das::proto::GpsInformation* mutable_pos();
   inline ::das::proto::GpsInformation* release_pos();
   inline void set_allocated_pos(::das::proto::GpsInformation* pos);
 
-  // optional uint64 timestamp = 11;
+  // optional uint64 timestamp = 10;
   inline bool has_timestamp() const;
   inline void clear_timestamp();
-  static const int kTimestampFieldNumber = 11;
+  static const int kTimestampFieldNumber = 10;
   inline ::google::protobuf::uint64 timestamp() const;
   inline void set_timestamp(::google::protobuf::uint64 value);
+
+  // optional string authString = 11;
+  inline bool has_authstring() const;
+  inline void clear_authstring();
+  static const int kAuthStringFieldNumber = 11;
+  inline const ::std::string& authstring() const;
+  inline void set_authstring(const ::std::string& value);
+  inline void set_authstring(const char* value);
+  inline void set_authstring(const char* value, size_t size);
+  inline ::std::string* mutable_authstring();
+  inline ::std::string* release_authstring();
+  inline void set_allocated_authstring(::std::string* authstring);
 
   // @@protoc_insertion_point(class_scope:das.proto.UavStatus)
  private:
@@ -8513,14 +8729,14 @@ class UavStatus : public ::google::protobuf::Message {
   inline void clear_has_binded();
   inline void set_has_binder();
   inline void clear_has_binder();
-  inline void set_has_bindtime();
-  inline void clear_has_bindtime();
-  inline void set_has_unbindtime();
-  inline void clear_has_unbindtime();
+  inline void set_has_time();
+  inline void clear_has_time();
   inline void set_has_pos();
   inline void clear_has_pos();
   inline void set_has_timestamp();
   inline void clear_has_timestamp();
+  inline void set_has_authstring();
+  inline void clear_has_authstring();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -8531,10 +8747,10 @@ class UavStatus : public ::google::protobuf::Message {
   bool binded_;
   ::google::protobuf::uint64 deadline_;
   ::std::string* binder_;
-  ::google::protobuf::uint64 bindtime_;
-  ::google::protobuf::uint64 unbindtime_;
+  ::google::protobuf::uint64 time_;
   ::das::proto::GpsInformation* pos_;
   ::google::protobuf::uint64 timestamp_;
+  ::std::string* authstring_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(11 + 31) / 32];
@@ -8834,6 +9050,18 @@ class RequestBindUav : public ::google::protobuf::Message {
   inline ::std::string* release_binder();
   inline void set_allocated_binder(::std::string* binder);
 
+  // optional string authString = 5;
+  inline bool has_authstring() const;
+  inline void clear_authstring();
+  static const int kAuthStringFieldNumber = 5;
+  inline const ::std::string& authstring() const;
+  inline void set_authstring(const ::std::string& value);
+  inline void set_authstring(const char* value);
+  inline void set_authstring(const char* value, size_t size);
+  inline ::std::string* mutable_authstring();
+  inline ::std::string* release_authstring();
+  inline void set_allocated_authstring(::std::string* authstring);
+
   // @@protoc_insertion_point(class_scope:das.proto.RequestBindUav)
  private:
   inline void set_has_seqno();
@@ -8844,6 +9072,8 @@ class RequestBindUav : public ::google::protobuf::Message {
   inline void clear_has_uavid();
   inline void set_has_binder();
   inline void clear_has_binder();
+  inline void set_has_authstring();
+  inline void clear_has_authstring();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -8851,9 +9081,10 @@ class RequestBindUav : public ::google::protobuf::Message {
   ::google::protobuf::uint32 opid_;
   ::std::string* uavid_;
   ::std::string* binder_;
+  ::std::string* authstring_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -9068,41 +9299,41 @@ class UavProductInfo : public ::google::protobuf::Message {
   inline ::std::string* release_productid();
   inline void set_allocated_productid(::std::string* productid);
 
-  // optional string organization = 4;
-  inline bool has_organization() const;
-  inline void clear_organization();
-  static const int kOrganizationFieldNumber = 4;
-  inline const ::std::string& organization() const;
-  inline void set_organization(const ::std::string& value);
-  inline void set_organization(const char* value);
-  inline void set_organization(const char* value, size_t size);
-  inline ::std::string* mutable_organization();
-  inline ::std::string* release_organization();
-  inline void set_allocated_organization(::std::string* organization);
+  // optional string fwLight = 4;
+  inline bool has_fwlight() const;
+  inline void clear_fwlight();
+  static const int kFwLightFieldNumber = 4;
+  inline const ::std::string& fwlight() const;
+  inline void set_fwlight(const ::std::string& value);
+  inline void set_fwlight(const char* value);
+  inline void set_fwlight(const char* value, size_t size);
+  inline ::std::string* mutable_fwlight();
+  inline ::std::string* release_fwlight();
+  inline void set_allocated_fwlight(::std::string* fwlight);
 
-  // optional string manager = 5;
-  inline bool has_manager() const;
-  inline void clear_manager();
-  static const int kManagerFieldNumber = 5;
-  inline const ::std::string& manager() const;
-  inline void set_manager(const ::std::string& value);
-  inline void set_manager(const char* value);
-  inline void set_manager(const char* value, size_t size);
-  inline ::std::string* mutable_manager();
-  inline ::std::string* release_manager();
-  inline void set_allocated_manager(::std::string* manager);
+  // optional string fwFMU = 5;
+  inline bool has_fwfmu() const;
+  inline void clear_fwfmu();
+  static const int kFwFMUFieldNumber = 5;
+  inline const ::std::string& fwfmu() const;
+  inline void set_fwfmu(const ::std::string& value);
+  inline void set_fwfmu(const char* value);
+  inline void set_fwfmu(const char* value, size_t size);
+  inline ::std::string* mutable_fwfmu();
+  inline ::std::string* release_fwfmu();
+  inline void set_allocated_fwfmu(::std::string* fwfmu);
 
-  // optional string contact = 6;
-  inline bool has_contact() const;
-  inline void clear_contact();
-  static const int kContactFieldNumber = 6;
-  inline const ::std::string& contact() const;
-  inline void set_contact(const ::std::string& value);
-  inline void set_contact(const char* value);
-  inline void set_contact(const char* value, size_t size);
-  inline ::std::string* mutable_contact();
-  inline ::std::string* release_contact();
-  inline void set_allocated_contact(::std::string* contact);
+  // optional string fwIMU = 6;
+  inline bool has_fwimu() const;
+  inline void clear_fwimu();
+  static const int kFwIMUFieldNumber = 6;
+  inline const ::std::string& fwimu() const;
+  inline void set_fwimu(const ::std::string& value);
+  inline void set_fwimu(const char* value);
+  inline void set_fwimu(const char* value, size_t size);
+  inline ::std::string* mutable_fwimu();
+  inline ::std::string* release_fwimu();
+  inline void set_allocated_fwimu(::std::string* fwimu);
 
   // @@protoc_insertion_point(class_scope:das.proto.UavProductInfo)
  private:
@@ -9112,21 +9343,21 @@ class UavProductInfo : public ::google::protobuf::Message {
   inline void clear_has_producttype();
   inline void set_has_productid();
   inline void clear_has_productid();
-  inline void set_has_organization();
-  inline void clear_has_organization();
-  inline void set_has_manager();
-  inline void clear_has_manager();
-  inline void set_has_contact();
-  inline void clear_has_contact();
+  inline void set_has_fwlight();
+  inline void clear_has_fwlight();
+  inline void set_has_fwfmu();
+  inline void clear_has_fwfmu();
+  inline void set_has_fwimu();
+  inline void clear_has_fwimu();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* uavid_;
   ::std::string* producttype_;
   ::std::string* productid_;
-  ::std::string* organization_;
-  ::std::string* manager_;
-  ::std::string* contact_;
+  ::std::string* fwlight_;
+  ::std::string* fwfmu_;
+  ::std::string* fwimu_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
@@ -12448,360 +12679,6 @@ inline void AckPositionAuthentication::set_allocated_devid(::std::string* devid)
 
 // -------------------------------------------------------------------
 
-// Request3rdIdentityAuthentication
-
-// required uint32 seqno = 1;
-inline bool Request3rdIdentityAuthentication::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void Request3rdIdentityAuthentication::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void Request3rdIdentityAuthentication::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void Request3rdIdentityAuthentication::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 Request3rdIdentityAuthentication::seqno() const {
-  return seqno_;
-}
-inline void Request3rdIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required string identification = 2;
-inline bool Request3rdIdentityAuthentication::has_identification() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void Request3rdIdentityAuthentication::set_has_identification() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void Request3rdIdentityAuthentication::clear_has_identification() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void Request3rdIdentityAuthentication::clear_identification() {
-  if (identification_ != &::google::protobuf::internal::kEmptyString) {
-    identification_->clear();
-  }
-  clear_has_identification();
-}
-inline const ::std::string& Request3rdIdentityAuthentication::identification() const {
-  return *identification_;
-}
-inline void Request3rdIdentityAuthentication::set_identification(const ::std::string& value) {
-  set_has_identification();
-  if (identification_ == &::google::protobuf::internal::kEmptyString) {
-    identification_ = new ::std::string;
-  }
-  identification_->assign(value);
-}
-inline void Request3rdIdentityAuthentication::set_identification(const char* value) {
-  set_has_identification();
-  if (identification_ == &::google::protobuf::internal::kEmptyString) {
-    identification_ = new ::std::string;
-  }
-  identification_->assign(value);
-}
-inline void Request3rdIdentityAuthentication::set_identification(const char* value, size_t size) {
-  set_has_identification();
-  if (identification_ == &::google::protobuf::internal::kEmptyString) {
-    identification_ = new ::std::string;
-  }
-  identification_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* Request3rdIdentityAuthentication::mutable_identification() {
-  set_has_identification();
-  if (identification_ == &::google::protobuf::internal::kEmptyString) {
-    identification_ = new ::std::string;
-  }
-  return identification_;
-}
-inline ::std::string* Request3rdIdentityAuthentication::release_identification() {
-  clear_has_identification();
-  if (identification_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = identification_;
-    identification_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void Request3rdIdentityAuthentication::set_allocated_identification(::std::string* identification) {
-  if (identification_ != &::google::protobuf::internal::kEmptyString) {
-    delete identification_;
-  }
-  if (identification) {
-    set_has_identification();
-    identification_ = identification;
-  } else {
-    clear_has_identification();
-    identification_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required string secretkey = 3;
-inline bool Request3rdIdentityAuthentication::has_secretkey() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void Request3rdIdentityAuthentication::set_has_secretkey() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void Request3rdIdentityAuthentication::clear_has_secretkey() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void Request3rdIdentityAuthentication::clear_secretkey() {
-  if (secretkey_ != &::google::protobuf::internal::kEmptyString) {
-    secretkey_->clear();
-  }
-  clear_has_secretkey();
-}
-inline const ::std::string& Request3rdIdentityAuthentication::secretkey() const {
-  return *secretkey_;
-}
-inline void Request3rdIdentityAuthentication::set_secretkey(const ::std::string& value) {
-  set_has_secretkey();
-  if (secretkey_ == &::google::protobuf::internal::kEmptyString) {
-    secretkey_ = new ::std::string;
-  }
-  secretkey_->assign(value);
-}
-inline void Request3rdIdentityAuthentication::set_secretkey(const char* value) {
-  set_has_secretkey();
-  if (secretkey_ == &::google::protobuf::internal::kEmptyString) {
-    secretkey_ = new ::std::string;
-  }
-  secretkey_->assign(value);
-}
-inline void Request3rdIdentityAuthentication::set_secretkey(const char* value, size_t size) {
-  set_has_secretkey();
-  if (secretkey_ == &::google::protobuf::internal::kEmptyString) {
-    secretkey_ = new ::std::string;
-  }
-  secretkey_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* Request3rdIdentityAuthentication::mutable_secretkey() {
-  set_has_secretkey();
-  if (secretkey_ == &::google::protobuf::internal::kEmptyString) {
-    secretkey_ = new ::std::string;
-  }
-  return secretkey_;
-}
-inline ::std::string* Request3rdIdentityAuthentication::release_secretkey() {
-  clear_has_secretkey();
-  if (secretkey_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = secretkey_;
-    secretkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void Request3rdIdentityAuthentication::set_allocated_secretkey(::std::string* secretkey) {
-  if (secretkey_ != &::google::protobuf::internal::kEmptyString) {
-    delete secretkey_;
-  }
-  if (secretkey) {
-    set_has_secretkey();
-    secretkey_ = secretkey;
-  } else {
-    clear_has_secretkey();
-    secretkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string extradata = 4;
-inline bool Request3rdIdentityAuthentication::has_extradata() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void Request3rdIdentityAuthentication::set_has_extradata() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void Request3rdIdentityAuthentication::clear_has_extradata() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void Request3rdIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& Request3rdIdentityAuthentication::extradata() const {
-  return *extradata_;
-}
-inline void Request3rdIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void Request3rdIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void Request3rdIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* Request3rdIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* Request3rdIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void Request3rdIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
-// Ack3rdIdentityAuthentication
-
-// required uint32 seqno = 1;
-inline bool Ack3rdIdentityAuthentication::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void Ack3rdIdentityAuthentication::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void Ack3rdIdentityAuthentication::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void Ack3rdIdentityAuthentication::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 Ack3rdIdentityAuthentication::seqno() const {
-  return seqno_;
-}
-inline void Ack3rdIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 result = 2;
-inline bool Ack3rdIdentityAuthentication::has_result() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void Ack3rdIdentityAuthentication::set_has_result() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void Ack3rdIdentityAuthentication::clear_has_result() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void Ack3rdIdentityAuthentication::clear_result() {
-  result_ = 0;
-  clear_has_result();
-}
-inline ::google::protobuf::int32 Ack3rdIdentityAuthentication::result() const {
-  return result_;
-}
-inline void Ack3rdIdentityAuthentication::set_result(::google::protobuf::int32 value) {
-  set_has_result();
-  result_ = value;
-}
-
-// optional string extradata = 3;
-inline bool Ack3rdIdentityAuthentication::has_extradata() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void Ack3rdIdentityAuthentication::set_has_extradata() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void Ack3rdIdentityAuthentication::clear_has_extradata() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void Ack3rdIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
-  }
-  clear_has_extradata();
-}
-inline const ::std::string& Ack3rdIdentityAuthentication::extradata() const {
-  return *extradata_;
-}
-inline void Ack3rdIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void Ack3rdIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(value);
-}
-inline void Ack3rdIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* Ack3rdIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
-  }
-  return extradata_;
-}
-inline ::std::string* Ack3rdIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void Ack3rdIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
-  }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
-  } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// -------------------------------------------------------------------
-
 // RequestUavIdentityAuthentication
 
 // required uint32 seqno = 1;
@@ -13106,73 +12983,73 @@ inline void AckUavIdentityAuthentication::set_deadline(::google::protobuf::uint6
   deadline_ = value;
 }
 
-// optional string extradata = 5;
-inline bool AckUavIdentityAuthentication::has_extradata() const {
+// optional string authString = 5;
+inline bool AckUavIdentityAuthentication::has_authstring() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
-inline void AckUavIdentityAuthentication::set_has_extradata() {
+inline void AckUavIdentityAuthentication::set_has_authstring() {
   _has_bits_[0] |= 0x00000010u;
 }
-inline void AckUavIdentityAuthentication::clear_has_extradata() {
+inline void AckUavIdentityAuthentication::clear_has_authstring() {
   _has_bits_[0] &= ~0x00000010u;
 }
-inline void AckUavIdentityAuthentication::clear_extradata() {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    extradata_->clear();
+inline void AckUavIdentityAuthentication::clear_authstring() {
+  if (authstring_ != &::google::protobuf::internal::kEmptyString) {
+    authstring_->clear();
   }
-  clear_has_extradata();
+  clear_has_authstring();
 }
-inline const ::std::string& AckUavIdentityAuthentication::extradata() const {
-  return *extradata_;
+inline const ::std::string& AckUavIdentityAuthentication::authstring() const {
+  return *authstring_;
 }
-inline void AckUavIdentityAuthentication::set_extradata(const ::std::string& value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline void AckUavIdentityAuthentication::set_authstring(const ::std::string& value) {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
   }
-  extradata_->assign(value);
+  authstring_->assign(value);
 }
-inline void AckUavIdentityAuthentication::set_extradata(const char* value) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline void AckUavIdentityAuthentication::set_authstring(const char* value) {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
   }
-  extradata_->assign(value);
+  authstring_->assign(value);
 }
-inline void AckUavIdentityAuthentication::set_extradata(const char* value, size_t size) {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline void AckUavIdentityAuthentication::set_authstring(const char* value, size_t size) {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
   }
-  extradata_->assign(reinterpret_cast<const char*>(value), size);
+  authstring_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* AckUavIdentityAuthentication::mutable_extradata() {
-  set_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
-    extradata_ = new ::std::string;
+inline ::std::string* AckUavIdentityAuthentication::mutable_authstring() {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
   }
-  return extradata_;
+  return authstring_;
 }
-inline ::std::string* AckUavIdentityAuthentication::release_extradata() {
-  clear_has_extradata();
-  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* AckUavIdentityAuthentication::release_authstring() {
+  clear_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = extradata_;
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = authstring_;
+    authstring_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void AckUavIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
-  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
-    delete extradata_;
+inline void AckUavIdentityAuthentication::set_allocated_authstring(::std::string* authstring) {
+  if (authstring_ != &::google::protobuf::internal::kEmptyString) {
+    delete authstring_;
   }
-  if (extradata) {
-    set_has_extradata();
-    extradata_ = extradata;
+  if (authstring) {
+    set_has_authstring();
+    authstring_ = authstring;
   } else {
-    clear_has_extradata();
-    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_authstring();
+    authstring_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
@@ -14022,6 +13899,409 @@ inline void AckGSIdentityAuthentication::set_allocated_password(::std::string* p
     clear_has_password();
     password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
+}
+
+// -------------------------------------------------------------------
+
+// GroundStationsMessage
+
+// required uint32 seqno = 1;
+inline bool GroundStationsMessage::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void GroundStationsMessage::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void GroundStationsMessage::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void GroundStationsMessage::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 GroundStationsMessage::seqno() const {
+  return seqno_;
+}
+inline void GroundStationsMessage::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required .das.proto.GSMsgType type = 2;
+inline bool GroundStationsMessage::has_type() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void GroundStationsMessage::set_has_type() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void GroundStationsMessage::clear_has_type() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void GroundStationsMessage::clear_type() {
+  type_ = 1;
+  clear_has_type();
+}
+inline ::das::proto::GSMsgType GroundStationsMessage::type() const {
+  return static_cast< ::das::proto::GSMsgType >(type_);
+}
+inline void GroundStationsMessage::set_type(::das::proto::GSMsgType value) {
+  assert(::das::proto::GSMsgType_IsValid(value));
+  set_has_type();
+  type_ = value;
+}
+
+// required string from = 3;
+inline bool GroundStationsMessage::has_from() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void GroundStationsMessage::set_has_from() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void GroundStationsMessage::clear_has_from() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void GroundStationsMessage::clear_from() {
+  if (from_ != &::google::protobuf::internal::kEmptyString) {
+    from_->clear();
+  }
+  clear_has_from();
+}
+inline const ::std::string& GroundStationsMessage::from() const {
+  return *from_;
+}
+inline void GroundStationsMessage::set_from(const ::std::string& value) {
+  set_has_from();
+  if (from_ == &::google::protobuf::internal::kEmptyString) {
+    from_ = new ::std::string;
+  }
+  from_->assign(value);
+}
+inline void GroundStationsMessage::set_from(const char* value) {
+  set_has_from();
+  if (from_ == &::google::protobuf::internal::kEmptyString) {
+    from_ = new ::std::string;
+  }
+  from_->assign(value);
+}
+inline void GroundStationsMessage::set_from(const char* value, size_t size) {
+  set_has_from();
+  if (from_ == &::google::protobuf::internal::kEmptyString) {
+    from_ = new ::std::string;
+  }
+  from_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* GroundStationsMessage::mutable_from() {
+  set_has_from();
+  if (from_ == &::google::protobuf::internal::kEmptyString) {
+    from_ = new ::std::string;
+  }
+  return from_;
+}
+inline ::std::string* GroundStationsMessage::release_from() {
+  clear_has_from();
+  if (from_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = from_;
+    from_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void GroundStationsMessage::set_allocated_from(::std::string* from) {
+  if (from_ != &::google::protobuf::internal::kEmptyString) {
+    delete from_;
+  }
+  if (from) {
+    set_has_from();
+    from_ = from;
+  } else {
+    clear_has_from();
+    from_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string to = 4;
+inline bool GroundStationsMessage::has_to() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void GroundStationsMessage::set_has_to() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void GroundStationsMessage::clear_has_to() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void GroundStationsMessage::clear_to() {
+  if (to_ != &::google::protobuf::internal::kEmptyString) {
+    to_->clear();
+  }
+  clear_has_to();
+}
+inline const ::std::string& GroundStationsMessage::to() const {
+  return *to_;
+}
+inline void GroundStationsMessage::set_to(const ::std::string& value) {
+  set_has_to();
+  if (to_ == &::google::protobuf::internal::kEmptyString) {
+    to_ = new ::std::string;
+  }
+  to_->assign(value);
+}
+inline void GroundStationsMessage::set_to(const char* value) {
+  set_has_to();
+  if (to_ == &::google::protobuf::internal::kEmptyString) {
+    to_ = new ::std::string;
+  }
+  to_->assign(value);
+}
+inline void GroundStationsMessage::set_to(const char* value, size_t size) {
+  set_has_to();
+  if (to_ == &::google::protobuf::internal::kEmptyString) {
+    to_ = new ::std::string;
+  }
+  to_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* GroundStationsMessage::mutable_to() {
+  set_has_to();
+  if (to_ == &::google::protobuf::internal::kEmptyString) {
+    to_ = new ::std::string;
+  }
+  return to_;
+}
+inline ::std::string* GroundStationsMessage::release_to() {
+  clear_has_to();
+  if (to_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = to_;
+    to_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void GroundStationsMessage::set_allocated_to(::std::string* to) {
+  if (to_ != &::google::protobuf::internal::kEmptyString) {
+    delete to_;
+  }
+  if (to) {
+    set_has_to();
+    to_ = to;
+  } else {
+    clear_has_to();
+    to_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional bytes content = 5;
+inline bool GroundStationsMessage::has_content() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void GroundStationsMessage::set_has_content() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void GroundStationsMessage::clear_has_content() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void GroundStationsMessage::clear_content() {
+  if (content_ != &::google::protobuf::internal::kEmptyString) {
+    content_->clear();
+  }
+  clear_has_content();
+}
+inline const ::std::string& GroundStationsMessage::content() const {
+  return *content_;
+}
+inline void GroundStationsMessage::set_content(const ::std::string& value) {
+  set_has_content();
+  if (content_ == &::google::protobuf::internal::kEmptyString) {
+    content_ = new ::std::string;
+  }
+  content_->assign(value);
+}
+inline void GroundStationsMessage::set_content(const char* value) {
+  set_has_content();
+  if (content_ == &::google::protobuf::internal::kEmptyString) {
+    content_ = new ::std::string;
+  }
+  content_->assign(value);
+}
+inline void GroundStationsMessage::set_content(const void* value, size_t size) {
+  set_has_content();
+  if (content_ == &::google::protobuf::internal::kEmptyString) {
+    content_ = new ::std::string;
+  }
+  content_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* GroundStationsMessage::mutable_content() {
+  set_has_content();
+  if (content_ == &::google::protobuf::internal::kEmptyString) {
+    content_ = new ::std::string;
+  }
+  return content_;
+}
+inline ::std::string* GroundStationsMessage::release_content() {
+  clear_has_content();
+  if (content_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = content_;
+    content_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void GroundStationsMessage::set_allocated_content(::std::string* content) {
+  if (content_ != &::google::protobuf::internal::kEmptyString) {
+    delete content_;
+  }
+  if (content) {
+    set_has_content();
+    content_ = content;
+  } else {
+    clear_has_content();
+    content_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
+// AckGroundStationsMessage
+
+// required uint32 seqno = 1;
+inline bool AckGroundStationsMessage::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckGroundStationsMessage::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckGroundStationsMessage::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckGroundStationsMessage::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckGroundStationsMessage::seqno() const {
+  return seqno_;
+}
+inline void AckGroundStationsMessage::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required uint32 res = 2;
+inline bool AckGroundStationsMessage::has_res() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckGroundStationsMessage::set_has_res() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckGroundStationsMessage::clear_has_res() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckGroundStationsMessage::clear_res() {
+  res_ = 0u;
+  clear_has_res();
+}
+inline ::google::protobuf::uint32 AckGroundStationsMessage::res() const {
+  return res_;
+}
+inline void AckGroundStationsMessage::set_res(::google::protobuf::uint32 value) {
+  set_has_res();
+  res_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// RequestFriends
+
+// required uint32 seqno = 1;
+inline bool RequestFriends::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void RequestFriends::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void RequestFriends::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void RequestFriends::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 RequestFriends::seqno() const {
+  return seqno_;
+}
+inline void RequestFriends::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// AckFriends
+
+// required uint32 seqno = 1;
+inline bool AckFriends::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckFriends::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckFriends::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckFriends::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckFriends::seqno() const {
+  return seqno_;
+}
+inline void AckFriends::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// repeated string friends = 2;
+inline int AckFriends::friends_size() const {
+  return friends_.size();
+}
+inline void AckFriends::clear_friends() {
+  friends_.Clear();
+}
+inline const ::std::string& AckFriends::friends(int index) const {
+  return friends_.Get(index);
+}
+inline ::std::string* AckFriends::mutable_friends(int index) {
+  return friends_.Mutable(index);
+}
+inline void AckFriends::set_friends(int index, const ::std::string& value) {
+  friends_.Mutable(index)->assign(value);
+}
+inline void AckFriends::set_friends(int index, const char* value) {
+  friends_.Mutable(index)->assign(value);
+}
+inline void AckFriends::set_friends(int index, const char* value, size_t size) {
+  friends_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* AckFriends::add_friends() {
+  return friends_.Add();
+}
+inline void AckFriends::add_friends(const ::std::string& value) {
+  friends_.Add()->assign(value);
+}
+inline void AckFriends::add_friends(const char* value) {
+  friends_.Add()->assign(value);
+}
+inline void AckFriends::add_friends(const char* value, size_t size) {
+  friends_.Add()->assign(reinterpret_cast<const char*>(value), size);
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+AckFriends::friends() const {
+  return friends_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+AckFriends::mutable_friends() {
+  return &friends_;
 }
 
 // -------------------------------------------------------------------
@@ -18585,15 +18865,37 @@ inline void OperationDescription::set_prize(float value) {
   prize_ = value;
 }
 
-// optional uint64 plantime = 7;
-inline bool OperationDescription::has_plantime() const {
+// required int32 ridge = 7;
+inline bool OperationDescription::has_ridge() const {
   return (_has_bits_[0] & 0x00000040u) != 0;
 }
-inline void OperationDescription::set_has_plantime() {
+inline void OperationDescription::set_has_ridge() {
   _has_bits_[0] |= 0x00000040u;
 }
-inline void OperationDescription::clear_has_plantime() {
+inline void OperationDescription::clear_has_ridge() {
   _has_bits_[0] &= ~0x00000040u;
+}
+inline void OperationDescription::clear_ridge() {
+  ridge_ = 0;
+  clear_has_ridge();
+}
+inline ::google::protobuf::int32 OperationDescription::ridge() const {
+  return ridge_;
+}
+inline void OperationDescription::set_ridge(::google::protobuf::int32 value) {
+  set_has_ridge();
+  ridge_ = value;
+}
+
+// optional uint64 plantime = 8;
+inline bool OperationDescription::has_plantime() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void OperationDescription::set_has_plantime() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void OperationDescription::clear_has_plantime() {
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void OperationDescription::clear_plantime() {
   plantime_ = GOOGLE_ULONGLONG(0);
@@ -18607,15 +18909,15 @@ inline void OperationDescription::set_plantime(::google::protobuf::uint64 value)
   plantime_ = value;
 }
 
-// optional string notes = 8;
+// optional string notes = 9;
 inline bool OperationDescription::has_notes() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
+  return (_has_bits_[0] & 0x00000100u) != 0;
 }
 inline void OperationDescription::set_has_notes() {
-  _has_bits_[0] |= 0x00000080u;
+  _has_bits_[0] |= 0x00000100u;
 }
 inline void OperationDescription::clear_has_notes() {
-  _has_bits_[0] &= ~0x00000080u;
+  _has_bits_[0] &= ~0x00000100u;
 }
 inline void OperationDescription::clear_notes() {
   if (notes_ != &::google::protobuf::internal::kEmptyString) {
@@ -18677,15 +18979,15 @@ inline void OperationDescription::set_allocated_notes(::std::string* notes) {
   }
 }
 
-// optional string odid = 9;
+// optional string odid = 10;
 inline bool OperationDescription::has_odid() const {
-  return (_has_bits_[0] & 0x00000100u) != 0;
+  return (_has_bits_[0] & 0x00000200u) != 0;
 }
 inline void OperationDescription::set_has_odid() {
-  _has_bits_[0] |= 0x00000100u;
+  _has_bits_[0] |= 0x00000200u;
 }
 inline void OperationDescription::clear_has_odid() {
-  _has_bits_[0] &= ~0x00000100u;
+  _has_bits_[0] &= ~0x00000200u;
 }
 inline void OperationDescription::clear_odid() {
   if (odid_ != &::google::protobuf::internal::kEmptyString) {
@@ -21056,59 +21358,37 @@ inline void UavStatus::set_allocated_binder(::std::string* binder) {
   }
 }
 
-// optional uint64 bindtime = 8;
-inline bool UavStatus::has_bindtime() const {
+// optional uint64 time = 8;
+inline bool UavStatus::has_time() const {
   return (_has_bits_[0] & 0x00000080u) != 0;
 }
-inline void UavStatus::set_has_bindtime() {
+inline void UavStatus::set_has_time() {
   _has_bits_[0] |= 0x00000080u;
 }
-inline void UavStatus::clear_has_bindtime() {
+inline void UavStatus::clear_has_time() {
   _has_bits_[0] &= ~0x00000080u;
 }
-inline void UavStatus::clear_bindtime() {
-  bindtime_ = GOOGLE_ULONGLONG(0);
-  clear_has_bindtime();
+inline void UavStatus::clear_time() {
+  time_ = GOOGLE_ULONGLONG(0);
+  clear_has_time();
 }
-inline ::google::protobuf::uint64 UavStatus::bindtime() const {
-  return bindtime_;
+inline ::google::protobuf::uint64 UavStatus::time() const {
+  return time_;
 }
-inline void UavStatus::set_bindtime(::google::protobuf::uint64 value) {
-  set_has_bindtime();
-  bindtime_ = value;
+inline void UavStatus::set_time(::google::protobuf::uint64 value) {
+  set_has_time();
+  time_ = value;
 }
 
-// optional uint64 unbindtime = 9;
-inline bool UavStatus::has_unbindtime() const {
+// optional .das.proto.GpsInformation pos = 9;
+inline bool UavStatus::has_pos() const {
   return (_has_bits_[0] & 0x00000100u) != 0;
 }
-inline void UavStatus::set_has_unbindtime() {
+inline void UavStatus::set_has_pos() {
   _has_bits_[0] |= 0x00000100u;
 }
-inline void UavStatus::clear_has_unbindtime() {
-  _has_bits_[0] &= ~0x00000100u;
-}
-inline void UavStatus::clear_unbindtime() {
-  unbindtime_ = GOOGLE_ULONGLONG(0);
-  clear_has_unbindtime();
-}
-inline ::google::protobuf::uint64 UavStatus::unbindtime() const {
-  return unbindtime_;
-}
-inline void UavStatus::set_unbindtime(::google::protobuf::uint64 value) {
-  set_has_unbindtime();
-  unbindtime_ = value;
-}
-
-// optional .das.proto.GpsInformation pos = 10;
-inline bool UavStatus::has_pos() const {
-  return (_has_bits_[0] & 0x00000200u) != 0;
-}
-inline void UavStatus::set_has_pos() {
-  _has_bits_[0] |= 0x00000200u;
-}
 inline void UavStatus::clear_has_pos() {
-  _has_bits_[0] &= ~0x00000200u;
+  _has_bits_[0] &= ~0x00000100u;
 }
 inline void UavStatus::clear_pos() {
   if (pos_ != NULL) pos_->::das::proto::GpsInformation::Clear();
@@ -21138,15 +21418,15 @@ inline void UavStatus::set_allocated_pos(::das::proto::GpsInformation* pos) {
   }
 }
 
-// optional uint64 timestamp = 11;
+// optional uint64 timestamp = 10;
 inline bool UavStatus::has_timestamp() const {
-  return (_has_bits_[0] & 0x00000400u) != 0;
+  return (_has_bits_[0] & 0x00000200u) != 0;
 }
 inline void UavStatus::set_has_timestamp() {
-  _has_bits_[0] |= 0x00000400u;
+  _has_bits_[0] |= 0x00000200u;
 }
 inline void UavStatus::clear_has_timestamp() {
-  _has_bits_[0] &= ~0x00000400u;
+  _has_bits_[0] &= ~0x00000200u;
 }
 inline void UavStatus::clear_timestamp() {
   timestamp_ = GOOGLE_ULONGLONG(0);
@@ -21158,6 +21438,76 @@ inline ::google::protobuf::uint64 UavStatus::timestamp() const {
 inline void UavStatus::set_timestamp(::google::protobuf::uint64 value) {
   set_has_timestamp();
   timestamp_ = value;
+}
+
+// optional string authString = 11;
+inline bool UavStatus::has_authstring() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void UavStatus::set_has_authstring() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void UavStatus::clear_has_authstring() {
+  _has_bits_[0] &= ~0x00000400u;
+}
+inline void UavStatus::clear_authstring() {
+  if (authstring_ != &::google::protobuf::internal::kEmptyString) {
+    authstring_->clear();
+  }
+  clear_has_authstring();
+}
+inline const ::std::string& UavStatus::authstring() const {
+  return *authstring_;
+}
+inline void UavStatus::set_authstring(const ::std::string& value) {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
+  }
+  authstring_->assign(value);
+}
+inline void UavStatus::set_authstring(const char* value) {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
+  }
+  authstring_->assign(value);
+}
+inline void UavStatus::set_authstring(const char* value, size_t size) {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
+  }
+  authstring_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* UavStatus::mutable_authstring() {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
+  }
+  return authstring_;
+}
+inline ::std::string* UavStatus::release_authstring() {
+  clear_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = authstring_;
+    authstring_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void UavStatus::set_allocated_authstring(::std::string* authstring) {
+  if (authstring_ != &::google::protobuf::internal::kEmptyString) {
+    delete authstring_;
+  }
+  if (authstring) {
+    set_has_authstring();
+    authstring_ = authstring;
+  } else {
+    clear_has_authstring();
+    authstring_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
 }
 
 // -------------------------------------------------------------------
@@ -21466,6 +21816,76 @@ inline void RequestBindUav::set_allocated_binder(::std::string* binder) {
   } else {
     clear_has_binder();
     binder_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string authString = 5;
+inline bool RequestBindUav::has_authstring() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void RequestBindUav::set_has_authstring() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void RequestBindUav::clear_has_authstring() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void RequestBindUav::clear_authstring() {
+  if (authstring_ != &::google::protobuf::internal::kEmptyString) {
+    authstring_->clear();
+  }
+  clear_has_authstring();
+}
+inline const ::std::string& RequestBindUav::authstring() const {
+  return *authstring_;
+}
+inline void RequestBindUav::set_authstring(const ::std::string& value) {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
+  }
+  authstring_->assign(value);
+}
+inline void RequestBindUav::set_authstring(const char* value) {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
+  }
+  authstring_->assign(value);
+}
+inline void RequestBindUav::set_authstring(const char* value, size_t size) {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
+  }
+  authstring_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestBindUav::mutable_authstring() {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
+  }
+  return authstring_;
+}
+inline ::std::string* RequestBindUav::release_authstring() {
+  clear_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = authstring_;
+    authstring_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestBindUav::set_allocated_authstring(::std::string* authstring) {
+  if (authstring_ != &::google::protobuf::internal::kEmptyString) {
+    delete authstring_;
+  }
+  if (authstring) {
+    set_has_authstring();
+    authstring_ = authstring;
+  } else {
+    clear_has_authstring();
+    authstring_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
@@ -21791,213 +22211,213 @@ inline void UavProductInfo::set_allocated_productid(::std::string* productid) {
   }
 }
 
-// optional string organization = 4;
-inline bool UavProductInfo::has_organization() const {
+// optional string fwLight = 4;
+inline bool UavProductInfo::has_fwlight() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void UavProductInfo::set_has_organization() {
+inline void UavProductInfo::set_has_fwlight() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void UavProductInfo::clear_has_organization() {
+inline void UavProductInfo::clear_has_fwlight() {
   _has_bits_[0] &= ~0x00000008u;
 }
-inline void UavProductInfo::clear_organization() {
-  if (organization_ != &::google::protobuf::internal::kEmptyString) {
-    organization_->clear();
+inline void UavProductInfo::clear_fwlight() {
+  if (fwlight_ != &::google::protobuf::internal::kEmptyString) {
+    fwlight_->clear();
   }
-  clear_has_organization();
+  clear_has_fwlight();
 }
-inline const ::std::string& UavProductInfo::organization() const {
-  return *organization_;
+inline const ::std::string& UavProductInfo::fwlight() const {
+  return *fwlight_;
 }
-inline void UavProductInfo::set_organization(const ::std::string& value) {
-  set_has_organization();
-  if (organization_ == &::google::protobuf::internal::kEmptyString) {
-    organization_ = new ::std::string;
+inline void UavProductInfo::set_fwlight(const ::std::string& value) {
+  set_has_fwlight();
+  if (fwlight_ == &::google::protobuf::internal::kEmptyString) {
+    fwlight_ = new ::std::string;
   }
-  organization_->assign(value);
+  fwlight_->assign(value);
 }
-inline void UavProductInfo::set_organization(const char* value) {
-  set_has_organization();
-  if (organization_ == &::google::protobuf::internal::kEmptyString) {
-    organization_ = new ::std::string;
+inline void UavProductInfo::set_fwlight(const char* value) {
+  set_has_fwlight();
+  if (fwlight_ == &::google::protobuf::internal::kEmptyString) {
+    fwlight_ = new ::std::string;
   }
-  organization_->assign(value);
+  fwlight_->assign(value);
 }
-inline void UavProductInfo::set_organization(const char* value, size_t size) {
-  set_has_organization();
-  if (organization_ == &::google::protobuf::internal::kEmptyString) {
-    organization_ = new ::std::string;
+inline void UavProductInfo::set_fwlight(const char* value, size_t size) {
+  set_has_fwlight();
+  if (fwlight_ == &::google::protobuf::internal::kEmptyString) {
+    fwlight_ = new ::std::string;
   }
-  organization_->assign(reinterpret_cast<const char*>(value), size);
+  fwlight_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* UavProductInfo::mutable_organization() {
-  set_has_organization();
-  if (organization_ == &::google::protobuf::internal::kEmptyString) {
-    organization_ = new ::std::string;
+inline ::std::string* UavProductInfo::mutable_fwlight() {
+  set_has_fwlight();
+  if (fwlight_ == &::google::protobuf::internal::kEmptyString) {
+    fwlight_ = new ::std::string;
   }
-  return organization_;
+  return fwlight_;
 }
-inline ::std::string* UavProductInfo::release_organization() {
-  clear_has_organization();
-  if (organization_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* UavProductInfo::release_fwlight() {
+  clear_has_fwlight();
+  if (fwlight_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = organization_;
-    organization_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = fwlight_;
+    fwlight_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void UavProductInfo::set_allocated_organization(::std::string* organization) {
-  if (organization_ != &::google::protobuf::internal::kEmptyString) {
-    delete organization_;
+inline void UavProductInfo::set_allocated_fwlight(::std::string* fwlight) {
+  if (fwlight_ != &::google::protobuf::internal::kEmptyString) {
+    delete fwlight_;
   }
-  if (organization) {
-    set_has_organization();
-    organization_ = organization;
+  if (fwlight) {
+    set_has_fwlight();
+    fwlight_ = fwlight;
   } else {
-    clear_has_organization();
-    organization_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_fwlight();
+    fwlight_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
-// optional string manager = 5;
-inline bool UavProductInfo::has_manager() const {
+// optional string fwFMU = 5;
+inline bool UavProductInfo::has_fwfmu() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
-inline void UavProductInfo::set_has_manager() {
+inline void UavProductInfo::set_has_fwfmu() {
   _has_bits_[0] |= 0x00000010u;
 }
-inline void UavProductInfo::clear_has_manager() {
+inline void UavProductInfo::clear_has_fwfmu() {
   _has_bits_[0] &= ~0x00000010u;
 }
-inline void UavProductInfo::clear_manager() {
-  if (manager_ != &::google::protobuf::internal::kEmptyString) {
-    manager_->clear();
+inline void UavProductInfo::clear_fwfmu() {
+  if (fwfmu_ != &::google::protobuf::internal::kEmptyString) {
+    fwfmu_->clear();
   }
-  clear_has_manager();
+  clear_has_fwfmu();
 }
-inline const ::std::string& UavProductInfo::manager() const {
-  return *manager_;
+inline const ::std::string& UavProductInfo::fwfmu() const {
+  return *fwfmu_;
 }
-inline void UavProductInfo::set_manager(const ::std::string& value) {
-  set_has_manager();
-  if (manager_ == &::google::protobuf::internal::kEmptyString) {
-    manager_ = new ::std::string;
+inline void UavProductInfo::set_fwfmu(const ::std::string& value) {
+  set_has_fwfmu();
+  if (fwfmu_ == &::google::protobuf::internal::kEmptyString) {
+    fwfmu_ = new ::std::string;
   }
-  manager_->assign(value);
+  fwfmu_->assign(value);
 }
-inline void UavProductInfo::set_manager(const char* value) {
-  set_has_manager();
-  if (manager_ == &::google::protobuf::internal::kEmptyString) {
-    manager_ = new ::std::string;
+inline void UavProductInfo::set_fwfmu(const char* value) {
+  set_has_fwfmu();
+  if (fwfmu_ == &::google::protobuf::internal::kEmptyString) {
+    fwfmu_ = new ::std::string;
   }
-  manager_->assign(value);
+  fwfmu_->assign(value);
 }
-inline void UavProductInfo::set_manager(const char* value, size_t size) {
-  set_has_manager();
-  if (manager_ == &::google::protobuf::internal::kEmptyString) {
-    manager_ = new ::std::string;
+inline void UavProductInfo::set_fwfmu(const char* value, size_t size) {
+  set_has_fwfmu();
+  if (fwfmu_ == &::google::protobuf::internal::kEmptyString) {
+    fwfmu_ = new ::std::string;
   }
-  manager_->assign(reinterpret_cast<const char*>(value), size);
+  fwfmu_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* UavProductInfo::mutable_manager() {
-  set_has_manager();
-  if (manager_ == &::google::protobuf::internal::kEmptyString) {
-    manager_ = new ::std::string;
+inline ::std::string* UavProductInfo::mutable_fwfmu() {
+  set_has_fwfmu();
+  if (fwfmu_ == &::google::protobuf::internal::kEmptyString) {
+    fwfmu_ = new ::std::string;
   }
-  return manager_;
+  return fwfmu_;
 }
-inline ::std::string* UavProductInfo::release_manager() {
-  clear_has_manager();
-  if (manager_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* UavProductInfo::release_fwfmu() {
+  clear_has_fwfmu();
+  if (fwfmu_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = manager_;
-    manager_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = fwfmu_;
+    fwfmu_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void UavProductInfo::set_allocated_manager(::std::string* manager) {
-  if (manager_ != &::google::protobuf::internal::kEmptyString) {
-    delete manager_;
+inline void UavProductInfo::set_allocated_fwfmu(::std::string* fwfmu) {
+  if (fwfmu_ != &::google::protobuf::internal::kEmptyString) {
+    delete fwfmu_;
   }
-  if (manager) {
-    set_has_manager();
-    manager_ = manager;
+  if (fwfmu) {
+    set_has_fwfmu();
+    fwfmu_ = fwfmu;
   } else {
-    clear_has_manager();
-    manager_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_fwfmu();
+    fwfmu_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
-// optional string contact = 6;
-inline bool UavProductInfo::has_contact() const {
+// optional string fwIMU = 6;
+inline bool UavProductInfo::has_fwimu() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
-inline void UavProductInfo::set_has_contact() {
+inline void UavProductInfo::set_has_fwimu() {
   _has_bits_[0] |= 0x00000020u;
 }
-inline void UavProductInfo::clear_has_contact() {
+inline void UavProductInfo::clear_has_fwimu() {
   _has_bits_[0] &= ~0x00000020u;
 }
-inline void UavProductInfo::clear_contact() {
-  if (contact_ != &::google::protobuf::internal::kEmptyString) {
-    contact_->clear();
+inline void UavProductInfo::clear_fwimu() {
+  if (fwimu_ != &::google::protobuf::internal::kEmptyString) {
+    fwimu_->clear();
   }
-  clear_has_contact();
+  clear_has_fwimu();
 }
-inline const ::std::string& UavProductInfo::contact() const {
-  return *contact_;
+inline const ::std::string& UavProductInfo::fwimu() const {
+  return *fwimu_;
 }
-inline void UavProductInfo::set_contact(const ::std::string& value) {
-  set_has_contact();
-  if (contact_ == &::google::protobuf::internal::kEmptyString) {
-    contact_ = new ::std::string;
+inline void UavProductInfo::set_fwimu(const ::std::string& value) {
+  set_has_fwimu();
+  if (fwimu_ == &::google::protobuf::internal::kEmptyString) {
+    fwimu_ = new ::std::string;
   }
-  contact_->assign(value);
+  fwimu_->assign(value);
 }
-inline void UavProductInfo::set_contact(const char* value) {
-  set_has_contact();
-  if (contact_ == &::google::protobuf::internal::kEmptyString) {
-    contact_ = new ::std::string;
+inline void UavProductInfo::set_fwimu(const char* value) {
+  set_has_fwimu();
+  if (fwimu_ == &::google::protobuf::internal::kEmptyString) {
+    fwimu_ = new ::std::string;
   }
-  contact_->assign(value);
+  fwimu_->assign(value);
 }
-inline void UavProductInfo::set_contact(const char* value, size_t size) {
-  set_has_contact();
-  if (contact_ == &::google::protobuf::internal::kEmptyString) {
-    contact_ = new ::std::string;
+inline void UavProductInfo::set_fwimu(const char* value, size_t size) {
+  set_has_fwimu();
+  if (fwimu_ == &::google::protobuf::internal::kEmptyString) {
+    fwimu_ = new ::std::string;
   }
-  contact_->assign(reinterpret_cast<const char*>(value), size);
+  fwimu_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* UavProductInfo::mutable_contact() {
-  set_has_contact();
-  if (contact_ == &::google::protobuf::internal::kEmptyString) {
-    contact_ = new ::std::string;
+inline ::std::string* UavProductInfo::mutable_fwimu() {
+  set_has_fwimu();
+  if (fwimu_ == &::google::protobuf::internal::kEmptyString) {
+    fwimu_ = new ::std::string;
   }
-  return contact_;
+  return fwimu_;
 }
-inline ::std::string* UavProductInfo::release_contact() {
-  clear_has_contact();
-  if (contact_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* UavProductInfo::release_fwimu() {
+  clear_has_fwimu();
+  if (fwimu_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = contact_;
-    contact_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = fwimu_;
+    fwimu_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void UavProductInfo::set_allocated_contact(::std::string* contact) {
-  if (contact_ != &::google::protobuf::internal::kEmptyString) {
-    delete contact_;
+inline void UavProductInfo::set_allocated_fwimu(::std::string* fwimu) {
+  if (fwimu_ != &::google::protobuf::internal::kEmptyString) {
+    delete fwimu_;
   }
-  if (contact) {
-    set_has_contact();
-    contact_ = contact;
+  if (fwimu) {
+    set_has_fwimu();
+    fwimu_ = fwimu;
   } else {
-    clear_has_contact();
-    contact_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_fwimu();
+    fwimu_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
@@ -22835,6 +23255,10 @@ PostStatus2GroundStation::mutable_data() {
 namespace google {
 namespace protobuf {
 
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::das::proto::GSMsgType>() {
+  return ::das::proto::GSMsgType_descriptor();
+}
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::das::proto::SurveryPrecision>() {
   return ::das::proto::SurveryPrecision_descriptor();

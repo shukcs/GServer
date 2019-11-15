@@ -21,7 +21,7 @@ class ExecutItem;
 class TiXmlDocument;
 
 #ifdef SOCKETS_NAMESPACE
-using namespace SOCKETS_NAMESPACE;
+namespace SOCKETS_NAMESPACE {
 #endif
 
 class ProtoMsg;
@@ -31,9 +31,12 @@ class GSManager : public IObjectManager
 public:
     GSManager();
     ~GSManager();
-    
+
     VGMySql *GetMySql()const;
     int AddDatabaseUser(const std::string &user, const std::string &pswd, int auth = 1);
+    void AddDBFriend(const std::string &user1, const std::string &user2);
+    void RemoveDBFriend(const std::string &user1, const std::string &user2);
+    std::list<std::string> GetDBFriend(const std::string &user);
 public:
     static int ExecutNewGsSql(GSManager *mgr, const std::string &gs);
 protected:
@@ -52,6 +55,10 @@ private:
     ProtoMsg        *m_p;
     bool            m_bInit;
 };
+
+#ifdef SOCKETS_NAMESPACE
+}
+#endif
 
 #endif // __OBJECT_UAV_H__
 

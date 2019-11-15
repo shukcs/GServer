@@ -160,7 +160,7 @@ bool IObject::PrcsBussiness(uint64_t ms)
         IMessage *msg = m_lsMsg.front();
         m_lsMsg.pop_front();
         if (msg->IsValid())
-            ProcessMassage(*msg);
+            ProcessMessage(*msg);
         msg->Release();
     }
 
@@ -354,7 +354,7 @@ bool IObjectManager::ProcessBussiness()
         m_mtx->Unlock();
         if (msg->IsValid())
         {
-            ProcessMassage(*msg);
+            ProcessMessage(*msg);
             msg->Release();
             ret = true;
         }
@@ -431,7 +431,7 @@ void IObjectManager::Log(int err, const std::string &obj, int evT, const char *f
     log->Log(slask, obj, evT, err);
 }
 
-void IObjectManager::ProcessMassage(const IMessage &msg)
+void IObjectManager::ProcessMessage(const IMessage &msg)
 {
     if (PrcsRemainMsg(msg))
         return;
@@ -440,7 +440,7 @@ void IObjectManager::ProcessMassage(const IMessage &msg)
     {
         for (const pair<string, IObject*> &o : itr.second)
         {
-            o.second->ProcessMassage(msg);
+            o.second->ProcessMessage(msg);
         }
     }
 }

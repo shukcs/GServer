@@ -18,6 +18,7 @@ enum MessageType
     SychMission,
     QueryUav,
     UavAllocation,
+    Gs2UavEnd,
 
     BindUavRes,
     ControlUavRes,
@@ -27,7 +28,19 @@ enum MessageType
     ControlGs,
     QueryUavRes,
     UavAllocationRes,
+
+    Uav2GsEnd,
+    Gs2GsBeging = Uav2GsEnd,
+    Gs2GsMsg,
+    Gs2GsAck,
 };
+
+#ifdef SOCKETS_NAMESPACE
+namespace SOCKETS_NAMESPACE {
+#endif
+
+class ObjectUav;
+class ObjectGS;
 
 class GSOrUavMessage : public IMessage
 {
@@ -39,6 +52,7 @@ public:
     void *GetContent() const;
     int GetContentLength() const;
     void AttachProto(google::protobuf::Message *msg);
+    google::protobuf::Message *GetProtobufMsg()const;
     template<class E>
     void SetPBContentPB(const E &msg)
     {
@@ -47,7 +61,7 @@ public:
         _copyMsg(msg);
     }
 public:
-    static std::string GenCheckString(int len=6);
+    static std::string GenCheckString(int len = 6);
     static bool IsGSUserValide(const std::string &user);
 protected:
     virtual MessageType getMessageType(const google::protobuf::Message &msg) = 0;
@@ -56,25 +70,39 @@ protected:
     google::protobuf::Message  *m_msg;
 };
 
-class GSMessage : public GSOrUavMessage
+class Uav2GSMessage : public GSOrUavMessage
 {
 public:
-    GSMessage(IObject *sender, const std::string &idRcv);
-    GSMessage(IObjectManager *sender, const std::string &idRcv);
+    Uav2GSMessage(ObjectUav *sender, const std::string &idRcv);
+    Uav2GSMessage(IObjectManager *sender, const std::string &idRcv);
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);
 private:
 };
 
-class UAVMessage : public GSOrUavMessage
+class GS2UavMessage : public GSOrUavMessage
 {
 public:
-    UAVMessage(IObject *sender, const std::string &idRcv);
-    UAVMessage(IObjectManager *sender, const std::string &idRcv);
+    GS2UavMessage(ObjectGS *sender, const std::string &idRcv);
+    GS2UavMessage(IObjectManager *sender, const std::string &idRcv);
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);
 private:
 };
+
+class Gs2GsMessage : public GSOrUavMessage
+{
+public:
+    Gs2GsMessage(ObjectGS *sender, const std::string &idRcv);
+    Gs2GsMessage(IObjectManager *sender, const std::string &idRcv);
+protected:
+    MessageType getMessageType(const google::protobuf::Message &msg);
+private:
+};
+
+#ifdef SOCKETS_NAMESPACE
+}
+#endif
 
 #endif//__MESSGES_H__
 

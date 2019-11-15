@@ -12,7 +12,7 @@ namespace google {
 class ExecutItem;
 class VGMySql;
 #ifdef SOCKETS_NAMESPACE
-using namespace SOCKETS_NAMESPACE;
+namespace SOCKETS_NAMESPACE {
 #endif
 
 class ProtoMsg;
@@ -31,7 +31,7 @@ protected:
 
     //向下实现
     virtual VGMySql *GetMySql()const;
- 
+
     bool send(const google::protobuf::Message &msg);
     int64_t executeInsertSql(ExecutItem *item);
 protected:
@@ -39,5 +39,8 @@ protected:
     ProtoMsg        *m_p;
 };
 
+#ifdef SOCKETS_NAMESPACE
+}
+#endif
 #endif // __OBJECT_ABS_PB_H__
 

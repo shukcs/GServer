@@ -3,6 +3,8 @@
 #include "das.pb.h"
 #include "ProtoMsg.h"
 #include "ObjectBase.h"
+#include "ObjectGS.h"
+#include "ObjectUav.h"
 #include "Utility.h"
 
 using namespace google::protobuf;
@@ -49,17 +51,22 @@ void GSOrUavMessage::AttachProto(google::protobuf::Message *msg)
     m_msg = msg;
 }
 
+Message *GSOrUavMessage::GetProtobufMsg()const
+{
+    return m_msg;
+}
+
 string GSOrUavMessage::GenCheckString(int len)
 {
     if (len > 16)
         return string();
 
-    int64_t tm = rand()+Utility::usTimeTick();
+    int64_t tmp = rand()+Utility::usTimeTick();
     char ret[17] = { 0 };
-    uint32_t n = tm / 1023;
+    uint32_t n = uint32_t(tmp / 1023);
     char c = '0' + n % 10;
     ret[n % 6] = c;
-    n = tm / 0xffff;
+    n = uint32_t(tmp / 0xffff);
     c = '0' + n % 10;
     n %= 6;
     if (ret[n] == 0)
@@ -72,7 +79,7 @@ string GSOrUavMessage::GenCheckString(int len)
     for (int i = 0; i < len; ++i)
     {
         if (ret[i] == 0)
-            ret[i] = sRandStrTab[tm / (19 + i) % 62];
+            ret[i] = sRandStrTab[tmp / (19 + i) % 62];
     }
     return ret;
 }
@@ -108,19 +115,19 @@ void GSOrUavMessage::_copyMsg(const Message &msg)
         ReleasePointer(m_msg);
 }
 /////////////////////////////////////////////////////////////////////////////
-//GSMessage
+//Uav2GSMessage
 /////////////////////////////////////////////////////////////////////////////
-GSMessage::GSMessage(IObject *sender, const std::string &idRcv)
+Uav2GSMessage::Uav2GSMessage(ObjectUav *sender, const std::string &idRcv)
     :GSOrUavMessage(sender, idRcv, IObject::GroundStation)
 {
 }
 
-GSMessage::GSMessage(IObjectManager *sender, const std::string &idRcv)
+Uav2GSMessage::Uav2GSMessage(IObjectManager *sender, const std::string &idRcv)
     : GSOrUavMessage(sender, idRcv, IObject::GroundStation)
 {
 }
 
-MessageType GSMessage::getMessageType(const Message &msg)
+MessageType Uav2GSMessage::getMessageType(const Message &msg)
 {
     MessageType ret = Unknown;
     const string &name = msg.GetTypeName();
@@ -144,19 +151,19 @@ MessageType GSMessage::getMessageType(const Message &msg)
     return ret;
 }
 /////////////////////////////////////////////////////////////////////////////
-//UAVMessage
+//GS2UavMessage
 /////////////////////////////////////////////////////////////////////////////
-UAVMessage::UAVMessage(IObject *sender, const std::string &idRcv)
+GS2UavMessage::GS2UavMessage(ObjectGS *sender, const std::string &idRcv)
     :GSOrUavMessage(sender, idRcv, IObject::Plant)
 {
 }
 
-UAVMessage::UAVMessage(IObjectManager *sender, const std::string &idRcv)
+GS2UavMessage::GS2UavMessage(IObjectManager *sender, const std::string &idRcv)
     : GSOrUavMessage(sender, idRcv, IObject::Plant)
 {
 }
 
-MessageType UAVMessage::getMessageType(const google::protobuf::Message &msg)
+MessageType GS2UavMessage::getMessageType(const google::protobuf::Message &msg)
 {
     MessageType ret = Unknown;
     const string &name = msg.GetTypeName();
@@ -172,6 +179,31 @@ MessageType UAVMessage::getMessageType(const google::protobuf::Message &msg)
         ret = QueryUav;
     else if (name == d_p_ClassName(RequestIdentityAllocation))
         ret = UavAllocation;
+
+    return ret;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+//GS2UavMessage
+/////////////////////////////////////////////////////////////////////////////
+Gs2GsMessage::Gs2GsMessage(ObjectGS *sender, const std::string &idRcv)
+: GSOrUavMessage(sender, idRcv, IObject::GroundStation)
+{
+}
+
+Gs2GsMessage::Gs2GsMessage(IObjectManager *sender, const std::string &idRcv)
+    : GSOrUavMessage(sender, idRcv, IObject::GroundStation)
+{
+}
+
+MessageType Gs2GsMessage::getMessageType(const google::protobuf::Message &msg)
+{
+    MessageType ret = Unknown;
+    const string &name = msg.GetTypeName();
+    if (name == d_p_ClassName(GroundStationsMessage))
+        ret = Gs2GsMsg;
+    if (name == d_p_ClassName(AckGroundStationsMessage))
+        ret = Gs2GsAck;
 
     return ret;
 }

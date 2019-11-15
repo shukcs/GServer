@@ -11,15 +11,16 @@
 using namespace das::proto;
 using namespace google::protobuf;
 using namespace std;
+#ifdef SOCKETS_NAMESPACE
+using namespace SOCKETS_NAMESPACE;
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
 ObjectAbsPB::ObjectAbsPB(const std::string &id)
 : IObject(NULL, id), m_bConnect(false)
-, m_p(new ProtoMsg)
+, m_p(NULL)
 {
-    if (m_p)
-        m_p->InitSize();
 }
 
 ObjectAbsPB::~ObjectAbsPB()
@@ -41,7 +42,15 @@ void ObjectAbsPB::OnConnected(bool bConnected)
 {
     m_bConnect = bConnected;
     if (bConnected)
+    {
+        if (!m_p)
+        {
+            m_p = new ProtoMsg;
+            if (m_p)
+                m_p->InitSize();
+        }
         return;
+    }
 
     IObjectManager *mgr = GetManager();
     if (m_sock && mgr)

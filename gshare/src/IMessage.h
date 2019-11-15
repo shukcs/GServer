@@ -39,12 +39,12 @@ public:
     SHARED_DECL bool IsValid()const;
     SHARED_DECL void Release();
 protected:
-    std::string m_idRcv;
     int         m_tpRcv;
     int         m_tpMsg;
     int         m_tpSender;
-    IObject     *m_sender;
     bool        m_bRelease;
+    std::string m_idRcv;
+    std::string m_idSnd;
 };
 
 #ifdef SOCKETS_NAMESPACE

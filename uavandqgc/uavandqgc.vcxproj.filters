@@ -36,7 +36,7 @@
     <ClCompile Include="src\FWItem.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="proto\das_pb.cpp">
+    <ClCompile Include="proto\das.pb.cc">
       <Filter>src\proto</Filter>
     </ClCompile>
   </ItemGroup>

@@ -12,7 +12,7 @@ INCLUDE_DIRECTORIES(
 	../tinyxml
 )
 set(SRC_LIST
-	proto/das_pb.cpp
+	proto/das.pb.cc
 	src/GSManager.cpp
 	src/GSManager.h
 	src/UavManager.cpp

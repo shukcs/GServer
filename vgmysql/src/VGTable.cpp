@@ -212,7 +212,8 @@ VGTableField *VGTableField::ParseFiled(const TiXmlElement &e, VGTable *parent)
     {
         if (const char *s = e.Attribute("type"))
         {
-            if(fd->m_type = GetTypeByName(s))
+            fd->m_type = GetTypeByName(s);
+            if (fd->m_type != 0)
                 fd->m_typeName = s;
         }
         if (const char *s = e.Attribute("constraint"))

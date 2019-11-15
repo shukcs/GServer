@@ -16,6 +16,14 @@
 using namespace das::proto;
 using namespace google::protobuf;
 using namespace std;
+#ifdef SOCKETS_NAMESPACE
+using namespace SOCKETS_NAMESPACE;
+#endif
+
+static string catString(const string s1, const string s2)
+{
+    return s1 < s2 ? s1+":"+s1 : s2+":"+s1;
+}
 ////////////////////////////////////////////////////////////////////////////////
 //GSManager
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +67,64 @@ int GSManager::AddDatabaseUser(const std::string &user, const std::string &pswd,
         return 1;
 
     return 0;
+}
+
+void GSManager::AddDBFriend(const string &user1, const string &user2)
+{
+    if (ExecutItem *item = VGDBManager::GetSqlByName("insertGSFrienfs"))
+    {
+        if (FiledVal *fd = item->GetWriteItem("id"))
+            fd->SetParam(catString(user1, user2));
+        if (FiledVal *fd = item->GetWriteItem("usr1"))
+            fd->SetParam(user1);
+        if (FiledVal *fd = item->GetWriteItem("usr2"))
+            fd->SetParam(user2);
+
+        m_sqlEng->Execut(item);
+    }
+}
+
+void GSManager::RemoveDBFriend(const string &user1, const string &user2)
+{
+    if (ExecutItem *item = VGDBManager::GetSqlByName("deleteGSFrienfs"))
+    {
+        if (FiledVal *fd = item->GetConditionItem("id"))
+        {
+            fd->SetParam(catString(user1, user2));
+            m_sqlEng->Execut(item);
+        }
+    }
+}
+
+list<string> GSManager::GetDBFriend(const std::string &user)
+{
+    list<string> ret;
+    if (ExecutItem *item = VGDBManager::GetSqlByName("Delete"))
+    {
+        item->ClearData();
+        if (FiledVal *fd = item->GetConditionItem("usr1"))
+            fd->SetParam(user);
+        if (FiledVal *fd = item->GetConditionItem("usr2"))
+            fd->SetParam(user);
+        if (!m_sqlEng->Execut(item))
+            return ret;
+
+        do {
+            FiledVal *fd = item->GetReadItem("usr1");
+            string usr = fd ? string((char*)fd->GetBuff(), fd->GetValidLen()) : string();
+            if (!usr.empty() && usr != user)
+            {
+                ret.push_back(usr);
+                continue;
+            }
+
+            fd = item->GetReadItem("usr1");
+            usr = fd ? string((char*)fd->GetBuff(), fd->GetValidLen()) : string();
+            if (!usr.empty() && usr != user)
+                ret.push_back(usr);
+        } while (m_sqlEng->GetResult());
+    }
+    return ret;
 }
 
 int GSManager::ExecutNewGsSql(GSManager *mgr, const string &gs)
@@ -114,8 +180,20 @@ IObject *GSManager::PrcsReceiveByMgr(ISocket *s, const char *buf, int &len)
     return o;
 }
 
-bool GSManager::PrcsRemainMsg(const IMessage &)
+bool GSManager::PrcsRemainMsg(const IMessage &ms)
 {
+    if (ms.GetMessgeType() == Gs2GsMsg)
+    {
+        auto gsmsg = (const GroundStationsMessage *)ms.GetContent();
+        if (Gs2GsMessage *msg = new Gs2GsMessage(this, ms.GetSenderID()))
+        {
+            auto ack = new AckGroundStationsMessage;
+            ack->set_seqno(gsmsg->seqno());
+            ack->set_res(0);
+            msg->AttachProto(ack);
+            SendMsg(msg);
+        }
+    }
     return true;
 }
 

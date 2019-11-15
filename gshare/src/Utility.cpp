@@ -1265,7 +1265,7 @@ string Utility::Lower(const std::string &str)
 
 bool Utility::Compare(const string &str1, const string &str2, bool bCase)
 {
-    int len = str1.length();
+    uint32_t len = str1.length();
     if (len != str2.length())
         return false;
 

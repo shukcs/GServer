@@ -24,7 +24,7 @@ class VGMySql;
 class ExecutItem;
 
 #ifdef SOCKETS_NAMESPACE
-using namespace SOCKETS_NAMESPACE;
+namespace SOCKETS_NAMESPACE {
 #endif
 
 class ProtoMsg;
@@ -37,7 +37,7 @@ public:
     UavManager();
     ~UavManager();
 public:
-    int PrcsBind(const das::proto::RequestBindUav *msg, const std::string &gsOld, bool binded, ObjectGS *sender);
+    int PrcsBind(ObjectUav &uav, int ack, bool bBind, ObjectGS *sender);
     void UpdatePos(const std::string &uav, double lat, double lon);
     VGMySql *GetMySql()const;
     void SaveUavPos(const ObjectUav &uav);
@@ -53,13 +53,14 @@ private:
     void _parseMySql(const TiXmlDocument &doc);
     void _getLastId();
 
-    void sendBindRes(const das::proto::RequestBindUav &msg, int res, bool bind);
+    void sendBindAck(const ObjectUav &uav, int ack, int res, bool bind, const std::string &gs);
     IObject *_checkLogin(ISocket *s, const das::proto::RequestUavIdentityAuthentication &uia);
     void _checkBindUav(const das::proto::RequestBindUav &rbu, ObjectGS *gs);
     void _checkUavInfo(const das::proto::RequestUavStatus &uia, ObjectGS *gs);
     void processAllocationUav(int seqno, const std::string &id);
     int _addUavId(const std::string &uav);
     bool _queryUavInfo(das::proto::AckRequestUavStatus &aus, const std::string &);
+    void _saveBind(const std::string &uav, bool bBind, const std::string gs);
 private:
     VGMySql     *m_sqlEng;
     ProtoMsg    *m_p;
@@ -67,5 +68,8 @@ private:
     bool        m_bInit;
 };
 
+#ifdef SOCKETS_NAMESPACE
+}
+#endif
 #endif//__UAV_MANAGER_H__
 

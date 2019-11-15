@@ -13,8 +13,8 @@ public:
     SHARED_SQL unsigned GetValidLen()const;
     SHARED_SQL void *GetBuff()const;
     SHARED_SQL void InitBuff(unsigned len, const void *buf = NULL);
-    SHARED_SQL const string &GetCondition()const;
 
+    string ToConditionString()const;
     int GetType()const;
     void SetFieldName(const string &name);
     bool IsStaticParam()const;
@@ -51,9 +51,11 @@ public:
     static void parse(const TiXmlElement *e, ExecutItem *tb);
     static int transToType(const char *pro);
 protected:
+    static FiledVal *parseFiled(const TiXmlElement &e, bool oth=false);
+protected:
     FiledVal(int tp, const string &name = "", int len = 0);
     FiledVal(VGTableField *fild, bool bOth = false);
-    ~FiledVal();
+    virtual ~FiledVal();
 private:
     friend class ExecutItem;
     int             m_type;
@@ -73,6 +75,7 @@ public:
     enum ExecutType {
         Unknown=0,
         Insert,
+        Replace,
         Delete,
         Update,
         Select,
@@ -119,12 +122,14 @@ private:
     void _addCondition(FiledVal *item);
     string _getTablesString()const;
     string _toInsert(MYSQL_BIND *bind, int &pos)const;
+    string _toReplace(MYSQL_BIND *bind, int &pos)const;
     string _toDelete(MYSQL_BIND *bind, int &pos)const;
     string _toUpdate(MYSQL_BIND *bind, int &pos)const;
     string _toSelect(MYSQL_BIND *param,int &pos)const;
 
     string _conditionsString(MYSQL_BIND *bind, int &pos)const;
     string _deleteBegin()const;
+    string _genWrite(MYSQL_BIND *bind, int &pos)const;
 private:
     ExecutType        m_type;
     string            m_name;

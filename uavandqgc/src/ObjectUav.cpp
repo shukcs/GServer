@@ -15,13 +15,16 @@
 using namespace std;
 using namespace das::proto;
 using namespace ::google::protobuf;
+#ifdef SOCKETS_NAMESPACE
+using namespace SOCKETS_NAMESPACE;
+#endif
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
-ObjectUav::ObjectUav(const std::string &id): ObjectAbsPB(id)
+ObjectUav::ObjectUav(const std::string &id): ObjectAbsPB(id), m_bExist(false)
 , m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0)
 , m_tmLastBind(0), m_tmLastPos(0),m_tmValidLast(-1)
-,m_mission(NULL), m_bSys(false)
+, m_mission(NULL), m_bSys(false)
 {
 }
 
@@ -46,19 +49,25 @@ void ObjectUav::InitBySqlResult(const ExecutItem &sql)
         m_tmLastPos = fd->GetValue<int64_t>();
     if (FiledVal *fd = sql.GetReadItem("valid"))
         m_tmValidLast = fd->GetValue<int64_t>();
+    if (FiledVal *fd = sql.GetReadItem("authCheck"))
+        m_authCheck = string((char*)fd->GetBuff(), fd->GetValidLen());
+
+    m_bExist = true;
 }
 
-void ObjectUav::transUavStatus(UavStatus &us)
+void ObjectUav::transUavStatus(UavStatus &us, bool bAuth)const
 {
     us.set_result(1);
     us.set_uavid(GetObjectID());
     if(m_lastBinder.length()>0)
         us.set_binder(m_lastBinder);
     us.set_binded(m_bBind);
-    if (m_bBind)
-        us.set_bindtime(m_tmLastBind);
-    else
-        us.set_unbindtime(m_tmLastBind);
+    us.set_time(m_bBind?m_tmLastBind:m_tmLastBind);
+    us.set_online(IsConnect());
+    us.set_deadline(m_tmValidLast);
+    if (bAuth)
+        us.set_authstring(m_authCheck);
+
     if (GpsInformation *gps = new GpsInformation)
     {
         gps->set_latitude(int(m_lat*1e7));
@@ -101,11 +110,11 @@ int ObjectUav::UAVType()
 
 void ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *obj)
 {
-    GSMessage *ms = NULL;
+    Uav2GSMessage *ms = NULL;
     if (obj)
-        ms = new GSMessage(obj, msg.userid());
+        ms = new Uav2GSMessage(obj, msg.userid());
     else
-        ms = new GSMessage(GetManagerByType(IObject::Plant), msg.userid());
+        ms = new Uav2GSMessage(GetManagerByType(IObject::Plant), msg.userid());
 
     if (ms)
     {
@@ -124,7 +133,7 @@ void ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *o
     }
 }
 
-void ObjectUav::ProcessMassage(const IMessage &msg)
+void ObjectUav::ProcessMessage(const IMessage &msg)
 {
     if (msg.GetMessgeType() == BindUav)
         processBind((RequestBindUav*)msg.GetContent(), msg.GetSender());
@@ -204,7 +213,7 @@ void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
         }
     }
 
-    GSMessage *ms = new GSMessage(this, m_lastBinder);
+    Uav2GSMessage *ms = new Uav2GSMessage(this, m_lastBinder);
     if (ms && m_bBind && m_lastBinder.length() > 0)
     {
         ms->AttachProto(msg);
@@ -222,7 +231,7 @@ void ObjectUav::prcsRcvPost2Gs(PostStatus2GroundStation *msg)
     if (!msg || !m_bBind || m_lastBinder.length() < 1)
         return;
 
-    if (GSMessage *ms = new GSMessage(this, m_lastBinder))
+    if (Uav2GSMessage *ms = new Uav2GSMessage(this, m_lastBinder))
     {
         ms->SetPBContentPB(*msg);
         SendMsg(ms);
@@ -264,7 +273,7 @@ void ObjectUav::prcsRcvReqMissions(RequestRouteMissions *msg)
         sys->set_index(off);
         sys->set_count(m_mission->missions_size() + m_mission->boundarys_size());
 
-        GSMessage *gsm = new GSMessage(this, m_lastBinder);
+        Uav2GSMessage *gsm = new Uav2GSMessage(this, m_lastBinder);
         gsm->AttachProto(sys);
         SendMsg(gsm);
     }
@@ -286,13 +295,7 @@ void ObjectUav::prcsPosAuth(RequestPositionAuthentication *msg)
 void ObjectUav::processBind(RequestBindUav *msg, IObject *sender)
 {
     if (UavManager *m = (UavManager *)GetManager())
-    {
-        if (1 == m->PrcsBind(msg, m_lastBinder, m_bBind, (ObjectGS*)sender))
-        {
-            m_bBind = 1 == msg->opid();
-            m_lastBinder = msg->binder();
-        }
-    }
+        m->PrcsBind(*this, msg->seqno(), msg->opid()==1, (ObjectGS*)sender);
 }
 
 void ObjectUav::processControl2Uav(PostControl2Uav *msg)
@@ -325,7 +328,7 @@ void ObjectUav::processPostOr(PostOperationRoute *msg)
         ret = 1;
         _notifyUavUOR(*m_mission);
     }
-    if (GSMessage *ms = new GSMessage(this, mission.gsid()))
+    if (Uav2GSMessage *ms = new Uav2GSMessage(this, mission.gsid()))
     {
         AckPostOperationRoute ack;
         ack.set_seqno(msg->seqno());
