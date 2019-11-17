@@ -332,6 +332,7 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
                 UavStatus *us = as.add_status();
                 ObjectUav oU(uav);
                 oU.transUavStatus(*us, bMgr);
+                Log(0, gs?gs->GetObjectID():"", 0, "UavID (%d) insert!", uav);
             }
         }
     }
@@ -356,7 +357,9 @@ void UavManager::processAllocationUav(int seqno, const string &id)
         while (m_lastId > 0)
         {
             sprintf(idTmp, "VIGAU:%08X", m_lastId+1);
-            if(_addUavId(idTmp) != 0)
+            int id = _addUavId(idTmp)>0?1:-1;
+            res = id > 0 ? 1 : 0;
+            if(res != 0)
                 break;
         }
 
@@ -366,6 +369,8 @@ void UavManager::processAllocationUav(int seqno, const string &id)
         ack->set_id(idTmp);
         ms->AttachProto(ack);
         SendMsg(ms);
+        if (res == 1)
+            Log(0, id, 0, "Allocate ID(%d) for UAV!", idTmp);
     }
 }
 

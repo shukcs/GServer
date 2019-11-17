@@ -22,8 +22,8 @@ IMessage::IMessage(IObject *sender, const std::string &id, int rcv, int tpMsg)
 }
 
 IMessage::IMessage(IObjectManager *sender, const std::string &id, int rcv, int tpMsg)
-: m_idRcv(id), m_tpRcv(rcv), m_tpMsg(tpMsg), m_tpSender(IObject::UnKnow)
-, m_bRelease(false)
+: m_tpRcv(rcv), m_tpMsg(tpMsg), m_tpSender(IObject::UnKnow)
+, m_bRelease(false), m_idRcv(id)
 {
     if (sender)
         m_tpSender = sender->GetObjectType();

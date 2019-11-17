@@ -288,7 +288,9 @@ void ObjectUav::prcsPosAuth(RequestPositionAuthentication *msg)
     const GpsInformation &pos = msg->pos();
     AckPositionAuthentication ack;
     ack.set_seqno(msg->seqno());
-    ack.set_result(_checkPos(pos.latitude()/10e7, pos.longitude()/10e7, pos.altitude()/10e3));
+    int n = _checkPos(pos.latitude()/10e7, pos.longitude()/10e7, pos.altitude()/10e3);
+    ack.set_result(n);
+    GetManager()->Log(0, GetObjectID(), 0, "Arm!");
     ack.set_devid(GetObjectID());
     send(ack);
 }
@@ -328,6 +330,7 @@ void ObjectUav::processPostOr(PostOperationRoute *msg)
         m_bSys = false;
         ret = 1;
         _notifyUavUOR(*m_mission);
+        GetManager()->Log(0, mission.gsid(), 0, "Upload mission for %s!", GetObjectID().c_str());
     }
     if (Uav2GSMessage *ms = new Uav2GSMessage(this, mission.gsid()))
     {

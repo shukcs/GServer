@@ -297,6 +297,8 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
     appd.set_pcid(Utility::bigint2string(nCon));
     appd.set_pdid(Utility::bigint2string(nLand));
     send(appd);
+    if (nLand > 0)
+        GetManager()->Log(0, GetObjectID(), 0, "Upload land %d!", nLand);
 }
 
 uint64_t ObjectGS::_saveContact(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id)
@@ -595,9 +597,10 @@ void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
                 res = 1;
         }
     }
-
     ackDD.set_result(res);
     send(ackDD);
+    if (res > 0)
+        GetManager()->Log(0, GetObjectID(), 0, "Delete land %s!", id.c_str());
 }
 
 void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
@@ -605,7 +608,7 @@ void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
     if (!msg)
         return;
 
-    if (m_auth & Type_UavManager)
+    if (GetAuth(Type_UavManager))
     {
         if (GS2UavMessage *ms = new GS2UavMessage(this, string()))
         {
@@ -635,6 +638,8 @@ void ObjectGS::_prcsPostPlan(PostOperationDescription *msg)
         ack.set_odid(Utility::bigint2string(res));
 
     send(ack);
+    if (res > 0)
+        GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %d!", res);
 }
 
 void ObjectGS::_prcsReqPlan(RequestOperationDescriptions *msg)
@@ -702,6 +707,8 @@ void ObjectGS::_prcsDelPlan(das::proto::DeleteOperationDescription *msg)
 
     ackDD.set_result(res);
     send(ackDD);
+    if (res > 0)
+        GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %s!", id.c_str());
 }
 
 void ObjectGS::_prcsPostMission(PostOperationRoute *msg)
