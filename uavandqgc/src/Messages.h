@@ -54,7 +54,7 @@ public:
     void AttachProto(google::protobuf::Message *msg);
     google::protobuf::Message *GetProtobufMsg()const;
     template<class E>
-    void SetPBContentPB(const E &msg)
+    void SetPBContent(const E &msg)
     {
         delete m_msg;
         m_msg = new E;

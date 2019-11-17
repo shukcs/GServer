@@ -61,6 +61,7 @@ void ObjectUav::transUavStatus(UavStatus &us, bool bAuth)const
     us.set_uavid(GetObjectID());
     if(m_lastBinder.length()>0)
         us.set_binder(m_lastBinder);
+
     us.set_binded(m_bBind);
     us.set_time(m_bBind?m_tmLastBind:m_tmLastBind);
     us.set_online(IsConnect());
@@ -233,7 +234,7 @@ void ObjectUav::prcsRcvPost2Gs(PostStatus2GroundStation *msg)
 
     if (Uav2GSMessage *ms = new Uav2GSMessage(this, m_lastBinder))
     {
-        ms->SetPBContentPB(*msg);
+        ms->SetPBContent(*msg);
         SendMsg(ms);
     }
 }
@@ -333,7 +334,7 @@ void ObjectUav::processPostOr(PostOperationRoute *msg)
         AckPostOperationRoute ack;
         ack.set_seqno(msg->seqno());
         ack.set_result(ret);
-        ms->SetPBContentPB(ack);
+        ms->SetPBContent(ack);
         SendMsg(ms);
     }
 }

@@ -53,13 +53,16 @@ int UavManager::PrcsBind(ObjectUav &uav, int ack, bool bBind, ObjectGS *sender)
     else if (!bBind)
         res = (bForceUnbind || gs == gsOld || gsOld.empty()) ? 1 : -3;
 
-    if (res == 1 && bBind!=uav.m_bBind)
+    if (res==1)
     {
-        uav.m_bBind = bBind;
-        _saveBind(uav.GetObjectID(), bBind, gs);
+        if(bBind!=uav.m_bBind)
+        {
+            uav.m_bBind = bBind;
+            _saveBind(uav.GetObjectID(), bBind, gs);
+        }
+        if(gsOld != gs)
+            gsOld = gs;
     }
-    if (gsOld != gs)
-        gsOld = gs;
 
     sendBindAck(uav, ack, res, bBind, gs);
     return res;
@@ -336,7 +339,7 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
     if (gs)
     {
         Uav2GSMessage *ms = new Uav2GSMessage(this, gs->GetObjectID());
-        ms->SetPBContentPB(as);
+        ms->SetPBContent(as);
         SendMsg(ms);
     }
 }

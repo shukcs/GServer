@@ -35,7 +35,7 @@ void ObjectGS::OnConnected(bool bConnected)
     ObjectAbsPB::OnConnected(bConnected);
     if(bConnected)
         initFriend();
-    if (!m_check.empty())
+    else if (!m_check.empty())
         Release();
 }
 
