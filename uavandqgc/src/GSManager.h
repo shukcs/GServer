@@ -43,7 +43,7 @@ protected:
     int GetObjectType()const;
     IObject *PrcsReceiveByMgr(ISocket *s, const char *buf, int &len);
 
-    bool PrcsRemainMsg(const IMessage &msg);
+    bool PrcsPublicMsg(const IMessage &msg);
 
     IObject *prcsPBLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication *msg);
     IObject *prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg);

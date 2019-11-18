@@ -129,13 +129,13 @@ void IObject::SetSended(int)
 {
 }
 
-void IObject::RemoveRcvMsg(IMessage *msg)
+void IObject::RemoveMessage(IMessage *msg)
 {
     Lock l(m_mtxMsg);
     m_lsMsg.remove(msg);
 }
 
-void IObject::AddRelease(IMessage *msg)
+void IObject::PushReleaseMsg(IMessage *msg)
 {
     Lock l(m_mtxMsg);
     m_lsMsgRelease.push_back(msg);
@@ -199,7 +199,7 @@ bool IObject::IsRealse()
     return m_bRelease;
 }
 
-bool IObject::RcvMassage(IMessage *msg)
+bool IObject::PushMassage(IMessage *msg)
 {
     Lock l(m_mtxMsg);
     m_lsMsg.push_back(msg);
@@ -299,12 +299,12 @@ bool IObjectManager::Receive(ISocket *s, const BaseBuff &buff, int &prcs)
     return o != NULL;
 }
 
-void IObjectManager::RemoveRcvMsg(IMessage *msg)
+void IObjectManager::RemoveMessage(IMessage *msg)
 {
     m_lsMsg.remove(msg);
 }
 
-void IObjectManager::AddRelease(IMessage *msg)
+void IObjectManager::PushReleaseMsg(IMessage *msg)
 {
     m_mtx->Lock(); //这个来自不同线程，需要加锁
     m_lsMsgRelease.push_back(msg);
@@ -333,7 +333,7 @@ void IObjectManager::removeObject(ThreadObjects &objs, const std::string &id)
     }
 }
 
-bool IObjectManager::PrcsRemainMsg(const IMessage &)
+bool IObjectManager::PrcsPublicMsg(const IMessage &)
 {
     return false;
 }
@@ -349,9 +349,7 @@ bool IObjectManager::ProcessBussiness()
     while (m_lsMsg.size())
     {
         IMessage *msg = m_lsMsg.front();
-        m_mtx->Lock();
-        m_lsMsg.pop_front();
-        m_mtx->Unlock();
+        m_lsMsg.pop_front();    //队列方式, 不用枷锁
         if (msg->IsValid())
         {
             ProcessMessage(*msg);
@@ -433,7 +431,7 @@ void IObjectManager::Log(int err, const std::string &obj, int evT, const char *f
 
 void IObjectManager::ProcessMessage(const IMessage &msg)
 {
-    if (PrcsRemainMsg(msg))
+    if (PrcsPublicMsg(msg))
         return;
 
     for (const pair<int, ThreadObjects> &itr : m_mapThreadObject)
@@ -482,7 +480,7 @@ IObject *IObjectManager::GetObjectByID(const std::string &id) const
 void IObjectManager::ReceiveMessage(IMessage *msg)
 {
     if (IObject *obj = GetObjectByID(msg->GetReceiverID()))
-        obj->RcvMassage(msg);
+        obj->PushMassage(msg);
     else
         AddMessage(msg);
 }

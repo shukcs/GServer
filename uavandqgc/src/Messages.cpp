@@ -10,50 +10,81 @@
 using namespace google::protobuf;
 using namespace das::proto;
 using namespace std;
-
+#ifdef SOCKETS_NAMESPACE
+using namespace SOCKETS_NAMESPACE;
+#endif
 static const char *sRandStrTab = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789";
+
+class GSOrUav : public MessageData
+{
+public:
+    GSOrUav(IObject *sender, const string &id, int rcv, int tpMs)
+        : MessageData(sender, id, rcv, tpMs), m_msg(NULL)
+    {
+    }
+    GSOrUav(IObjectManager *sender, const string &id, int rcv, int tpMs)
+        : MessageData(sender, id, rcv, tpMs), m_msg(NULL)
+    {
+    }
+    ~GSOrUav()
+    {
+        delete m_msg;
+    }
+    Message *GetProtoBuf()const
+    {
+        return m_msg;
+    }
+    void SetProtoBuf(Message *pb)
+    {
+        delete m_msg;
+        m_msg = pb;
+    }
+private:
+    Message  *m_msg;
+};
 ////////////////////////////////////////////////////////////////////////////////////////
 //GSOrUavMessage
 ////////////////////////////////////////////////////////////////////////////////////////
 GSOrUavMessage::GSOrUavMessage(IObject *sender, const std::string &idRcv, int rcv)
-    :IMessage(sender, idRcv, rcv, Unknown), m_msg(NULL)
+    :IMessage(new GSOrUav(sender, idRcv, rcv, Unknown))
 {
 }
 
 GSOrUavMessage::GSOrUavMessage(IObjectManager *sender, const std::string &idRcv, int rcv)
-    : IMessage(sender, idRcv, rcv, Unknown), m_msg(NULL)
+    : IMessage(new GSOrUav(sender, idRcv, rcv, Unknown))
+{
+}
+
+GSOrUavMessage::GSOrUavMessage(const GSOrUavMessage &oth): IMessage(oth)
 {
 }
 
 GSOrUavMessage::~GSOrUavMessage()
 {
-    delete m_msg;
 }
 
 void *GSOrUavMessage::GetContent() const
 {
-    return m_msg;
+    return GetProtobuf();
 }
 
 int GSOrUavMessage::GetContentLength() const
 {
-    return m_msg ? m_msg->ByteSize() : 0;
+    return m_data ? ((GSOrUav*)m_data)->GetProtoBuf()->ByteSize() : 0;
 }
 
 void GSOrUavMessage::AttachProto(google::protobuf::Message *msg)
 {
-    delete m_msg;
-    m_msg = NULL;
-    if (!msg)
+    if (!msg || !m_data)
         return;
 
-    m_tpMsg = getMessageType(*msg);
-    m_msg = msg;
+    ((GSOrUav*)m_data)->SetProtoBuf(msg);
+    SetMessgeType(getMessageType(*msg));
 }
 
-Message *GSOrUavMessage::GetProtobufMsg()const
+Message *GSOrUavMessage::GetProtobuf()const
 {
-    return m_msg;
+    return m_data ? ((GSOrUav*)m_data)->GetProtoBuf() : NULL;
 }
 
 string GSOrUavMessage::GenCheckString(int len)
@@ -106,13 +137,17 @@ bool GSOrUavMessage::IsGSUserValide(const std::string &user)
     return true;
 }
 
-void GSOrUavMessage::_copyMsg(const Message &msg)
+void GSOrUavMessage::_copyMsg(Message *c, const Message &msg)
 {
-    m_tpMsg = getMessageType(msg);
-    if (m_msg && Unknown != m_tpMsg)
-        m_msg->CopyFrom(msg);
-    else if (m_tpMsg)
-        ReleasePointer(m_msg);
+    SetMessgeType(getMessageType(msg));
+    if (c && Unknown!=GetMessgeType())
+    {
+        c->CopyFrom(msg);
+        ((GSOrUav*)m_data)->SetProtoBuf(c);
+        return;
+    }
+
+    ReleasePointer(c);
 }
 /////////////////////////////////////////////////////////////////////////////
 //Uav2GSMessage
@@ -149,6 +184,11 @@ MessageType Uav2GSMessage::getMessageType(const Message &msg)
         ret = UavAllocationRes;
 
     return ret;
+}
+
+IMessage *Uav2GSMessage::Clone() const
+{
+    return new Uav2GSMessage(*this);
 }
 /////////////////////////////////////////////////////////////////////////////
 //GS2UavMessage

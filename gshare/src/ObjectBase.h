@@ -49,9 +49,9 @@ public:
     virtual int CopySend(char *buf, int sz, unsigned form = 0);
     virtual void SetSended(int sended=-1);//-1,·¢ËÍÍê
 public:
-    bool RcvMassage(IMessage *msg);
-    void RemoveRcvMsg(IMessage *);
-    void AddRelease(IMessage *);
+    bool PushMassage(IMessage *msg);
+    void RemoveMessage(IMessage *);
+    void PushReleaseMsg(IMessage *);
     bool PrcsBussiness(uint64_t ms);
     int GetThreadId()const;
     void SetThreadId(int id);
@@ -108,8 +108,8 @@ public:
     SHARED_DECL IObject *GetObjectByID(const std::string &id)const;
     SHARED_DECL bool Receive(ISocket *s, const BaseBuff &buff, int &prcs);
     void ReceiveMessage(IMessage *);
-    void RemoveRcvMsg(IMessage *);
-    void AddRelease(IMessage *);
+    void RemoveMessage(IMessage *);
+    void PushReleaseMsg(IMessage *);
     bool HasIndependThread()const;
     bool ProcessBussiness();
     bool PrcsObjectsOfThread(int nThread);
@@ -121,7 +121,7 @@ public:
 protected:
     SHARED_DECL IObjectManager(uint16_t nThread = 1);
 
-    SHARED_DECL virtual bool PrcsRemainMsg(const IMessage &msg);
+    SHARED_DECL virtual bool PrcsPublicMsg(const IMessage &msg);
     SHARED_DECL void InitThread(uint16_t nThread = 1);
 
     void ProcessMessage(const IMessage &msg);

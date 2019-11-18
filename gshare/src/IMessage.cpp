@@ -3,16 +3,16 @@
 #include "ObjectManagers.h"
 
 using namespace std;
-
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE;
 #endif
+
 ////////////////////////////////////////////////////////////////////////////////////////
-//IMessage
-///////////////////////////////////////////////////////////////////////////////////////
-IMessage::IMessage(IObject *sender, const std::string &id, int rcv, int tpMsg)
-: m_tpRcv(rcv), m_tpMsg(tpMsg), m_tpSender(IObject::UnKnow)
-, m_bRelease(false), m_idRcv(id)
+//MessageData
+////////////////////////////////////////////////////////////////////////////////////////
+MessageData::MessageData(IObject *sender, const std::string &id, int rcv, int tpMs)
+    : m_countRef(1), m_tpRcv(rcv), m_tpMsg(tpMs), m_tpSender(IObject::UnKnow)
+    , m_idRcv(id)
 {
     if (sender)
     {
@@ -21,52 +21,95 @@ IMessage::IMessage(IObject *sender, const std::string &id, int rcv, int tpMsg)
     }
 }
 
-IMessage::IMessage(IObjectManager *sender, const std::string &id, int rcv, int tpMsg)
-: m_tpRcv(rcv), m_tpMsg(tpMsg), m_tpSender(IObject::UnKnow)
-, m_bRelease(false), m_idRcv(id)
+MessageData::MessageData(IObjectManager *sender, const std::string &id, int rcv, int tpMs)
+: m_countRef(1), m_tpRcv(rcv), m_tpMsg(tpMs), m_tpSender(IObject::UnKnow)
+, m_idRcv(id)
 {
     if (sender)
         m_tpSender = sender->GetObjectType();
 }
 
+MessageData::~MessageData()
+{
+}
+
+void MessageData::AddRef()
+{
+    m_countRef++;
+}
+
+bool MessageData::Release()
+{
+    return --m_countRef < 1;
+}
+
+bool MessageData::IsValid() const
+{
+    return m_tpSender > IObject::UnKnow && m_tpRcv > IObject::UnKnow && m_countRef > 0;
+}
+////////////////////////////////////////////////////////////////////////////////////////
+//IMessage
+////////////////////////////////////////////////////////////////////////////////////////
+IMessage::IMessage(MessageData *data)
+: m_data(data)
+{
+}
+
+IMessage::IMessage(const IMessage &oth): m_data(oth.m_data)
+{
+    if (m_data)
+        m_data->AddRef();
+}
+
+IMessage::~IMessage()
+{
+    if (m_data && m_data->Release())
+        delete m_data;
+}
+
 int IMessage::GetReceiverType() const
 {
-    return m_tpRcv;
+    return m_data->m_tpRcv;
+}
+
+void IMessage::SetMessgeType(int tp)
+{
+    if (m_data)
+        m_data->m_tpMsg = tp;
 }
 
 int IMessage::GetMessgeType() const
 {
-    return m_tpMsg;
+    return m_data->m_tpMsg;
 }
 
 const std::string &IMessage::GetReceiverID() const
 {
-    return m_idRcv;
+    return m_data->m_idRcv;
 }
 
 int IMessage::GetSenderType() const
 {
-    return  m_tpSender;
+    return  m_data->m_tpSender;
 }
 
 const std::string &IMessage::GetSenderID() const
 {
-    static const string def;
-    return m_idSnd;
+    return m_data->m_idSnd;
 }
 
 IObject *IMessage::GetSender() const
 {
-    if (m_idSnd.empty())
+    if (!m_data || m_data->m_idSnd.empty())
         return NULL;
 
     IObjectManager *om = ObjectManagers::Instance().GetManagerByType(GetSenderType());
-    return om->GetObjectByID(m_idSnd);
+    return om->GetObjectByID(m_data->m_idSnd);
 }
 
 bool IMessage::IsValid() const
 {
-    return m_tpSender>IObject::UnKnow && m_tpRcv>IObject::UnKnow && !m_bRelease;
+    return m_data && m_data->IsValid();
 }
 
 void IMessage::Release()
@@ -79,16 +122,22 @@ void IMessage::Release()
     }
     IObject *obj = om->GetObjectByID(GetSenderID());
     if (obj)
-        obj->RemoveRcvMsg(this);
+        obj->RemoveMessage(this);
     else
-        om->RemoveRcvMsg(this);
+        om->RemoveMessage(this);
 
     if (IObject *obj = GetSender())
-        obj->AddRelease(this);
-    else if (IObjectManager *m = ObjectManagers::Instance().GetManagerByType(m_tpSender))
-        m->AddRelease(this);
+        obj->PushReleaseMsg(this);
+    else if (IObjectManager *m = ObjectManagers::Instance().GetManagerByType(GetSenderType()))
+        m->PushReleaseMsg(this);
 }
 
-#ifdef SOCKETS_NAMESPACE
+int IMessage::CountDataRef() const
+{
+    return m_data ? m_data->m_countRef : 0;
 }
-#endif
+
+IMessage *IMessage::Clone() const
+{
+    return NULL;
+}

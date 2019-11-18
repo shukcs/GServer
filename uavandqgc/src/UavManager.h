@@ -47,7 +47,7 @@ public:
 protected:
     int GetObjectType()const;
     IObject *PrcsReceiveByMgr(ISocket *s, const char *buf, int &len);
-    bool PrcsRemainMsg(const IMessage &msg);
+    bool PrcsPublicMsg(const IMessage &msg);
     void LoadConfig();
 private:
     void _parseMySql(const TiXmlDocument &doc);

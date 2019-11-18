@@ -152,7 +152,7 @@ IObject *UavManager::PrcsReceiveByMgr(ISocket *s, const char *buf, int &len)
     return o;
 }
 
-bool UavManager::PrcsRemainMsg(const IMessage &msg)
+bool UavManager::PrcsPublicMsg(const IMessage &msg)
 {
     Message *proto = (Message *)msg.GetContent();
     switch (msg.GetMessgeType())

@@ -180,7 +180,7 @@ IObject *GSManager::PrcsReceiveByMgr(ISocket *s, const char *buf, int &len)
     return o;
 }
 
-bool GSManager::PrcsRemainMsg(const IMessage &ms)
+bool GSManager::PrcsPublicMsg(const IMessage &ms)
 {
     if (ms.GetMessgeType() == Gs2GsMsg)
     {

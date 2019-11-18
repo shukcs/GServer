@@ -11,6 +11,26 @@ namespace SOCKETS_NAMESPACE {
 class IObject;
 class IObjectManager;
 
+class MessageData
+{
+public:
+    SHARED_DECL MessageData(IObject *sender, const std::string &id, int rcv, int tpMs);
+    SHARED_DECL MessageData(IObjectManager *sender, const std::string &id, int rcv, int tpMs);
+    SHARED_DECL virtual ~MessageData();
+private:
+    void AddRef();
+    bool Release();
+    bool IsValid() const;
+private:
+    friend class IMessage;
+    int         m_countRef;
+    int         m_tpRcv;
+    int         m_tpMsg;
+    int         m_tpSender;
+    std::string m_idRcv;
+    std::string m_idSnd;
+};
+
 /*************************************************************************
 这是个连接实体之间通讯消息抽象类，ObjectManagers::SendMsg()发送到接受实体
 IMessage(sender, id, rcv, tpMsg)
@@ -22,14 +42,15 @@ tpMsg:消息类型
 class IMessage
 {
 public:
-    SHARED_DECL IMessage(IObject *sender, const std::string &id, int rcv, int tpMsg);
-    SHARED_DECL IMessage(IObjectManager *sender, const std::string &id, int rcv, int tpMsg);
-    SHARED_DECL virtual ~IMessage() {}
+    SHARED_DECL IMessage(MessageData *data);
+    SHARED_DECL IMessage(const IMessage &oth);
+    SHARED_DECL virtual ~IMessage();
 
     virtual void *GetContent()const = 0;
     virtual int GetContentLength()const = 0;
 
     SHARED_DECL int GetReceiverType()const;
+    SHARED_DECL void SetMessgeType(int tp);
     SHARED_DECL int GetMessgeType()const;
     SHARED_DECL const std::string &GetReceiverID()const;
     SHARED_DECL int GetSenderType()const;
@@ -38,13 +59,10 @@ public:
 
     SHARED_DECL bool IsValid()const;
     SHARED_DECL void Release();
+    SHARED_DECL int CountDataRef()const;
+    SHARED_DECL virtual IMessage *Clone()const;
 protected:
-    int         m_tpRcv;
-    int         m_tpMsg;
-    int         m_tpSender;
-    bool        m_bRelease;
-    std::string m_idRcv;
-    std::string m_idSnd;
+    MessageData *m_data;
 };
 
 #ifdef SOCKETS_NAMESPACE

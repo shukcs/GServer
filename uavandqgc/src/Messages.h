@@ -47,27 +47,26 @@ class GSOrUavMessage : public IMessage
 public:
     GSOrUavMessage(IObject *sender, const std::string &idRcv, int rcv);
     GSOrUavMessage(IObjectManager *sender, const std::string &idRcv, int rcv);
+    GSOrUavMessage(const GSOrUavMessage &oth);
     ~GSOrUavMessage();
 
     void *GetContent() const;
     int GetContentLength() const;
     void AttachProto(google::protobuf::Message *msg);
-    google::protobuf::Message *GetProtobufMsg()const;
+    google::protobuf::Message *GetProtobuf()const;
     template<class E>
     void SetPBContent(const E &msg)
     {
-        delete m_msg;
-        m_msg = new E;
-        _copyMsg(msg);
+        E *msgTmp = new E;
+        _copyMsg(msgTmp, msg);
     }
 public:
     static std::string GenCheckString(int len = 6);
     static bool IsGSUserValide(const std::string &user);
 protected:
     virtual MessageType getMessageType(const google::protobuf::Message &msg) = 0;
-    void _copyMsg(const google::protobuf::Message &msg);
+    void _copyMsg(google::protobuf::Message *c, const google::protobuf::Message &msg);
 protected:
-    google::protobuf::Message  *m_msg;
 };
 
 class Uav2GSMessage : public GSOrUavMessage
@@ -77,6 +76,7 @@ public:
     Uav2GSMessage(IObjectManager *sender, const std::string &idRcv);
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);
+    IMessage *Clone()const;
 private:
 };
 
