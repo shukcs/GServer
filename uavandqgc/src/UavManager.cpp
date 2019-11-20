@@ -55,13 +55,21 @@ int UavManager::PrcsBind(ObjectUav &uav, int ack, bool bBind, ObjectGS *sender)
 
     if (res==1)
     {
-        if(bBind!=uav.m_bBind)
+        if (gsOld != gs && !bForceUnbind)
+            gsOld = gs;
+
+        if(bBind != uav.m_bBind)
         {
             uav.m_bBind = bBind;
             _saveBind(uav.GetObjectID(), bBind, gs);
         }
-        if(gsOld != gs)
-            gsOld = gs;
+    }
+    if (sender && bForceUnbind)
+    {
+        if (bBind)
+            sender->Subcribe(uav.GetObjectID(), PushUavSndInfo);
+        else
+            sender->Unsubcribe(uav.GetObjectID(), PushUavSndInfo);
     }
 
     sendBindAck(uav, ack, res, bBind, gs);

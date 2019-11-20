@@ -129,12 +129,6 @@ void IObject::SetSended(int)
 {
 }
 
-void IObject::RemoveMessage(IMessage *msg)
-{
-    Lock l(m_mtxMsg);
-    m_lsMsg.remove(msg);
-}
-
 void IObject::PushReleaseMsg(IMessage *msg)
 {
     Lock l(m_mtxMsg);
@@ -155,7 +149,7 @@ bool IObject::PrcsBussiness(uint64_t ms)
             ret = true;
         }
     }
-    while (m_lsMsg.size())
+    while (m_lsMsg.size()>0)
     {
         IMessage *msg = m_lsMsg.front();
         m_lsMsg.pop_front();
@@ -166,8 +160,9 @@ bool IObject::PrcsBussiness(uint64_t ms)
 
     while (m_lsMsgRelease.size() > 0)
     {
-        delete m_lsMsgRelease.front();
+        IMessage *msg = m_lsMsgRelease.front();
         m_lsMsgRelease.pop_front();
+        delete msg;
     }
     CheckTimer(ms);
     return ret;
@@ -189,6 +184,16 @@ void IObject::OnSockClose(ISocket *s)
         OnConnected(false);
 }
 
+void IObject::Subcribe(const std::string &sender, int msg)
+{
+    ObjectManagers::Instance().Subcribe(this, sender, msg);
+}
+
+void IObject::Unsubcribe(const std::string &sender, int msg)
+{
+    ObjectManagers::Instance().Unsubcribe(this, sender, msg);
+}
+
 void IObject::Release()
 {
     m_bRelease = true;
@@ -199,7 +204,7 @@ bool IObject::IsRealse()
     return m_bRelease;
 }
 
-bool IObject::PushMassage(IMessage *msg)
+bool IObject::PushMessage(IMessage *msg)
 {
     Lock l(m_mtxMsg);
     m_lsMsg.push_back(msg);
@@ -297,11 +302,6 @@ bool IObjectManager::Receive(ISocket *s, const BaseBuff &buff, int &prcs)
         o->Receive((char*)buf + prcs, buff.Count() - prcs);
 
     return o != NULL;
-}
-
-void IObjectManager::RemoveMessage(IMessage *msg)
-{
-    m_lsMsg.remove(msg);
 }
 
 void IObjectManager::PushReleaseMsg(IMessage *msg)
@@ -477,11 +477,14 @@ IObject *IObjectManager::GetObjectByID(const std::string &id) const
     return NULL;
 }
 
-void IObjectManager::ReceiveMessage(IMessage *msg)
+void IObjectManager::PushMessage(IMessage *msg)
 {
+    if (!msg)
+        return;
+
     if (IObject *obj = GetObjectByID(msg->GetReceiverID()))
-        obj->PushMassage(msg);
-    else
+        obj->PushMessage(msg);
+    else 
         AddMessage(msg);
 }
 

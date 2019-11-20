@@ -47,7 +47,6 @@ class GSOrUavMessage : public IMessage
 public:
     GSOrUavMessage(IObject *sender, const std::string &idRcv, int rcv);
     GSOrUavMessage(IObjectManager *sender, const std::string &idRcv, int rcv);
-    GSOrUavMessage(const GSOrUavMessage &oth);
     ~GSOrUavMessage();
 
     void *GetContent() const;
@@ -76,7 +75,7 @@ public:
     Uav2GSMessage(IObjectManager *sender, const std::string &idRcv);
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);
-    IMessage *Clone()const;
+    IMessage *Clone(const std::string &idRcv, int tpRcv)const;
 private:
 };
 

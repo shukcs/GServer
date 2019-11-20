@@ -5,6 +5,7 @@
 #include <list>
 #include <map>
 
+class SubcribeStruct;
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
@@ -51,6 +52,13 @@ protected:
 
 class ObjectManagers
 {
+    typedef std::pair<int, std::string> ObjectDsc;
+    typedef std::list<IObject *> ObjectQueue;
+    typedef std::list<ObjectDsc> SubcribeList;
+    typedef std::map<int, SubcribeList> SubcribeMap;
+    typedef std::map<std::string, SubcribeMap> MessageSubcribes;
+    typedef std::list<SubcribeStruct *> SubcribeQueue;
+    typedef std::list<IMessage *> MessageQueue;
 public:
     static ObjectManagers &Instance();
     static ILog &GetLog();
@@ -64,25 +72,38 @@ public:
     void Destroy(IObject *o);
     void OnSocketClose(ISocket *sock);
     void ProcessReceive(ISocket *sock, void const *buf, int len);
+    void Subcribe(IObject *o, const std::string &sender, int tpMsg);
+    void Unsubcribe(IObject *o, const std::string &sender, int tpMsg);
+    void DestroyCloneMsg(IMessage *msg);
 protected:
     bool PrcsRcvBuff();
     void PrcsCloseSocket();
     bool PrcsMangerData();
     void PrcsObjectsDestroy();
+    void PrcsSubcribes();
+    void PrcsMessages();
+protected:
+    SubcribeList &getMessageSubcribes(IMessage *msg);
 private:
     ObjectManagers();
     ~ObjectManagers();
 
     void _removeBuff(ISocket *sock);
+    SubcribeList &_getSubcribes(const std::string &sender, int tpMsg);
 private:
     friend class ManagerThread;
     std::map<int, IObjectManager*>  m_managersMap;
-    std::map<ISocket *, BaseBuff*>  m_socksRcv;
+    std::map<ISocket*, BaseBuff*>   m_socksRcv;
     std::list<ISocket *>            m_keysRemove;
-    std::list<IObject *>            m_objectsDestroy;
+    ObjectQueue                     m_objectsDestroy;//Ïú»Ù¶ÓÁÐ
     IMutex                          *m_mtx;
     IMutex                          *m_mtxObj;
+    IMutex                          *m_mtxMsg;
     Thread                          *m_thread;
+    MessageSubcribes                m_subcribes;
+    SubcribeQueue                   m_subcribeMsgs;
+    MessageQueue                    m_messages;
+    MessageQueue                    m_releaseMsgs;
 };
 
 #ifdef SOCKETS_NAMESPACE

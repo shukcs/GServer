@@ -214,13 +214,12 @@ void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
         }
     }
 
-    Uav2GSMessage *ms = new Uav2GSMessage(this, m_lastBinder);
-    if (ms && m_bBind && m_lastBinder.length() > 0)
+    if (Uav2GSMessage *ms = new Uav2GSMessage(this, m_bBind?m_lastBinder:string()))
     {
         ms->AttachProto(msg);
         SendMsg(ms);
     }
-   
+
     AckOperationInformation ack;
     ack.set_seqno(msg->seqno());
     ack.set_result(1);

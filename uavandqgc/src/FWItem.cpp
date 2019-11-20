@@ -153,13 +153,13 @@ void FWItem::creatFw(const std::string &name)
     if (fd == -1)   //file not exist
     {
         fd = open(name.c_str(), O_RDWR|O_CREAT, S_IRUSR | S_IWUSR);
-        if (fd == -1)
+        if (fd != -1)
         {
-            printf("open file '%s' fail(%s)!\n", name.c_str(), strerror(errno));
-            return;
+            lseek(fd, m_lenFw - 1, SEEK_SET);
+            if (write(fd, "\0", 1) > 0)   //fill empty file, if not mmap() fail;
+                return; 
         }
-        lseek(fd, m_lenFw-1, SEEK_SET);
-        write(fd, "\0", 1);    //fill empty file, if not mmap() fail;
+        printf("open file '%s' fail(%s)!\n", name.c_str(), strerror(errno));
     }
 
     m_dataFw = (char*)mmap(NULL, m_lenFw, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);

@@ -10,9 +10,8 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////////////
 //MessageData
 ////////////////////////////////////////////////////////////////////////////////////////
-MessageData::MessageData(IObject *sender, const std::string &id, int rcv, int tpMs)
-    : m_countRef(1), m_tpRcv(rcv), m_tpMsg(tpMs), m_tpSender(IObject::UnKnow)
-    , m_idRcv(id)
+MessageData::MessageData(IObject *sender, int tpMs)
+    : m_countRef(1), m_tpMsg(tpMs), m_tpSender(IObject::UnKnow)
 {
     if (sender)
     {
@@ -21,9 +20,8 @@ MessageData::MessageData(IObject *sender, const std::string &id, int rcv, int tp
     }
 }
 
-MessageData::MessageData(IObjectManager *sender, const std::string &id, int rcv, int tpMs)
-: m_countRef(1), m_tpRcv(rcv), m_tpMsg(tpMs), m_tpSender(IObject::UnKnow)
-, m_idRcv(id)
+MessageData::MessageData(IObjectManager *sender, int tpMs)
+: m_countRef(1), m_tpMsg(tpMs), m_tpSender(IObject::UnKnow)
 {
     if (sender)
         m_tpSender = sender->GetObjectType();
@@ -45,17 +43,18 @@ bool MessageData::Release()
 
 bool MessageData::IsValid() const
 {
-    return m_tpSender > IObject::UnKnow && m_tpRcv > IObject::UnKnow && m_countRef > 0;
+    return m_tpSender > IObject::UnKnow && m_countRef > 0;
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 //IMessage
 ////////////////////////////////////////////////////////////////////////////////////////
-IMessage::IMessage(MessageData *data)
-: m_data(data)
+IMessage::IMessage(MessageData *data, const std::string &rcv, int tpRc)
+: m_data(data), m_tpRcv(tpRc), m_idRcv(rcv), m_clone(false)
 {
 }
 
-IMessage::IMessage(const IMessage &oth): m_data(oth.m_data)
+IMessage::IMessage(const IMessage &oth) : m_data(oth.m_data)
+, m_tpRcv(IObject::UnKnow), m_clone(true)
 {
     if (m_data)
         m_data->AddRef();
@@ -69,7 +68,7 @@ IMessage::~IMessage()
 
 int IMessage::GetReceiverType() const
 {
-    return m_data->m_tpRcv;
+    return m_tpRcv;
 }
 
 void IMessage::SetMessgeType(int tp)
@@ -85,7 +84,7 @@ int IMessage::GetMessgeType() const
 
 const std::string &IMessage::GetReceiverID() const
 {
-    return m_data->m_idRcv;
+    return m_idRcv;
 }
 
 int IMessage::GetSenderType() const
@@ -109,7 +108,7 @@ IObject *IMessage::GetSender() const
 
 bool IMessage::IsValid() const
 {
-    return m_data && m_data->IsValid();
+    return m_data && m_data->IsValid() && m_tpRcv > IObject::UnKnow;
 }
 
 void IMessage::Release()
@@ -120,13 +119,9 @@ void IMessage::Release()
         delete this;
         return;
     }
-    IObject *obj = om->GetObjectByID(GetSenderID());
-    if (obj)
-        obj->RemoveMessage(this);
-    else
-        om->RemoveMessage(this);
-
-    if (IObject *obj = GetSender())
+    if (m_clone)
+        ObjectManagers::Instance().DestroyCloneMsg(this);
+    else if (IObject *obj = GetSender())
         obj->PushReleaseMsg(this);
     else if (IObjectManager *m = ObjectManagers::Instance().GetManagerByType(GetSenderType()))
         m->PushReleaseMsg(this);
@@ -137,7 +132,7 @@ int IMessage::CountDataRef() const
     return m_data ? m_data->m_countRef : 0;
 }
 
-IMessage *IMessage::Clone() const
+IMessage *IMessage::Clone(const std::string &, int) const
 {
     return NULL;
 }

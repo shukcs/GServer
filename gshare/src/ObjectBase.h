@@ -2,8 +2,8 @@
 #define __OBJECT_BASE_H__
 
 #include <string>
-#include <list>
 #include <map>
+#include <list>
 #include "stdconfig.h"
 #include "BaseBuff.h"
 
@@ -43,14 +43,15 @@ public:
     SHARED_DECL bool Receive(const void *buf, int len);
     SHARED_DECL virtual void SetSocket(ISocket *);
     SHARED_DECL virtual void OnSockClose(ISocket *);    //这是可以重载的，可能有多个连接
+    SHARED_DECL void Subcribe(const std::string &sender, int msg);
+    SHARED_DECL void Unsubcribe(const std::string &sender, int msg);
     virtual int GetObjectType()const = 0;
     virtual void OnConnected(bool bConnected) = 0;
     virtual int GetSenLength()const;
     virtual int CopySend(char *buf, int sz, unsigned form = 0);
     virtual void SetSended(int sended=-1);//-1,发送完
 public:
-    bool PushMassage(IMessage *msg);
-    void RemoveMessage(IMessage *);
+    bool PushMessage(IMessage *msg);
     void PushReleaseMsg(IMessage *);
     bool PrcsBussiness(uint64_t ms);
     int GetThreadId()const;
@@ -107,15 +108,15 @@ public:
     SHARED_DECL bool AddObject(IObject *obj);
     SHARED_DECL IObject *GetObjectByID(const std::string &id)const;
     SHARED_DECL bool Receive(ISocket *s, const BaseBuff &buff, int &prcs);
-    void ReceiveMessage(IMessage *);
-    void RemoveMessage(IMessage *);
+    SHARED_DECL void SetLog(ILog *);
+    SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
+
+    void PushMessage(IMessage *);
     void PushReleaseMsg(IMessage *);
     bool HasIndependThread()const;
     bool ProcessBussiness();
     bool PrcsObjectsOfThread(int nThread);
     bool Exist(IObject *obj)const;
-    SHARED_DECL void SetLog(ILog *);
-    SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
 public:
     SHARED_DECL static bool SendMsg(IMessage *msg);
 protected:

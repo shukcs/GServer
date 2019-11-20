@@ -18,12 +18,12 @@ static const char *sRandStrTab = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklz
 class GSOrUav : public MessageData
 {
 public:
-    GSOrUav(IObject *sender, const string &id, int rcv, int tpMs)
-        : MessageData(sender, id, rcv, tpMs), m_msg(NULL)
+    GSOrUav(IObject *sender, int tpMs)
+        : MessageData(sender, tpMs), m_msg(NULL)
     {
     }
-    GSOrUav(IObjectManager *sender, const string &id, int rcv, int tpMs)
-        : MessageData(sender, id, rcv, tpMs), m_msg(NULL)
+    GSOrUav(IObjectManager *sender, int tpMs)
+        : MessageData(sender, tpMs), m_msg(NULL)
     {
     }
     ~GSOrUav()
@@ -46,16 +46,12 @@ private:
 //GSOrUavMessage
 ////////////////////////////////////////////////////////////////////////////////////////
 GSOrUavMessage::GSOrUavMessage(IObject *sender, const std::string &idRcv, int rcv)
-    :IMessage(new GSOrUav(sender, idRcv, rcv, Unknown))
+    :IMessage(new GSOrUav(sender, Unknown), idRcv, rcv)
 {
 }
 
 GSOrUavMessage::GSOrUavMessage(IObjectManager *sender, const std::string &idRcv, int rcv)
-    : IMessage(new GSOrUav(sender, idRcv, rcv, Unknown))
-{
-}
-
-GSOrUavMessage::GSOrUavMessage(const GSOrUavMessage &oth): IMessage(oth)
+    : IMessage(new GSOrUav(sender, Unknown), idRcv, rcv)
 {
 }
 
@@ -186,9 +182,15 @@ MessageType Uav2GSMessage::getMessageType(const Message &msg)
     return ret;
 }
 
-IMessage *Uav2GSMessage::Clone() const
+IMessage *Uav2GSMessage::Clone(const string &idRcv, int tpRcv) const
 {
-    return new Uav2GSMessage(*this);
+    if (Uav2GSMessage *ret = new Uav2GSMessage(*this))
+    {
+        ret->m_idRcv = idRcv;
+        ret->m_tpRcv = tpRcv;
+        return ret;
+    }
+    return NULL;
 }
 /////////////////////////////////////////////////////////////////////////////
 //GS2UavMessage

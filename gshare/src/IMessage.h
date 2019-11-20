@@ -14,8 +14,8 @@ class IObjectManager;
 class MessageData
 {
 public:
-    SHARED_DECL MessageData(IObject *sender, const std::string &id, int rcv, int tpMs);
-    SHARED_DECL MessageData(IObjectManager *sender, const std::string &id, int rcv, int tpMs);
+    SHARED_DECL MessageData(IObject *sender, int tpMs);
+    SHARED_DECL MessageData(IObjectManager *sender, int tpMs);
     SHARED_DECL virtual ~MessageData();
 private:
     void AddRef();
@@ -24,10 +24,8 @@ private:
 private:
     friend class IMessage;
     int         m_countRef;
-    int         m_tpRcv;
     int         m_tpMsg;
     int         m_tpSender;
-    std::string m_idRcv;
     std::string m_idSnd;
 };
 
@@ -42,7 +40,7 @@ tpMsg:消息类型
 class IMessage
 {
 public:
-    SHARED_DECL IMessage(MessageData *data);
+    SHARED_DECL IMessage(MessageData *data, const std::string &rcv, int tpRcv);
     SHARED_DECL IMessage(const IMessage &oth);
     SHARED_DECL virtual ~IMessage();
 
@@ -60,9 +58,12 @@ public:
     SHARED_DECL bool IsValid()const;
     SHARED_DECL void Release();
     SHARED_DECL int CountDataRef()const;
-    SHARED_DECL virtual IMessage *Clone()const;
+    SHARED_DECL virtual IMessage *Clone(const std::string &idRcv, int tpRcv)const;
 protected:
     MessageData *m_data;
+    int         m_tpRcv;
+    std::string m_idRcv;
+    bool        m_clone;
 };
 
 #ifdef SOCKETS_NAMESPACE

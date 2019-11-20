@@ -1,8 +1,9 @@
 #include <stdio.h>
-#ifdef _WIN32
+#if defined _WIN32 || defined _WIN64
 #include <process.h>
 #include "socket_include.h"
 #else
+#include <sys/types.h>
 #include <unistd.h>
 #endif
 
@@ -11,7 +12,7 @@
 
 
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE;
 #endif
 
 Thread::Thread(bool run, unsigned ms): m_thread(0)
@@ -48,7 +49,7 @@ threadfunc_t STDPREFIX Thread::StartThread(threadparam_t zz)
     if (p && p->IsDeleteOnExit())
         delete p;
 
-#ifdef _WIN32
+#if defined _WIN32 || defined _WIN64
 	_endthreadex(0);
 #endif
 	return (threadfunc_t)NULL;
@@ -82,7 +83,7 @@ void Thread::SetRunning(bool x)
  	m_running = x;
     if (m_running)
     {
-#ifdef _WIN32
+#if defined _WIN32 || defined _WIN64
         //m_thread = ::CreateThread(NULL, 0, StartThread, this, 0, &m_dwThreadId);
         m_thread = (HANDLE)_beginthreadex(NULL, 0, &StartThread, this, 0, &m_dwThreadId);
 #else
@@ -114,9 +115,3 @@ void Thread::PostSim()
 void Thread::WaitSim()
 {
 }
-
-#ifdef SOCKETS_NAMESPACE
-}
-#endif
-
-
