@@ -306,9 +306,8 @@ bool IObjectManager::Receive(ISocket *s, const BaseBuff &buff, int &prcs)
 
 void IObjectManager::PushReleaseMsg(IMessage *msg)
 {
-    m_mtx->Lock(); //这个来自不同线程，需要加锁
+    Lock l(m_mtx); //这个来自不同线程，需要加锁
     m_lsMsgRelease.push_back(msg);
-    m_mtx->Unlock();
 }
 
 void IObjectManager::PrcsReleaseMsg()
@@ -518,7 +517,7 @@ int IObjectManager::GetPropertyThread() const
     {
         ObjectsMap::const_iterator itr = m_mapThreadObject.find(t->GetId());
         if (itr == m_mapThreadObject.end())
-            return t->GetId();
+            return m_lsThread.back()->GetId();
 
         if (nCount<0 || nCount>(int)itr->second.size())
         {
