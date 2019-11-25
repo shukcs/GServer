@@ -9,6 +9,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gsocket", "gsocket\gsocket.
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gshare", "gshare\gshare.vcxproj", "{D56F43CB-E601-3EB0-B5C3-75EFE5141D56}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8FD826F8-3739-44E6-8CC8-997122E53B8D} = {8FD826F8-3739-44E6-8CC8-997122E53B8D}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "uavandqgc", "uavandqgc\uavandqgc.vcxproj", "{871ACB39-A058-4472-9B43-9176F07853CC}"
 	ProjectSection(ProjectDependencies) = postProject

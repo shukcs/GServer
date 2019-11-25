@@ -88,6 +88,29 @@ IObject::~IObject()
     }
 }
 
+void IObject::_prcsMessage()
+{
+    while (m_lsMsg.size() > 0)
+    {
+        m_mtxMsg->Lock();
+        IMessage *msg = m_lsMsg.front();
+        m_lsMsg.pop_front();
+        m_mtxMsg->Unlock();
+        if (msg->IsValid())
+            ProcessMessage(*msg);
+        msg->Release();
+    }
+
+    while (m_lsMsgRelease.size() > 0)
+    {
+        m_mtxMsg->Lock();
+        IMessage *msg = m_lsMsgRelease.front();
+        m_lsMsgRelease.pop_front();
+        m_mtxMsg->Unlock();
+        delete msg;
+    }
+}
+
 const string &IObject::GetObjectID() const
 {
     return m_id;
@@ -149,21 +172,7 @@ bool IObject::PrcsBussiness(uint64_t ms)
             ret = true;
         }
     }
-    while (m_lsMsg.size()>0)
-    {
-        IMessage *msg = m_lsMsg.front();
-        m_lsMsg.pop_front();
-        if (msg->IsValid())
-            ProcessMessage(*msg);
-        msg->Release();
-    }
-
-    while (m_lsMsgRelease.size() > 0)
-    {
-        IMessage *msg = m_lsMsgRelease.front();
-        m_lsMsgRelease.pop_front();
-        delete msg;
-    }
+    _prcsMessage();
     CheckTimer(ms);
     return ret;
 }
@@ -314,8 +323,11 @@ void IObjectManager::PrcsReleaseMsg()
 {
     while (m_lsMsgRelease.size() > 0)
     {
-        delete *m_lsMsgRelease.begin();
+        m_mtx->Lock();
+        IMessage *ms = m_lsMsgRelease.front();
         m_lsMsgRelease.pop_front();
+        m_mtx->Unlock();
+        delete ms;
     }
 }
 
@@ -347,8 +359,10 @@ bool IObjectManager::ProcessBussiness()
     bool ret = false;
     while (m_lsMsg.size())
     {
+        m_mtx->Lock();
         IMessage *msg = m_lsMsg.front();
         m_lsMsg.pop_front();    //队列方式, 不用枷锁
+        m_mtx->Unlock();
         if (msg->IsValid())
         {
             ProcessMessage(*msg);

@@ -112,6 +112,7 @@ bool ObjectManagers::SendMsg(IMessage *msg)
 {
     if (!msg)
         return false;
+
     m_mtxMsg->Lock();
     m_messages.push_back(msg);
     m_mtxMsg->Unlock();
@@ -234,8 +235,9 @@ void ObjectManagers::DestroyCloneMsg(IMessage *msg)
 {
     if(msg)
     {
-        Lock l(m_mtxMsg);
+        m_mtxMsg->Lock();
         m_releaseMsgs.push_back(msg);
+        m_mtxMsg->Unlock();
     }
 }
 
@@ -294,22 +296,24 @@ void ObjectManagers::PrcsCloseSocket()
     if (m_keysRemove.size() <= 0)
         return;
 
-    m_mtx->Lock();
+    Lock l(m_mtx);
     for (ISocket *s : m_keysRemove)
     {
         _removeBuff(s);
     }
     m_keysRemove.clear();
-    m_mtx->Unlock();
 }
 
 void ObjectManagers::PrcsObjectsDestroy()
 {
-    if (m_objectsDestroy.size() > 0)
+    if (m_objectsDestroy.empty())
+        return;
+
+    Lock l(m_mtxObj);
+    while (m_objectsDestroy.size() > 0)
     {
-        IObject *o = m_objectsDestroy.front();
+        delete m_objectsDestroy.front();
         m_objectsDestroy.pop_front();
-        delete o;
     }
 }
 
@@ -350,10 +354,15 @@ void ObjectManagers::PrcsSubcribes()
 
 void ObjectManagers::PrcsMessages()
 {
+    if (m_messages.empty() && m_releaseMsgs.empty())
+        return;
+     
     while (m_messages.size() > 0)
     {
+        m_mtxMsg->Lock();
         IMessage *msg = m_messages.front();
         m_messages.pop_front();
+        m_mtxMsg->Unlock();
         for (const ObjectDsc &s : getMessageSubcribes(msg))
         {
             if (IObjectManager *mgr = GetManagerByType(s.first))
@@ -369,8 +378,11 @@ void ObjectManagers::PrcsMessages()
 
     while (m_releaseMsgs.size() > 0)
     {
-        delete m_releaseMsgs.front();
+        m_mtxMsg->Lock();
+        IMessage *msg = m_releaseMsgs.front();
         m_releaseMsgs.pop_front();
+        m_mtxMsg->Unlock();
+        delete msg;
     }
 }
 

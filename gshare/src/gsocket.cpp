@@ -65,8 +65,9 @@ int GSocket::Send(int len, void *buff)
     int ret = len;
     if(buff)
     {
-        Lock l(m_mtx);
+        m_mtx->Lock();
         ret = m_buff.Add(buff, len) ? len : 0;
+        m_mtx->Unlock();
     }
 
     if (ret>0 && m_mgrPrcs)

@@ -84,6 +84,8 @@ IObject(sock, id)；sock:socket;id:连接实体标识
 ********************************************************************************************/
     SHARED_DECL IObject(ISocket *sock, const std::string &id);
     SHARED_DECL virtual ~IObject();
+private:
+    void _prcsMessage();
 protected:
     friend class ObjectManagers;
     friend class IObjectManager;

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <document>
-	<UavManager thread="1" />
+	<UavManager thread="2" />
 	<Database user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav"/>
 	<Tables>
 		<table name="UavInfo">

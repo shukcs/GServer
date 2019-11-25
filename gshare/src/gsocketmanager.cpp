@@ -166,9 +166,15 @@ void GSocketManager::InitThread(int nThread)
 
 void GSocketManager::PrcsAddSockets()
 {
+    if (m_socketsAdd.empty())
+        return;
+
     while (m_socketsAdd.size() > 0)
     {
+        m_mtxSock->Lock();
         ISocket *s = m_socketsAdd.front();
+        m_socketsAdd.pop_front();
+        m_mtxSock->Unlock();
         int handle = s->GetHandle();
         switch (s->GetSocketStat())
         {
@@ -186,7 +192,6 @@ void GSocketManager::PrcsAddSockets()
             _addSocketHandle(handle, s->IsListenSocket());
             m_sockets[handle] = s;
         }
-        m_socketsAdd.pop_front();
     }
 }
 
@@ -194,8 +199,11 @@ void GSocketManager::PrcsDestroySockets()
 {
     while (m_socketsRemove.size() > 0)
     {
-        delete m_socketsRemove.front();
+        m_mtx->Lock();
+        ISocket *s =m_socketsRemove.front();
         m_socketsRemove.pop_front();
+        m_mtx->Unlock();
+        delete s;
     }
 }
 
@@ -225,7 +233,9 @@ bool GSocketManager::PrcsSockets()
         if (!itr->second)
         {
             SocketPrcsQue::iterator itrTmp = itr++;
+            m_mtx->Lock();
             m_socketsPrcs.erase(itrTmp);
+            m_mtx->Unlock();
             continue;
         }
         ++itr;
@@ -492,26 +502,27 @@ int GSocketManager::_connect(ISocket *sock)
 
 void GSocketManager::_accept(int listenfd)
 {
-    struct sockaddr_in clientaddr;
-    socklen_t len = sizeof(clientaddr);
-    int connfd = accept(listenfd, (sockaddr *)&clientaddr, &len); //accept这个连接
+    struct sockaddr_in addr;
+    socklen_t len = sizeof(addr);
+    int connfd = accept(listenfd, (sockaddr *)&addr, &len); //accept这个连接
     if (-1 == connfd)
         return;
 
     if (ISocket *s = new GSocket(this))
     {
-        Ipv4Address *ad = new Ipv4Address(clientaddr);
+        Ipv4Address *ad = new Ipv4Address(addr);
         s->SetAddress(ad);
         s->SetHandle(connfd);
         s->OnConnect(true);
         GSocketManager *m = GetManagerofLeastSocket();
         if (!m)
             m = this;
-        m->AddSocket(s);
+        if (!m->AddSocket(s))
+            _close(s);
     }
 }
 
-    bool GSocketManager::_recv(ISocket *sock)
+bool GSocketManager::_recv(ISocket *sock)
 {
     int fd = sock ? sock->GetHandle() : -1;
     if (fd == -1)
