@@ -58,7 +58,7 @@ bool ProtoMsg::Parse(const char *buff, int &len)
             if (szMsg+4 <= len-n)
             {
                 uint32_t crc = Utility::Crc32(src+n+4, szMsg-4);       
-                if (crc != Utility::fromBigendian(src+n+szMsg))
+                if (crc != (uint32_t)Utility::fromBigendian(src+n+szMsg))
                 {
                     pos += n+18;
                     n = Utility::FindString(buff+pos, len, PROTOFLAG);
