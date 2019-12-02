@@ -141,7 +141,7 @@ void ObjectUav::ProcessMessage(const IMessage &msg)
     else if (msg.GetMessgeType() == ControlUav)
         processControl2Uav((PostControl2Uav*)msg.GetContent());
     else if (msg.GetMessgeType() == PostOR)
-        processPostOr((PostOperationRoute*)msg.GetContent());
+        processPostOr((PostOperationRoute*)msg.GetContent(), msg.GetSenderID());
 }
 
 int ObjectUav::ProcessReceive(void *buf, int len)
@@ -312,7 +312,7 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
     AckControl2Uav(*msg, res, this);
 }
 
-void ObjectUav::processPostOr(PostOperationRoute *msg)
+void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)
 {
     if(!msg)
         return;
@@ -320,16 +320,20 @@ void ObjectUav::processPostOr(PostOperationRoute *msg)
     ReleasePointer(m_mission);
     const OperationRoute mission = msg->or_();
     int ret = 0;
-    if (_isBind(mission.gsid()) && (m_mission = new OperationRoute()))
+    if (_isBind(gs))
     {
+        m_mission = new OperationRoute();
+        if (!m_mission)
+            return;
+
         m_mission->CopyFrom(mission);
         if (m_mission->createtime() == 0)
             m_mission->set_createtime(Utility::msTimeTick());
 
         m_bSys = false;
         ret = 1;
-        _notifyUavUOR(*m_mission);
         GetManager()->Log(0, mission.gsid(), 0, "Upload mission for %s!", GetObjectID().c_str());
+        _notifyUavUOR(*m_mission);
     }
     if (Uav2GSMessage *ms = new Uav2GSMessage(this, mission.gsid()))
     {
@@ -343,7 +347,7 @@ void ObjectUav::processPostOr(PostOperationRoute *msg)
 
 bool ObjectUav::_isBind(const std::string &gs) const
 {
-    return m_bBind && m_lastBinder == gs && !m_lastBinder.empty();
+    return m_bBind && m_lastBinder==gs && !m_lastBinder.empty();
 }
 
 bool ObjectUav::_hasMission(const das::proto::RequestRouteMissions &req) const
@@ -364,8 +368,8 @@ void ObjectUav::_notifyUavUOR(const OperationRoute &ort)
     upload.set_timestamp(ort.createtime());
     upload.set_countmission(ort.missions_size());
     upload.set_countboundary(ort.boundarys_size());
-    send(upload);
     m_lastORNotify = (uint32_t)Utility::msTimeTick();
+    send(upload);
 }
 
 int ObjectUav::_checkPos(double lat, double lon, double alt)

@@ -5,6 +5,7 @@
 #include <map>
 #include <list>
 #include <string>
+#include <type_traits>
 #include <stdconfig.h>
 
 #ifdef SOCKETS_NAMESPACE
@@ -14,7 +15,22 @@ namespace SOCKETS_NAMESPACE {
 #define TWIST_LEN     624
 
 class SocketAddress;
-
+template <typename T>
+class TypeInfo
+{
+public:
+    enum {
+        isSpecialized = std::is_enum<T>::value, // don't require every enum to be marked manually
+        isPointer = false,
+        isIntegral = std::is_integral<T>::value,
+        isComplex = !isIntegral && !std::is_enum<T>::value,
+        isStatic = true,
+        isRelocatable = std::is_enum<T>::value,
+        isLarge = (sizeof(T) > sizeof(void*)),
+        isDummy = false, //### Qt6: remove
+        sizeOf = sizeof(T)
+    };
+};
 /** Conversion utilities. 
 	\ingroup util */
 namespace Utility

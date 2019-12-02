@@ -19,9 +19,7 @@ class IMutex;
 class IMessage;
 class ObjectMetuxs;
 class ILog;
-
-typedef std::map<std::string, IObject*> ThreadObjects;
-typedef std::map<int, ThreadObjects> ObjectsMap;
+typedef std::list<IMessage*> MessageQue;
 class IObject
 {
 public:
@@ -89,20 +87,22 @@ private:
 protected:
     friend class ObjectManagers;
     friend class IObjectManager;
+    int64_t                 m_tmLastInfo;
     ISocket                 *m_sock;
     std::string             m_id;
     bool                    m_bRelease;
     BaseBuff                m_buff;
     IMutex                  *m_mtx;
     IMutex                  *m_mtxMsg;
-    std::list<IMessage*>    m_lsMsg;            //接收消息队列
-    std::list<IMessage*>    m_lsMsgRelease;     //消息释放队列
+    MessageQue              m_lsMsg;            //接收消息队列
+    MessageQue              m_lsMsgRelease;     //消息释放队列
     int                     m_idThread;
-    int64_t                 m_tmLastInfo;
 };
 
 class IObjectManager
 {
+    typedef std::map<std::string, IObject*> ThreadObjects;
+    typedef std::map<int, ThreadObjects> ObjectsMap;
 public:
     SHARED_DECL virtual ~IObjectManager();
     virtual int GetObjectType()const = 0;
@@ -138,8 +138,8 @@ private:
     friend class ObjectManagers;
     IMutex                          *m_mtx;
     ILog                            *m_log;
-    std::list<IMessage*>            m_lsMsg;            //接收消息队列
-    std::list<IMessage*>            m_lsMsgRelease;     //消息释放队列
+    MessageQue                      m_lsMsg;            //接收消息队列
+    MessageQue                      m_lsMsgRelease;     //消息释放队列
     std::list<BussinessThread*>     m_lsThread;
     ObjectsMap                      m_mapThreadObject;
     std::map<int, ObjectMetuxs*>    m_threadMutexts;

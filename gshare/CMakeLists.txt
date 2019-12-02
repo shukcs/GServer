@@ -39,8 +39,6 @@ set(SRC_LIST
 	src/ObjectBase.h
 	src/ObjectManagers.cpp
 	src/ObjectManagers.h
-	src/Parse.cpp
-	src/Parse.h
 	src/socket_include.cpp
 	src/socket_include.h
 	src/Thread.cpp

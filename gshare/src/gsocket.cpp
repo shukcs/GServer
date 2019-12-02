@@ -62,6 +62,9 @@ bool GSocket::ConnectTo(const std::string &hostRemote, int port)
 
 int GSocket::Send(int len, void *buff)
 {
+    if (len < 1 || !IsConnect())
+        return 0;
+
     int ret = len;
     if(buff)
     {
@@ -104,6 +107,11 @@ uint16_t GSocket::GetPort() const
 std::string GSocket::GetObjectID() const
 {
     return m_object ? m_object->GetObjectID() : std::string();
+}
+
+bool GSocket::IsConnect() const
+{
+    return m_stat == ISocket::Connected;
 }
 
 ISocket::SocketStat GSocket::GetSocketStat()const

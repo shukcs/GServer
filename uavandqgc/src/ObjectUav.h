@@ -56,7 +56,7 @@ private:
 
     void processBind(das::proto::RequestBindUav *msg, IObject *sender);
     void processControl2Uav(das::proto::PostControl2Uav *msg);
-    void processPostOr(das::proto::PostOperationRoute *msg);
+    void processPostOr(das::proto::PostOperationRoute *msg, const std::string &gs);
 
     bool _isBind(const std::string &gs)const;
     bool _hasMission(const das::proto::RequestRouteMissions &req)const;

@@ -36,7 +36,6 @@ protected:
         return ret;
     }
 private:
-    list<IObject *> m_objects;
 };
 ////////////////////////////////////////////////////////////////////////
 //SubcribeStruct

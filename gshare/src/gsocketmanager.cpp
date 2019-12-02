@@ -148,7 +148,7 @@ bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
         return false;
 
     m_mtx->Lock();      //应对不同线程
-    m_socketsPrcs.push_back(SocketPrcs(s,true));
+    m_socketsPrcs.push_back(SocketPrcs(s, s->GetHandle()));
     m_mtx->Unlock();
     return true;
 }
@@ -212,11 +212,15 @@ bool GSocketManager::PrcsSockets()
     if (m_socketsPrcs.size() <= 0)
         return false;
 
-    SocketPrcsQue::iterator itr = m_socketsPrcs.begin();
-    while (itr != m_socketsPrcs.end())
+    while (m_socketsPrcs.size() > 0)
     {
-        ISocket *s = itr->first;
-        if (itr->second)
+        m_mtx->Lock();
+        SocketPrcs p = m_socketsPrcs.front();
+        m_socketsPrcs.pop_front();
+        m_mtx->Unlock();
+        ISocket *s = p.first;
+
+        if (m_sockets.find(p.second) != m_sockets.end())
         {
             ISocket::SocketStat st = s->GetSocketStat();
             if (ISocket::Closing == st)
@@ -225,20 +229,14 @@ bool GSocketManager::PrcsSockets()
             if (!s->IsListenSocket() && ISocket::Connected == st)
             {
                 _send(s);
-                if (s->GetSendLength() == 0)
-                    itr->second = false;
+                if (s->GetSendLength() > 0)
+                {
+                    m_mtx->Lock();
+                    m_socketsPrcs.push_back(p);
+                    m_mtx->Unlock();
+                }
             }
         }
-
-        if (!itr->second)
-        {
-            SocketPrcsQue::iterator itrTmp = itr++;
-            m_mtx->Lock();
-            m_socketsPrcs.erase(itrTmp);
-            m_mtx->Unlock();
-            continue;
-        }
-        ++itr;
     }
     return true;
 }
@@ -323,7 +321,6 @@ bool GSocketManager::SokectPoll(unsigned ms)
 #endif
     for (ISocket *s : lsRm)
     {
-        setISocketInvalid(s);
         s->OnClose();
         _remove(s->GetHandle());
     }
@@ -432,7 +429,6 @@ void GSocketManager::_close(ISocket *sock)
 {
     _remove(sock->GetHandle());
     sock->OnClose();
-    setISocketInvalid(sock);
 }
 
 #if defined _WIN32 || defined _WIN64 
@@ -566,20 +562,11 @@ void GSocketManager::_send(ISocket *sock)
         res = write(fd, m_buff, res);
 #endif
         count += res;
+        if (res > 0)
+            sock->OnWrite(res);
         if(res < (int)sizeof(m_buff))
             break;
     }
-    if (count > 0)
-        sock->OnWrite(count);
-    else if (count < 0)
+    if (count < 0)
         _close(sock);
-}
-
-void GSocketManager::setISocketInvalid(ISocket *s)
-{
-    for (SocketPrcs &itr : m_socketsPrcs)
-    {
-        if (itr.first == s)
-            itr.second = false;
-    }
 }

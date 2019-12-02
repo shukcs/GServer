@@ -18,9 +18,6 @@
     <ClCompile Include="src\socket_include.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Parse.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Base64.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -57,6 +54,9 @@
     <ClCompile Include="src\IMessage.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\LoopQueue.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\SocketAddress.h">
@@ -72,9 +72,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\socket_include.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Parse.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Base64.h">
@@ -117,6 +114,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\IMessage.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LoopQueue.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

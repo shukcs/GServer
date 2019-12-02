@@ -72,9 +72,9 @@ void IObject::CheckTimer(uint64_t ms)
 //IObject
 //////////////////////////////////////////////////////////////////
 IObject::IObject(ISocket *sock, const string &id)
-: m_sock(sock), m_id(id), m_bRelease(false)
-, m_mtx(NULL), m_mtxMsg(NULL), m_idThread(-1)
-, m_tmLastInfo(Utility::msTimeTick())
+: m_tmLastInfo(Utility::msTimeTick()), m_sock(sock), m_id(id)
+, m_bRelease(false), m_mtx(NULL), m_mtxMsg(NULL), m_idThread(-1)
+
 {
     SetBuffSize(1024 * 4);
 }
@@ -413,7 +413,7 @@ bool IObjectManager::PrcsObjectsOfThread(int nThread)
 
 bool IObjectManager::Exist(IObject *obj) const
 {
-    if (!obj || obj->GetThreadId()<=0)
+    if (!obj || obj->GetThreadId()< 0)
         return false;
 
     ObjectsMap::const_iterator itr = m_mapThreadObject.find(obj->GetThreadId());
@@ -471,8 +471,8 @@ bool IObjectManager::AddObject(IObject *obj)
 
     m_mtx->Lock();
     m_mapThreadObject[n][obj->GetObjectID()] = obj;
-    obj->SetThreadId(n);
     m_mtx->Unlock();
+    obj->SetThreadId(n);
 
     return true;
 }
@@ -495,7 +495,9 @@ void IObjectManager::PushMessage(IMessage *msg)
     if (!msg)
         return;
 
-    if (IObject *obj = GetObjectByID(msg->GetReceiverID()))
+    const string id = msg->GetReceiverID();
+    IObject *obj = id.empty() ? NULL : GetObjectByID(id);
+    if (obj)
         obj->PushMessage(msg);
     else 
         AddMessage(msg);

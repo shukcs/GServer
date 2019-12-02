@@ -1,5 +1,4 @@
 ﻿#include "Utility.h"
-#include "Parse.h"
 #include "Ipv4Address.h"
 #include "Ipv6Address.h"
 #include "Base64.h"
@@ -53,6 +52,7 @@ enum
 }; 
 
 using namespace std;
+typedef list<string> StringList;
 // statics
 static string s_hostName;
 static bool s_local_resolved = false;
@@ -65,6 +65,25 @@ static string s_local_addr6;
 #endif
 #endif
 
+static uint32_t str2ipv4(const string &ip)
+{
+    union {
+        struct {
+            unsigned char b[4];
+        };
+        ipaddr_t l;
+    } u;
+    int i = 0;
+    for (const string &itr : Utility::SplitString(ip, "."))
+    {
+        u.b[i++] = (unsigned char)Utility::str2int(itr);
+    }
+    return u.l;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//namespace Utility
+////////////////////////////////////////////////////////////////////////////////////////////////////
 int Utility::FindString(const char *src, int len, const char *cnt, int cntLen)
 {
     int count = cntLen<0 ? strlen(cnt) : cntLen;
@@ -441,41 +460,25 @@ bool Utility::isipv4(const string& str)
 
 bool Utility::isipv6(const string& str)
 {
-	size_t qc = 0;
-	size_t qd = 0;
-	for (size_t i = 0; i < str.size(); ++i)
-	{
-		qc += (str[i] == ':') ? 1 : 0;
-		qd += (str[i] == '.') ? 1 : 0;
-	}
-	if (qc > 7)
-	{
-		return false;
-	}
-	if (qd && qd != 3)
-	{
-		return false;
-	}
-	Parse pa(str,":.");
-	string tmp = pa.getword();
-	while (tmp.size())
-	{
-		if (tmp.size() > 4)
-		{
-			return false;
-		}
-		for (size_t i = 0; i < tmp.size(); ++i)
-		{
-			if (tmp[i] < '0' || (tmp[i] > '9' && tmp[i] < 'A') ||
-				(tmp[i] > 'F' && tmp[i] < 'a') || tmp[i] > 'f')
-			{
-				return false;
-			}
-		}
-		//
-		tmp = pa.getword();
-	}
-	return true;
+    StringList ls = SplitString(str, ":");
+    if (ls.size() != 7 && ls.size() != 8)
+        return false;
+    if (ls.size() == 7)
+    {
+        const string &ipv4 = ls.back();
+        if (!isipv4(ipv4))
+            return false;
+        ls.pop_back();
+    }
+    bool bSuc;
+    for (const string &itr : ls)
+    {
+        uint64_t res = str2int(itr, 16, &bSuc);
+        if (!bSuc || res>0xffff)
+            return false;
+    }
+
+    return true;
 }
 
 bool Utility::u2ip(const string& str, ipaddr_t& l)
@@ -723,21 +726,8 @@ bool Utility::u2ip(const string& host, struct sockaddr_in& sa, int ai_flags)
 #ifdef NO_GETADDRINFO
 	if ((ai_flags & AI_NUMERICHOST) != 0 || isipv4(host))
 	{
-		Parse pa((char *)host.c_str(), ".");
-		union {
-			struct {
-				unsigned char b1;
-				unsigned char b2;
-				unsigned char b3;
-				unsigned char b4;
-			} a;
-			ipaddr_t l;
-		} u;
-		u.a.b1 = static_cast<unsigned char>(pa.getvalue());
-		u.a.b2 = static_cast<unsigned char>(pa.getvalue());
-		u.a.b3 = static_cast<unsigned char>(pa.getvalue());
-		u.a.b4 = static_cast<unsigned char>(pa.getvalue());
-		memcpy(&sa.sin_addr, &u.l, sizeof(sa.sin_addr));
+        uint32_t ip = str2ipv4(host);
+		memcpy(&sa.sin_addr, &ip, sizeof(ip));
 		return true;
 	}
 #ifndef LINUX
@@ -817,35 +807,18 @@ bool Utility::u2ip(const string& host, struct sockaddr_in6& sa, int ai_flags)
 #ifdef NO_GETADDRINFO
 	if ((ai_flags & AI_NUMERICHOST) != 0 || isipv6(host))
 	{
-		list<string> vec;
-		size_t x = 0;
-		for (size_t i = 0; i <= host.size(); ++i)
-		{
-			if (i == host.size() || host[i] == ':')
-			{
-				string s = host.substr(x, i - x);
-				//
-				if (strstr(s.c_str(),".")) // x.x.x.x
-				{
-					Parse pa(s,".");
-					char slask[100]; // u2ip temporary hex2string conversion
-					unsigned long b0 = static_cast<unsigned long>(pa.getvalue());
-					unsigned long b1 = static_cast<unsigned long>(pa.getvalue());
-					unsigned long b2 = static_cast<unsigned long>(pa.getvalue());
-					unsigned long b3 = static_cast<unsigned long>(pa.getvalue());
-					snprintf(slask,sizeof(slask),"%lx",b0 * 256 + b1);
-					vec.push_back(slask);
-					snprintf(slask,sizeof(slask),"%lx",b2 * 256 + b3);
-					vec.push_back(slask);
-				}
-				else
-				{
-					vec.push_back(s);
-				}
-				//
-				x = i + 1;
-			}
-		}
+		StringList vec = SplitString(host, ":");
+		
+        if (vec.size() == 7)
+        {
+            const string &ipv4 = vec.back();
+            uint32_t ip = str2ipv4(ipv4);
+            char slask[6];
+            snprintf(slask, sizeof(slask), "%lx", ip>>16);
+            vec.push_back(slask);
+            snprintf(slask, sizeof(slask), "%lx", ip&0xffff);
+            vec.push_back(slask);
+        }
 		size_t sz = vec.size(); // number of byte pairs
 		size_t i = 0; // index in in6_addr.in6_u.u6_addr16[] ( 0 .. 7 )
 		unsigned short addr16[8];

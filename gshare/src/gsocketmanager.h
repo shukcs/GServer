@@ -14,7 +14,7 @@ class IMutex;
 class Thread;
 class ILog;
 class GSocketManager : public ISocketManager {
-    typedef std::pair<ISocket*, bool> SocketPrcs;
+    typedef std::pair<ISocket*, int> SocketPrcs;
     typedef std::list<ISocket *> SocketQue;
     typedef std::list<SocketPrcs> SocketPrcsQue;
     typedef std::map<ISocket *, FuncOnBinded> SocketBindedCallbacks;
@@ -64,7 +64,6 @@ private:
 #if !defined _WIN32 && !defined _WIN64
     bool _isCloseEvent(uint32_t e)const;
 #endif
-    void setISocketInvalid(ISocket *s);
 private:
     std::map<int, ISocket*>     m_sockets;
     SocketPrcsQue               m_socketsPrcs;      //等待处理队列
