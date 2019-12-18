@@ -9,9 +9,6 @@
     <ClCompile Include="src\DBExecItem.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\VGDBManager.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\VGMysql.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -21,12 +18,12 @@
     <ClCompile Include="src\VGTrigger.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\MysqlDB.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DBExecItem.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\VGDBManager.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\VGMysql.h">
@@ -36,6 +33,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\VGTrigger.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MysqlDB.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

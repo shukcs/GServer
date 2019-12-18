@@ -2,16 +2,13 @@
 #include "ObjectManagers.h"
 #include "das.pb.h"
 #include "ProtoMsg.h"
-#include "Messages.h"
-#include "VGMysql.h"
-#include "VGDBManager.h"
-#include "DBExecItem.h"
 #include "Utility.h"
 #include "socketBase.h"
 #include "IMutex.h"
-#include "IMessage.h"
 #include "tinyxml.h"
 #include "ObjectUav.h"
+#include "Messages.h"
+#include "DBMessages.h"
 #include "ObjectGS.h"
 
 #define PROTOFLAG "das.proto."
@@ -25,96 +22,14 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 //UavManager
 ////////////////////////////////////////////////////////////////////////////////
-UavManager::UavManager() : IObjectManager(0)
-, m_sqlEng(new VGMySql), m_p(new ProtoMsg)
-, m_lastId(0), m_bInit(false)
+UavManager::UavManager() : IObjectManager()
+, m_p(new ProtoMsg), m_lastId(0), m_bInit(false)
 {
 }
 
 UavManager::~UavManager()
 {
-    delete m_sqlEng;
     delete m_p;
-}
-
-int UavManager::PrcsBind(ObjectUav &uav, int ack, bool bBind, ObjectGS *sender)
-{
-    int res = -1;
-    string gs = sender ? sender->GetObjectID() : string();
-    if (gs.length() == 0)
-        return res;
-    string &gsOld = uav.m_lastBinder;
-
-    bool bForceUnbind = sender && sender->GetAuth(ObjectGS::Type_UavManager);
-    if (!uav.m_bExist)
-        res = -2;
-    else if (bBind && !bForceUnbind)
-        res = (!uav.m_bBind || uav.m_lastBinder.empty() || gs==uav.m_lastBinder) ? 1 : -3;
-    else if (!bBind)
-        res = (bForceUnbind || gs == gsOld || gsOld.empty()) ? 1 : -3;
-
-    if (res==1)
-    {
-        if (gsOld != gs && !bForceUnbind)
-            gsOld = gs;
-
-        if(bBind != uav.m_bBind)
-        {
-            uav.m_bBind = bBind;
-            _saveBind(uav.GetObjectID(), bBind, gs);
-        }
-    }
-    if (sender && bForceUnbind)
-    {
-        if (bBind)
-            sender->Subcribe(uav.GetObjectID(), PushUavSndInfo);
-        else
-            sender->Unsubcribe(uav.GetObjectID(), PushUavSndInfo);
-    }
-
-    sendBindAck(uav, ack, res, bBind, gs);
-    return res;
-}
-
-void UavManager::UpdatePos(const std::string &uav, double lat, double lon)
-{
-    if (ExecutItem *item = VGDBManager::GetSqlByName("updatePos"))
-    {
-        item->ClearData();
-        if (FiledVal *fd = item->GetConditionItem("id"))
-            fd->SetParam(uav);
-
-        if (FiledVal *fd = item->GetWriteItem("lat"))
-            fd->InitOf(lat);
-        if (FiledVal *fd = item->GetWriteItem("lon"))
-            fd->InitOf(lon);
-
-        m_sqlEng->Execut(item);
-    }
-}
-
-VGMySql *UavManager::GetMySql()const
-{
-    return m_sqlEng;
-}
-
-void UavManager::SaveUavPos(const ObjectUav &uav)
-{
-    if (ExecutItem *item = VGDBManager::GetSqlByName("updatePos"))
-    {
-        item->ClearData();
-        if (FiledVal *fd = item->GetConditionItem("id"))
-            fd->SetParam(uav.GetObjectID());
-
-        if (FiledVal *fd = item->GetWriteItem("lat"))
-            fd->InitOf(uav.m_lat);
-        if (FiledVal *fd = item->GetWriteItem("lon"))
-            fd->InitOf(uav.m_lon);
-        if (FiledVal *fd = item->GetWriteItem("timePos"))
-            fd->InitOf(uav.m_tmLastPos);
-
-        m_sqlEng->Execut(item);
-    }
 }
 
 bool UavManager::CanFlight(double, double, double)
@@ -138,7 +53,7 @@ int UavManager::GetObjectType() const
     return IObject::Plant;
 }
 
-IObject *UavManager::PrcsReceiveByMgr(ISocket *s, const char *buf, int &len)
+IObject *UavManager::PrcsNotObjectReceive(ISocket *s, const char *buf, int len)
 {
     int pos = 0;
     int l = len;
@@ -151,8 +66,6 @@ IObject *UavManager::PrcsReceiveByMgr(ISocket *s, const char *buf, int &len)
         {
             RequestUavIdentityAuthentication *rua = (RequestUavIdentityAuthentication *)m_p->GetProtoMessage();
             o = _checkLogin(s, *rua);
-            len = pos;
-
             break;
         }
     }
@@ -165,17 +78,20 @@ bool UavManager::PrcsPublicMsg(const IMessage &msg)
     Message *proto = (Message *)msg.GetContent();
     switch (msg.GetMessgeType())
     {
-    case BindUav:
+    case IMessage::BindUav:
         _checkBindUav(*(RequestBindUav *)proto, (ObjectGS*)msg.GetSender());
         return true;
-    case QueryUav:
+    case IMessage::QueryUav:
         _checkUavInfo(*(RequestUavStatus *)proto, (ObjectGS*)msg.GetSender());
         return true;
-    case ControlUav:
+    case IMessage::ControlUav:
         ObjectUav::AckControl2Uav(*(PostControl2Uav*)proto, -1);
         return true;
-    case UavAllocation:
+    case IMessage::UavAllocation:
         processAllocationUav(((RequestIdentityAllocation *)proto)->seqno(), msg.GetSenderID());
+        return true;
+    case IMessage::UavsMaxIDRslt:
+        processMaxID(*(DBMessage *)&msg);
         return true;
     default:
         break;
@@ -186,14 +102,8 @@ bool UavManager::PrcsPublicMsg(const IMessage &msg)
 
 void UavManager::LoadConfig()
 {
-    if (m_bInit)
-        return;
-
     TiXmlDocument doc;
-    doc.LoadFile("UavInfo.xml");
-    _parseMySql(doc);
-    _getLastId();
-
+    doc.LoadFile("UavManager.xml");
     const TiXmlElement *rootElement = doc.RootElement();
     const TiXmlNode *node = rootElement ? rootElement->FirstChild("UavManager") : NULL;
     const TiXmlElement *cfg = node ? node->ToElement() : NULL;
@@ -201,45 +111,27 @@ void UavManager::LoadConfig()
     {
         const char *tmp = cfg->Attribute("thread");
         int n = tmp ? (int)Utility::str2int(tmp) : 1;
-        InitThread(n);
+        InitThread(n, 512);
     }
-    m_bInit = true;
 }
 
-void UavManager::_parseMySql(const TiXmlDocument &doc)
+bool UavManager::InitManager()
 {
-    StringList tables;
-    string db = VGDBManager::Load(doc, tables);
-    if (!m_sqlEng)
-        return;
-
-    m_sqlEng->ConnectMySql(VGDBManager::GetMysqlHost(db),
-        VGDBManager::GetMysqlPort(db),
-        VGDBManager::GetMysqlUser(db),
-        VGDBManager::GetMysqlPswd(db));
-    m_sqlEng->EnterDatabase(db);
-    for (const string &tb : tables)
+    if (!m_bInit)
     {
-        m_sqlEng->CreateTable(VGDBManager::GetTableByName(tb));
+        m_bInit = true;
+        _getLastId();
     }
-    for (const string &trigger : VGDBManager::GetTriggers())
-    {
-        m_sqlEng->CreateTrigger(VGDBManager::GetTriggerByName(trigger));
-    }
+    return m_bInit;
 }
 
 void UavManager::_getLastId()
 {
-    ExecutItem *sql = VGDBManager::GetSqlByName("maxUavId");
-    if (!sql)
-        return;
-
-    if (!m_sqlEng->Execut(sql))
-        return;
-    if (FiledVal *fd = sql->GetReadItem("max(id)"))
-        m_lastId = toIntID((char*)fd->GetBuff());
-
-    while (m_sqlEng->GetResult());
+    if (DBMessage *msg = new DBMessage(this, IMessage::UavsMaxIDRslt))
+    {
+        msg->SetSql("maxUavId");
+        SendMsg(msg);
+    }
 }
 
 void UavManager::sendBindAck(const ObjectUav &uav, int ack, int res, bool bind, const std::string &gs)
@@ -255,7 +147,7 @@ void UavManager::sendBindAck(const ObjectUav &uav, int ack, int res, bool bind, 
         proto->set_result(res);
         if (UavStatus *s = new UavStatus)
         {
-            uav.transUavStatus(*s);
+            uav.TransUavStatus(*s);
             proto->set_allocated_status(s);
         }
         ms->AttachProto(proto);
@@ -267,54 +159,33 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
 {
     string uavid = Utility::Upper(uia.uavid());
     ObjectUav *ret = (ObjectUav *)GetObjectByID(uavid);
-    int res = -1;
     if (ret)
     {
+        int res = -1;
         if (!ret->IsConnect())
         {
             ret->SetSocket(s);
-            res = 1;
+            return ret;
         }
+
+        Log(0, uia.uavid(), 0, "[%s]%s", s->GetHost().c_str(), "login fail");
+        AckUavIdentityAuthentication ack;
+        ack.set_seqno(uia.seqno());
+        ack.set_result(res);
+        ObjectAbsPB::SendProtoBuffTo(s, ack);
     }
-    else if (ExecutItem *item = VGDBManager::GetSqlByName("queryUavInfo"))
+    else
     {
-        item->ClearData();
-        if (FiledVal *fd = item->GetConditionItem("id"))
-            fd->SetParam(uavid);
-
-        if (m_sqlEng->Execut(item))
-        {
-            ret = new ObjectUav(uavid);
-            ret->InitBySqlResult(*item);
-            while (m_sqlEng->GetResult());
-            res = 1;
-        }
+        return new ObjectUav(uavid);
     }
-    Log(0, uia.uavid(), 0, "[%s]%s", s->GetHost().c_str(), res==1 ? "login success" : "login fail");
-    
-    AckUavIdentityAuthentication ack;
-    ack.set_seqno(uia.seqno());
-    ack.set_result(res);
-    ProtoMsg::SendProtoTo(ack, s);
 
-    return ret;
+    return NULL;
 }
 
 void UavManager::_checkBindUav(const RequestBindUav &rbu, ObjectGS *gs)
 {
-    ObjectUav obj(rbu.uavid());
-    if (ExecutItem *item = VGDBManager::GetSqlByName("queryUavInfo"))
-    {
-        item->ClearData();
-        if (FiledVal *fd = item->GetConditionItem("id"))
-            fd->SetParam(rbu.uavid());
-
-        if (m_sqlEng->Execut(item))
-            obj.InitBySqlResult(*item);
-
-        while (m_sqlEng->GetResult());
-    }
-    PrcsBind(obj, rbu.seqno(),rbu.opid()==1, gs);
+    if (gs && !gs->GetAuth(ObjectGS::Type_UavManager))
+        saveBind(rbu.uavid(), rbu.opid()==1, gs);
 }
 
 void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
@@ -322,28 +193,26 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
     AckRequestUavStatus as;
     as.set_seqno(uia.seqno());
 
+    StringList strLs;
+    bool bMgr = gs && gs->GetAuth(ObjectGS::Type_UavManager);
     for (int i = 0; i < uia.uavid_size(); ++i)
     {
-        const string &uav = Utility::Upper(uia.uavid(i));
+        const string &tmp = uia.uavid(i);
+        string uav = Utility::Upper(tmp);
         ObjectUav *o = (ObjectUav *)GetObjectByID(uav);
-        bool bMgr = gs && gs->GetAuth(ObjectGS::Type_UavManager);
         if (o)
         {
             UavStatus *us = as.add_status();
-            o->transUavStatus(*us, bMgr);
+            o->TransUavStatus(*us, bMgr);
             us = NULL;
         }
-        else if (!_queryUavInfo(as, uav) && bMgr)
+        else
         {
-            if (_addUavId(uav) > 0)
-            {
-                UavStatus *us = as.add_status();
-                ObjectUav oU(uav);
-                oU.transUavStatus(*us, bMgr);
-                Log(0, gs?gs->GetObjectID():"", 0, "UavID (%d) insert!", uav);
-            }
+            strLs.push_back(uav);
         }
     }
+    if (strLs.size() > 0)
+        queryUavInfo(gs, uia.seqno(), strLs);
 
     if (gs)
     {
@@ -355,95 +224,102 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
 
 void UavManager::processAllocationUav(int seqno, const string &id)
 {
-    if (id.empty() && !m_sqlEng)
+    if (id.empty())
         return;
 
     if (GS2UavMessage *ms = new GS2UavMessage(this, id))
     {
         int res = 0;
         char idTmp[24] = {0};
-        while (m_lastId > 0)
-        {
-            sprintf(idTmp, "VIGAU:%08X", m_lastId+1);
-            int id = _addUavId(idTmp)>0?1:-1;
-            res = id > 0 ? 1 : 0;
-            if(res != 0)
-                break;
-        }
 
-        AckIdentityAllocation *ack = new AckIdentityAllocation;
-        ack->set_seqno(seqno);
-        ack->set_result(res);
-        ack->set_id(idTmp);
-        ms->AttachProto(ack);
-        SendMsg(ms);
+        sprintf(idTmp, "VIGAU:%08X", m_lastId++);
+        addUavId(seqno, idTmp);
+
+        if (AckIdentityAllocation *ack = new AckIdentityAllocation)
+        {
+            ack->set_seqno(seqno);
+            ack->set_result(res);
+            ack->set_id(idTmp);
+            ms->AttachProto(ack);
+            SendMsg(ms);
+        }
         if (res == 1)
             Log(0, id, 0, "Allocate ID(%d) for UAV!", idTmp);
     }
 }
 
-int UavManager::_addUavId(const std::string &uav)
+void UavManager::processMaxID(const DBMessage &msg)
+{
+    const Variant &v = msg.GetRead("max(id)");
+    if (v.GetType() == Variant::Type_string)
+        m_lastId = toIntID(v.ToString());
+}
+
+void UavManager::addUavId(int seq, const std::string &uav)
 {
     uint32_t id = toIntID(uav);
     if (id < 1)
-        return -1;
+        return;
 
-    ExecutItem *sql = VGDBManager::GetSqlByName("insertUavInfo");
-    FiledVal *fd = sql->GetWriteItem("id");
-    if (sql && fd)
+    if (DBMessage *msg = new DBMessage(this))
     {
-        sql->ClearData();
-        fd->SetParam(uav);
-        if (FiledVal *fdTmp = sql->GetWriteItem("authCheck"))
-            fdTmp->SetParam(GSOrUavMessage::GenCheckString(8));
-        if (m_sqlEng->Execut(sql))
+        msg->SetSeqNomb(seq);
+        msg->SetSql("insertUavInfo");
+        msg->SetWrite("id", uav);
+        msg->SetWrite("authCheck", GSOrUavMessage::GenCheckString(8));
+        SendMsg(msg);
+    }
+}
+
+void UavManager::queryUavInfo(ObjectGS *gs, int seq, const std::list<std::string> &uavs)
+{
+    if (!gs)
+        return;
+
+    if (DBMessage *msg = new DBMessage(gs, IMessage::UavsQueryRslt, "DBUav"))
+    {
+        msg->SetSeqNomb(seq);
+        int idx = 0;
+        if (gs->GetAuth(ObjectGS::Type_UavManager) && uavs.size()==1)
         {
-            if (m_lastId < id)
-                m_lastId = id;
-            return id;
+            uint32_t id = toIntID(uavs.front());
+            if (id >= 1)
+            {
+                idx = 1;
+                msg->SetSql("insertUavInfo", true);
+                msg->SetWrite("id", uavs.front(), idx);
+                msg->SetWrite("authCheck", GSOrUavMessage::GenCheckString(8), idx);
+                idx++;
+            }
         }
-        return 0;
+        if (idx < 1)
+            msg->SetSql("queryUavInfo", true);
+        else
+            msg->AddSql("queryUavInfo");
+
+        msg->SetCondition("id", uavs, idx);
+        SendMsg(msg);
     }
-    return -1;
 }
 
-bool UavManager::_queryUavInfo(das::proto::AckRequestUavStatus &aus, const string &uav)
+void UavManager::saveBind(const std::string &uav, bool bBind, ObjectGS *gs)
 {
-    if (ExecutItem *item = VGDBManager::GetSqlByName("queryUavInfo"))
+    if (!gs)
+        return;
+
+    if (DBMessage *msg = new DBMessage(gs, IMessage::UavBindRslt, "DBUav"))
     {
-        item->ClearData();
-        if (FiledVal *fd = item->GetConditionItem("id"))
-            fd->SetParam(uav);
-
-        if (!m_sqlEng->Execut(item))
-            return false;
-
-        UavStatus *us = aus.add_status();
-        ObjectUav oU(uav);
-        oU.InitBySqlResult(*item);
-        oU.transUavStatus(*us);
-        while (m_sqlEng->GetResult());
-        return true;
-    }
-    return false;
-}
-
-void UavManager::_saveBind(const std::string &uav, bool bBind, const std::string gs)
-{
-    if (ExecutItem *item = VGDBManager::GetSqlByName("updateBinded"))
-    {
-        item->ClearData();
-        if (FiledVal *fd = item->GetConditionItem("id"))
-            fd->SetParam(uav);
-
-        if (FiledVal *fd = item->GetWriteItem("binded"))
-            fd->InitOf<char>(bBind);
-        if (FiledVal *fd = item->GetWriteItem("binder"))
-            fd->SetParam(gs);
-        if (FiledVal *fd = item->GetWriteItem("timeBind"))
-            fd->InitOf(Utility::msTimeTick());
-        m_sqlEng->Execut(item);
-        Log(0, gs, 0, "%s %s", bBind ? "bind" : "unbind", uav.c_str());
+        msg->SetSql("updateBinded");
+        msg->AddSql("queryUavInfo");
+        msg->SetWrite("binded", bBind, 1);
+        msg->SetWrite("binder", gs->GetObjectID(), 1);
+        msg->SetWrite("timeBind", Utility::msTimeTick(), 1);
+        msg->SetCondition("id", uav, 1);
+        msg->SetCondition("UavInfo.binded", false, 1);
+        msg->SetCondition("UavInfo.binder", gs->GetObjectID(), 1);
+        msg->SetCondition("id", uav, 2);
+        SendMsg(msg);
+        Log(0, gs->GetObjectID(), 0, "%s %s", bBind ? "bind" : "unbind", uav.c_str());
     }
 }
 

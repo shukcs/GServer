@@ -6,6 +6,7 @@
 #include "socketBase.h"
 #include "IMessage.h"
 #include "GOutLog.h"
+#include "LoopQueue.h"
 
 using namespace std;
 
@@ -27,13 +28,12 @@ protected:
     {
         ObjectManagers &ms = ObjectManagers::Instance();
         ms.PrcsObjectsDestroy();
-        bool ret = ms.PrcsMangerData();
         ms.PrcsSubcribes();
         ms.PrcsMessages();
         if(ms.PrcsRcvBuff())
-            ret = true;
+            return true;
 
-        return ret;
+        return false;
     }
 private:
 };
@@ -89,6 +89,8 @@ ObjectManagers::ObjectManagers():m_mtx(new Mutex)
 , m_mtxObj(new Mutex), m_mtxMsg(new Mutex)
 , m_thread(new ManagerThread)
 {
+    if (m_thread)
+        m_thread->SetRunning();
 }
 
 ObjectManagers::~ObjectManagers()
@@ -175,34 +177,24 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
     if (!sock)
         return;
 
-    sock->ResetSendBuff(256);
-    m_mtx->Lock();
-    map<ISocket *, BaseBuff*>::iterator itr = m_socksRcv.find(sock);
-    BaseBuff *bb = NULL;
+    map<ISocket *, LoopQueBuff*>::iterator itr = m_socksRcv.find(sock);
+    LoopQueBuff *bb = NULL;
     if (itr == m_socksRcv.end())
     {
-        bb = new BaseBuff(2048);
+        bb = new LoopQueBuff(2048);
         if (bb)
+        {
+            m_mtx->Lock();
             m_socksRcv[sock] = bb;
+            m_mtx->Unlock();
+        }
     }
     else
     {
         bb = itr->second;
     }
 
-    if (!bb->Add(buf, len))
-    {
-        if (len < 2048)
-        {
-            bb->Clear();
-            bb->Add(buf, len);
-        }
-        else if (bb->ReMained() > 0)
-        {
-            bb->Add(buf, bb->ReMained());
-        }
-    }
-    m_mtx->Unlock();
+    bb->Push(buf, len, true);
 }
 
 void ObjectManagers::Subcribe(IObject *o, const std::string &sender, int tpMsg)
@@ -251,7 +243,7 @@ void ObjectManagers::Destroy(IObject *o)
 
 void ObjectManagers::OnSocketClose(ISocket *sock)
 {
-    map<ISocket *, BaseBuff*>::iterator itr = m_socksRcv.find(sock);
+    map<ISocket *, LoopQueBuff*>::iterator itr = m_socksRcv.find(sock);
     if (itr != m_socksRcv.end())
     {
         Lock l(m_mtx);
@@ -263,16 +255,15 @@ bool ObjectManagers::PrcsRcvBuff()
 {
     PrcsCloseSocket();
     bool ret = false;
-    for (const pair<ISocket *, BaseBuff*> &itr : m_socksRcv)
+    for (const pair<ISocket *, LoopQueBuff*> &itr : m_socksRcv)
     {
-        BaseBuff *buff = itr.second;
+        LoopQueBuff *buff = itr.second;
         if (buff && buff->IsChanged())
         {
-            int prcs = buff->Count();
+            int copied = buff->CopyData(m_buff, sizeof(m_buff));
             for (const pair<int, IObjectManager*> &mgr : m_managersMap)
             {
-                int n=0;
-                if (mgr.second->Receive(itr.first, *buff, n))
+                if (mgr.second->Receive(itr.first, copied, m_buff))
                 {
                     m_mtx->Lock();
                     m_keysRemove.push_back(itr.first);
@@ -280,11 +271,8 @@ bool ObjectManagers::PrcsRcvBuff()
                     ret = true;
                     break;
                 }
-                if (n < prcs)
-                    prcs = n;
             }
-            buff->Clear(prcs);
-            buff->SetNoChange();
+            buff->Clear(0);
         }
     }
     return ret;
@@ -390,25 +378,9 @@ ObjectManagers::SubcribeList &ObjectManagers::getMessageSubcribes(IMessage *msg)
     return _getSubcribes(msg ? msg->GetSenderID() : string(), msg ? msg->GetMessgeType() : -1);
 }
 
-bool ObjectManagers::PrcsMangerData()
-{
-    bool ret = false;
-
-    for (const pair<int, IObjectManager*> &mgr : m_managersMap)
-    {
-        IObjectManager *om = mgr.second;
-        if (om->HasIndependThread())
-            continue;
-
-        if (om->ProcessBussiness())
-            ret = true;
-    }
-    return ret;
-}
-
 void ObjectManagers::_removeBuff(ISocket *sock)
 {
-    map<ISocket *, BaseBuff*>::iterator itr = m_socksRcv.find(sock);
+    map<ISocket *, LoopQueBuff*>::iterator itr = m_socksRcv.find(sock);
     if (itr != m_socksRcv.end())
     {
         delete itr->second;

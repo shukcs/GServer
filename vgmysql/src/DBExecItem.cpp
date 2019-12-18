@@ -6,22 +6,29 @@
 #include <mysql.h>
 #endif
 
-#include "VGDBManager.h"
+#include "MysqlDB.h"
+#include "VGMySql.h"
 #include <tinyxml.h>
 #include <string.h>
 
+#define ParamSpliter "#;#"
+#define LeftBraceCount(f) ((f&NumbLeftMask))
+#define RightBraceCount(f) ((f&NumbRightMask)>>8)
+
+static const list<FiledVal*> lsFieldEmpty;
 ///////////////////////////////////////////////////////////////////////////////////////
 //FiledVal
 ///////////////////////////////////////////////////////////////////////////////////////
 FiledVal::FiledVal(int tp, const std::string &name, int len)
-: m_type(tp), m_bEmpty(true), m_bStatic(false), m_buff(NULL)
+: m_type(tp), m_bEmpty(true), m_tpField(NoBuff), m_buff(NULL)
 , m_lenMax(0), m_len(0), m_name(name), m_condition("=")
 {
     InitBuff(len);
+    transType(tp);
 }
 
 FiledVal::FiledVal(VGTableField *fild, bool bOth)
-: m_type(-1), m_bEmpty(true), m_bStatic(false), m_buff(NULL)
+: m_type(-1), m_bEmpty(true), m_tpField(NoBuff), m_buff(NULL)
 , m_lenMax(0), m_len(0), m_condition("=")
 {
     if (fild)
@@ -29,6 +36,7 @@ FiledVal::FiledVal(VGTableField *fild, bool bOth)
         m_type = fild->GetType();
         m_name = fild->GetName(bOth);
         InitBuff(fild->GetLength());
+        transType(m_type);
     }
 }
 
@@ -37,19 +45,44 @@ FiledVal::~FiledVal()
     delete m_buff;
 }
 
+void FiledVal::transType(int sqlType)
+{
+    switch (sqlType)
+    {
+    case MYSQL_TYPE_TINY:
+        m_tpField = Int8; break;
+    case MYSQL_TYPE_SHORT:
+        m_tpField = Int16; break;
+    case MYSQL_TYPE_LONG:
+        m_tpField = Int32; break;
+    case MYSQL_TYPE_FLOAT:
+        m_tpField = Float; break;
+    case MYSQL_TYPE_DOUBLE:
+        m_tpField = Double; break;
+    case MYSQL_TYPE_LONGLONG:
+        m_tpField = Int64; break;
+    case MYSQL_TYPE_VAR_STRING:
+        m_tpField = Buff; break;
+    case MYSQL_TYPE_STRING:
+        m_tpField = String; break;
+    default:
+        break;
+    }
+}
+
 void FiledVal::SetFieldName(const std::string &name)
 {
     m_name = name;
 }
 
-const std::string & FiledVal::GetFieldName() const
+const std::string &FiledVal::GetFieldName() const
 {
     return m_name;
 }
 
-void FiledVal::SetParam(const string &param, bool val, bool bStatic)
+void FiledVal::SetParam(const string &param, FieldType tp)
 {
-    if(param.length() > 0)
+    if(param.length() > 0 && (NoBuff==tp || StaticRef==tp || StaticParam==tp))
     {
         if(m_buff)
         {
@@ -57,13 +90,27 @@ void FiledVal::SetParam(const string &param, bool val, bool bStatic)
             m_buff = NULL;
         }
         m_len = 0;
-        if (val)
+        if (StaticParam==tp || NoBuff==tp)
             m_param = string("\'") + param + "\'";
         else
             m_param = param;
 
         m_bEmpty = false;
-        m_bStatic = bStatic;
+        m_tpField = (FieldType)((m_tpField&~List)|tp);
+    }
+}
+
+void FiledVal::SetParam(const list<string> &param)
+{
+    m_bEmpty = false;
+    m_tpField = (FieldType)(m_tpField|List);
+    m_param.clear();
+    for (const string &itr : param)
+    {
+        if (m_param.empty())
+            m_param = itr;
+        else
+            m_param += string(ParamSpliter) + itr;
     }
 }
 
@@ -86,12 +133,31 @@ void FiledVal::InitBuff(unsigned len, const void *buf)
     if (buf && m_buff)
         memcpy(m_buff, buf, len);
 
+    m_tpField = (FieldType)(m_tpField&~List);
     m_bEmpty = false;
 }
 
-string FiledVal::ToConditionString()const
+string FiledVal::ToConditionString(const string &str)const
 {
-    return GetFieldName() + m_condition + (IsStaticParam() ? GetParam() : "?");
+    string ret;
+    if (List & m_tpField)
+    {
+        for (const string &itr : VGMySql::SplitString(m_param, ParamSpliter))
+        {
+            string tmp;
+            tmp.resize(m_name.size() + m_condition.size() + itr.size() + 10);
+            if (ret.empty())
+                sprintf(&tmp.front(), "%s%s'%s'", m_name.c_str(), m_condition.c_str(), itr.c_str());
+            else
+                sprintf(&tmp.front(), " or %s%s'%s'", m_name.c_str(), m_condition.c_str(), itr.c_str());
+            ret += tmp.c_str();
+        }
+    }
+    else
+    {
+        ret += m_name + m_condition + (IsStringParam() ? GetParam() : "?");
+    }
+    return finallyString(ret, getBraceFlag(str));
 }
 
 unsigned FiledVal::GetMaxLen() const
@@ -109,6 +175,11 @@ void *FiledVal::GetBuff() const
     return m_buff;
 }
 
+FiledVal::FieldType FiledVal::GetParamType() const
+{
+    return m_tpField;
+}
+
 int FiledVal::GetType() const
 {
     return m_type;
@@ -119,7 +190,7 @@ unsigned long &FiledVal::ReadLength()
     return m_len;
 }
 
-bool FiledVal::IsStaticParam() const
+bool FiledVal::IsStringParam() const
 {
     return m_len<=0 && m_param.length()>0;
 }
@@ -131,11 +202,15 @@ bool FiledVal::IsEmpty() const
 
 void FiledVal::SetEmpty()
 {
-    if(!IsStaticParam() || !m_bStatic)
+    if (0 == ((StaticParam | StaticRef)&m_tpField))
         m_bEmpty = true;
+    else
+        m_param.clear();
+
+    m_len = 0;
 }
 
-void FiledVal::parse(const TiXmlElement *e, ExecutItem *sql)
+void FiledVal::parse(const TiXmlElement *e, ExecutItem *sql, const MysqlDB &db)
 {
     if (!e || !sql)
         return;
@@ -152,7 +227,7 @@ void FiledVal::parse(const TiXmlElement *e, ExecutItem *sql)
     if (!name || tp > ExecutItem::Condition || tp < ExecutItem::Read)
         return;
 
-    if (FiledVal *item = parseFiled(*e, sql->ExecutTables().size() > 1))
+    if (FiledVal *item = parseFiled(db, *e, sql->ExecutTables().size() > 1))
     {
         if (const char *tmp = e->Attribute("condition"))
             item->m_condition = tmp;
@@ -179,12 +254,12 @@ int FiledVal::transToType(const char *pro)
     return ret;
 }
 
-FiledVal *FiledVal::parseFiled(const TiXmlElement &e, bool oth)
+FiledVal *FiledVal::parseFiled(const MysqlDB &db, const TiXmlElement &e, bool oth)
 {
     const char *name = e.Attribute("name");
     if (const char *tmp = e.Attribute("ref"))
     {
-        if (VGTable *tb = VGDBManager::GetTableByName(tmp))
+        if (VGTable *tb = db.GetTableByName(tmp))
         {
             if (VGTableField *fd = tb->FindFieldByName(name))
                 return new FiledVal(fd, oth);
@@ -199,21 +274,56 @@ FiledVal *FiledVal::parseFiled(const TiXmlElement &e, bool oth)
     else
     {
         const char *tmp = e.Attribute("param");
-        FiledVal *item = new FiledVal(-1, name, 0);
+        FiledVal *item = new FiledVal(NoBuff, name, 0);
         if (tmp)
-            item->SetParam(tmp, false, true);
+            item->SetParam(tmp, StaticRef);
         else if (const char *val = e.Attribute("paramVal"))
-            item->SetParam(val, true, true);
+            item->SetParam(val, StaticParam);
         return item;
     }
 
     return NULL;
 }
+
+FiledVal::BraceFlag FiledVal::getBraceFlag(const string &str)
+{
+    int nLeft = 0;
+    int nRight = 0;
+    const char *tmp = str.c_str();
+    
+    for (uint32_t i = 0; i < str.size(); ++i)
+    {
+        if (tmp[i] == '(')
+            ++nLeft;
+        else if (tmp[i] == ')')
+            ++nRight;
+        else
+            break;
+    }
+    return BraceFlag(nLeft | (nRight << 8));
+}
+
+string FiledVal::finallyString(const string &str, BraceFlag f)
+{
+    int nTmp = LeftBraceCount(f);
+    string ret;
+    while (nTmp-- > 0)
+    {
+        ret += "(";
+    }
+    ret += str;
+    nTmp = RightBraceCount(f);
+    while (nTmp-- > 0)
+    {
+        ret += ")";
+    }
+    return ret;
+}
 ///////////////////////////////////////////////////////////////////////////////////////
 //ExecutItem
 ///////////////////////////////////////////////////////////////////////////////////////
 ExecutItem::ExecutItem(ExecutType tp, const std::string &name)
-: m_type(tp), m_name(name), m_condition(" and "), m_autoIncrement(NULL)
+: m_type(tp), m_name(name), m_autoIncrement(NULL)
 , m_bHasForeignRefTable(false), m_bRef(false)
 {
 }
@@ -247,15 +357,15 @@ const StringList &ExecutItem::ExecutTables() const
     return m_tables;
 }
 
-void ExecutItem::SetExecutTables(const StringList &tbs)
+void ExecutItem::SetExecutTables(const StringList &tbs, const MysqlDB &db)
 {
     for (const std::string &itr : tbs)
     {
-        AddExecutTable(itr);
+        AddExecutTable(itr, db);
     }
 }
 
-void ExecutItem::AddExecutTable(const std::string &t)
+void ExecutItem::AddExecutTable(const std::string &t, const MysqlDB &db)
 {
     for (const std::string &itr:m_tables)
     {
@@ -264,7 +374,7 @@ void ExecutItem::AddExecutTable(const std::string &t)
     }
     if (!m_bHasForeignRefTable)
     {
-        VGTable *tb = VGDBManager::GetTableByName(t);
+        VGTable *tb = db.GetTableByName(t);
         if (tb && tb->IsForeignRef())
             m_bHasForeignRefTable = true;
     }
@@ -331,19 +441,44 @@ FiledVal *ExecutItem::GetIncrement() const
     return m_autoIncrement;
 }
 
-bool ExecutItem::IsValid() const
+const list<FiledVal*> &ExecutItem::Fields(FiledType tp) const
 {
-    return (m_type > Unknown && m_type <= Select && m_tables.size() > 0);
+    switch (tp)
+    {
+    case ExecutItem::Read:
+        return m_itemsRead;
+    case ExecutItem::Write:
+        return m_itemsWrite;
+    case ExecutItem::Condition:
+        return m_itemsCondition;
+    case ExecutItem::AutoIncrement:
+        break;
+    default:
+        break;
+    }
+    return lsFieldEmpty;
 }
 
- FiledVal *ExecutItem::GetItem(const string &name, int tp) const
+bool ExecutItem::IsValid() const
 {
-     if (ExecutItem::Read == tp)
+    return (m_type>ExecutItem::Unknown && m_type <= Select && m_tables.size() > 0);
+}
+
+ FiledVal *ExecutItem::GetItem(const string &name, FiledType tp) const
+{
+     switch (tp)
+     {
+     case ExecutItem::Read:
          return GetReadItem(name);
-     else if (ExecutItem::Write == tp)
+     case ExecutItem::Write:
          return GetWriteItem(name);
-     else if (ExecutItem::Condition == tp)
+     case ExecutItem::Condition:
          return GetConditionItem(name);
+     case ExecutItem::AutoIncrement:
+         return m_autoIncrement;
+     default:
+         break;
+     }
 
      return NULL;
 }
@@ -353,12 +488,12 @@ MYSQL_BIND *ExecutItem::GetParamBinds()
     int count = 0;
     for (FiledVal *itr : m_itemsWrite)
     {
-        if (!itr->IsEmpty() && !itr->IsStaticParam())
+        if (!itr->IsEmpty() && !itr->IsStringParam())
             count++;
     }
     for (FiledVal *itr : m_itemsCondition)
     {
-        if (!itr->IsEmpty() && !itr->IsStaticParam())
+        if (!itr->IsEmpty() && !itr->IsStringParam())
             count++;
     }
     if (count > 0)
@@ -462,7 +597,7 @@ void ExecutItem::transformBind(FiledVal *item, MYSQL_BIND &bind, bool bRead)
     }
 }
 
-ExecutItem *ExecutItem::parse(const TiXmlElement *e)
+ExecutItem *ExecutItem::parse(const TiXmlElement *e, const MysqlDB &db)
 {
     if (!e)
         return NULL;
@@ -480,25 +615,25 @@ ExecutItem *ExecutItem::parse(const TiXmlElement *e)
         return sql;
 
     if (const char *tmpC = e->Attribute("condition"))
-        sql->m_condition = string(" ") + tmpC + " ";
+        sql->m_conditions = VGMySql::SplitString(tmpC, ";");
 
-    sql->SetExecutTables(VGDBManager::SplitString(table, ";"));
-    sql->_parseItems(e);
+    sql->SetExecutTables(VGMySql::SplitString(table, ";"), db);
+    sql->_parseItems(e, db);
 
     return sql;
 }
 
-void ExecutItem::_parseItems(const TiXmlElement *e)
+void ExecutItem::_parseItems(const TiXmlElement *e, const MysqlDB &db)
 {
     if (!e)
         return;
     
     const char *tmp = e->Attribute("all");
-    if (tmp && VGDBManager::str2int(tmp) != 0)
+    if (tmp && VGMySql::Str2int(tmp) != 0)
     {
         for (const string &itr : m_tables)
         {
-            if (VGTable *tb = VGDBManager::GetTableByName(itr.c_str()))
+            if (VGTable *tb = db.GetTableByName(itr))
             {
                 for (VGTableField *f : tb->Fields())
                 {
@@ -513,11 +648,10 @@ void ExecutItem::_parseItems(const TiXmlElement *e)
         const TiXmlNode *node = e->FirstChild("item");
         while (node)
         {
-            FiledVal::parse(node->ToElement(), this);
+            FiledVal::parse(node->ToElement(), this, db);
             node = node->NextSibling("item");
         }
     }
-
 }
 
 void ExecutItem::_addCondition(FiledVal *item)
@@ -584,7 +718,7 @@ string ExecutItem::_toUpdate(MYSQL_BIND *bind, int &pos) const
         if (field.length() < 1)
             return string();
 
-        bool bStatic = item->IsStaticParam();  
+        bool bStatic = item->IsStringParam();  
         if (updates.length() < 1)
         {
             if (bStatic)
@@ -623,18 +757,23 @@ std::string ExecutItem::_toSelect(MYSQL_BIND *param, int &pos) const
 string ExecutItem::_conditionsString(MYSQL_BIND *bind, int &pos) const
 {
     string conditions;
+    StringList::const_iterator itrC = m_conditions.begin();
+    string strL;
     for (FiledVal *itr : m_itemsCondition)
     {
+        string tmp = itrC != m_conditions.end() ? *itrC : "and";
         if(itr->IsEmpty())
             continue;
 
-        string tmp = itr->ToConditionString();
-        if (conditions.length() < 1)
-            conditions = string(" where ")+tmp;
+        if (conditions.empty())
+            conditions = string(" where ")+ itr->ToConditionString(tmp);
         else
-            conditions += m_condition + tmp;
+            conditions += strL + itr->ToConditionString(tmp);
 
-        if(bind && !itr->IsStaticParam())
+        strL = _getCondition(tmp);
+        if (itrC != m_conditions.end())
+            ++itrC;
+        if(bind && !itr->IsStringParam())
             transformBind(itr, bind[pos++]);
     }
     return conditions;
@@ -665,7 +804,7 @@ std::string ExecutItem::_genWrite(MYSQL_BIND *binds, int &pos)const
         if (item->IsEmpty())
             continue;
 
-        bool bStatic = item->IsStaticParam();
+        bool bStatic = item->IsStringParam();
         string field = item->GetFieldName();
         if (field.length() < 1)
             return string();
@@ -694,6 +833,31 @@ std::string ExecutItem::_genWrite(MYSQL_BIND *binds, int &pos)const
     fields += ")";
     values += ")";
     return fields + values;
+}
+
+std::string ExecutItem::_getCondition(const std::string &str)const
+{
+    if (str.empty())
+        return " and ";
+    //ÀàÐÍÓÐimp, ()imp£¬(imp, imp), (()imp, ())...
+    const char *pStr = str.c_str();
+    int beg = -1;
+    int nLen = 0;
+    for (uint32_t i = 0; i < str.size(); ++i)
+    {
+        if ('(' != pStr[i] && ')' != pStr[i])
+        {
+            if (beg < 0)
+                beg = i;
+            nLen++;
+            continue;
+        }
+
+        if (beg>=0)
+            break;
+    }
+
+    return beg >= 0 ? " " + str.substr(beg, nLen) + " " : string();
 }
 
 ExecutItem::ExecutType ExecutItem::transToSqlType(const char *pro)

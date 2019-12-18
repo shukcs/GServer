@@ -3,8 +3,8 @@
 
 #include "stdconfig.h"
 #include "socketBase.h"
-#include "BaseBuff.h"
 
+class LoopQueBuff;
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
@@ -44,7 +44,7 @@ protected:
     std::string GetObjectID()const;
     bool IsConnect()const;
 
-    //
+    //GSockM
     SocketAddress *GetAddress()const;
     void SetAddress(SocketAddress *);
     int GetHandle()const;
@@ -60,13 +60,13 @@ protected:
     void OnConnect(bool);
 
     void OnBind(bool);
-    int CopySend(char *buf, int sz, unsigned from=0)const;
+    int CopySend(char *buf, int sz)const;
     int GetSendLength()const;
     bool ResetSendBuff(uint16_t sz);
     bool IsAccetSock()const;
 
     void SetPrcsManager(ISocketManager *h);
-    void SetMutex(IMutex *mtx);
+    bool ResizeBuff(int sz);
 protected:
     friend class GSocketManager;
     ISocketManager  *m_manager;
@@ -77,8 +77,7 @@ protected:
     bool            m_bAccept;
     SocketStat      m_stat;
     SocketAddress   *m_address;
-    BaseBuff        m_buff;
-    IMutex          *m_mtx;
+    LoopQueBuff     *m_buffWrite;
 };
 
 #ifdef SOCKETS_NAMESPACE

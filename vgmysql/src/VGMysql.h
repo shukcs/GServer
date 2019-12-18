@@ -33,8 +33,20 @@ public:
     SHARED_SQL bool CreateTable(VGTable *tb);
     SHARED_SQL bool ExistTrigger(const std::string &name);
     SHARED_SQL bool CreateTrigger(VGTrigger *trigger);
-
+public:
     MYSQL_RES *Query(const std::string &sql);
+    template<typename T, typename Contianer = std::list<T> >
+    static bool IsContainsInList(const Contianer ls, const T &e)
+    {
+        for (const T &itr : ls)
+        {
+            if (itr == e)
+                return true;
+        }
+        return false;
+    }
+    static long Str2int(const std::string &str, unsigned radix = 10, bool *suc = NULL);
+    static std::list<std::string> SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty = true);
 protected:
 	bool _canOperaterDB();
 	bool _executChange(const std::string &sql, MYSQL_BIND *binds, FiledVal *i=NULL);

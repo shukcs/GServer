@@ -7,6 +7,7 @@
 class ExecutItem;
 class TiXmlElement;
 class TiXmlNode;
+class MysqlDB;
 class VGTrigger
 {
 public:
@@ -16,7 +17,7 @@ public:
 
     std::string ToSqlString()const;
 public:
-    static VGTrigger *Parse(const TiXmlNode &e);
+    static VGTrigger *Parse(const TiXmlNode &e, const MysqlDB &db);
 protected:
     VGTrigger(const std::string &name);
 
@@ -27,8 +28,8 @@ protected:
 private:
     std::string _timeStr()const;
     std::string _eventStr()const;
-    void _addSqls(const std::list<std::string> &items);
-    void _parseSqls(const TiXmlElement &node);
+    void _addSqls(const std::list<std::string> &items, const MysqlDB &db);
+    void _parseSqls(const TiXmlElement &node, const MysqlDB &db);
 private:
 	std::string			    m_name;
     int                     m_event;

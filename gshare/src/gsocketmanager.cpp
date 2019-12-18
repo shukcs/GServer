@@ -67,7 +67,7 @@ bool GSocketManager::s_bRun = true;
 //GSocketManager
 ////////////////////////////////////////////////////////////////////////////
 GSocketManager::GSocketManager(int nThread, int maxSock) : m_mtx(new Mutex)
-, m_mtxSock(new Mutex), m_openMax(maxSock), m_thread(NULL)
+, m_openMax(maxSock), m_thread(NULL)
 {
     InitEpoll();
     InitThread(nThread);
@@ -100,7 +100,6 @@ bool GSocketManager::AddSocket(ISocket *s)
     if (int(m_sockets.size()+1) >= m_openMax)
         return false;
 
-    s->SetMutex(m_mtxSock);
     m_socketsAdd.push_back(s);
     s->SetPrcsManager(this);
     return true;
@@ -171,10 +170,10 @@ void GSocketManager::PrcsAddSockets()
 
     while (m_socketsAdd.size() > 0)
     {
-        m_mtxSock->Lock();
+        m_mtx->Lock();
         ISocket *s = m_socketsAdd.front();
         m_socketsAdd.pop_front();
-        m_mtxSock->Unlock();
+        m_mtx->Unlock();
         int handle = s->GetHandle();
         switch (s->GetSocketStat())
         {
@@ -227,15 +226,7 @@ bool GSocketManager::PrcsSockets()
                 _close(s);
 
             if (!s->IsListenSocket() && ISocket::Connected == st)
-            {
                 _send(s);
-                if (s->GetSendLength() > 0)
-                {
-                    m_mtx->Lock();
-                    m_socketsPrcs.push_back(p);
-                    m_mtx->Unlock();
-                }
-            }
         }
     }
     return true;
@@ -524,22 +515,17 @@ bool GSocketManager::_recv(ISocket *sock)
     if (fd == -1)
         return false;
 
-#if defined _WIN32 ||  defined _WIN64
-    int n = recv(fd, m_buff, sizeof(m_buff), 0);
-#else
-    int n = read(fd, m_buff, sizeof(m_buff));
-#endif
-    if (n <= 0)//关闭触发EPOLLIN，但接收不到数据
-        return false;
-
-    sock->OnRead(m_buff, n);
-    while (n >= int(sizeof(m_buff)))
+    int n = sizeof(m_buff);
+    for (int i=0; n >= int(sizeof(m_buff)); ++i)
     {
 #if defined _WIN32 ||  defined _WIN64
         n = recv(fd, m_buff, sizeof(m_buff), 0);
 #else
         n = read(fd, m_buff, sizeof(m_buff));
 #endif
+        if (n <= 0)//关闭触发EPOLLIN，但接收不到数据
+            return i > 0;
+
         sock->OnRead(m_buff, n);
     }
     return true;
@@ -548,25 +534,28 @@ bool GSocketManager::_recv(ISocket *sock)
 void GSocketManager::_send(ISocket *sock)
 {
     int fd = sock ? sock->GetHandle() : -1;
-    int len = sock->GetSendLength();
     if (-1 == fd)
         return;
 
-    int count = 0;
-    while (len>count)
+    int sended = 0;
+    int len = sock->GetSendLength();
+    while (len>sended)
     {
-        int res = sock->CopySend(m_buff, sizeof(m_buff), count);
+        int res = sizeof(m_buff);
+        if (res > len)
+            res = len;
+        res = sock->CopySend(m_buff, sizeof(m_buff));
 #if defined _WIN32 ||  defined _WIN64
         res = send(fd, m_buff, res, 0);
 #else
         res = write(fd, m_buff, res);
 #endif
-        count += res;
+        sended += res;
         if (res > 0)
             sock->OnWrite(res);
         if(res < (int)sizeof(m_buff))
             break;
     }
-    if (count < 0)
+    if (sended < 0)
         _close(sock);
 }

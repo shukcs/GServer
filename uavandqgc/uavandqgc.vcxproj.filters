@@ -39,6 +39,12 @@
     <ClCompile Include="proto\das.pb.cc">
       <Filter>src\proto</Filter>
     </ClCompile>
+    <ClCompile Include="src\DBManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DBMessages.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\UavManager.h">
@@ -69,6 +75,12 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\FWItem.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DBManager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DBMessages.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

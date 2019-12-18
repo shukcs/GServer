@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="proto\das.pb.h" />
+    <ClInclude Include="src\DBManager.h" />
+    <ClInclude Include="src\DBMessages.h" />
     <ClInclude Include="src\FWAssist.h" />
     <ClInclude Include="src\FWItem.h" />
     <ClInclude Include="src\GSManager.h" />
@@ -24,6 +26,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="proto\das.pb.cc" />
+    <ClCompile Include="src\DBManager.cpp" />
+    <ClCompile Include="src\DBMessages.cpp" />
     <ClCompile Include="src\FWAssist.cpp" />
     <ClCompile Include="src\FWItem.cpp" />
     <ClCompile Include="src\GSManager.cpp" />

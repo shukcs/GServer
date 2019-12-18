@@ -22,7 +22,6 @@
     <ClCompile Include="src\ObjectBase.cpp" />
     <ClCompile Include="src\Ipv4Address.cpp" />
     <ClCompile Include="src\Ipv6Address.cpp" />
-    <ClCompile Include="src\BaseBuff.cpp" />
     <ClCompile Include="src\Mutex.cpp" />
     <ClCompile Include="src\ObjectManagers.cpp" />
     <ClCompile Include="src\socket_include.cpp" />
@@ -42,7 +41,6 @@
     <ClInclude Include="src\ObjectBase.h" />
     <ClInclude Include="src\Ipv4Address.h" />
     <ClInclude Include="src\Ipv6Address.h" />
-    <ClInclude Include="src\BaseBuff.h" />
     <ClInclude Include="src\Mutex.h" />
     <ClInclude Include="src\ObjectManagers.h" />
     <ClInclude Include="src\SocketAddress.h" />

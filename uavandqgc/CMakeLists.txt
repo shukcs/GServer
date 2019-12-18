@@ -13,10 +13,19 @@ INCLUDE_DIRECTORIES(
 )
 set(SRC_LIST
 	proto/das.pb.cc
+	proto/das.pb.h
+	src/DBManager.cpp
+	src/DBManager.h
+	src/DBMessages.cpp
+	src/DBMessages.h
 	src/GSManager.cpp
 	src/GSManager.h
-	src/UavManager.cpp
-	src/UavManager.h
+	src/FWItem.cpp
+	src/FWItem.h
+	src/FWAssist.cpp
+	src/FWAssist.h
+	src/Messages.cpp
+	src/Messages.h
 	src/ObjectAbsPB.cpp
 	src/ObjectAbsPB.h
 	src/ObjectGS.cpp
@@ -25,11 +34,8 @@ set(SRC_LIST
 	src/ObjectUav.h
 	src/ProtoMsg.cpp
 	src/ProtoMsg.h
-	src/Messages.cpp
-	src/FWItem.cpp
-	src/FWItem.h
-	src/FWAssist.cpp
-	src/FWAssist.h
+	src/UavManager.cpp
+	src/UavManager.h
 )
 
 add_library(${PACKAGE_NAME} SHARED ${SRC_LIST})

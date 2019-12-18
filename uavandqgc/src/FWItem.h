@@ -23,7 +23,6 @@ public:
     bool LoadFW(const std::string &name);
 protected:
     void creatFw(const std::string &name);
-    static VGMySql *getSqlMgr();
 private:
     int64_t     m_timeUpload;
     unsigned    m_lenFw;

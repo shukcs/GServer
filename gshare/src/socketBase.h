@@ -42,7 +42,7 @@ public:
     virtual void OnClose() = 0;
     virtual void OnConnect(bool=true) = 0;
     virtual void OnBind(bool=true) = 0;
-    virtual int CopySend(char *buff, int sz, unsigned fr=0)const = 0;
+    virtual int CopySend(char *buff, int sz)const = 0;
     virtual int GetSendLength()const = 0;
     virtual bool IsAccetSock()const = 0;
     virtual bool ResetSendBuff(uint16_t sz)=0;
@@ -53,7 +53,8 @@ public:
     virtual void SetObject(IObject *o) = 0;
     virtual bool Bind(int port, const std::string &hostLocal="") = 0;
     virtual bool ConnectTo(const std::string &hostRemote, int port) = 0;
-    virtual int Send(int len, void *buff=NULL) = 0;
+    virtual int Send(int len, void *buff) = 0;
+    virtual bool ResizeBuff(int sz) = 0;
 
     //无限制调用函数
     virtual SocketStat GetSocketStat()const = 0;
@@ -62,7 +63,6 @@ public:
     virtual std::string GetHost()const = 0;
     virtual uint16_t GetPort()const = 0;
     virtual std::string GetObjectID()const = 0;
-    virtual void SetMutex(IMutex *mtx) = 0;
 };
 
 class ISocketManager

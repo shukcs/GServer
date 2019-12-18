@@ -9,32 +9,6 @@ namespace google {
     }
 }
 
-enum MessageType
-{
-    Unknown,
-    BindUav,
-    PostOR,
-    ControlUav,
-    SychMission,
-    QueryUav,
-    UavAllocation,
-    Gs2UavEnd,
-
-    BindUavRes,
-    ControlUavRes,
-    SychMissionRes,
-    PostORRes,
-    PushUavSndInfo,
-    ControlGs,
-    QueryUavRes,
-    UavAllocationRes,
-
-    Uav2GsEnd,
-    Gs2GsBeging = Uav2GsEnd,
-    Gs2GsMsg,
-    Gs2GsAck,
-};
-
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif

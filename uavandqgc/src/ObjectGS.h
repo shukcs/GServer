@@ -28,13 +28,13 @@ namespace das {
     }
 }
 
-class ExecutItem;
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
 
 class ProtoMsg;
 class Gs2GsMessage;
+class DBMessage;
 class ObjectGS : public ObjectAbsPB
 {
 public:
@@ -57,13 +57,23 @@ public:
 public:
     static int GSType();
 protected:
-    virtual void OnConnected(bool bConnected);
-    virtual int GetObjectType()const;
-    virtual void ProcessMessage(const IMessage &msg);
-    virtual int ProcessReceive(void *buf, int len);
+    void OnConnected(bool bConnected);
+    int GetObjectType()const;
+    void ProcessMessage(IMessage *msg);
+    int ProcessReceive(void *buf, int len);
 
-    VGMySql *GetMySql()const;
     void processGs2Gs(const google::protobuf::Message &msg, int tp);
+    void processBind(const DBMessage &msg);
+    void processUavsInfo(const DBMessage &msg);
+    void processGSInfo(const DBMessage &msg);
+    void processCheckGS(const DBMessage &msg);
+    void processPostLandRslt(const DBMessage &msg);
+    void processPostPlanRslt(const DBMessage &msg);
+    void processQueryPlans(const DBMessage &msg);
+    void processFriends(const DBMessage &msg);
+    void processQueryLands(const DBMessage &msg);
+    void processGSInsert(const DBMessage &msg);
+    void InitObject();
 private:
     void _prcsLogin(das::proto::RequestGSIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
@@ -82,15 +92,11 @@ private:
     void _prcsReqNewGs(das::proto::RequestNewGS *msg);
     void _prcsGsMessage(das::proto::GroundStationsMessage *msg);
     void _prcsReqFriends(das::proto::RequestFriends *msg);
-
-    void _initialParcelDescription(das::proto::ParcelDescription *msg, const ExecutItem &item);
-    uint64_t _saveContact(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id);
-    uint64_t _saveLand(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id);
-    das::proto::ParcelContracter *_transPC(const ExecutItem &item);
-    int64_t _savePlan(ExecutItem *item, const das::proto::OperationDescription &msg);
-    void _initialPlan(das::proto::OperationDescription *msg, const ExecutItem &item);
-    int _addDatabaseUser(const std::string &user, const std::string &pswd);
+private:
+    void _checkGS(const std::string &user, int ack);
     void initFriend();
+    void addDBFriend(const std::string &user1, const std::string &user2);
+    int _addDatabaseUser(const std::string &user, const std::string &pswd, int seq);
 private:
     friend class GSManager;
     int             m_auth;

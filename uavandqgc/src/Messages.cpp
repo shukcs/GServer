@@ -158,7 +158,7 @@ Uav2GSMessage::Uav2GSMessage(IObjectManager *sender, const std::string &idRcv)
 {
 }
 
-MessageType Uav2GSMessage::getMessageType(const Message &msg)
+IMessage::MessageType Uav2GSMessage::getMessageType(const Message &msg)
 {
     MessageType ret = Unknown;
     const string &name = msg.GetTypeName();
@@ -205,7 +205,7 @@ GS2UavMessage::GS2UavMessage(IObjectManager *sender, const std::string &idRcv)
 {
 }
 
-MessageType GS2UavMessage::getMessageType(const google::protobuf::Message &msg)
+IMessage::MessageType GS2UavMessage::getMessageType(const google::protobuf::Message &msg)
 {
     MessageType ret = Unknown;
     const string &name = msg.GetTypeName();
@@ -238,7 +238,7 @@ Gs2GsMessage::Gs2GsMessage(IObjectManager *sender, const std::string &idRcv)
 {
 }
 
-MessageType Gs2GsMessage::getMessageType(const google::protobuf::Message &msg)
+IMessage::MessageType Gs2GsMessage::getMessageType(const google::protobuf::Message &msg)
 {
     MessageType ret = Unknown;
     const string &name = msg.GetTypeName();

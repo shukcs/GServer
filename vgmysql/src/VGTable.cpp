@@ -7,7 +7,8 @@
 #include <map>
 #include <string.h>
 
-#include "VGDBManager.h"
+#include "MysqlDB.h"
+#include "VGMySql.h"
 #include <tinyxml.h>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -34,7 +35,7 @@ public:
         return string(ret.c_str());
     }
 public:
-    static VGForeignKey *ParseForeignKey(const TiXmlElement &e, VGTable *parent)
+    static VGForeignKey *ParseForeignKey(const TiXmlElement &e, VGTable *parent, const MysqlDB &db)
     {
         const char *tmp = e.Attribute("name");
         if (!tmp || !parent)
@@ -50,7 +51,7 @@ public:
         if (!tmp)
             return NULL;
 
-        if (VGTable *tb = VGDBManager::GetTableByName(tmp))
+        if (VGTable *tb = db.GetTableByName(tmp))
         {
             if (!tb->FindFieldByName(foreign))
                 return NULL;
@@ -107,7 +108,7 @@ void VGTableField::SetConstrains(const string &n)
 {
     m_constraints.clear();
     
-    for (const string &itr : VGDBManager::SplitString(n, ";"))
+    for (const string &itr : VGMySql::SplitString(n, ";"))
     {
         if (itr.length()>0)
             m_constraints.push_back(itr);
@@ -233,7 +234,7 @@ int VGTableField::_parseBits(const string &n)
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
         return 0;
 
-    int nTmp = VGDBManager::str2int(n.substr(1, n.length() - 2));
+    int nTmp = VGMySql::Str2int(n.substr(1, n.length() - 2));
     if (nTmp > 0 && nTmp < 256)
         return (nTmp << 16) | MYSQL_TYPE_BIT;
 
@@ -245,7 +246,7 @@ int VGTableField::_parseChar(const string &n)
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
         return 0;
 
-    int nTmp = VGDBManager::str2int(n.substr(1, n.length()-2));
+    int nTmp = VGMySql::Str2int(n.substr(1, n.length()-2));
     if(nTmp>0 && nTmp<256)
         return (nTmp << 16) | MYSQL_TYPE_STRING;
 
@@ -257,7 +258,7 @@ int VGTableField::_parseVarChar(const string &n)
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
         return 0;
 
-    int nTmp = VGDBManager::str2int(n.substr(1, n.length() - 2));
+    int nTmp = VGMySql::Str2int(n.substr(1, n.length() - 2));
     nTmp = (nTmp + 7) / 8;
     if (nTmp > 0 && nTmp<0xffff)
         return (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
@@ -270,7 +271,7 @@ int VGTableField::_parseBinary(const string &n)
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
         return 0;
 
-    int nTmp = VGDBManager::str2int(n.substr(1, n.length() - 2));
+    int nTmp = VGMySql::Str2int(n.substr(1, n.length() - 2));
     if (nTmp > 0 && nTmp<256)
         return (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
     return 0;
@@ -281,7 +282,7 @@ int VGTableField::_parseVarBinary(const string &n)
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
         return 0;
 
-    int nTmp = VGDBManager::str2int(n.substr(1, n.length() - 2));
+    int nTmp = VGMySql::Str2int(n.substr(1, n.length() - 2));
     if (nTmp > 0 && nTmp<0xffff)
         return (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
     return 0;
@@ -294,11 +295,11 @@ VGTable::VGTable(const string &n/*=string()*/) : m_name(n)
 {
 }
 
-void VGTable::AddForeign(VGForeignKey *f)
+void VGTable::AddForeign(VGForeignKey *f, const MysqlDB &db)
 {
     if (f)
     {
-        if (VGTable *tb = VGDBManager::GetTableByName(f->GetGetForeignTable()))
+        if (VGTable *tb = db.GetTableByName(f->GetGetForeignTable()))
             tb->m_bForeignRef = true;
 
         m_foreigns.push_back(f);
@@ -361,7 +362,7 @@ bool VGTable::IsForeignRef() const
     return m_bForeignRef;
 }
 
-VGTable *VGTable::ParseTable(const TiXmlElement &e)
+VGTable *VGTable::ParseTable(const TiXmlElement &e, const MysqlDB &db)
 {
     const char *tmp = e.Attribute("name");
     string name = tmp ? tmp : string();
@@ -381,8 +382,8 @@ VGTable *VGTable::ParseTable(const TiXmlElement &e)
     node = e.FirstChild("foreign");
     while (node)
     {
-        if(VGForeignKey *fk = VGForeignKey::ParseForeignKey(*node->ToElement(), tb))
-            tb->AddForeign(fk);
+        if(VGForeignKey *fk = VGForeignKey::ParseForeignKey(*node->ToElement(), tb, db))
+            tb->AddForeign(fk,db);
 
         node = node->NextSibling("foreign");
     }

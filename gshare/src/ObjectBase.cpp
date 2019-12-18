@@ -7,6 +7,7 @@
 #include "Lock.h"
 #include "IMessage.h"
 #include "ILog.h"
+#include "LoopQueue.h"
 #include <stdarg.h>
 
 using namespace std;
@@ -35,12 +36,28 @@ class BussinessThread : public Thread
 {
 public:
     BussinessThread(int id, IObjectManager *mgr) :Thread(true)
-    , m_mgr(mgr), m_id(id)
+    , m_mgr(mgr), m_id(id), m_szBuff(0), m_buff(NULL)
     {
     }
-    int GetId()const
+    ~BussinessThread() 
     {
-        return m_id;
+        delete m_buff;
+    }
+    char *GetBuff()const 
+    {
+        return m_buff;
+    }
+    int GetBuffLenth()const
+    {
+        return m_szBuff;
+    }
+    void InitialBuff(uint16_t sz)
+    {
+        if (sz > m_szBuff)
+        {
+            if(m_buff = new char[sz])
+                m_szBuff = sz;
+        }
     }
 protected:
     bool RunLoop()
@@ -48,35 +65,22 @@ protected:
         if (!m_mgr)
             return false;
 
-        bool ret = false;
-        if (m_id == 0)
-            ret = m_mgr->ProcessBussiness();
-        
-        if (m_mgr->PrcsObjectsOfThread(m_id))
-            ret = true;
-        return ret;
+        m_mgr->ProcessBussiness(this);
+        return m_mgr->PrcsObjectsOfThread(*this);
     }
 private:
     IObjectManager  *m_mgr;
     int             m_id;
+    int             m_szBuff;
+    char            *m_buff;
 };
-
-void IObject::CheckTimer(uint64_t ms)
-{
-    if (ms - m_tmLastInfo > 3600000)
-        Release();
-    else if (m_sock && ms-m_tmLastInfo>30000)//超时关闭
-        m_sock->Close();
-}
-//////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
 //IObject
-//////////////////////////////////////////////////////////////////
-IObject::IObject(ISocket *sock, const string &id)
-: m_tmLastInfo(Utility::msTimeTick()), m_sock(sock), m_id(id)
-, m_bRelease(false), m_mtx(NULL), m_mtxMsg(NULL), m_idThread(-1)
-
+/////////////////////////////////////////////////////////////////////////////////////////
+IObject::IObject(ISocket *sock, const string &id): m_tmLastInfo(Utility::msTimeTick())
+, m_sock(sock), m_id(id), m_bRelease(false), m_stInit(Uninitial), m_buff(NULL), m_mtxMsg(NULL)
+, m_thread(NULL)
 {
-    SetBuffSize(1024 * 4);
 }
 
 IObject::~IObject()
@@ -97,7 +101,7 @@ void IObject::_prcsMessage()
         m_lsMsg.pop_front();
         m_mtxMsg->Unlock();
         if (msg->IsValid())
-            ProcessMessage(*msg);
+            ProcessMessage(msg);
         msg->Release();
     }
 
@@ -128,6 +132,9 @@ ISocket * IObject::GetSocket() const
 
 void IObject::SetSocket(ISocket *s)
 {
+    if (m_sock)
+        return;
+
     if (s)
     {
         s->SetObject(this);
@@ -136,20 +143,6 @@ void IObject::SetSocket(ISocket *s)
 
     m_sock = s;
     OnConnected(s != NULL);
-}
-
-int IObject::GetSenLength() const
-{
-    return 0;
-}
-
-int IObject::CopySend(char *, int, unsigned)
-{
-    return 0;
-}
-
-void IObject::SetSended(int)
-{
 }
 
 void IObject::PushReleaseMsg(IMessage *msg)
@@ -161,36 +154,53 @@ void IObject::PushReleaseMsg(IMessage *msg)
 bool IObject::PrcsBussiness(uint64_t ms)
 {
     bool ret = false;
-    if (m_buff.IsChanged())
+    _prcsMessage();
+    if (InitialFail == m_stInit)
     {
-        int n = ProcessReceive(m_buff.GetBuffAddress(), m_buff.Count());
-        if(n>0)
+        Release();
+        return ret;
+    }
+    if (Initialed != m_stInit)
+    {
+        InitObject();
+        return ret;
+    }
+
+    if (m_buff && m_buff->Count()>8 && m_thread)
+    {
+        void *buff = getThreadBuff();
+        int len = m_buff->CopyData(buff, getThreadBuffLen());
+        if (len > 0)
         {
-            m_mtx->Lock();
-            m_buff.Clear(n);
-            m_mtx->Unlock();
-            ret = true;
+            len = ProcessReceive(buff, len);
+            if (len > 0)
+            {
+                m_buff->Clear(len);
+                ret = true;
+            }
         }
     }
-    _prcsMessage();
     CheckTimer(ms);
     return ret;
 }
 
-int IObject::GetThreadId() const
+BussinessThread *IObject::GetThread() const
 {
-    return m_idThread;
+    return m_thread;
 }
 
-void IObject::SetThreadId(int id)
+void IObject::SetThread(BussinessThread *t)
 {
-    m_idThread = id;
+    m_thread = t;
 }
 
 void IObject::OnSockClose(ISocket *s)
 {
     if (m_sock == s)
+    {
+        m_sock = NULL;
         OnConnected(false);
+    }
 }
 
 void IObject::Subcribe(const std::string &sender, int msg)
@@ -224,8 +234,10 @@ void IObject::SetBuffSize(uint16_t sz)
 {
     if (sz < 32)
         sz = 32;
-
-    m_buff.InitBuff(sz);
+    if (!m_buff)
+        m_buff = new LoopQueBuff(sz);
+    else
+        m_buff->ReSize(sz);
 }
 
 IObjectManager *IObject::GetManager() const
@@ -246,26 +258,54 @@ IObjectManager *IObject::GetManagerByType(int tp)
 bool IObject::Receive(const void *buf, int len)
 {
     bool ret = false;
-    if (m_mtx && len>0)
-    {
-        Lock l(m_mtx);
-        ret = m_buff.Add(buf, len);
-    }
-    m_tmLastInfo = Utility::msTimeTick();
+    if (buf && len > 0)
+        ret = m_buff->Push(buf, len) > 0;
+
+    if (ret)
+        m_tmLastInfo = Utility::msTimeTick();
     return ret;
 }
+
+void IObject::CheckTimer(uint64_t ms)
+{
+    if (ms - m_tmLastInfo > 3600000)
+        Release();
+    else if (m_sock && ms - m_tmLastInfo > 30000)//超时关闭
+        m_sock->Close();
+}
+
+void *IObject::getThreadBuff()const
+{
+    if (m_thread)
+        return m_thread->GetBuff();
+
+    return NULL;
+}
+
+int IObject::getThreadBuffLen() const
+{
+    if (m_thread)
+        return m_thread->GetBuffLenth();
+    return 0;
+}
+
+void IObject::ClearRead()
+{
+    if (m_buff)
+        m_buff->Clear(m_buff->Count());
+}
+
 //////////////////////////////////////////////////////////////////
 //IObjectManager
 //////////////////////////////////////////////////////////////////
-IObjectManager::IObjectManager(uint16_t nThread) :m_mtx(new Mutex)
+IObjectManager::IObjectManager() :m_mtx(new Mutex)
 , m_log(NULL)
 {
-    InitThread(nThread);
 }
 
 IObjectManager::~IObjectManager()
 {
-    for (const pair<int, ThreadObjects> &itr : m_mapThreadObject)
+    for (const pair<BussinessThread*, ThreadObjects> &itr : m_mapThreadObject)
     {
         for (const pair<string, IObject*> &itrO : itr.second)
         {
@@ -282,7 +322,7 @@ IObjectManager::~IObjectManager()
     }
     Utility::Sleep(100);
     delete m_mtx;
-    for (const pair<int, ObjectMetuxs*> &t : m_threadMutexts)
+    for (const pair<BussinessThread*, ObjectMetuxs*> &t : m_threadMutexts)
     {
         delete t.second;
     }
@@ -293,22 +333,20 @@ void IObjectManager::LoadConfig()
 {
 }
 
-bool IObjectManager::Receive(ISocket *s, const BaseBuff &buff, int &prcs)
+bool IObjectManager::Receive(ISocket *s, int len, const char *buf)
 {
-    void *buf = buff.GetBuffAddress();
-    prcs = buff.Count();
-    if (!s || !buf || prcs <= 0)
+    if (!s || !buf || len <= 0)
         return false;
 
-    IObject *o = PrcsReceiveByMgr(s, (char*)buf, prcs);
+    IObject *o = PrcsNotObjectReceive(s, buf, len);
     if (o && !o->GetSocket())
     {
         AddObject(o);
         o->SetSocket(s);
     }
 
-    if (o && prcs < buff.Count())
-        o->Receive((char*)buf + prcs, buff.Count() - prcs);
+    if (o)
+        o->Receive((char*)buf, len);
 
     return o != NULL;
 }
@@ -349,46 +387,36 @@ bool IObjectManager::PrcsPublicMsg(const IMessage &)
     return false;
 }
 
-bool IObjectManager::HasIndependThread() const
-{
-    return m_lsThread.size() > 0;
-}
-
-bool IObjectManager::ProcessBussiness()
+bool IObjectManager::ProcessBussiness(BussinessThread *)
 {
     bool ret = false;
-    while (m_lsMsg.size())
+    if (!InitManager())
+        return false;
+
+    if (m_lsMsg.size())
     {
         m_mtx->Lock();
-        IMessage *msg = m_lsMsg.front();
-        m_lsMsg.pop_front();    //队列方式, 不用枷锁
-        m_mtx->Unlock();
-        if (msg->IsValid())
+        while (m_lsMsg.size())
         {
-            ProcessMessage(*msg);
-            msg->Release();
-            ret = true;
-        }
-    }
-    if(!HasIndependThread())
-    {
-        for (const pair<int, ThreadObjects> &itr : m_mapThreadObject)
-        {
-            uint64_t ms = Utility::msTimeTick();
-            for (const pair<string, IObject*> &itrO : itr.second)
+            IMessage *msg = m_lsMsg.front();
+            m_lsMsg.pop_front();    //队列方式, 不用枷锁
+            if (msg->IsValid())
             {
-                itrO.second->PrcsBussiness(ms);
+                ProcessMessage(msg);
+                msg->Release();
                 ret = true;
             }
         }
+        m_mtx->Unlock();
     }
+   
     PrcsReleaseMsg();
     return ret;
 }
 
-bool IObjectManager::PrcsObjectsOfThread(int nThread)
+bool IObjectManager::PrcsObjectsOfThread(BussinessThread &t)
 {
-    ObjectsMap::iterator itrObjs = m_mapThreadObject.find(nThread);
+    ObjectsMap::iterator itrObjs = m_mapThreadObject.find(&t);
     if (itrObjs == m_mapThreadObject.end())
         return false;
 
@@ -413,10 +441,10 @@ bool IObjectManager::PrcsObjectsOfThread(int nThread)
 
 bool IObjectManager::Exist(IObject *obj) const
 {
-    if (!obj || obj->GetThreadId()< 0)
+    if (!obj || obj->GetThread()==NULL)
         return false;
 
-    ObjectsMap::const_iterator itr = m_mapThreadObject.find(obj->GetThreadId());
+    ObjectsMap::const_iterator itr = m_mapThreadObject.find(obj->GetThread());
     if (itr != m_mapThreadObject.end())
     {
         ThreadObjects::const_iterator itrO = itr->second.find(obj->GetObjectID());
@@ -442,12 +470,12 @@ void IObjectManager::Log(int err, const std::string &obj, int evT, const char *f
     log->Log(slask, obj, evT, err);
 }
 
-void IObjectManager::ProcessMessage(const IMessage &msg)
+void IObjectManager::ProcessMessage(IMessage *msg)
 {
-    if (PrcsPublicMsg(msg))
+    if (PrcsPublicMsg(*msg))
         return;
 
-    for (const pair<int, ThreadObjects> &itr : m_mapThreadObject)
+    for (const pair<BussinessThread*, ThreadObjects> &itr : m_mapThreadObject)
     {
         for (const pair<string, IObject*> &o : itr.second)
         {
@@ -461,25 +489,22 @@ bool IObjectManager::AddObject(IObject *obj)
     if (!obj || Exist(obj))
         return false;
 
-    int n = GetPropertyThread();
-    std::map<int, ObjectMetuxs*>::iterator itr = m_threadMutexts.find(n);
+    BussinessThread *t = GetPropertyThread();
+    ThreadMetuxsMap::iterator itr = m_threadMutexts.find(t);
     if(itr!=m_threadMutexts.end())
-    {
-        obj->m_mtx = itr->second->m_mtx;
         obj->m_mtxMsg = itr->second->m_mtxMsg;
-    }
 
     m_mtx->Lock();
-    m_mapThreadObject[n][obj->GetObjectID()] = obj;
+    m_mapThreadObject[t][obj->GetObjectID()] = obj;
     m_mtx->Unlock();
-    obj->SetThreadId(n);
+    obj->SetThread(t);
 
     return true;
 }
 
 IObject *IObjectManager::GetObjectByID(const std::string &id) const
 {
-    for (const pair<int, ThreadObjects> &itr : m_mapThreadObject)
+    for (const pair<BussinessThread*, ThreadObjects> &itr : m_mapThreadObject)
     {
         ThreadObjects::const_iterator itrObj = itr.second.find(id);
         if(itrObj == itr.second.end())
@@ -508,32 +533,36 @@ bool IObjectManager::SendMsg(IMessage *msg)
     return IObject::SendMsg(msg);
 }
 
-void IObjectManager::InitThread(uint16_t nThread /*= 1*/)
+void IObjectManager::InitThread(uint16_t nThread, uint16_t bufSz)
 {
-    if (m_threadMutexts.find(0) == m_threadMutexts.end())
-        m_threadMutexts[0] = new ObjectMetuxs();
-    if (nThread > 255 || nThread < 1 || m_lsThread.size()>0)
+    if (nThread < 1)
+        nThread = 1;
+
+    if (nThread > 255 || m_lsThread.size()>0)
         return;
 
     for (int i=0; i<nThread; ++i)
     {
-        if(BussinessThread *t = new BussinessThread(i, this))
+        BussinessThread *t = new BussinessThread(i, this);
+        if(t)
+        {
+            t->InitialBuff(bufSz);
             m_lsThread.push_back(t);
-
-        if (m_threadMutexts.find(i) == m_threadMutexts.end())
-            m_threadMutexts[i] = new ObjectMetuxs();
+            if (m_threadMutexts.find(t) == m_threadMutexts.end())
+                m_threadMutexts[t] = new ObjectMetuxs();
+        }
     }
 }
 
-int IObjectManager::GetPropertyThread() const
+BussinessThread *IObjectManager::GetPropertyThread() const
 {
     int nCount = -1;
-    int ret = 0;
+    BussinessThread *ret = 0;
     for (BussinessThread *t : m_lsThread)
     {
-        ObjectsMap::const_iterator itr = m_mapThreadObject.find(t->GetId());
+        ObjectsMap::const_iterator itr = m_mapThreadObject.find(t);
         if (itr == m_mapThreadObject.end())
-            return m_lsThread.back()->GetId();
+            return m_lsThread.back();
 
         if (nCount<0 || nCount>(int)itr->second.size())
         {

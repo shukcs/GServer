@@ -5,7 +5,6 @@
 #include "Messages.h"
 #include "Utility.h"
 #include "VGMysql.h"
-#include "VGDBManager.h"
 #include "DBExecItem.h"
 
 using namespace das::proto;
@@ -33,9 +32,15 @@ bool ObjectAbsPB::IsConnect() const
     return m_bConnect;
 }
 
-VGMySql *ObjectAbsPB::GetMySql() const
+void ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
 {
-    return NULL;
+    if (!s)
+        return;
+
+    char buf[256] = { 0 };
+    int sz = serialize(msg, buf, 256);
+    if (sz>0)
+        s->Send(sz + 4, buf);
 }
 
 void ObjectAbsPB::OnConnected(bool bConnected)
@@ -44,12 +49,13 @@ void ObjectAbsPB::OnConnected(bool bConnected)
     if (bConnected)
     {
         if (!m_p)
-        {
             m_p = new ProtoMsg;
-            if (m_p)
-                m_p->InitSize();
-        }
+
         return;
+    }
+    else
+    {
+        ClearRead();
     }
 
     IObjectManager *mgr = GetManager();
@@ -61,47 +67,41 @@ void ObjectAbsPB::OnConnected(bool bConnected)
     }
 }
 
-int ObjectAbsPB::GetSenLength() const
-{
-    if (m_p)
-        return m_p->RemaimedLength();
-
-    return 0;
-}
-
-int ObjectAbsPB::CopySend(char *buf, int sz, unsigned form)
-{
-    if (m_p)
-        return m_p->CopySend(buf, sz, form);
-
-    return 0;
-}
-
-void ObjectAbsPB::SetSended(int sended /*= -1*/)
-{
-    if (m_p)
-        m_p->SetSended(sended);
-}
-
 bool ObjectAbsPB::send(const google::protobuf::Message &msg)
 {
-    if (m_p && m_sock)
+    if (!m_sock)
+        return false;
+
+    char *buf = (char *)getThreadBuff();
+    int sendSz = serialize(msg, buf, getThreadBuffLen());
+    if (sendSz > 0)
     {
-        m_p->SendProto(msg, m_sock);
+        m_sock->Send(sendSz, buf);
         return true;
     }
 
     return false;
 }
 
-int64_t ObjectAbsPB::executeInsertSql(ExecutItem *item)
+int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int sz)
 {
-    if (!item)
-        return -1;
+    if (!buf)
+        return 0;
 
-    VGMySql *sql = GetMySql();
-    if (sql && sql->Execut(item))
-        return item->GetIncrement() ? item->GetIncrement()->GetValue() : 0;
+    string name = msg.GetTypeName();
+    if (name.length() < 1)
+        return 0;
+    int nameLen = name.length() + 1;
+    int proroLen = msg.ByteSize();
+    int len = nameLen + proroLen + 8;
+    if (sz < len + 4)
+        return 0;
 
-    return -1;
+    Utility::toBigendian(len, buf);
+    Utility::toBigendian(nameLen, buf + 4);
+    strcpy(buf + 8, name.c_str());
+    msg.SerializeToArray(buf + nameLen + 8, proroLen);
+    int crc = Utility::Crc32(buf + 4, len - 4);
+    Utility::toBigendian(crc, buf + len);
+    return len + 4;
 }

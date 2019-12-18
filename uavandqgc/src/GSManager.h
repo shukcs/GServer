@@ -16,8 +16,6 @@ namespace google {
     }
 }
 
-class VGMySql;
-class ExecutItem;
 class TiXmlDocument;
 
 #ifdef SOCKETS_NAMESPACE
@@ -25,33 +23,27 @@ namespace SOCKETS_NAMESPACE {
 #endif
 
 class ProtoMsg;
-
+class ObjectGS;
 class GSManager : public IObjectManager
 {
 public:
     GSManager();
     ~GSManager();
 
-    VGMySql *GetMySql()const;
-    int AddDatabaseUser(const std::string &user, const std::string &pswd, int auth = 1);
-    void AddDBFriend(const std::string &user1, const std::string &user2);
-    void RemoveDBFriend(const std::string &user1, const std::string &user2);
-    std::list<std::string> GetDBFriend(const std::string &user);
+    int AddDatabaseUser(const std::string &user, const std::string &pswd, ObjectGS *gs=NULL, int seq=0, int auth = 1);
 public:
-    static int ExecutNewGsSql(GSManager *mgr, const std::string &gs);
+    static std::string CatString(const std::string &s1, const std::string &s2);
 protected:
     int GetObjectType()const;
-    IObject *PrcsReceiveByMgr(ISocket *s, const char *buf, int &len);
+    IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
 
     bool PrcsPublicMsg(const IMessage &msg);
 
     IObject *prcsPBLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication *msg);
     IObject *prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg);
     void LoadConfig();
+    bool InitManager();
 private:
-    void _parseMySql(const TiXmlDocument &doc);
-private:
-    VGMySql         *m_sqlEng;
     ProtoMsg        *m_p;
     bool            m_bInit;
 };

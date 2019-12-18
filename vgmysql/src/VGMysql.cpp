@@ -8,7 +8,7 @@
 #include <mysql.h>
 #endif
 #include "DBExecItem.h"
-#include "VGDBManager.h"
+#include "MysqlDB.h"
 #include "VGTrigger.h"
 
 using namespace std;
@@ -367,4 +367,66 @@ MYSQL_RES *VGMySql::Query(const std::string &sql)
     }
 
     return mysql_store_result(m_mysql);
+}
+
+long VGMySql::Str2int(const std::string &str, unsigned radix, bool *suc)
+{
+    unsigned count = str.length();
+    bool bSuc = false;
+    bool bSubMin = false;
+    const char *c = str.c_str();
+    long nRet = 0;
+    if ((8 == radix || 10 == radix || 16 == radix) && count > 0)
+    {
+        unsigned i = 0;
+        while (' ' == c[i] || '\t' == c[i])++i;
+        if (i < count && (c[i] == '+' || c[i] == '-'))
+        {
+            if (c[i] == '-')
+                bSubMin = true;
+            ++i;
+        }
+        if (i < count)
+            bSuc = true;
+        for (; i < count; ++i)
+        {
+            int nTmp = c[i] - '0';
+            if (nTmp > 10 && radix == 16)
+                nTmp = 10 + (c[i] > 'F' ? c[i] - 'a' : c[i] - 'A');
+
+            if (nTmp < 0 || nTmp >= int(radix))
+            {
+                if (' ' != c[i] && '\t' != c[i])
+                    bSuc = false;
+                break;
+            }
+            nRet = nRet * radix + (bSubMin ? -nTmp : nTmp);
+        }
+    }
+    if (suc)
+        *suc = bSuc;
+
+    return bSuc ? nRet : 0;
+}
+
+list<string> VGMySql::SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty)
+{
+    list<string> strLsRet;
+    int nSizeSp = sp.size();
+    if (!nSizeSp)
+        return strLsRet;
+
+    unsigned nPos = 0;
+    while (nPos < str.size())
+    {
+        int nTmp = str.find(sp, nPos);
+        string strTmp = str.substr(nPos, nTmp < 0 ? -1 : nTmp - nPos);
+        if (strTmp.size() || !bSkipEmpty)
+            strLsRet.push_back(strTmp);
+
+        if (nTmp < int(nPos))
+            break;
+        nPos = nTmp + nSizeSp;
+    }
+    return strLsRet;
 }

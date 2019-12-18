@@ -23,17 +23,12 @@ public:
     ~ObjectAbsPB();
 
     bool IsConnect()const;
+public:
+    static void SendProtoBuffTo(ISocket *s, const google::protobuf::Message &ms);
 protected:
     void OnConnected(bool bConnected);
-    int GetSenLength()const;
-    int CopySend(char *buf, int sz, unsigned form = 0);
-    void SetSended(int sended = -1);    //-1,发送完
-
-    //向下实现
-    virtual VGMySql *GetMySql()const;
-
     bool send(const google::protobuf::Message &msg);
-    int64_t executeInsertSql(ExecutItem *item);
+    static int serialize(const google::protobuf::Message &ms, char*buf, int sz);
 protected:
     bool            m_bConnect;
     ProtoMsg        *m_p;

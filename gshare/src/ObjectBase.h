@@ -5,12 +5,11 @@
 #include <map>
 #include <list>
 #include "stdconfig.h"
-#include "BaseBuff.h"
 
+class LoopQueBuff;
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
-
 class IObject;
 class ISocket;
 class IObjectManager;
@@ -28,7 +27,15 @@ public:
         UnKnow = -1,
         Plant,
         GroundStation,
+        DBMySql,
         User,
+    };
+    enum ObjectStat
+    {
+        Uninitial,
+        Initialing,
+        Initialed,
+        InitialFail,
     };
 public:
     SHARED_DECL const std::string &GetObjectID()const;
@@ -45,15 +52,12 @@ public:
     SHARED_DECL void Unsubcribe(const std::string &sender, int msg);
     virtual int GetObjectType()const = 0;
     virtual void OnConnected(bool bConnected) = 0;
-    virtual int GetSenLength()const;
-    virtual int CopySend(char *buf, int sz, unsigned form = 0);
-    virtual void SetSended(int sended=-1);//-1,发送完
 public:
     bool PushMessage(IMessage *msg);
     void PushReleaseMsg(IMessage *);
     bool PrcsBussiness(uint64_t ms);
-    int GetThreadId()const;
-    void SetThreadId(int id);
+    BussinessThread *GetThread()const;
+    void SetThread(BussinessThread *t);
 public:
     SHARED_DECL static bool SendMsg(IMessage *msg);
     SHARED_DECL static IObjectManager *GetManagerByType(int);
@@ -68,9 +72,14 @@ public:
         return false;
     }
 protected:
-    virtual void ProcessMessage(const IMessage &msg) = 0;
+    virtual void ProcessMessage(IMessage *msg) = 0;
     virtual int ProcessReceive(void *buf, int len) = 0;
+    virtual void InitObject() = 0;
     SHARED_DECL virtual void CheckTimer(uint64_t ms);
+
+    SHARED_DECL void *getThreadBuff()const;
+    SHARED_DECL int getThreadBuffLen()const;
+    SHARED_DECL void ClearRead();
 protected:
 /*******************************************************************************************
 这是个连接实体抽象类
@@ -91,49 +100,50 @@ protected:
     ISocket                 *m_sock;
     std::string             m_id;
     bool                    m_bRelease;
-    BaseBuff                m_buff;
-    IMutex                  *m_mtx;
+    ObjectStat              m_stInit;
+    LoopQueBuff             *m_buff;
     IMutex                  *m_mtxMsg;
     MessageQue              m_lsMsg;            //接收消息队列
     MessageQue              m_lsMsgRelease;     //消息释放队列
-    int                     m_idThread;
+    BussinessThread         *m_thread;
 };
 
 class IObjectManager
 {
     typedef std::map<std::string, IObject*> ThreadObjects;
-    typedef std::map<int, ThreadObjects> ObjectsMap;
+    typedef std::map<BussinessThread *, ThreadObjects> ObjectsMap;
+    typedef std::map<BussinessThread *, ObjectMetuxs*> ThreadMetuxsMap;
 public:
     SHARED_DECL virtual ~IObjectManager();
     virtual int GetObjectType()const = 0;
     SHARED_DECL virtual void LoadConfig();
     SHARED_DECL bool AddObject(IObject *obj);
     SHARED_DECL IObject *GetObjectByID(const std::string &id)const;
-    SHARED_DECL bool Receive(ISocket *s, const BaseBuff &buff, int &prcs);
+    SHARED_DECL bool Receive(ISocket *s, int len, const char *buf);
     SHARED_DECL void SetLog(ILog *);
     SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
 
     void PushMessage(IMessage *);
     void PushReleaseMsg(IMessage *);
-    bool HasIndependThread()const;
-    bool ProcessBussiness();
-    bool PrcsObjectsOfThread(int nThread);
+    bool ProcessBussiness(BussinessThread *t);
+    bool PrcsObjectsOfThread(BussinessThread &t);
     bool Exist(IObject *obj)const;
 public:
     SHARED_DECL static bool SendMsg(IMessage *msg);
 protected:
-    SHARED_DECL IObjectManager(uint16_t nThread = 1);
+    SHARED_DECL IObjectManager();
 
     SHARED_DECL virtual bool PrcsPublicMsg(const IMessage &msg);
-    SHARED_DECL void InitThread(uint16_t nThread = 1);
-
-    void ProcessMessage(const IMessage &msg);
-    int GetPropertyThread()const;
+    SHARED_DECL void InitThread(uint16_t nT = 1, uint16_t bufSz = 1024);
+    virtual bool InitManager() = 0;
+protected:
+    void ProcessMessage(IMessage *msg);
+    BussinessThread *GetPropertyThread()const;
     void AddMessage(IMessage *msg);
     void PrcsReleaseMsg();
     void removeObject(ThreadObjects &objs, const std::string &id);
 protected:
-    virtual IObject *PrcsReceiveByMgr(ISocket *s, const char *buf, int &len) = 0;
+    virtual IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len) = 0;
 private:
     friend class ObjectManagers;
     IMutex                          *m_mtx;
@@ -142,7 +152,7 @@ private:
     MessageQue                      m_lsMsgRelease;     //消息释放队列
     std::list<BussinessThread*>     m_lsThread;
     ObjectsMap                      m_mapThreadObject;
-    std::map<int, ObjectMetuxs*>    m_threadMutexts;
+    ThreadMetuxsMap                 m_threadMutexts;
 };
 
 #ifdef SOCKETS_NAMESPACE

@@ -13,7 +13,7 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 //ProtoMsg
 ////////////////////////////////////////////////////////////////////////////////
-ProtoMsg::ProtoMsg():m_msg(NULL), m_buff(NULL), m_size(0), m_len(0), m_sended(0)
+ProtoMsg::ProtoMsg():m_msg(NULL)
 {
 }
 
@@ -83,92 +83,6 @@ bool ProtoMsg::Parse(const char *buff, int &len)
     return false;
 }
 
-bool ProtoMsg::SendProto(const google::protobuf::Message &msg, ISocket *s)
-{
-    if (RemaimedLength() <= 0)
-        _reset();
-
-    string name = msg.GetTypeName();
-    if (!s || name.length() < 1)
-        return false;
-
-    int nameLen = name.length() + 1;
-    int proroLen = msg.ByteSize();
-    int len = nameLen + proroLen + 8;
-    if (m_len+len+4>0xffff || !_resureSz(m_len+len+4))
-        return false;
-
-    char *buf = m_buff+m_len;
-    Utility::toBigendian(len, buf);
-    Utility::toBigendian(nameLen, buf+4);
-    strcpy(buf+8, name.c_str());
-    msg.SerializeToArray(buf+nameLen+8, proroLen);
-    int crc = Utility::Crc32(buf+4, len-4);
-    Utility::toBigendian(crc, buf+len);
-    m_len += len+4;
-    s->Send(len + 4);
-
-    return true;
-}
-
-bool ProtoMsg::SendProtoTo(const google::protobuf::Message &msg, ISocket *s)
-{
-    string name = msg.GetTypeName();
-    if (!s || name.length() < 1)
-        return false;
-
-    int nameLen = name.length() + 1;
-    int proroLen = msg.ByteSize();
-    int len = nameLen + proroLen + 8;
-    if (len + 4 > 256)
-        return false;
-
-    char buf[256];
-    Utility::toBigendian(len, buf);
-    Utility::toBigendian(nameLen, buf + 4);
-    strcpy(buf + 8, name.c_str());
-    msg.SerializeToArray(buf + nameLen + 8, proroLen);
-    int crc = Utility::Crc32(buf + 4, len - 4);
-    Utility::toBigendian(crc, buf + len);
-    s->Send(len + 4, buf);
-    return true;
-}
-
-int ProtoMsg::RemaimedLength() const
-{
-    if (m_buff && m_len > 0 && m_sended >= 0 && m_len > m_sended)
-        return m_len - m_sended;
-
-    return 0;
-}
-
-int ProtoMsg::CopySend(char *buff, int len, unsigned from) const
-{
-    int nRemain = m_len - m_sended - from;
-    if (len > 0 && m_buff && m_len > 0 && m_sended >= 0 && nRemain>0)
-    {
-        if (len > nRemain)
-            len = nRemain;
-
-        memcpy(buff, m_buff + m_sended + from, len);
-        return len;
-    }
-    return 0;
-}
-
-void ProtoMsg::SetSended(int n)
-{
-    if (n < 0)
-        m_len = -1;
-    else
-        m_sended += n;
-}
-
-void ProtoMsg::InitSize(uint16_t sz/*=2048*/)
-{
-    _resureSz(sz);
-}
-
 void ProtoMsg::_parse(const std::string &name, const char *buff, int len)
 {
     delete DeatachProto(false);
@@ -234,26 +148,8 @@ void ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg->ParseFromArray(buff, len);
 }
 
-bool ProtoMsg::_resureSz(uint16_t sz)
-{
-    if (sz > m_size)
-    {
-        delete m_buff;
-        m_buff = new char[sz];
-        m_size = m_buff ? sz : 0;
-    }
-
-    return m_buff != NULL;
-}
-
 void ProtoMsg::_clear()
 {
     ReleasePointer(m_msg);
     m_name.clear();
-}
-
-void ProtoMsg::_reset()
-{
-    m_sended = 0;
-    m_len = 0;
 }

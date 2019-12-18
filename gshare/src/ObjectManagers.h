@@ -16,7 +16,7 @@ class ISocket;
 class IMessage;
 class IObject;
 class IObjectManager;
-class BaseBuff;
+class LoopQueBuff;
 class ILog;
 
 //数据处理工厂元素抽象
@@ -78,7 +78,6 @@ public:
 protected:
     bool PrcsRcvBuff();
     void PrcsCloseSocket();
-    bool PrcsMangerData();
     void PrcsObjectsDestroy();
     void PrcsSubcribes();
     void PrcsMessages();
@@ -92,18 +91,19 @@ private:
     SubcribeList &_getSubcribes(const std::string &sender, int tpMsg);
 private:
     friend class ManagerThread;
-    std::map<int, IObjectManager*>  m_managersMap;
-    std::map<ISocket*, BaseBuff*>   m_socksRcv;
-    std::list<ISocket *>            m_keysRemove;
-    ObjectQueue                     m_objectsDestroy;//销毁队列
-    IMutex                          *m_mtx;
-    IMutex                          *m_mtxObj;
-    IMutex                          *m_mtxMsg;
-    Thread                          *m_thread;
-    MessageSubcribes                m_subcribes;
-    SubcribeQueue                   m_subcribeMsgs;
-    MessageQueue                    m_messages;
-    MessageQueue                    m_releaseMsgs;
+    std::map<int, IObjectManager*>      m_managersMap;
+    std::map<ISocket*, LoopQueBuff*>    m_socksRcv;
+    std::list<ISocket *>                m_keysRemove;
+    ObjectQueue                         m_objectsDestroy;//销毁队列
+    IMutex                              *m_mtx;
+    IMutex                              *m_mtxObj;
+    IMutex                              *m_mtxMsg;
+    Thread                              *m_thread;
+    MessageSubcribes                    m_subcribes;
+    SubcribeQueue                       m_subcribeMsgs;
+    MessageQueue                        m_messages;
+    MessageQueue                        m_releaseMsgs;
+    char                                m_buff[1024];
 };
 
 #ifdef SOCKETS_NAMESPACE

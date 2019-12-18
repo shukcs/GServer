@@ -1,6 +1,7 @@
 #include "VGTrigger.h"
 #include "DBExecItem.h"
-#include "VGDBManager.h"
+#include "MysqlDB.h"
+#include "VGMySql.h"
 #include "tinyxml.h"
 #include <stdio.h>
 #include <string.h>
@@ -83,7 +84,7 @@ void VGTrigger::SetExecuteBeforeEvent(bool b)
 
 bool VGTrigger::AddExecuteItem(ExecutItem *i)
 {
-    if (i && !VGDBManager::IsContainsInList(m_execItems, i))
+    if (i && !VGMySql::IsContainsInList(m_execItems, i))
     {
         m_execItems.push_back(i);
         return true;
@@ -112,29 +113,29 @@ string VGTrigger::_eventStr() const
     return string();
 }
 
-void VGTrigger::_addSqls(const list<string> &items)
+void VGTrigger::_addSqls(const list<string> &items, const MysqlDB &db)
 {
     for (const string &itr : items)
     {
-        ExecutItem *sql= VGDBManager::GetSqlByName(itr);
+        ExecutItem *sql= db.GetSqlByName(itr);
         if (sql && AddExecuteItem(sql))
             sql->SetRef(true);     
     }
 }
 
-void VGTrigger::_parseSqls(const TiXmlElement &node)
+void VGTrigger::_parseSqls(const TiXmlElement &node, const MysqlDB &db)
 {
     const TiXmlNode *tgNode = node.FirstChild("SQL");
     while (tgNode)
     {
-        if (ExecutItem *trg = ExecutItem::parse(tgNode->ToElement()))
+        if (ExecutItem *trg = ExecutItem::parse(tgNode->ToElement(), db))
             AddExecuteItem(trg);
 
         tgNode = tgNode->NextSibling("SQL");
     }
 }
 
-VGTrigger *VGTrigger::Parse(const TiXmlNode &node)
+VGTrigger *VGTrigger::Parse(const TiXmlNode &node, const MysqlDB &db)
 {
     TiXmlElement e = *node.ToElement();
     const char *tmp = e.Attribute("name");
@@ -154,9 +155,9 @@ VGTrigger *VGTrigger::Parse(const TiXmlNode &node)
         ret->m_event = evt;
 
         if (const char *tmpRef = e.Attribute("refsql"))
-            ret->_addSqls(VGDBManager::SplitString(tmpRef, ";"));
+            ret->_addSqls(VGMySql::SplitString(tmpRef, ";"), db);
         else
-            ret->_parseSqls(e);
+            ret->_parseSqls(e, db);
 
         if (ret->IsValid())
             return ret;

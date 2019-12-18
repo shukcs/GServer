@@ -13,8 +13,6 @@ INCLUDE_DIRECTORIES(
 set(SRC_LIST
 	src/Base64.cpp
 	src/Base64.h
-	src/BaseBuff.cpp
-	src/BaseBuff.h
 	src/GLibrary.cpp
 	src/GLibrary.h
 	src/GOutLog.cpp
@@ -31,6 +29,8 @@ set(SRC_LIST
 	src/Ipv6Address.h
 	src/Lock.cpp
 	src/Lock.h
+	src/LoopQueue.cpp
+	src/LoopQueue.h
 	src/Mutex.cpp
 	src/Mutex.h
 	src/IMessage.cpp

@@ -11,8 +11,8 @@ INCLUDE_DIRECTORIES(
 set(SRC_LIST
 	src/DBExecItem.cpp
 	src/DBExecItem.h
-	src/VGDBManager.cpp
-	src/VGDBManager.h
+	src/MysqlDB.cpp
+	src/MysqlDB.h
 	src/VGMysql.cpp
 	src/VGMysql.h
 	src/VGTable.cpp

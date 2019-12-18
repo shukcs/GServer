@@ -40,6 +40,59 @@ tpMsg:消息类型
 class IMessage
 {
 public:
+    enum MessageType
+    {
+        Unknown,
+        BindUav,
+        PostOR,
+        ControlUav,
+        SychMission,
+        QueryUav,
+        UavAllocation,
+        Gs2UavEnd,
+
+        BindUavRes,
+        ControlUavRes,
+        SychMissionRes,
+        PostORRes,
+        PushUavSndInfo,
+        ControlGs,
+        QueryUavRes,
+        UavAllocationRes,
+
+        Uav2GsEnd,
+        Gs2GsBeging = Uav2GsEnd,
+        Gs2GsMsg,
+        Gs2GsAck,
+
+        Gs2GsEnd,
+        MSGDBBeging = Gs2GsEnd,
+        DBExec,
+        DBAckBeging,
+        UavQueryRslt = DBAckBeging,
+        UavsQueryRslt,
+        UavUpdatePosRslt,
+        UavBindRslt,
+        UavsMaxIDRslt,
+        MisionUpdateRslt,
+        MisionQueryRslt,
+        GSInsertRslt,
+        GSQueryRslt,
+        GSCheckRslt,
+        FriendUpdateRslt,
+        FriendQueryRslt,
+        LandInsertRslt,
+        LandQueryRslt,
+        PlanInsertRslt,
+        PlanQueryRslt,
+
+        DBAckEnd,
+
+        DBMsgEnd,
+
+        User,
+    };
+public:
     SHARED_DECL IMessage(MessageData *data, const std::string &rcv, int tpRcv);
     SHARED_DECL IMessage(const IMessage &oth);
     SHARED_DECL virtual ~IMessage();

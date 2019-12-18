@@ -15,8 +15,10 @@ typedef list<string> StringList;
 class VGTable;
 class VGForeignKey;
 class TiXmlElement;
+class MysqlDB;
 
-class VGTableField {
+class VGTableField
+{
 public:
     string GetName(bool bTable=false)const;
     void SetName(const string &n);
@@ -49,7 +51,8 @@ private:
     string      m_typeName;
 };
 
-class VGTable {
+class VGTable
+{
 public:
     const string &GetName()const;
     const list<VGTableField *> &Fields()const;
@@ -58,10 +61,10 @@ public:
     void AddField(VGTableField *);
     bool IsForeignRef()const;
 public:
-    static VGTable *ParseTable(const TiXmlElement &e);
+    static VGTable *ParseTable(const TiXmlElement &e, const MysqlDB &db);
 protected:
     VGTable(const string &n = string());
-    void AddForeign(VGForeignKey *f);
+    void AddForeign(VGForeignKey *f, const MysqlDB &db);
 private:
     string                  m_name;
     bool                    m_bForeignRef;

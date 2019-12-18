@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+	<DBManager>
+		<ObjectDB name="DBGS" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
+			<Tables>
+				<table name="GSInfo">
+					<field name="user" type="char(32)" constraint="primary key"/>
+					<field name="pswd" type="char(32)" />
+					<field name="auth" type="INT" constraint="DEFAULT '1'"/>
+				</table>	
+				<table name="GSFrienfs">
+					<field name="id" type="char(64)" constraint="primary key"/>
+					<field name="usr1" type="char(32)" />
+					<field name="usr2" type="char(32)" />
+				</table>
+				<table name="OwnerInfo">
+					<field name="id" type="BIGINT" constraint="primary key;not null;auto_increment"/>
+					<field name="name"  type="char(64)" />
+					<field name="birthdate"  type="BIGINT" />
+					<field name="address"  type="char(64)" />
+					<field name="mobileno"  type="char(24)" />
+					<field name="phoneno" type="char(24)" />
+					<field name="weixin" type="char(32)" />
+				</table>
+				<table name="LandInfo">
+					<field name="id" type="BIGINT" constraint="primary key;not null;auto_increment"/>
+					<field name="name"  type="char(64)" />
+					<field name="gsuser"  type="char(32)" />
+					<field name="ownerID" type="BIGINT" />
+					<field name="lat"  type="double" />
+					<field name="lon"  type="double" />
+					<field name="acreage" type="float" />
+					<field name="boundary" type="VARBINARY(32768)" />
+					<foreign name="gsuser" foreign="user" ref="GSInfo" />
+					<foreign name="ownerID" foreign="id" ref="OwnerInfo" />
+				</table>
+				<table name="PlanInfo">
+					<field name="id" type="BIGINT" constraint="primary key;not null;auto_increment"/>
+					<field name="landId"  type="BIGINT" />
+					<field name="planTime"  type="BIGINT" />
+					<field name="planuser"  type="char(32)" />
+					<field name="planParam" type="VARBINARY(64)" />
+					<field name="notes" type="char(128)" />
+					<field name="crop"  type="char(32)" />
+					<field name="drug"  type="char(32)" />
+					<field name="prize"  type="float" />
+					<foreign name="landId" foreign="id" ref="LandInfo" />
+					<foreign name="planuser" foreign="user" ref="GSInfo" />
+				</table>
+			</Tables>
+			<SQLs>
+				<SQL name="insertGSInfo" table="GSInfo" type="Replace" >
+					<item name="user" type="Write" />
+					<item name="pswd" type="Write" />
+					<item name="auth" ref="GSInfo" type="Write" />
+				</SQL>
+				<SQL name="queryGSInfo" table="GSInfo" type="Select" >
+					<item name="pswd" ref="GSInfo" type="Read" />
+					<item name="auth" ref="GSInfo" type="Read" />
+					<item name="user" ref="GSInfo" type="Condition" />
+				</SQL>
+				<SQL name="changePswd" table="GSInfo" type="Update" >
+					<item name="pswd" ref="GSInfo" type="Write" />
+					<item name="user" ref="GSInfo" type="Condition" />
+				</SQL>
+				<SQL name="insertGSFrienfs" table="GSFrienfs" type="Replace" >
+					<item name="id" type="Write" />
+					<item name="usr1" type="Write" />
+					<item name="usr2" type="Write" />
+				</SQL>
+				<SQL name="deleteGSFrienfs" table="GSFrienfs" type="Delete" >
+					<item name="id" type="Condition" />
+				</SQL>
+				<SQL name="queryGSFriends" table="GSFrienfs" type="Select" condition="or" >
+					<item name="usr1" ref="GSFrienfs" type="Read" />
+					<item name="usr2" ref="GSFrienfs" type="Read" />
+					<item name="usr1" type="Condition" />
+					<item name="usr2" type="Condition" />
+				</SQL>
+				<SQL name="insertLand" table="LandInfo" type="Insert" >
+					<item name="name" ref="LandInfo" type="Write" />
+					<item name="gsuser" ref="LandInfo" type="Write" />
+					<item name="ownerID" ref="LandInfo" type="Write" />
+					<item name="lat" ref="LandInfo" type="Write" />
+					<item name="lon" ref="LandInfo" type="Write" />
+					<item name="precs" ref="LandInfo" type="Write" />
+					<item name="acreage" ref="LandInfo" type="Write" />
+					<item name="description" ref="LandInfo" type="Write" />
+					<item name="boundary" ref="LandInfo" type="Write" />
+					<item type="AutoIncrement" />
+				</SQL>
+				<SQL name="updateLand" table="LandInfo" type="Update" >
+					<item name="name" ref="LandInfo" type="Write" />
+					<item name="gsuser" ref="LandInfo" type="Write" />
+					<item name="ownerID" ref="LandInfo" type="Write" />
+					<item name="lat" ref="LandInfo" type="Write" />
+					<item name="lon" ref="LandInfo" type="Write" />
+					<item name="acreage" ref="LandInfo" type="Write" />
+					<item name="boundary" ref="LandInfo" type="Write" />
+					<item name="id" ref="LandInfo" type="Condition" />
+				</SQL>
+				<SQL name="insertOwner" table="OwnerInfo" type="Insert" >
+					<item name="name" ref="OwnerInfo" type="Write" />
+					<item name="birthdate" ref="OwnerInfo" type="Write" />
+					<item name="address" ref="OwnerInfo" type="Write" />
+					<item name="mobileno" ref="OwnerInfo" type="Write" />
+					<item name="weixin" ref="OwnerInfo" type="Write" />
+					<item type="AutoIncrement" />
+				</SQL>
+				<SQL name="updateOwner" table="OwnerInfo" type="Update" >
+					<item name="name" ref="OwnerInfo" type="Write" />
+					<item name="birthdate" ref="OwnerInfo" type="Write" />
+					<item name="address" ref="OwnerInfo" type="Write" />
+					<item name="phoneno" ref="OwnerInfo" type="Write" />
+					<item name="mobileno" ref="OwnerInfo" type="Write" />
+					<item name="weixin" ref="OwnerInfo" type="Write" />
+					<item name="id" ref="OwnerInfo" type="Condition" />
+				</SQL>
+				<SQL name="queryLand" table="LandInfo;OwnerInfo" type="Select" condition="and">
+					<item name="id" ref="LandInfo" type="Read" />
+					<item name="name" ref="LandInfo" type="Read" />
+					<item name="gsuser" ref="LandInfo" type="Read" />
+					<item name="ownerID" ref="LandInfo" type="Read" />
+					<item name="lat" ref="LandInfo" type="Read" />
+					<item name="lon" ref="LandInfo" type="Read" />
+					<item name="acreage" ref="LandInfo" type="Read" />
+					<item name="boundary" ref="LandInfo" type="Read" />	
+					<item name="name" ref="OwnerInfo" type="Read" />
+					<item name="birthdate" ref="OwnerInfo" type="Read" />
+					<item name="address"  ref="OwnerInfo" type="Read" />
+					<item name="mobileno"  ref="OwnerInfo" type="Read"/>
+					<item name="phoneno" ref="OwnerInfo" type="Read" />
+					<item name="weixin" ref="OwnerInfo" type="Read" />
+					<item name="gsuser" ref="LandInfo" type="Condition" condition="=" />
+					<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
+				</SQL>
+				<SQL name="deleteLand" table="LandInfo;OwnerInfo;PlanInfo" type="Delete" >
+					<item name="id" ref="LandInfo" type="Condition" />
+					<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
+					<item name="LandInfo.id" param="PlanInfo.landId" type="Condition" />
+				</SQL>
+				<SQL name="InsertPlan" table="PlanInfo" type="Insert" >
+					<item name="landId" type="Write" />
+					<item name="planuser" type="Write" />
+					<item name="notes" type="Write" />
+					<item name="crop" type="Write" />
+					<item name="drug" type="Write" />
+					<item name="planTime" ref="PlanInfo" type="Write" />
+					<item name="planParam" ref="PlanInfo" type="Write" />
+					<item name="prize" ref="PlanInfo" type="Write"/>
+					<item type="AutoIncrement" />
+				</SQL>
+				<SQL name="UpdatePlan" table="PlanInfo" type="Update" >
+					<item name="landId" type="Write" />
+					<item name="planTime" ref="PlanInfo" type="Write" />
+					<item name="planuser" ref="PlanInfo" type="Write" />
+					<item name="planParam" ref="PlanInfo" type="Write" />
+					<item name="notes" ref="PlanInfo" type="Write" />
+					<item name="crop" ref="PlanInfo" type="Write" />
+					<item name="drug" ref="PlanInfo" type="Write" />
+					<item name="prize" ref="PlanInfo" type="Write" />
+					<item name="id" type="Condition" />
+				</SQL>
+				<SQL name="deletePlan" table="PlanInfo" type="Delete" >
+					<item name="id" type="Condition" />
+				</SQL>
+				<SQL name="queryPlan" table="PlanInfo" type="Select" >
+					<item name="id" ref="PlanInfo" type="Read" />
+					<item name="landId" ref="PlanInfo" type="Read" />
+					<item name="planTime" ref="PlanInfo" type="Read" />
+					<item name="planuser" ref="PlanInfo" type="Read" />
+					<item name="planParam" ref="PlanInfo" type="Read" />
+					<item name="notes" ref="PlanInfo" type="Read" />
+					<item name="crop" ref="PlanInfo" type="Read" />
+					<item name="drug" ref="PlanInfo" type="Read" />
+					<item name="prize" ref="PlanInfo" type="Read" />
+					<item name="id" type="Condition" />
+					<item name="landId" type="Condition" />
+					<item name="planuser" type="Condition" />
+				</SQL>
+				<SQL name="checkGS" table="GSInfo" type="Select" >
+					<item name="user" ref="GSInfo" type="Read" />
+					<item name="user" type="Condition" />
+				</SQL>
+			</SQLs>
+			<!--Triggers>
+				<Trigger name="trigger_bef" table="LandInfo" event="Insert" before="false" refsql="updatePos" />
+				<Trigger name="trigger_aft" table="LandInfo" event="Update" time="follow">
+					<SQL name="updatePos" table="UavInfo" type="Update">
+						<item name="lat" param="UavInfo" type="Write"/>
+						<item name="lon" param="UavInfo" type="Write" />
+						<item name="timePos" param="unix_timestamp()" type="Write" />
+						<item name="id" type="Condition" />
+					</SQL>
+				</Trigger>
+			</Triggers-->
+		</ObjectDB>
+		<ObjectDB name="DBUav" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
+			<Tables>
+				<table name="UavInfo">
+					<field name="id" type="char(16)" constraint="primary key"/>
+					<field name="binded" type="TINYINT" constraint="DEFAULT '0'" />
+					<field name="valid" type="BIGINT" constraint="DEFAULT '-1'" />
+					<field name="binder" type="char(32)" />
+					<field name="timeBind" type="BIGINT" />
+					<field name="lat" type="double" />
+					<field name="lon" type="double" />
+					<field name="timePos" type="BIGINT" />
+					<field name="authCheck" type="char(10)" />
+				</table>
+			</Tables>
+			<SQLs>
+				<SQL name="insertUavInfo" table="UavInfo" type="Insert" >
+					<item name="id" type="Write" />
+					<item name="authCheck" type="Write" />
+				</SQL>
+				<SQL name="maxUavId" table="UavInfo" type="Select" >
+					<item name="max(id)" type="Read" sqlTp="char(16)" />
+				</SQL>
+				<SQL name="queryUavInfo" table="UavInfo" type="Select">
+					<item name="id" ref="UavInfo" type="Read" />
+					<item name="binded" ref="UavInfo" type="Read"/>
+					<item name="valid" ref="UavInfo" type="Read" />
+					<item name="binder" ref="UavInfo" type="Read" />
+					<item name="timeBind" ref="UavInfo" type="Read" />
+					<item name="lat" ref="UavInfo" type="Read" />
+					<item name="lon" ref="UavInfo" type="Read" />
+					<item name="timePos" ref="UavInfo" type="Read" />
+					<item name="authCheck" ref="UavInfo" type="Read" />
+					<item name="id" type="Condition" />
+				</SQL>
+				<SQL name="updateBinded" table="UavInfo" type="Update" condition="and;(or;)">
+					<item name="binded" ref="UavInfo" type="Write"/>
+					<item name="binder" ref="UavInfo" type="Write" />
+					<item name="timeBind" ref="UavInfo" type="Write"/>
+					<item name="id" type="Condition" />
+					<item name="UavInfo.binded" type="Condition" />
+					<item name="UavInfo.binder" type="Condition" />
+				</SQL>
+				<SQL name="deleteUavInfo" table="UavInfo" type="Delete" >
+					<item name="id" type="Condition" />
+				</SQL>
+				<SQL name="updatePos" table="UavInfo" type="Update">
+					<item name="lat" ref="UavInfo" type="Write"/>
+					<item name="lon" ref="UavInfo" type="Write" />
+					<item name="timePos" ref="UavInfo" type="Write" />
+					<item name="id" type="Condition" />
+				</SQL>
+			</SQLs>
+		</ObjectDB>
+	<DBManager>
+</document>

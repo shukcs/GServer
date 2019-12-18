@@ -12,14 +12,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DBExecItem.cpp" />
-    <ClCompile Include="src\VGDBManager.cpp" />
+    <ClCompile Include="src\MysqlDB.cpp" />
     <ClCompile Include="src\VGMysql.cpp" />
     <ClCompile Include="src\VGTable.cpp" />
     <ClCompile Include="src\VGTrigger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DBExecItem.h" />
-    <ClInclude Include="src\VGDBManager.h" />
+    <ClInclude Include="src\MysqlDB.h" />
     <ClInclude Include="src\VGMysql.h" />
     <ClInclude Include="src\VGTable.h" />
     <ClInclude Include="src\VGTrigger.h" />

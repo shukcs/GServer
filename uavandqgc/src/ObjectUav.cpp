@@ -3,15 +3,15 @@
 #include "das.pb.h"
 #include "ProtoMsg.h"
 #include "Messages.h"
+#include "DBMessages.h"
 #include "VGMysql.h"
-#include "VGDBManager.h"
-#include "DBExecItem.h"
 #include "Utility.h"
 #include "socketBase.h"
 #include "IMutex.h"
-#include "IMessage.h"
 #include "UavManager.h"
+#include "ObjectGS.h"
 
+#define WRITE_BUFFLEN 1024
 using namespace std;
 using namespace das::proto;
 using namespace ::google::protobuf;
@@ -21,11 +21,12 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
-ObjectUav::ObjectUav(const std::string &id): ObjectAbsPB(id), m_bExist(false)
+ObjectUav::ObjectUav(const std::string &id): ObjectAbsPB(id)
 , m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0)
 , m_tmLastBind(0), m_tmLastPos(0),m_tmValidLast(-1)
 , m_mission(NULL), m_bSys(false)
 {
+    SetBuffSize(1024 * 2);
 }
 
 ObjectUav::~ObjectUav()
@@ -33,29 +34,7 @@ ObjectUav::~ObjectUav()
     delete m_mission;
 }
 
-void ObjectUav::InitBySqlResult(const ExecutItem &sql)
-{
-    if (FiledVal *fd = sql.GetReadItem("binded"))
-        m_bBind = fd->GetValue<char>()==1;
-    if (FiledVal *fd = sql.GetReadItem("binder"))
-        m_lastBinder = string((char*)fd->GetBuff(), fd->GetValidLen());
-    if (FiledVal *fd = sql.GetReadItem("lat"))
-        m_lat = fd->GetValue<double>();
-    if (FiledVal *fd = sql.GetReadItem("lon"))
-        m_lon = fd->GetValue<double>();
-    if (FiledVal *fd = sql.GetReadItem("timeBind"))
-        m_tmLastBind = fd->GetValue<int64_t>();
-    if (FiledVal *fd = sql.GetReadItem("timePos"))
-        m_tmLastPos = fd->GetValue<int64_t>();
-    if (FiledVal *fd = sql.GetReadItem("valid"))
-        m_tmValidLast = fd->GetValue<int64_t>();
-    if (FiledVal *fd = sql.GetReadItem("authCheck"))
-        m_authCheck = string((char*)fd->GetBuff(), fd->GetValidLen());
-
-    m_bExist = true;
-}
-
-void ObjectUav::transUavStatus(UavStatus &us, bool bAuth)const
+void ObjectUav::TransUavStatus(UavStatus &us, bool bAuth)const
 {
     us.set_result(1);
     us.set_uavid(GetObjectID());
@@ -91,6 +70,7 @@ void ObjectUav::RespondLogin(int seq, int res)
         ack.set_seqno(seq);
         ack.set_result(res);
         send(ack);
+        GetManager()->Log(0, m_id, 0, "[%s]%s", m_sock->GetHost().c_str(), res==1?"login": "login fail");
     }
 }
 
@@ -107,6 +87,34 @@ void ObjectUav::SetValideTime(int64_t tmV)
 int ObjectUav::UAVType()
 {
     return IObject::Plant;
+}
+
+void ObjectUav::InitialUAV(const DBMessage &rslt, ObjectUav &uav)
+{
+    const Variant &binded = rslt.GetRead("binded");
+    if (!binded.IsNull())
+        uav.m_bBind = binded.ToInt8() != 0;
+    const Variant &binder = rslt.GetRead("binder");
+    if (binder.GetType() == Variant::Type_string)
+        uav.m_lastBinder = binder.ToString();
+    const Variant &lat = rslt.GetRead("lat");
+    if (lat.GetType() == Variant::Type_double)
+        uav.m_lat = lat.ToDouble();
+    const Variant &lon = rslt.GetRead("lon");
+    if (lon.GetType() == Variant::Type_double)
+        uav.m_lon = lon.ToDouble();
+    const Variant &timeBind = rslt.GetRead("timeBind");
+    if (timeBind.IsNull())
+        uav.m_tmLastBind = timeBind.ToInt64();
+    const Variant &timePos = rslt.GetRead("timePos");
+    if (timePos.IsNull())
+        uav.m_tmLastBind = timePos.ToInt64();
+    const Variant &valid = rslt.GetRead("valid");
+    if (valid.IsNull())
+        uav.m_tmValidLast = valid.ToInt64();
+    const Variant &authCheck = rslt.GetRead("authCheck");
+    if (authCheck.GetType() == Variant::Type_string)
+        uav.m_authCheck = authCheck.ToString();
 }
 
 void ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *obj)
@@ -134,14 +142,16 @@ void ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *o
     }
 }
 
-void ObjectUav::ProcessMessage(const IMessage &msg)
+void ObjectUav::ProcessMessage(IMessage *msg)
 {
-    if (msg.GetMessgeType() == BindUav)
-        processBind((RequestBindUav*)msg.GetContent(), msg.GetSender());
-    else if (msg.GetMessgeType() == ControlUav)
-        processControl2Uav((PostControl2Uav*)msg.GetContent());
-    else if (msg.GetMessgeType() == PostOR)
-        processPostOr((PostOperationRoute*)msg.GetContent(), msg.GetSenderID());
+    if (msg->GetMessgeType() == IMessage::BindUav)
+        processBind((RequestBindUav*)msg->GetContent(), msg->GetSender());
+    else if (msg->GetMessgeType() == IMessage::ControlUav)
+        processControl2Uav((PostControl2Uav*)msg->GetContent());
+    else if (msg->GetMessgeType() == IMessage::PostOR)
+        processPostOr((PostOperationRoute*)msg->GetContent(), msg->GetSenderID());
+    else if (msg->GetMessgeType() == IMessage::UavQueryRslt)
+        processBaseInfo(*(DBMessage *)msg);
 }
 
 int ObjectUav::ProcessReceive(void *buf, int len)
@@ -169,11 +179,6 @@ int ObjectUav::ProcessReceive(void *buf, int len)
     return pos;
 }
 
-VGMySql *ObjectUav::GetMySql() const
-{
-    return ((UavManager*)GetManager())->GetMySql();
-}
-
 void ObjectUav::CheckTimer(uint64_t ms)
 {
     if (m_sock)
@@ -189,10 +194,27 @@ void ObjectUav::CheckTimer(uint64_t ms)
 void ObjectUav::OnConnected(bool bConnected)
 {
     ObjectAbsPB::OnConnected(bConnected);
+    if (m_sock && bConnected)
+        m_sock->ResizeBuff(WRITE_BUFFLEN);
+
     if (bConnected)
         m_tmLastPos = Utility::msTimeTick();
     else
-        ((UavManager*)GetManager())->SaveUavPos(*this);
+        savePos();
+}
+
+void ObjectUav::InitObject()
+{
+    if (m_stInit == IObject::Uninitial)
+    {
+        m_stInit = IObject::Initialing;
+        if (DBMessage *msg = new DBMessage(this, IMessage::UavQueryRslt))
+        {
+            msg->SetSql("queryUavInfo");
+            msg->SetCondition("id", m_id);
+            SendMsg(msg);
+        }
+    }
 }
 
 void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
@@ -294,10 +316,44 @@ void ObjectUav::prcsPosAuth(RequestPositionAuthentication *msg)
     send(ack);
 }
 
-void ObjectUav::processBind(RequestBindUav *msg, IObject *sender)
+void ObjectUav::processBind(RequestBindUav *msg, IObject *obj)
 {
-    if (UavManager *m = (UavManager *)GetManager())
-        m->PrcsBind(*this, msg->seqno(), msg->opid()==1, (ObjectGS*)sender);
+    ObjectGS *sender = (ObjectGS*)obj;
+    bool bBind = msg->opid() == 1;
+    int res = -1;
+    string gs = sender ? sender->GetObjectID() : string();
+    if (gs.length() == 0)
+        return;
+    string &gsOld = m_lastBinder;
+
+    bool bForceUnbind = sender && sender->GetAuth(ObjectGS::Type_UavManager);
+    if (Initialed != m_stInit)
+        res = -2;
+    else if (bBind && !bForceUnbind)
+        res = (!m_bBind || m_lastBinder.empty() || gs == m_lastBinder) ? 1 : -3;
+    else if (!bBind)
+        res = (bForceUnbind || gs == gsOld || gsOld.empty()) ? 1 : -3;
+
+    if (res == 1)
+    {
+        if (gsOld != gs && !bForceUnbind)
+            gsOld = gs;
+
+        if (bBind != m_bBind)
+        {
+            m_bBind = bBind;
+            saveBind(bBind, gs);
+        }
+    }
+    if (sender && bForceUnbind)
+    {
+        if (bBind)
+            sender->Subcribe(GetObjectID(), IMessage::PushUavSndInfo);
+        else
+            sender->Unsubcribe(GetObjectID(), IMessage::PushUavSndInfo);
+    }
+
+    sendBindAck(msg->seqno(), res, bBind, gs);
 }
 
 void ObjectUav::processControl2Uav(PostControl2Uav *msg)
@@ -345,6 +401,14 @@ void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)
     }
 }
 
+void ObjectUav::processBaseInfo(const DBMessage &rslt)
+{
+    bool suc = rslt.GetRead(EXECRSLT).ToBool();
+    if (suc)
+        InitialUAV(rslt, *this);
+    m_stInit = suc ? Initialed : InitialFail;
+}
+
 bool ObjectUav::_isBind(const std::string &gs) const
 {
     return m_bBind && m_lastBinder==gs && !m_lastBinder.empty();
@@ -381,4 +445,55 @@ int ObjectUav::_checkPos(double lat, double lon, double alt)
         return m->CanFlight(lat, lon, alt) ? 1 : 0;
 
     return 0;
+}
+
+void ObjectUav::savePos()
+{
+    if (DBMessage *msg = new DBMessage(this))
+    {
+        msg->SetSql("updatePos");
+        msg->SetCondition("id", m_id);
+        msg->SetWrite("lat", m_lat);
+        msg->SetWrite("lon", m_lon);
+        msg->SetWrite("timePos", m_tmLastPos);
+        SendMsg(msg);
+    }
+}
+
+void ObjectUav::saveBind(bool bBind, const string &gs, bool bForce)
+{
+    if (DBMessage *msg = new DBMessage(this))
+    {
+        msg->SetSql("updateBinded");
+        msg->SetWrite("binder", gs);
+        msg->SetWrite("binded", bBind);
+        msg->SetWrite("timeBind", Utility::msTimeTick());
+        msg->SetCondition("id", m_id);
+        msg->SetCondition("UavInfo.binded", false);
+        msg->SetCondition("UavInfo.binder", bForce ? gs : m_lastBinder);
+
+        SendMsg(msg);
+        GetManager()->Log(0, gs, 0, "%s %s", bBind ? "bind" : "unbind", m_id.c_str());
+    }
+}
+
+void ObjectUav::sendBindAck(int ack, int res, bool bind, const std::string &gs)
+{
+    if (Uav2GSMessage *ms = new Uav2GSMessage(this, gs))
+    {
+        AckRequestBindUav *proto = new AckRequestBindUav();
+        if (!proto)
+            return;
+
+        proto->set_seqno(ack);
+        proto->set_opid(bind ? 1 : 0);
+        proto->set_result(res);
+        if (UavStatus *s = new UavStatus)
+        {
+            TransUavStatus(*s);
+            proto->set_allocated_status(s);
+        }
+        ms->AttachProto(proto);
+        SendMsg(ms);
+    }
 }

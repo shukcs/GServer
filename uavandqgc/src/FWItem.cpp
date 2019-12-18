@@ -3,7 +3,6 @@
 
 #include "GSManager.h"
 #include "VGMysql.h"
-#include "VGDBManager.h"
 #include "DBExecItem.h"
 #include "ObjectGS.h"
 #if defined _WIN32 || defined _WIN64
@@ -170,13 +169,4 @@ void FWItem::creatFw(const std::string &name)
         m_dataFw = NULL;
     }
 #endif
-}
-
-VGMySql *FWItem::getSqlMgr()
-{
-    IObjectManager *mgr = IObject::GetManagerByType(ObjectGS::GSType());
-    if (GSManager *gsm = dynamic_cast<GSManager *>(mgr))
-        return gsm->GetMySql();
-
-    return NULL;
 }

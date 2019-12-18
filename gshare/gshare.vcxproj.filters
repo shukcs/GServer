@@ -30,9 +30,6 @@
     <ClCompile Include="src\ObjectManagers.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\BaseBuff.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\ObjectBase.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -84,9 +81,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\ObjectManagers.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseBuff.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\socketBase.h">

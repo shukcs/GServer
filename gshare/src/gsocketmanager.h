@@ -71,7 +71,6 @@ private:
     SocketQue                   m_socketsAdd;       //等待监控队列
     std::list<GSocketManager*>  m_othManagers;
     IMutex                      *m_mtx;
-    IMutex                      *m_mtxSock;
     int                         m_openMax;
 #if defined _WIN32 || defined _WIN64 //Windows与epoll对应的是IOCP，但不好做成epoll一样操作
     void _checkMaxSock();

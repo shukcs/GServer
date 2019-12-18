@@ -6,12 +6,12 @@
 #include "Utility.h"
 #include "IMutex.h"
 #include "IMessage.h"
+#include "DBMessages.h"
 #include "GSManager.h"
-#include "VGMysql.h"
-#include "VGDBManager.h"
-#include "DBExecItem.h"
 #include "FWAssist.h"
+#include "ObjectUav.h"
 
+#define WRITE_BUFFLEN 1024 * 8
 using namespace das::proto;
 using namespace google::protobuf;
 using namespace std;
@@ -24,6 +24,7 @@ using namespace SOCKETS_NAMESPACE;
 ObjectGS::ObjectGS(const std::string &id): ObjectAbsPB(id)
 , m_auth(1), m_bInitFriends(false)
 {
+    SetBuffSize(WRITE_BUFFLEN);
 }
 
 ObjectGS::~ObjectGS()
@@ -33,6 +34,8 @@ ObjectGS::~ObjectGS()
 void ObjectGS::OnConnected(bool bConnected)
 {
     ObjectAbsPB::OnConnected(bConnected);
+    if (bConnected && m_sock)
+        m_sock->ResizeBuff(WRITE_BUFFLEN);
     if(bConnected)
         initFriend();
     else if (!m_check.empty())
@@ -73,9 +76,14 @@ void ObjectGS::_prcsLogin(RequestGSIdentityAuthentication *msg)
 {
     if (msg && m_p)
     {
+        bool suc = m_pswd == msg->password();
+        GetManager()->Log(0, m_id, 0, "[%s]%s", m_sock->GetHost().c_str(), suc?"login":"login fail");
+        if (!suc)
+            m_sock->Close();
+
         AckGSIdentityAuthentication ack;
         ack.set_seqno(msg->seqno());
-        ack.set_result(m_pswd == msg->password() ? 1 : -1);
+        ack.set_result(suc ? 1 : -1);
         send(ack);
     }
 }
@@ -111,27 +119,57 @@ void ObjectGS::_prcsProgram(PostProgram *msg)
     send(ack);
 }
 
-void ObjectGS::ProcessMessage(const IMessage &msg)
+void ObjectGS::ProcessMessage(IMessage *msg)
 {
-    int tp = msg.GetMessgeType();
+    int tp = msg->GetMessgeType();
     if(m_p)
     {
         switch (tp)
         {
-        case BindUavRes:
-        case QueryUavRes:
-        case ControlUavRes:
-        case SychMissionRes:
-        case PostORRes:
-        case UavAllocationRes:
-        case PushUavSndInfo:
-        case ControlGs:
-            if (Message *ms = (Message *)msg.GetContent())
+        case IMessage::BindUavRes:
+        case IMessage::QueryUavRes:
+        case IMessage::ControlUavRes:
+        case IMessage::SychMissionRes:
+        case IMessage::PostORRes:
+        case IMessage::UavAllocationRes:
+        case IMessage::PushUavSndInfo:
+        case IMessage::ControlGs:
+            if (Message *ms = (Message *)msg->GetContent())
                 send(*ms);
             break;
-        case Gs2GsMsg:
-        case Gs2GsAck:
-            processGs2Gs(*(Message*)msg.GetContent(), tp);
+        case IMessage::Gs2GsMsg:
+        case IMessage::Gs2GsAck:
+            processGs2Gs(*(Message*)msg->GetContent(), tp);
+            break;
+        case IMessage::UavsQueryRslt:
+            processUavsInfo(*(DBMessage*)msg);
+            break;
+        case IMessage::UavBindRslt:
+            processBind(*(DBMessage*)msg);
+            break;
+        case IMessage::GSInsertRslt:
+            processGSInsert(*(DBMessage*)msg);
+            break;
+        case IMessage::GSQueryRslt:
+            processGSInfo(*(DBMessage*)msg);
+            break;
+        case IMessage::GSCheckRslt:
+            processCheckGS(*(DBMessage*)msg);
+            break;
+        case IMessage::LandInsertRslt:
+            processPostLandRslt(*(DBMessage*)msg);
+            break;
+        case IMessage::LandQueryRslt:
+            processQueryLands(*(DBMessage*)msg);
+            break;
+        case IMessage::PlanInsertRslt:
+            processPostPlanRslt(*(DBMessage*)msg);
+            break;
+        case IMessage::PlanQueryRslt:
+            processQueryPlans(*(DBMessage*)msg);
+            break;
+        case IMessage::FriendQueryRslt:
+            processFriends(*(DBMessage*)msg);
             break;
         default:
             break;
@@ -188,14 +226,9 @@ int ObjectGS::ProcessReceive(void *buf, int len)
     return pos;
 }
 
-VGMySql * ObjectGS::GetMySql() const
-{
-    return ((GSManager*)GetManager())->GetMySql();
-}
-
 void ObjectGS::processGs2Gs(const Message &msg, int tp)
 {
-    if (tp == Gs2GsMsg)
+    if (tp == IMessage::Gs2GsMsg)
     {
         auto gsmsg = (const GroundStationsMessage *)&msg;
         if (Gs2GsMessage *ms = new Gs2GsMessage(this, gsmsg->from()))
@@ -213,6 +246,390 @@ void ObjectGS::processGs2Gs(const Message &msg, int tp)
     }
 
     send(msg);
+}
+
+void ObjectGS::processBind(const DBMessage &msg)
+{
+    AckRequestBindUav proto ;
+    bool res = msg.GetRead(EXECRSLT, 1).ToBool();
+    proto.set_seqno(msg.GetSeqNomb());
+    proto.set_opid(msg.GetRead("binded").ToInt8());
+    proto.set_result(res ? 0 : 1);
+    if (res)
+    { 
+        if(UavStatus *s = new UavStatus)
+        {
+            ObjectUav uav(msg.GetRead("id").ToString());
+            ObjectUav::InitialUAV(msg, uav);
+            uav.TransUavStatus(*s);
+            proto.set_allocated_status(s);
+        }
+    }
+    send(proto);
+}
+
+void ObjectGS::processUavsInfo(const DBMessage &msg)
+{
+    auto ids = msg.GetRead("id").GetVarList<string>();
+    auto bindeds = msg.GetRead("binded").GetVarList<int8_t>();
+    auto binders = msg.GetRead("binder").GetVarList<string>();
+    auto lats = msg.GetRead("lat").GetVarList<double>();
+    auto lons = msg.GetRead("lon").GetVarList<double>();
+    auto timeBinds = msg.GetRead("timeBind").GetVarList<int64_t>();
+    auto valids = msg.GetRead("valid").GetVarList<int64_t>();
+    auto authChecks = msg.GetRead("authCheck").GetVarList<string>();
+
+    AckRequestUavStatus ack;
+    ack.set_seqno(msg.GetSeqNomb());
+    auto idItr = ids.begin();
+    auto bindedItr = bindeds.begin();
+    auto binderItr = binders.begin();
+    auto latItr = lats.begin();
+    auto lonItr = lons.begin();
+    auto timeBindItr = timeBinds.begin();
+    auto validItr = valids.begin();
+    auto authCheckItr = authChecks.begin();
+
+    for (; idItr != ids.end(); ++idItr)
+    {
+        UavStatus *us = ack.add_status();
+        us->set_result(1);
+        us->set_uavid(*idItr);
+        string binder;
+        if (binderItr != binders.end())
+        {
+            binder = *binderItr;
+            us->set_binder(binder);
+            ++binderItr;
+        }
+        bool bBind = bindedItr != bindeds.end() ? *bindedItr == 1 : false;
+        if (bindedItr != bindeds.end())
+        {
+            bBind = *bindedItr == 1;
+            ++bindedItr;
+        }
+        us->set_binded(bBind);
+        us->set_time(timeBindItr != timeBinds.end() ? *timeBindItr : 0);
+        if (timeBindItr != timeBinds.end())
+            ++timeBindItr;
+        us->set_online(false);
+
+        bool bAuth = (binder == m_id && bBind) || GetAuth(ObjectGS::Type_UavManager);
+        if (authCheckItr != authChecks.end() && bAuth)
+        {
+            us->set_authstring(*authCheckItr);
+            ++authCheckItr;
+        }
+        if (validItr != valids.end())
+        {
+            us->set_deadline(*validItr);
+            ++validItr;
+        }
+
+        if (latItr != lats.end() && lonItr != lons.end())
+        {
+            GpsInformation *gps = new GpsInformation;
+            gps->set_latitude(int(*latItr*1e7));
+            gps->set_longitude(int(*lonItr*1e7));
+            gps->set_altitude(0);
+            us->set_allocated_pos(gps);
+            latItr++;
+            lonItr++;
+        }
+    }
+    send(ack);
+}
+
+void ObjectGS::processGSInfo(const DBMessage &msg)
+{
+    m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : InitialFail;
+    m_pswd = msg.GetRead("pswd").ToString();
+    m_auth = msg.GetRead("auth").ToInt32();
+}
+
+void ObjectGS::processCheckGS(const DBMessage &msg)
+{
+    bool bExist = msg.GetRead("user").ToString() == m_id;
+    AckNewGS ack;
+    ack.set_seqno(msg.GetSeqNomb());
+    if (!bExist)
+    {
+        m_check = GSOrUavMessage::GenCheckString();
+        ack.set_check(m_check);
+    }
+    ack.set_result(bExist ? 0 : 1);
+    send(ack);
+    if (bExist)
+        m_stInit = IObject::InitialFail;
+}
+
+void ObjectGS::processPostLandRslt(const DBMessage &msg)
+{
+    AckPostParcelDescription appd;
+    int64_t nCon = msg.GetRead(INCREASEField, 1).ToInt64();
+    int64_t nLand = msg.GetRead(INCREASEField, 2).ToInt64();
+    appd.set_seqno(msg.GetSeqNomb());
+    appd.set_result((nLand > 0 && nCon > 0) ? 1 : 0);
+    appd.set_psiid(Utility::bigint2string(nLand));
+    appd.set_pcid(Utility::bigint2string(nCon));
+    appd.set_pdid(Utility::bigint2string(nLand));
+    send(appd);
+    if (nLand > 0)
+        GetManager()->Log(0, GetObjectID(), 0, "Upload land %d!", nLand);
+
+}
+
+void ObjectGS::processFriends(const DBMessage &msg)
+{
+    const Variant &vUsr1 = msg.GetRead("usr1");
+    const Variant &vUsr2 = msg.GetRead("usr2");
+    if (vUsr1.GetType() == Variant::Type_StringList && vUsr2.GetType() == Variant::Type_StringList)
+    {
+        for (const string &itr : vUsr1.GetVarList<string>())
+        {
+            if (!itr.empty() && itr != m_id)
+                m_friends.push_back(itr);
+        }
+        for (const string &itr : vUsr2.GetVarList<string>())
+        {
+            if (!itr.empty() && itr != m_id)
+                m_friends.push_back(itr);
+        }
+    }
+}
+
+void ObjectGS::processQueryLands(const DBMessage &msg)
+{
+    StringList namesPc = msg.GetRead("1.name").GetVarList<string>();
+    auto birthdayPc = msg.GetRead("1.birthdate").GetVarList<int64_t>();
+    StringList addresses = msg.GetRead("1.address").GetVarList<string>();
+    StringList mobilenos = msg.GetRead("1.mobileno").GetVarList<string>();
+    StringList phonenos = msg.GetRead("1.phoneno").GetVarList<string>();
+    StringList weixins = msg.GetRead("1.weixin").GetVarList<string>();
+
+    StringList namesLand = msg.GetRead("2.name").GetVarList<string>();
+    StringList users = msg.GetRead("2.gsuser").GetVarList<string>();
+    auto acreages = msg.GetRead("2.acreage").GetVarList<float>();
+    auto lats = msg.GetRead("2.lat").GetVarList<double>();
+    auto lons = msg.GetRead("2.lon").GetVarList<double>();
+    auto ids = msg.GetRead("2.id").GetVarList<uint64_t>();
+    StringList boundary = msg.GetRead("2.boundary").GetVarList<string>();
+
+    AckRequestParcelDescriptions ack;
+    ack.set_seqno(msg.GetSeqNomb());
+    ack.set_result(1);
+    auto itrNamesPc = namesPc.begin();
+    auto itrbirthday = birthdayPc.begin();
+    auto itraddresses = addresses.begin();
+    auto itrmobilenos = mobilenos.begin();
+    auto itrphonenos = phonenos.begin();
+    auto itrweixins = weixins.begin();
+    auto itrnamesLand = namesLand.begin();
+    auto itrusers = users.begin();
+    auto itracreages = acreages.begin();
+    auto itrlats = lats.begin();
+    auto itrlons = lons.begin();
+    auto itrids = ids.begin();
+    auto itrboundary = boundary.begin();
+
+    for (; itrids != ids.end(); ++itrids)
+    {
+        ParcelDescription *pd = ack.add_pds();
+        if (itrNamesPc != namesPc.end())
+        {
+            ParcelContracter *pc = new ParcelContracter();
+            pc->set_name(*itrNamesPc);
+            ++itrNamesPc;
+            if (itrbirthday !=birthdayPc.end())
+            {
+                pc->set_birthdate(*itrbirthday);
+                ++itrbirthday;
+            }
+            if (itraddresses != addresses.end())
+            {
+                pc->set_address(*itraddresses);
+                ++itraddresses;
+            }
+            if (itrmobilenos != mobilenos.end())
+            {
+                pc->set_mobileno(*itrmobilenos);
+                ++itrmobilenos;
+            }
+            if (itrphonenos != phonenos.end())
+            {
+                pc->set_phoneno(*itrphonenos);
+                ++itrphonenos;
+            }
+            if (itrweixins != weixins.end())
+            {
+                pc->set_phoneno(*itrweixins);
+                ++itrweixins;
+            }
+            pd->set_allocated_pc(pc);
+        }
+        if (itrnamesLand != namesLand.end())
+        {
+            pd->set_name(*itrnamesLand);
+            ++itrweixins;
+        }
+        if (itrusers != users.end())
+        {
+            pd->set_registerid(*itrnamesLand);
+            ++itrusers;
+        }
+        pd->set_acreage(itracreages!=acreages.end() ? (*itracreages) : 0);
+        if (itracreages != acreages.end())
+            ++itracreages;
+        if (itrlats != lats.end() && itrlons != lons.end())
+        {
+            double lat = *itrlats;
+            double lon = *itrlons;
+            ++itrlats;
+            ++itrlons;
+            if (fabs(lat) <= 90 && fabs(lon) <= 180)
+            {
+                Coordinate *c = new Coordinate;
+                c->set_altitude(0);
+                c->set_latitude(int(lat*1e7));
+                c->set_longitude(int(lon*1e7));
+                pd->set_allocated_coordinate(c);
+            }
+        }
+        if (itrboundary != boundary.end())
+        {
+            ParcelSurveyInformation *psi = new ParcelSurveyInformation;
+            psi->ParseFromArray(itrboundary->c_str(), itrboundary->size());
+            psi->set_id(Utility::bigint2string(*itrids));
+            pd->set_id(Utility::bigint2string(*itrids));
+            pd->set_allocated_psi(psi);
+        }
+    }
+    send(ack);
+}
+
+void ObjectGS::processGSInsert(const DBMessage &msg)
+{
+    bool bSuc = msg.GetRead(EXECRSLT).ToBool();
+    AckNewGS ack;
+    ack.set_seqno(msg.GetSeqNomb());
+    ack.set_result(bSuc ? 1:-1);
+    send(ack);
+    m_check.clear();
+    if (!bSuc)
+        m_stInit = IObject::Uninitial;
+}
+
+void ObjectGS::processPostPlanRslt(const DBMessage &msg)
+{
+    AckPostOperationDescription ack;
+    ack.set_seqno(msg.GetSeqNomb());
+    const Variant &vRslt = msg.GetRead(EXECRSLT);
+    ack.set_result(vRslt.ToBool() ? 1 : 0);
+    if (vRslt.ToBool())
+        ack.set_odid(Utility::bigint2string(msg.GetRead(INCREASEField).ToInt64()));
+
+    send(ack);
+    GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %d!", vRslt.ToBool());
+}
+
+void ObjectGS::processQueryPlans(const DBMessage &msg)
+{
+    AckRequestOperationDescriptions ack;
+    ack.set_seqno(msg.GetSeqNomb());
+    bool suc = msg.GetRead(EXECRSLT).ToBool();
+    ack.set_result(suc ? 0 : 1);
+    if (!suc)
+    {
+        send(ack);
+        return;
+    }
+    auto ids = msg.GetRead("id").GetVarList<int64_t>();
+    auto landIds = msg.GetRead("landId").GetVarList<int64_t>();
+    auto planTimes = msg.GetRead("planTime").GetVarList<int64_t>();
+    auto planusers = msg.GetRead("planuser").GetVarList<string>();
+    auto notes = msg.GetRead("notes").GetVarList<string>();
+    auto crops = msg.GetRead("crop").GetVarList<string>();
+    auto drugs = msg.GetRead("drug").GetVarList<string>();
+    auto prizes = msg.GetRead("prize").GetVarList<float>();
+    auto planParams = msg.GetRead("planParam").GetVarList<string>();
+
+    auto idsItr = ids.begin();
+    auto landIdsItr = landIds.begin();
+    auto planTimesItr = planTimes.begin();
+    auto planusersItr = planusers.begin();
+    auto notesItr = notes.begin();
+    auto cropsItr = crops.begin();
+    auto drugsItr = drugs.begin();
+    auto prizesItr = prizes.begin();
+    auto planParamsItr = planParams.begin();
+    for (; idsItr != ids.end(); ++idsItr)
+    {
+        auto od = ack.add_ods();
+        od->set_odid(Utility::bigint2string(*idsItr));
+        if (landIdsItr != landIds.end())
+        {
+            od->set_pdid(Utility::bigint2string(*landIdsItr));
+            ++landIdsItr;
+        }
+        if (planTimesItr != planTimes.end())
+        {
+            od->set_plantime(*planTimesItr);
+            ++planTimesItr;
+        }
+        if (planusersItr != planusers.end())
+        {
+            od->set_registerid(*planusersItr);
+            ++planusersItr;
+        }
+        if (notesItr != notes.end())
+        {
+            od->set_notes(*notesItr);
+            ++notesItr;
+        }
+        if (cropsItr != crops.end())
+        {
+            od->set_crop(*cropsItr);
+            ++cropsItr;
+        }
+        if (drugsItr != drugs.end())
+        {
+            od->set_drug(*drugsItr);
+            ++drugsItr;
+        }
+        if (prizesItr != prizes.end())
+        {
+            od->set_prize(*prizesItr);
+            ++prizesItr;
+        }
+        if (planParamsItr != planParams.end())
+        {
+            OperationPlan *op = new OperationPlan;
+            op->ParseFromArray(planParamsItr->c_str(), planParamsItr->size());
+            od->set_allocated_op(op);
+            ++planParamsItr;
+        }
+    }
+    send(ack);
+}
+
+void ObjectGS::InitObject()
+{
+    if (IObject::Uninitial == m_stInit)
+    {
+        DBMessage *msg = new DBMessage(this, IMessage::GSQueryRslt);
+        if (!msg)
+            return;
+
+        if (m_check.empty())
+        {
+            msg->SetSql("queryGSInfo");
+            msg->SetCondition("user", m_id);
+            SendMsg(msg);
+            m_stInit = IObject::Initialing;
+            return;
+        }
+        m_stInit = IObject::Initialed;
+    }
 }
 
 void ObjectGS::SetCheck(const std::string &str)
@@ -261,300 +678,87 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
     if (!msg)
         return;
 
+    DBMessage *db = new DBMessage(this, IMessage::LandInsertRslt);
+    if (!db)
+        return;
+
+    db->SetSeqNomb(msg->seqno());
     const ParcelDescription &land = msg->pd();
-    ExecutItem *itemLand = NULL;
-    ExecutItem *itemOwner = NULL;
+    const ParcelContracter &pc = land.pc();
     bool bSuc;
-    uint64_t nLand = Utility::str2int(land.has_psiid() ? land.psiid() : "", 10, &bSuc);
-    if (bSuc)
-        itemLand = VGDBManager::GetSqlByName("updateLand");
-    else
-        itemLand = VGDBManager::GetSqlByName("insertLand");
-
     uint64_t nCon = Utility::str2int(land.has_pc() ? land.pc().id() : "", 10, &bSuc);
+    db->SetSql(bSuc ? "updateOwner" : "insertOwner");
+    if (pc.has_name())
+        db->SetWrite("name", pc.name(), 1);
+    if (pc.has_birthdate())
+        db->SetWrite("birthdate", pc.birthdate(), 1);
+    if (pc.has_address())
+        db->SetWrite("address", pc.address(), 1);
+    if (pc.has_mobileno())
+        db->SetWrite("mobileno", pc.mobileno(), 1);
+    if (pc.has_phoneno())
+        db->SetWrite("phoneno", pc.phoneno(), 1);
+    if (pc.has_weixin())
+        db->SetWrite("weixin", pc.weixin(), 1);
     if (bSuc)
-        itemOwner = VGDBManager::GetSqlByName("updateOwner");
-    else
-        itemOwner = VGDBManager::GetSqlByName("insertOwner");
-
-    if (itemOwner && itemLand)
     {
-        itemOwner->ClearData();
-        itemLand->ClearData();
-        nCon = _saveContact(land, *itemOwner, nCon);
-        if (nCon)
-        {
-            if (FiledVal *fd = itemLand->GetWriteItem("ownerID"))
-                fd->InitOf(nCon);
-            nLand = _saveLand(land, *itemLand, nLand);
-        }
+        db->SetWrite("id", nCon, 1);
+        db->SetWrite(INCREASEField, nCon, 1);
     }
 
-    AckPostParcelDescription appd;
-    appd.set_seqno(msg->seqno());
-    appd.set_result((nLand > 0 && nCon > 0) ? 1 : 0);
-    appd.set_psiid(Utility::bigint2string(nLand));
-    appd.set_pcid(Utility::bigint2string(nCon));
-    appd.set_pdid(Utility::bigint2string(nLand));
-    send(appd);
-    if (nLand > 0)
-        GetManager()->Log(0, GetObjectID(), 0, "Upload land %d!", nLand);
-}
-
-uint64_t ObjectGS::_saveContact(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id)
-{
-    const ParcelContracter &pc = msg.pc();
-    FiledVal *fd = item.GetWriteItem("name");
-    if (fd && pc.has_name())
-        fd->SetParam(pc.name());
-    fd = item.GetWriteItem("birthdate");
-    if (fd && pc.has_birthdate())
-        fd->InitOf(pc.birthdate());
-    fd = item.GetWriteItem("address");
-    if (fd && pc.has_address())
-        fd->SetParam(pc.address());
-    fd = item.GetWriteItem("mobileno");
-    if (fd && pc.has_mobileno())
-        fd->SetParam(pc.mobileno());
-    fd = item.GetWriteItem("phoneno");
-    if (fd && pc.has_phoneno())
-        fd->SetParam(pc.phoneno());
-    fd = item.GetWriteItem("weixin");
-    if (fd && pc.has_weixin())
-        fd->SetParam(pc.weixin());
-
-    if (item.GetType()==ExecutItem::Update && (fd=item.GetWriteItem("id")))
-        fd->InitOf(uint64_t(id));
-
-    return executeInsertSql(&item);
-}
-
-uint64_t ObjectGS::_saveLand(const das::proto::ParcelDescription &msg, ExecutItem &item, uint64_t id)
-{
-    FiledVal *fd = item.GetWriteItem("name");
-    if (fd && msg.has_name())
-        fd->SetParam(msg.name());
-    fd = item.GetWriteItem("gsuser");
-    if (fd && msg.has_registerid())
-        fd->SetParam(msg.registerid());
-    fd = item.GetWriteItem("acreage");
-    if (fd && msg.has_acreage())
-        fd->InitOf(msg.acreage());
-
-    if (msg.has_coordinate())
+    nCon = Utility::str2int(land.has_pc() ? land.pc().id() : "", 10, &bSuc);
+    db->AddSql(bSuc ? "updateLand" : "insertLand");
+    if (land.has_name())
+        db->SetWrite("name", land.name(), 2);
+    if (land.has_registerid())
+        db->SetWrite("gsuser", land.registerid(), 2);
+    if (land.has_acreage())
+        db->SetWrite("acreage", land.acreage(), 2);
+    if (bSuc)
     {
-        if (FiledVal *tdTmp = item.GetWriteItem("lat"))
-            tdTmp->InitOf(double(msg.coordinate().latitude() / 1e7));
-        if (FiledVal *tdTmp = item.GetWriteItem("lon"))
-            tdTmp->InitOf(double(msg.coordinate().longitude() / 1e7));
+        db->SetWrite("id", nCon, 2);
+        db->SetWrite(INCREASEField, nCon, 2);
     }
 
-    fd = item.GetWriteItem("boundary");
-    if (fd && msg.has_psi())
+    if (land.has_coordinate())
     {
-        fd->InitBuff(msg.psi().ByteSize());
-        msg.psi().SerializeToArray(fd->GetBuff(), fd->GetMaxLen());
+        db->SetWrite("lat", double(land.coordinate().latitude() / 1e7), 2);
+        db->SetWrite("lat", double(land.coordinate().longitude() / 1e7), 2);
+    }
+    if (land.has_psi())
+    {
+        string buff;
+        buff.resize(land.psi().ByteSize());
+        land.psi().SerializeToArray(&buff.front(), buff.size());
+        db->SetWrite("boundary", Variant(buff.size(), &buff.front()), 2);
     }
 
-    int64_t tmp = executeInsertSql(&item);
-    return tmp > 0 ? tmp : id;
+    SendMsg(db);
 }
 
 void ObjectGS::_prcsReqLand(RequestParcelDescriptions *msg)
 {
-    if (!msg)
+    if (!msg || msg->registerid().empty())
         return;
 
+    DBMessage *db = new DBMessage(this, IMessage::LandQueryRslt);
+    if (!db)
+        return;
+    db->SetSeqNomb(msg->seqno());
+    db->SetSql("queryLand", true);
+    db->SetCondition("LandInfo.gsuser", m_id);
+
+    SendMsg(db);
     AckRequestParcelDescriptions ack;
     ack.set_seqno(msg->seqno());
-
-    string user = msg->registerid();
-    int res = 0;
-    ExecutItem *item = VGDBManager::GetSqlByName("queryLand");
-    if (user.length()>0 && item)
-    {
-        item->ClearData();
-        if (FiledVal *tdTmp = item->GetConditionItem("LandInfo.gsuser"))
-            tdTmp->SetParam(user);
-
-        VGMySql *sql = ((GSManager*)GetManager())->GetMySql();
-        if (sql->Execut(item))
-        {
-            do {
-                _initialParcelDescription(ack.add_pds(), *item);
-                item->ClearData();
-            } while (sql->GetResult());
-            res = 1;
-        }
-    }
-    ack.set_result(res);
-    send(ack);
 }
 
-void ObjectGS::_initialParcelDescription(ParcelDescription *pd, const ExecutItem &item)
+int ObjectGS::_addDatabaseUser(const std::string &user, const std::string &pswd, int seq)
 {
-    if (!pd)
-        return;
-    
-    if (ParcelContracter *pc = _transPC(item))
-        pd->set_allocated_pc(pc);
-
-    FiledVal *fd = item.GetReadItem("LandInfo.name");
-    if (fd && fd->GetValidLen() > 0)
-        pd->set_name((char*)fd->GetBuff());
-    fd = item.GetReadItem("LandInfo.gsuser");
-    if (fd && fd->GetValidLen() > 0)
-        pd->set_registerid((char*)fd->GetBuff());
-    fd = item.GetReadItem("LandInfo.acreage");
-    pd->set_acreage((fd && fd->GetValidLen() > 0)?fd->GetValue<float>():0);
-    fd = item.GetReadItem("LandInfo.lat");
-    FiledVal *tdTmp = item.GetReadItem("LandInfo.lon");
-    if (fd && fd->GetValidLen() > 0 && tdTmp&&tdTmp->GetValidLen() > 0)
-    {
-        double lat = fd->GetValue<double>();
-        double lon = fd->GetValue<double>();
-        if(fabs(lat)<=90 && fabs(180))
-        {
-            Coordinate *c = new Coordinate;
-            c->set_altitude(0);
-            c->set_latitude(int(lat*1e7));
-            c->set_longitude(int(lon*1e7));
-            pd->set_allocated_coordinate(c);
-        }
-    }
-
-    fd = item.GetReadItem("LandInfo.id");
-    string id = (fd && fd->GetValidLen() > 0) ? Utility::bigint2string(fd->GetValue()) : "0";
-
-    fd = item.GetReadItem("LandInfo.boundary");
-    if (fd && fd->GetValidLen() > 0)
-    {
-        ParcelSurveyInformation *psi = new ParcelSurveyInformation;
-        psi->ParseFromArray(fd->GetBuff(), fd->GetValidLen());
-        psi->set_id(id);
-        pd->set_id(id);
-        pd->set_allocated_psi(psi);
-    }
-}
-
-ParcelContracter *ObjectGS::_transPC(const ExecutItem &item)
-{
-    ParcelContracter *pc = new ParcelContracter();
-    if (!pc)
-        return NULL;
-
-    FiledVal *fd = item.GetReadItem("OwnerInfo.name");
-    if (fd && fd->GetValidLen() > 0)
-        pc->set_name(string((char*)fd->GetBuff(), fd->GetValidLen()));
-
-    fd = item.GetReadItem("OwnerInfo.birthdate");
-    int64_t tm = (fd && fd->GetValidLen() > 0) ? fd->GetValue() : Utility::secTimeCount();
-    pc->set_birthdate(tm);
-
-    fd = item.GetReadItem("OwnerInfo.address");
-    string str = (fd && fd->GetValidLen() > 0) ? string((char*)fd->GetBuff(), fd->GetValidLen()) : "";
-    pc->set_address(str);
-
-    fd = item.GetReadItem("OwnerInfo.mobileno");
-    str = (fd && fd->GetValidLen() > 0) ? string((char*)fd->GetBuff(), fd->GetValidLen()) : "";
-    pc->set_mobileno(str);
-    if (fd && fd->GetValidLen() > 0)
-    fd = item.GetReadItem("OwnerInfo.phoneno");
-    if (fd && fd->GetValidLen() > 0)
-        pc->set_phoneno(string((char*)fd->GetBuff(), fd->GetValidLen()));
-    fd = item.GetReadItem("weixin");
-    if (fd && fd->GetValidLen() > 0)
-        pc->set_weixin(string((char*)fd->GetBuff(), fd->GetValidLen()));
-
-    return pc;
-}
-
-int64_t ObjectGS::_savePlan(ExecutItem *item, const OperationDescription &msg)
-{
-    if (!item)
-        return -1;
-
-    item->ClearData();
-    FiledVal *fd = item->GetWriteItem("landId");
-    if (!fd || msg.pdid().empty())
-        return -1;
-    fd->SetParam(msg.pdid());
-
-    fd = item->GetWriteItem("planuser");
-    if (!fd || msg.registerid().empty())
-        return -1;
-    fd->SetParam(msg.registerid());
-
-    fd = item->GetWriteItem("crop");
-    if (!fd || msg.crop().empty())
-        return -1;
-    fd->SetParam(msg.crop());
-
-    fd = item->GetWriteItem("drug");
-    if (!fd || msg.drug().empty())
-        return -1;
-    fd->SetParam(msg.drug());
-
-    fd = item->GetWriteItem("prize");
-    if (!fd)
-        return -1;
-    fd->InitOf(msg.prize());
-
-    fd = item->GetWriteItem("notes");
-    if (fd && msg.has_notes())
-        fd->SetParam(msg.notes());
-    if (FiledVal *fdTmp = item->GetWriteItem("planTime"))
-        fdTmp->InitOf(msg.has_plantime() ? msg.plantime() : Utility::msTimeTick());
-    if (FiledVal *fdTmp = item->GetWriteItem("planParam"))
-    {
-        fdTmp->InitBuff(msg.op().ByteSize());
-        msg.op().SerializeToArray(fdTmp->GetBuff(), fdTmp->GetMaxLen());
-    }
-    return executeInsertSql(item);
-}
-
-void ObjectGS::_initialPlan(das::proto::OperationDescription *msg, const ExecutItem &item)
-{
-    FiledVal *fd = item.GetReadItem("id");
-    if (fd && fd->GetValidLen() > 0)
-        msg->set_odid(Utility::bigint2string(fd->GetValue()));
-    fd = item.GetReadItem("landId");
-    if (fd && fd->GetValidLen() > 0)
-        msg->set_pdid(Utility::bigint2string(fd->GetValue()));
-    fd = item.GetReadItem("planTime");
-    if (fd && fd->GetValidLen() > 0)
-        msg->set_plantime(fd->GetValue());
-    fd = item.GetReadItem("planuser");
-    if (fd && fd->GetValidLen() > 0)
-        msg->set_registerid((char*)fd->GetBuff());
-    fd = item.GetReadItem("notes");
-    if (fd && fd->GetValidLen() > 0)
-        msg->set_notes((char*)fd->GetBuff());
-    fd = item.GetReadItem("crop");
-    if (fd && fd->GetValidLen() > 0)
-        msg->set_crop((char*)fd->GetBuff());
-    fd = item.GetReadItem("drug");
-    if (fd && fd->GetValidLen() > 0)
-        msg->set_drug((char*)fd->GetBuff());
-    fd = item.GetReadItem("prize");
-    if (fd && fd->GetValidLen() > 0)
-        msg->set_prize(fd->GetValue<float>());
-
-    fd = item.GetReadItem("planParam");
-    if (fd && fd->GetValidLen() > 0)
-    {
-        OperationPlan *op = new OperationPlan;
-        op->ParseFromArray(fd->GetBuff(), fd->GetValidLen());
-        msg->set_allocated_op(op);
-    }
-}
-
-int ObjectGS::_addDatabaseUser(const std::string &user, const std::string &pswd)
-{
-    GSManager *mgr = dynamic_cast<GSManager *>(GetManager());
+    GSManager *mgr = (GSManager *)(GetManager());
     int ret = -1;
     if (mgr)
-        ret = mgr->AddDatabaseUser(user, pswd);
+        ret = mgr->AddDatabaseUser(user, pswd, this, seq) > 0 ? 2 : -1;
 
     if (ret > 0)
     {
@@ -569,9 +773,26 @@ void ObjectGS::initFriend()
     if (m_bInitFriends)
         return;
 
+    DBMessage *msg = new DBMessage(this, IMessage::FriendQueryRslt);
+    if (!msg)
+        return;
     m_bInitFriends = true;
-    if (GSManager *mgr = (GSManager *)(GetManager()))
-        m_friends = mgr->GetDBFriend(GetObjectID());
+    msg->SetSql("queryGSFriends", true);
+    msg->SetCondition("usr1", m_id);
+    msg->SetCondition("usr2", m_id);
+    SendMsg(msg);
+}
+
+void ObjectGS::addDBFriend(const string &user1, const string &user2)
+{
+    if (DBMessage *msg = new DBMessage(this))
+    {
+        msg->SetSql("insertGSFrienfs");
+        msg->SetWrite("id", GSManager::CatString(user1, user2));
+        msg->SetWrite("usr1", user1);
+        msg->SetWrite("usr2", user2);
+        SendMsg(msg);
+    }
 }
 
 void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
@@ -580,27 +801,19 @@ void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
         return;
 
     const std::string &id = msg->pdid();
+    DBMessage *msgDb = new DBMessage(this);
+    if (!msgDb || id.empty())
+        return;
+
+    msgDb->SetSql("deleteLand");
+    msgDb->SetCondition("LandInfo.id", id);
+    SendMsg(msgDb);
+    GetManager()->Log(0, GetObjectID(), 0, "Delete land %s!", id.c_str());
+
     AckDeleteParcelDescription ackDD;
     ackDD.set_seqno(msg->seqno());
-    int res = 0;
-    if (msg->delpc() && msg->delpsi() && !id.empty())
-    {
-        if (ExecutItem *item = VGDBManager::GetSqlByName("deleteLand"))
-        {
-            item->ClearData();
-            FiledVal *fd = item->GetConditionItem("LandInfo.id");
-            if (fd)
-                fd->SetParam(id);
-
-            VGMySql *sql = ((GSManager*)GetManager())->GetMySql();
-            if (sql && sql->Execut(item))
-                res = 1;
-        }
-    }
-    ackDD.set_result(res);
+    ackDD.set_result(1);
     send(ackDD);
-    if (res > 0)
-        GetManager()->Log(0, GetObjectID(), 0, "Delete land %s!", id.c_str());
 }
 
 void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
@@ -626,20 +839,47 @@ void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
 
 void ObjectGS::_prcsPostPlan(PostOperationDescription *msg)
 {
-    if (!msg)
+    if (msg)
+        return;
+    const OperationDescription &od = msg->od();
+    if (od.pdid().empty() || od.registerid().empty())
+    {
+        AckPostOperationDescription ack;
+        ack.set_seqno(msg->seqno());
+        ack.set_result(0);
+        send(ack);
+        return;
+    }
+    DBMessage *msgDb = new DBMessage(this, IMessage::PlanInsertRslt);
+    if (!msgDb)
         return;
 
-    int64_t res = _savePlan(VGDBManager::GetSqlByName("InsertPlan"), msg->od());
-    AckPostOperationDescription ack;
-    ack.set_seqno(msg->seqno());
-    ack.set_result(res > 0 ? 1 : 0);
+    int64_t id = od.has_odid() ? Utility::str2int(od.odid()) : 0;
 
-    if(res>0)
-        ack.set_odid(Utility::bigint2string(res));
+    msgDb->SetSeqNomb(msg->seqno());
+    msgDb->SetSql(id > 0 ? "UpdatePlan" : "InsertPlan");
+    if (id > 0)
+    {
+        msgDb->SetCondition("id", od.odid());
+        msgDb->SetRead(INCREASEField, id);
+    }
 
-    send(ack);
-    if (res > 0)
-        GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %d!", res);
+    msgDb->SetWrite("landId", od.pdid());
+    msgDb->SetWrite("planuser", od.registerid());
+    if(!od.crop().empty())
+        msgDb->SetWrite("crop", od.crop());
+    if (!od.drug().empty())
+        msgDb->SetWrite("drug", od.drug());
+    msgDb->SetWrite("prize", od.prize());
+    if (!od.has_notes())
+        msgDb->SetWrite("notes", od.notes());
+    msgDb->SetWrite("planTime", od.has_plantime() ? od.plantime() : Utility::msTimeTick());
+    string buff;
+    buff.resize(od.op().ByteSize());
+    od.op().SerializeToArray(&buff.front(), buff.size());
+    msgDb->SetWrite("planParam", Variant(int(buff.size()), buff.c_str()));
+
+    SendMsg(msgDb);
 }
 
 void ObjectGS::_prcsReqPlan(RequestOperationDescriptions *msg)
@@ -647,40 +887,32 @@ void ObjectGS::_prcsReqPlan(RequestOperationDescriptions *msg)
     if (!msg || (!msg->has_odid() && !msg->has_pdid() && !msg->has_registerid()))
         return;
 
-    AckRequestOperationDescriptions ack;
-    ack.set_seqno(msg->seqno());
-    int res = 0;
-    if (ExecutItem *item = VGDBManager::GetSqlByName("queryPlan"))
+    DBMessage *msgDb = new DBMessage(this, IMessage::PlanQueryRslt);
+    if (!msgDb)
+        return;
+    msgDb->SetSql("queryPlan", true);
+    msgDb->SetSeqNomb(msg->seqno());
+    bool bValid = false;
+    if (msg->has_odid())
     {
-        item->ClearData();
-        if (msg->has_odid())
-        {
-            if (FiledVal *tdTmp = item->GetConditionItem("id"))
-                tdTmp->SetParam(msg->odid());
-        }
-        if (msg->has_pdid())
-        {
-            if (FiledVal *tdTmp = item->GetConditionItem("landId"))
-                tdTmp->SetParam(msg->pdid());
-        }
-        if (msg->has_registerid())
-        {
-            if (FiledVal *tdTmp = item->GetConditionItem("planuser"))
-                tdTmp->SetParam(msg->registerid());
-        }
-       
-        VGMySql *sql = ((GSManager*)GetManager())->GetMySql();
-        if (sql->Execut(item))
-        {
-            do {
-                _initialPlan(ack.add_ods(), *item);
-                item->ClearData();
-            } while (sql->GetResult());
-            res = 1;
-        }
+        msgDb->SetCondition("id", msg->odid());
+        bValid = true;
     }
-    ack.set_result(res);
-    send(ack);
+    if (msg->has_pdid())
+    {
+        msgDb->SetCondition("landId", msg->pdid());
+        bValid = true;
+    }
+    if (msg->has_registerid())
+    {
+        msgDb->SetCondition("planuser", msg->registerid());
+        bValid = true;
+    }
+
+    if (bValid)
+        SendMsg(msgDb);
+    else
+        delete msgDb;
 }
 
 void ObjectGS::_prcsDelPlan(das::proto::DeleteOperationDescription *msg)
@@ -689,26 +921,19 @@ void ObjectGS::_prcsDelPlan(das::proto::DeleteOperationDescription *msg)
         return;
 
     const std::string &id = msg->odid();
-    AckDeleteOperationDescription ackDD;
-    ackDD.set_seqno(msg->seqno());
-    int res = 0;
-    ExecutItem *item = VGDBManager::GetSqlByName("deletePlan");
-    if (item && !id.empty())
-    {
-        item->ClearData();
-        FiledVal *fd = item->GetConditionItem("id");
-        if (fd)
-            fd->SetParam(id);
+    DBMessage *msgDb = new DBMessage(this);
+    if (!msgDb || id.empty())
+        return;
 
-        VGMySql *sql = ((GSManager*)GetManager())->GetMySql();
-        if (sql && sql->Execut(item))
-            res = 1;
-    }
+    msgDb->SetSql("deletePlan");
+    msgDb->SetCondition("LandInfo.id", id);
+    SendMsg(msgDb);
 
-    ackDD.set_result(res);
-    send(ackDD);
-    if (res > 0)
-        GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %s!", id.c_str());
+    AckDeleteOperationDescription ackDP;
+    ackDP.set_seqno(msg->seqno());
+    ackDP.set_result(1);
+    send(ackDP);
+    GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %s!", id.c_str());
 }
 
 void ObjectGS::_prcsPostMission(PostOperationRoute *msg)
@@ -729,25 +954,30 @@ void ObjectGS::_prcsReqNewGs(RequestNewGS *msg)
         return;
 
     int res = 1;
-    AckNewGS ack;
-    ack.set_seqno(msg->seqno());
     if (Utility::Lower(msg->userid()) != m_id)
         res = -4;
+    else if (!GSOrUavMessage::IsGSUserValide(msg->userid()))
+        res = -2;
     else if (msg->check().empty())
-        res = GSManager::ExecutNewGsSql((GSManager*)GetManager(), m_id);
+        return _checkGS(m_id, msg->seqno());
     else if (msg->check() != m_check)
         res = -3;
     else if (msg->check() == m_check && !msg->password().empty())
-        res = _addDatabaseUser(m_id, msg->password());
-    
-    if (1 != res || msg->check().empty())
+        res = _addDatabaseUser(m_id, msg->password(), msg->seqno());
+
+    if (res <= 1)
     {
-        m_check = GSOrUavMessage::GenCheckString();
-        ack.set_check(m_check);
+        AckNewGS ack;
+        ack.set_seqno(msg->seqno());
+        if (1 != res || msg->check().empty())
+        {
+            m_check = GSOrUavMessage::GenCheckString();
+            ack.set_check(m_check);
+        }
+        ack.set_result(res);
+        send(ack);
     }
 
-    ack.set_result(res);
-    send(ack);
 }
 
 void ObjectGS::_prcsGsMessage(GroundStationsMessage *msg)
@@ -767,14 +997,17 @@ void ObjectGS::_prcsGsMessage(GroundStationsMessage *msg)
     if (msg->type() == AgreeFriend && !IsContainsInList(m_friends, msg->to()))
     {
         m_friends.push_back(msg->to());
-        if (GSManager *mgr = (GSManager *)GetManager())
-            mgr->AddDBFriend(GetObjectID(), msg->to());
+        addDBFriend(m_id, msg->to());
     }
     else if (msg->type() == DeleteFriend)
     {
         m_friends.remove(msg->to());
-        if (GSManager *mgr = (GSManager *)GetManager())
-            mgr->RemoveDBFriend(GetObjectID(), msg->to());
+        if (DBMessage *db = new DBMessage(this))
+        {
+            db->SetSql("insertGSFrienfs");
+            db->SetCondition("id", GSManager::CatString(m_id, msg->to()));
+            SendMsg(db);
+        }
     }
 
     if (Gs2GsMessage *ms = new Gs2GsMessage(this, msg->to()))
@@ -796,4 +1029,16 @@ void ObjectGS::_prcsReqFriends(das::proto::RequestFriends *msg)
         ack.add_friends(itr);
     }
     send(ack);
+}
+
+void ObjectGS::_checkGS(const string &user, int ack)
+{
+    DBMessage *msgDb = new DBMessage(this, IMessage::GSCheckRslt);
+    if (!msgDb)
+        return;
+
+    msgDb->SetSeqNomb(ack);
+    msgDb->SetSql("checkGS");
+    msgDb->SetCondition("user", user);
+    SendMsg(msgDb);
 }
