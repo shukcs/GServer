@@ -70,7 +70,7 @@ void ObjectUav::RespondLogin(int seq, int res)
         ack.set_seqno(seq);
         ack.set_result(res);
         send(ack);
-        GetManager()->Log(0, m_id, 0, "[%s]%s", m_sock->GetHost().c_str(), res==1?"login": "login fail");
+        GetManager()->Log(0, m_id, 0, "[%s:%d]%s", m_sock->GetHost().c_str(), m_sock->GetPort(), res==1 ? "logined" : "login fail");
     }
 }
 

@@ -77,7 +77,7 @@ void ObjectGS::_prcsLogin(RequestGSIdentityAuthentication *msg)
     if (msg && m_p)
     {
         bool suc = m_pswd == msg->password();
-        GetManager()->Log(0, m_id, 0, "[%s]%s", m_sock->GetHost().c_str(), suc?"login":"login fail");
+        GetManager()->Log(0, m_id, 0, "[%s:%d]%s", m_sock->GetHost().c_str(), m_sock->GetPort(), suc?"logined":"login fail");
         if (!suc)
             m_sock->Close();
 
@@ -525,11 +525,12 @@ void ObjectGS::processPostPlanRslt(const DBMessage &msg)
     ack.set_seqno(msg.GetSeqNomb());
     const Variant &vRslt = msg.GetRead(EXECRSLT);
     ack.set_result(vRslt.ToBool() ? 1 : 0);
+    int64_t id = msg.GetRead(INCREASEField).ToInt64();
     if (vRslt.ToBool())
-        ack.set_odid(Utility::bigint2string(msg.GetRead(INCREASEField).ToInt64()));
+        ack.set_odid(Utility::bigint2string(id));
 
     send(ack);
-    GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %d!", vRslt.ToBool());
+    GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %ld!", id);
 }
 
 void ObjectGS::processQueryPlans(const DBMessage &msg)

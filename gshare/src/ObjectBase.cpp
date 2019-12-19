@@ -55,7 +55,8 @@ public:
     {
         if (sz > m_szBuff)
         {
-            if(m_buff = new char[sz])
+            m_buff = new char[sz];
+            if(m_buff)
                 m_szBuff = sz;
         }
     }
@@ -353,20 +354,21 @@ bool IObjectManager::Receive(ISocket *s, int len, const char *buf)
 
 void IObjectManager::PushReleaseMsg(IMessage *msg)
 {
-    Lock l(m_mtx); //这个来自不同线程，需要加锁
+    m_mtx->Lock(); //这个来自不同线程，需要加锁
     m_lsMsgRelease.push_back(msg);
+    m_mtx->Unlock();
 }
 
 void IObjectManager::PrcsReleaseMsg()
 {
-    while (m_lsMsgRelease.size() > 0)
+    m_mtx->Lock();
+    while (!m_lsMsgRelease.empty())
     {
-        m_mtx->Lock();
         IMessage *ms = m_lsMsgRelease.front();
         m_lsMsgRelease.pop_front();
-        m_mtx->Unlock();
         delete ms;
     }
+    m_mtx->Unlock();
 }
 
 void IObjectManager::removeObject(ThreadObjects &objs, const std::string &id)
