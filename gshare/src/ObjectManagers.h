@@ -74,7 +74,7 @@ public:
     void ProcessReceive(ISocket *sock, void const *buf, int len);
     void Subcribe(IObject *o, const std::string &sender, int tpMsg);
     void Unsubcribe(IObject *o, const std::string &sender, int tpMsg);
-    void DestroyCloneMsg(IMessage *msg);
+    void DestroyMessage(IMessage *msg);
 protected:
     bool PrcsRcvBuff();
     void PrcsCloseSocket();
@@ -95,7 +95,7 @@ private:
     std::map<ISocket*, LoopQueBuff*>    m_socksRcv;
     std::list<ISocket *>                m_keysRemove;
     ObjectQueue                         m_objectsDestroy;//Ïú»Ù¶ÓÁÐ
-    IMutex                              *m_mtx;
+    IMutex                              *m_mtxSock;
     IMutex                              *m_mtxObj;
     IMutex                              *m_mtxMsg;
     Thread                              *m_thread;

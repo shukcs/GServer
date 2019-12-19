@@ -85,7 +85,7 @@ void ManagerAbstractItem::Unregister()
 ////////////////////////////////////////////////////////////
 //ObjectManagers
 ////////////////////////////////////////////////////////////
-ObjectManagers::ObjectManagers():m_mtx(new Mutex)
+ObjectManagers::ObjectManagers():m_mtxSock(new Mutex)
 , m_mtxObj(new Mutex), m_mtxMsg(new Mutex)
 , m_thread(new ManagerThread)
 {
@@ -95,6 +95,9 @@ ObjectManagers::ObjectManagers():m_mtx(new Mutex)
 
 ObjectManagers::~ObjectManagers()
 {
+    delete m_mtxSock;
+    delete m_mtxObj;
+    delete m_mtxMsg;
 }
 
 ObjectManagers &ObjectManagers::Instance()
@@ -184,9 +187,9 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
         bb = new LoopQueBuff(2048);
         if (bb)
         {
-            m_mtx->Lock();
+            m_mtxSock->Lock();
             m_socksRcv[sock] = bb;
-            m_mtx->Unlock();
+            m_mtxSock->Unlock();
         }
     }
     else
@@ -203,9 +206,9 @@ void ObjectManagers::Subcribe(IObject *o, const std::string &sender, int tpMsg)
         return;
     if (SubcribeStruct *sub = new SubcribeStruct(*o, sender, tpMsg, true))
     {
-        m_mtxObj->Lock();
+        m_mtxMsg->Lock();
         m_subcribeMsgs.push_back(sub);
-        m_mtxObj->Unlock();
+        m_mtxMsg->Unlock();
     }
 }
 
@@ -216,13 +219,13 @@ void ObjectManagers::Unsubcribe(IObject *o, const std::string &sender, int tpMsg
 
     if (SubcribeStruct *sub = new SubcribeStruct(*o, sender, tpMsg, false))
     {
-        m_mtxObj->Lock();
+        m_mtxMsg->Lock();
         m_subcribeMsgs.push_back(sub);
-        m_mtxObj->Unlock();
+        m_mtxMsg->Unlock();
     }
 }
 
-void ObjectManagers::DestroyCloneMsg(IMessage *msg)
+void ObjectManagers::DestroyMessage(IMessage *msg)
 {
     if(msg)
     {
@@ -237,8 +240,9 @@ void ObjectManagers::Destroy(IObject *o)
     if (!o)
         return;
 
-    Lock l(m_mtxObj);
+    m_mtxObj->Lock();
     m_objectsDestroy.push_back(o);
+    m_mtxObj->Unlock();
 }
 
 void ObjectManagers::OnSocketClose(ISocket *sock)
@@ -246,8 +250,9 @@ void ObjectManagers::OnSocketClose(ISocket *sock)
     map<ISocket *, LoopQueBuff*>::iterator itr = m_socksRcv.find(sock);
     if (itr != m_socksRcv.end())
     {
-        Lock l(m_mtx);
+        m_mtxSock->Lock();
         m_keysRemove.push_back(sock);
+        m_mtxSock->Unlock();
     }
 }
 
@@ -265,9 +270,9 @@ bool ObjectManagers::PrcsRcvBuff()
             {
                 if (mgr.second->Receive(itr.first, copied, m_buff))
                 {
-                    m_mtx->Lock();
+                    m_mtxSock->Lock();
                     m_keysRemove.push_back(itr.first);
-                    m_mtx->Unlock();
+                    m_mtxSock->Unlock();
                     ret = true;
                     break;
                 }
@@ -283,12 +288,13 @@ void ObjectManagers::PrcsCloseSocket()
     if (m_keysRemove.size() <= 0)
         return;
 
-    Lock l(m_mtx);
+    m_mtxSock->Lock();
     for (ISocket *s : m_keysRemove)
     {
         _removeBuff(s);
     }
     m_keysRemove.clear();
+    m_mtxSock->Unlock();
 }
 
 void ObjectManagers::PrcsObjectsDestroy()
@@ -296,17 +302,18 @@ void ObjectManagers::PrcsObjectsDestroy()
     if (m_objectsDestroy.empty())
         return;
 
-    Lock l(m_mtxObj);
+    m_mtxObj->Lock();
     while (m_objectsDestroy.size() > 0)
     {
         delete m_objectsDestroy.front();
         m_objectsDestroy.pop_front();
     }
+    m_mtxObj->Unlock();
 }
 
 void ObjectManagers::PrcsSubcribes()
 {
-    while (m_subcribeMsgs.size() > 0)
+    while (!m_subcribeMsgs.empty())
     {
         SubcribeStruct *sub = m_subcribeMsgs.front();
         m_subcribeMsgs.pop_front();
@@ -343,8 +350,8 @@ void ObjectManagers::PrcsMessages()
 {
     if (m_messages.empty() && m_releaseMsgs.empty())
         return;
-     
-    while (m_messages.size() > 0)
+
+    while (!m_messages.empty())
     {
         m_mtxMsg->Lock();
         IMessage *msg = m_messages.front();
@@ -356,20 +363,23 @@ void ObjectManagers::PrcsMessages()
                 mgr->PushMessage(msg->Clone(s.second, s.first));
         }
         if (IObjectManager *mgr = GetManagerByType(msg->GetReceiverType()))
-        {
             mgr->PushMessage(msg);
-            return;
-        }
-        msg->Release();
+        else
+            msg->Release();
     }
 
-    while (m_releaseMsgs.size() > 0)
+    while (!m_releaseMsgs.empty())
     {
         m_mtxMsg->Lock();
         IMessage *msg = m_releaseMsgs.front();
         m_releaseMsgs.pop_front();
         m_mtxMsg->Unlock();
-        delete msg;
+        if (msg->IsClone())
+            delete msg;
+        else if (IObject *obj = msg->GetSender())
+            obj->PushReleaseMsg(msg);
+        else if (IObjectManager *m = GetManagerByType(msg->GetSenderType()))
+            m->PushReleaseMsg(msg);
     }
 }
 

@@ -112,6 +112,7 @@ public:
     SHARED_DECL void Release();
     SHARED_DECL int CountDataRef()const;
     SHARED_DECL virtual IMessage *Clone(const std::string &idRcv, int tpRcv)const;
+    int IsClone()const;
 protected:
     MessageData *m_data;
     int         m_tpRcv;

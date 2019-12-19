@@ -147,7 +147,7 @@ bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
         return false;
 
     m_mtx->Lock();      //应对不同线程
-    m_socketsPrcs.push_back(SocketPrcs(s, s->GetHandle()));
+    m_socketsPrcs.push_back(s->GetHandle());
     m_mtx->Unlock();
     return true;
 }
@@ -208,19 +208,18 @@ void GSocketManager::PrcsDestroySockets()
 
 bool GSocketManager::PrcsSockets()
 {
-    if (m_socketsPrcs.size() <= 0)
+    if (m_socketsPrcs.empty())
         return false;
 
-    while (m_socketsPrcs.size() > 0)
+    m_mtx->Lock();
+    while (!m_socketsPrcs.empty())
     {
-        m_mtx->Lock();
-        SocketPrcs p = m_socketsPrcs.front();
+        int fd = m_socketsPrcs.front();
         m_socketsPrcs.pop_front();
-        m_mtx->Unlock();
-        ISocket *s = p.first;
-
-        if (m_sockets.find(p.second) != m_sockets.end())
+        map<int, ISocket*>::iterator itr = m_sockets.find(fd);
+        if (itr != m_sockets.end())
         {
+            ISocket *s = itr->second;
             ISocket::SocketStat st = s->GetSocketStat();
             if (ISocket::Closing == st)
                 _close(s);
@@ -229,6 +228,7 @@ bool GSocketManager::PrcsSockets()
                 _send(s);
         }
     }
+    m_mtx->Unlock();
     return true;
 }
 

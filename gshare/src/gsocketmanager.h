@@ -14,9 +14,8 @@ class IMutex;
 class Thread;
 class ILog;
 class GSocketManager : public ISocketManager {
-    typedef std::pair<ISocket*, int> SocketPrcs;
     typedef std::list<ISocket *> SocketQue;
-    typedef std::list<SocketPrcs> SocketPrcsQue;
+    typedef std::list<int> SocketPrcsQue;
     typedef std::map<ISocket *, FuncOnBinded> SocketBindedCallbacks;
 public:
     SHARED_DECL static ISocketManager *CreateManager(int nThread = 0, int maxSock = 100000);

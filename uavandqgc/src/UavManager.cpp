@@ -212,7 +212,7 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
         }
     }
     if (strLs.size() > 0)
-        queryUavInfo(gs, uia.seqno(), strLs);
+        queryUavInfo(gs, uia.seqno(), strLs, bMgr&&uia.uavid_size()>1);
 
     if (gs)
     {
@@ -271,7 +271,7 @@ void UavManager::addUavId(int seq, const std::string &uav)
     }
 }
 
-void UavManager::queryUavInfo(ObjectGS *gs, int seq, const std::list<std::string> &uavs)
+void UavManager::queryUavInfo(ObjectGS *gs, int seq, const std::list<std::string> &uavs, bool bAdd)
 {
     if (!gs)
         return;
@@ -280,16 +280,17 @@ void UavManager::queryUavInfo(ObjectGS *gs, int seq, const std::list<std::string
     {
         msg->SetSeqNomb(seq);
         int idx = 0;
-        if (gs->GetAuth(ObjectGS::Type_UavManager) && uavs.size()==1)
+        if (bAdd && uavs.size()==1)
         {
             uint32_t id = toIntID(uavs.front());
             if (id >= 1)
             {
-                idx = 1;
                 msg->SetSql("insertUavInfo", true);
-                msg->SetWrite("id", uavs.front(), idx);
-                msg->SetWrite("authCheck", GSOrUavMessage::GenCheckString(8), idx);
-                idx++;
+                msg->SetWrite("id", uavs.front(), 1);
+                msg->SetWrite("authCheck", GSOrUavMessage::GenCheckString(8), 1);
+                idx = 2;
+                if (id > m_lastId)
+                    m_lastId = id;
             }
         }
         if (idx < 1)

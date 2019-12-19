@@ -215,7 +215,7 @@ DBManager::~DBManager()
 
 bool DBManager::InitManager(void)
 {
-    return true;
+    return false;
 }
 
 int DBManager::GetObjectType() const

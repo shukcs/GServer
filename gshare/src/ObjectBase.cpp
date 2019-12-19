@@ -95,25 +95,22 @@ IObject::~IObject()
 
 void IObject::_prcsMessage()
 {
-    while (m_lsMsg.size() > 0)
+    m_mtxMsg->Lock();
+    while (!m_lsMsg.empty())
     {
-        m_mtxMsg->Lock();
         IMessage *msg = m_lsMsg.front();
         m_lsMsg.pop_front();
-        m_mtxMsg->Unlock();
         if (msg->IsValid())
             ProcessMessage(msg);
         msg->Release();
     }
-
-    while (m_lsMsgRelease.size() > 0)
+    while (!m_lsMsgRelease.empty())
     {
-        m_mtxMsg->Lock();
         IMessage *msg = m_lsMsgRelease.front();
         m_lsMsgRelease.pop_front();
-        m_mtxMsg->Unlock();
         delete msg;
     }
+    m_mtxMsg->Unlock();
 }
 
 const string &IObject::GetObjectID() const
@@ -393,12 +390,11 @@ bool IObjectManager::ProcessBussiness(BussinessThread *)
 {
     bool ret = false;
     if (!InitManager())
-        return false;
+        return ret;
 
-    if (m_lsMsg.size())
+    if (!m_lsMsg.empty())
     {
-        m_mtx->Lock();
-        while (m_lsMsg.size())
+        while (!m_lsMsg.empty())
         {
             IMessage *msg = m_lsMsg.front();
             m_lsMsg.pop_front();    //队列方式, 不用枷锁
@@ -409,7 +405,6 @@ bool IObjectManager::ProcessBussiness(BussinessThread *)
                 ret = true;
             }
         }
-        m_mtx->Unlock();
     }
    
     PrcsReleaseMsg();

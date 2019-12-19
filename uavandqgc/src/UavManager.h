@@ -55,7 +55,7 @@ private:
     void processAllocationUav(int seqno, const std::string &id);
     void processMaxID(const DBMessage &msg);
     void addUavId(int seq, const std::string &uav);
-    void queryUavInfo(ObjectGS *gs, int seq, const std::list<std::string> &uavs);
+    void queryUavInfo(ObjectGS *gs, int seq, const std::list<std::string> &uavs, bool bAdd);
     void saveBind(const std::string &uav, bool bBind, ObjectGS *gs);
 private:
     ProtoMsg    *m_p;

@@ -120,11 +120,7 @@ void IMessage::Release()
         return;
     }
     if (m_clone)
-        ObjectManagers::Instance().DestroyCloneMsg(this);
-    else if (IObject *obj = GetSender())
-        obj->PushReleaseMsg(this);
-    else if (IObjectManager *m = ObjectManagers::Instance().GetManagerByType(GetSenderType()))
-        m->PushReleaseMsg(this);
+        ObjectManagers::Instance().DestroyMessage(this);
 }
 
 int IMessage::CountDataRef() const
@@ -135,4 +131,9 @@ int IMessage::CountDataRef() const
 IMessage *IMessage::Clone(const std::string &, int) const
 {
     return NULL;
+}
+
+int IMessage::IsClone() const
+{
+    return m_clone;
 }
