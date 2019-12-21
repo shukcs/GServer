@@ -1,62 +1,104 @@
 ﻿#ifndef __LOOP_QUEUE_H__
 #define __LOOP_QUEUE_H__
 
-#include <Utility.h>
+#include <Varient.h>
 
 class DataNode;
+
+class SHARED_DECL LoopQueBuff
+{
+public:
+    LoopQueBuff(uint32_t sz = 0);
+    virtual ~LoopQueBuff();
+
+    bool ReSize(uint32_t sz);
+    int Count()const;
+    bool Push(const void *data, uint16_t sz, bool removeOld = false);
+    int CopyData(void *data, int len)const;
+    void Clear(int i = -1);
+    bool IsValid()const;
+    int BuffSize()const;
+private:
+    int getRemained()const;
+    void remainLast(uint32_t remain);
+private:
+    char        *m_buff;
+    int         m_sizeBuff;
+    bool        m_bLastEmpty;
+    uint16_t    m_pos[2];
+};
+
 class SHARED_DECL LoopQueueAbs
 {
 public:
     LoopQueueAbs();
     virtual ~LoopQueueAbs();
 
-    int Count()const;
-    int CopyData(void *data, int len)const;
     void InitBuff(uint16_t sz);
-    void PushOne(void *data, bool b = true);
-    int Push(const void *data, uint16_t sz, bool removeOld = false);
-    void *Pop();
-    void Clear(uint16_t i);
+    void *PushOne(const void *data, bool b = true);
+    void *PopOne();
     bool IsValid()const;
     int BuffSize()const;
-    bool IsChanged()const;
-    void Clear();
 protected:
     virtual int getElementSize()const = 0;
     void releaseEmpty();
+    bool empty()const;
 protected:
-    DataNode    *m_data;
-    bool        m_bChanged;
-};
-
-class SHARED_DECL LoopQueBuff : public LoopQueueAbs
-{
-public:
-    LoopQueBuff(uint16_t sz = 0);
-
-    bool ReSize(uint16_t sz);
-protected:
-    int getElementSize()const;
+    DataNode    *m_dataPush;
+    DataNode    *m_dataPop;
 };
 
 template <class EC>
-class LoopQueue:public LoopQueueAbs
+class LoopQueue : protected LoopQueueAbs
 {
 public:
-    LoopQueue() : LoopQueueAbs(sizeof(EC))
+    LoopQueue() : LoopQueueAbs()
     {
     }
-    void defaultConstruct(EC *t)
+    bool Push(const EC &d)
+    {
+        if (!m_dataPush)
+            InitBuff(32);
+
+        if (void *men = PushOne(&d, true))
+        {
+            defaultConstruction((EC*)men, d);
+            return true;
+        }
+        return false;
+    }
+    EC Pop()
+    {
+        if(void *men = PopOne())
+        {
+            EC ret(*(EC *)men);
+            defaultDestruction((EC*)men);
+            return ret;
+        }
+        if (TypeInfo<EC>::isPointer)
+            return NULL;
+
+        return EC();
+    }
+    bool IsEmpty()const
+    {
+        return empty();
+    }
+protected:
+    static void defaultConstruction(EC *te, const EC &d)
     {
         if (TypeInfo<EC>::isComplex)
-            new (t)EC();
+            new (te) EC(d);
     }
-    void defaultDestruct(EC *t)
+    static void defaultDestruction(EC *t)
     {
         if (TypeInfo<EC>::isComplex)
             t->~EC();
     }
-protected:
+    int getElementSize()const
+    {
+        return sizeof(EC);
+    }
 };
 
 #endif //__LOOP_QUEUE_H__

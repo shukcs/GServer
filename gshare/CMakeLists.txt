@@ -45,6 +45,8 @@ set(SRC_LIST
 	src/Thread.h
 	src/Utility.cpp
 	src/Utility.h
+	src/Varient.cpp
+	src/Varient.h
 )
 
 add_library(${PACKAGE_NAME} SHARED ${SRC_LIST})

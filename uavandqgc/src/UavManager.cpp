@@ -3,6 +3,7 @@
 #include "das.pb.h"
 #include "ProtoMsg.h"
 #include "Utility.h"
+#include "Varient.h"
 #include "socketBase.h"
 #include "IMutex.h"
 #include "tinyxml.h"

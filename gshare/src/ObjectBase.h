@@ -1,10 +1,8 @@
 #ifndef __OBJECT_BASE_H__
 #define __OBJECT_BASE_H__
 
-#include <string>
+#include "LoopQueue.h"
 #include <map>
-#include <list>
-#include "stdconfig.h"
 
 class LoopQueBuff;
 #ifdef SOCKETS_NAMESPACE
@@ -16,9 +14,8 @@ class IObjectManager;
 class BussinessThread;
 class IMutex;
 class IMessage;
-class ObjectMetuxs;
 class ILog;
-typedef std::list<IMessage*> MessageQue;
+typedef LoopQueue<IMessage*> MessageQue;
 class IObject
 {
 public:
@@ -102,7 +99,6 @@ protected:
     bool                    m_bRelease;
     ObjectStat              m_stInit;
     LoopQueBuff             *m_buff;
-    IMutex                  *m_mtxMsg;
     MessageQue              m_lsMsg;            //接收消息队列
     MessageQue              m_lsMsgRelease;     //消息释放队列
     BussinessThread         *m_thread;
@@ -112,7 +108,6 @@ class IObjectManager
 {
     typedef std::map<std::string, IObject*> ThreadObjects;
     typedef std::map<BussinessThread *, ThreadObjects> ObjectsMap;
-    typedef std::map<BussinessThread *, ObjectMetuxs*> ThreadMetuxsMap;
 public:
     SHARED_DECL virtual ~IObjectManager();
     virtual int GetObjectType()const = 0;
@@ -139,7 +134,6 @@ protected:
 protected:
     void ProcessMessage(IMessage *msg);
     BussinessThread *GetPropertyThread()const;
-    void AddMessage(IMessage *msg);
     void PrcsReleaseMsg();
     void removeObject(ThreadObjects &objs, const std::string &id);
 protected:
@@ -152,7 +146,6 @@ private:
     MessageQue                      m_lsMsgRelease;     //消息释放队列
     std::list<BussinessThread*>     m_lsThread;
     ObjectsMap                      m_mapThreadObject;
-    ThreadMetuxsMap                 m_threadMutexts;
 };
 
 #ifdef SOCKETS_NAMESPACE

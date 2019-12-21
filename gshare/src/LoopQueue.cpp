@@ -1,6 +1,14 @@
 ﻿#include "LoopQueue.h"
 #include <string.h>
 
+#if defined _DEBUG
+#define Warning(warn, fmt, ...) \
+if(warn)\
+    printf(fmt, ##__VA_ARGS__);
+#else
+#define Warning(warn, fmt, ...)
+#endif
+
 /////////////////////////////////////////////////////////////////////
 //DataNode
 /////////////////////////////////////////////////////////////////////
@@ -8,44 +16,35 @@ class DataNode
 {
 public:
     DataNode(uint16_t sz, uint16_t elSz = 1);
-    DataNode(const DataNode &node);
     ~DataNode();
 
     bool IsValid()const;
     void *GetElement(uint32_t i);
     int GetLength()const;
-    DataNode *NextNode()const;
-    DataNode *AddNode();
-    void *PushOne(void *data, bool bAdd = false);
-    bool  Push(const void *data, int len, bool removeOld);
+    bool IsEmpty()const;
+    DataNode *NextNode(bool bAdd=false);
+    void *PushOne(const void *data);
     void *PopOne(DataNode *root = NULL);
     DataNode *Clear(int i=-1, DataNode *rt=NULL);
-    int CopyData(void *data, uint32_t count)const;
     int GetRemained()const;
-    DataNode *GetHeaderNode();
-    void Resize(uint32_t sz);
     int GetAllocSize()const;
 protected:
     void initNode(uint32_t sz, uint32_t elSz);
-    DataNode *getLastNode();
-    DataNode *getPushNode();
     void remainLast(uint16_t n);
+    DataNode *genNewEmpty();
+    DataNode *addNode(DataNode *root = NULL);
 protected:
     char            *m_buff;
     DataNode        *m_next;
+    bool            m_bLastEmpty;
     uint16_t        m_pos[2];
     uint16_t        m_size[2];
 };
 
-DataNode::DataNode(uint16_t sz, uint16_t elSz):m_buff(NULL),m_next(NULL)
+DataNode::DataNode(uint16_t sz, uint16_t elSz)
+:m_buff(NULL),m_next(NULL), m_bLastEmpty(true)
 {
     initNode(sz, elSz);
-}
-
-DataNode::DataNode(const DataNode &oth):m_buff(NULL),m_next(NULL)
-{
-    initNode(oth.m_size[0], oth.m_size[1]);
-    Push(oth.m_buff, oth.GetLength(), false);
 }
 
 DataNode::~DataNode()
@@ -71,105 +70,80 @@ int DataNode::GetLength() const
     if (!IsValid())
         return 0;
 
-    if (m_pos[0] == m_pos[1])
+    if (m_pos[0]==m_pos[1] && m_bLastEmpty)
         return 0;
 
     if (m_pos[1] > m_pos[0])
         return m_pos[1] - m_pos[0];
 
-    return m_pos[1] + m_size[0] - m_pos[0];
+    return m_size[0] - m_pos[0] + m_pos[1];
 }
 
-DataNode *DataNode::NextNode() const
+bool DataNode::IsEmpty() const
+{
+    return m_pos[0] == m_pos[1] && m_bLastEmpty;
+}
+
+DataNode *DataNode::NextNode(bool bAdd)
 {
     if (IsValid())
-        return m_next;
+    {
+        if(!bAdd || m_next)
+            return m_next;
+
+        return addNode();
+    }
 
     return NULL;
 }
 
-DataNode *DataNode::AddNode()
+DataNode *DataNode::addNode(DataNode *root)
 {
     if (!IsValid())
         return NULL;
 
-    DataNode *tmp = new DataNode(*this);
+    if (!root)
+        root = this;
+
+    DataNode *tmp = genNewEmpty();
     if (!tmp->IsValid())
     {
         delete tmp;
         return NULL;
     }
-    DataNode *last = getLastNode();
-    last->m_next = tmp;
-    tmp->m_next = this;
-    return last;
+    tmp->m_next = m_next ? m_next : root;
+    m_next = tmp;
+    return tmp;
 }
 
-void *DataNode::PushOne(void *data, bool bAdd)
+void *DataNode::PushOne(const void *data)
 {
-    if (!data)
+    if (!data || GetRemained() <= 0)
         return NULL;
 
-    if (GetRemained() <= 0)
-    {
-        if (!bAdd)
-            return false;
-        else if (DataNode *node = getPushNode())
-            return node->PushOne(data, false);
-    }
-
-    void *buff = m_buff + int(m_pos[1]++)*m_size[1];
+    void *buff = m_buff + int(m_pos[1])*m_size[1];
     memcpy(buff, data, m_size[1]);
-    m_pos[1] %= m_size[0];
+    if (m_pos[1] + 1 >= m_size[0])
+        m_pos[1] = 0;
+    else
+        ++m_pos[1];
+    if (m_pos[1] == m_pos[0])
+        m_bLastEmpty = false;
     return buff;
-}
-
-bool DataNode::Push(const void *data, int len, bool removeOld)
-{
-    if (m_size[1] != 1|| !data || len<1 || (GetRemained()<len && !removeOld) )
-        return false;
-
-    const char *dataC = (char*)data;
-    if (len >= m_size[0])
-    {
-        int tmp = m_size[0] - 1;
-        dataC += len-tmp;
-        len = tmp;
-    }
-    if (removeOld)
-        remainLast(m_size[0]-len-1);
-    int n = m_pos[0]<=m_pos[1] ? m_size[0]-m_pos[1] : m_pos[0]-m_pos[1];
-    if (m_pos[0] > m_pos[1])
-        n = m_size[0] - m_pos[1];
-
-    if (n > len)
-        n = len;
-
-    if(n>1)
-    {
-        memcpy(m_buff + m_pos[1], dataC, n);
-        m_pos[1] += n;
-    }
-    if (len > n)
-    {
-        m_pos[1] = len - n;
-        memcpy(m_buff, dataC + n, m_pos[1]);
-    }
-    return true;
 }
 
 void *DataNode::PopOne(DataNode *root)
 {
-    if (GetLength() < 1)
-    {
-        if (!root)
-            root = this;
-        if (m_next && m_next != root)
-            return m_next->PopOne(root);
+    if (IsEmpty())
         return NULL;
-    }
-    void *buff = m_buff + int(m_pos[0]++)*m_size[1];
-    m_pos[0] %= m_size[0];
+
+    char *buff = m_buff + int(m_pos[0])*m_size[1];
+    if (m_pos[0] + 1 >= m_size[0])
+        m_pos[0] = 0;
+    else
+        ++m_pos[0];
+    if (!m_bLastEmpty)
+        m_bLastEmpty = true;
 
     return buff;
 }
@@ -201,58 +175,11 @@ DataNode *DataNode::Clear(int i, DataNode *rt)
     return this;
 }
 
-int DataNode::CopyData(void *data, uint32_t count)const
-{
-    int ret = GetLength();
-    if (m_size[1] != 1 || ret < 1 || !data || count < 1)
-        return 0;
-
-    if (ret > (int)count)
-        ret = count;
-    bool bCped = m_pos[1] > m_pos[0];
-    int nTail = bCped ? m_pos[1]-m_pos[0]:m_size[0]-m_pos[0];
-    if (nTail > ret)
-        nTail = ret;
-    memcpy(data, m_buff+m_pos[0], nTail);
-    if (!bCped && nTail<ret)
-        memcpy((char*)data+nTail, m_buff, ret-nTail);
-
-    return ret;
-}
-
 int DataNode::GetRemained() const
 {
     if (!IsValid())
         return 0;
-    int ret = int(m_size[0]) - GetLength() - 1;
-    return ret;
-}
-
-DataNode *DataNode::GetHeaderNode()
-{
-    if (GetLength() > 0)
-        return this;
-    if (!m_next)
-        return NULL;
-
-    return m_next->GetHeaderNode();
-}
-
-void DataNode::Resize(uint32_t sz)
-{
-    if (sz < m_size[0])
-        return;
-
-    int cnt = GetLength();
-    if (char *buf = new char[sz * m_size[1]])
-    {
-        CopyData(buf, sz);
-        m_pos[0] = 0;
-        m_pos[1] = cnt;
-        m_size[0] = sz;
-        delete m_buff;
-        m_buff = buf;
-    }
+    return GetAllocSize() - GetLength();
 }
 
 int DataNode::GetAllocSize() const
@@ -262,35 +189,14 @@ int DataNode::GetAllocSize() const
 
 void DataNode::initNode(uint32_t sz, uint32_t elSz)
 {
-    if (m_buff = new char[sz * elSz])
+    m_buff = new char[sz * elSz];
+    if (m_buff != NULL)
     {
         m_size[0] = sz;
         m_size[1] = elSz;
         m_pos[0] = 0;
         m_pos[1] = 0;
     }
-}
-
-DataNode *DataNode::getLastNode()
-{
-    DataNode *ret = this;
-    while(ret->m_next && ret->m_next!=this)
-    {
-        ret = ret->m_next;
-    }
-    return ret;
-}
-
-DataNode *DataNode::getPushNode()
-{
-    DataNode *ret = this;
-    while (GetRemained() < 0)
-    {
-        if (ret->m_next && ret->m_next != this)
-            return ret->AddNode();
-        ret = ret->m_next;
-    }
-    return ret;
 }
 
 void DataNode::remainLast(uint16_t n)
@@ -301,35 +207,27 @@ void DataNode::remainLast(uint16_t n)
 
     m_pos[0] = (m_pos[1] - n) % m_size[0];
 }
+
+DataNode *DataNode::genNewEmpty()
+{
+    return new DataNode(m_size[0], m_size[1]);
+}
 //////////////////////////////////////////////////////////////////////////
 //LoopQueueAbs
 //////////////////////////////////////////////////////////////////////////
-LoopQueueAbs::LoopQueueAbs() : m_data(NULL), m_bChanged(false)
+LoopQueueAbs::LoopQueueAbs() : m_dataPush(NULL), m_dataPop(NULL)
 {
 }
 
 LoopQueueAbs::~LoopQueueAbs()
 {
-    DataNode *nd = m_data;
-    while (nd && nd != m_data)
+    DataNode *nd = m_dataPop;
+    while (nd && nd != m_dataPop)
     {
         DataNode *tmp = nd->NextNode();
         delete nd;
         nd = tmp;
     }
-}
-
-int LoopQueueAbs::Count() const
-{
-    return m_data ? m_data->GetLength() : 0;
-}
-
-int LoopQueueAbs::CopyData(void *data, int len)const
-{
-    if (m_data)
-        return m_data->CopyData(data, len);
-
-    return 0;
 }
 
 void LoopQueueAbs::InitBuff(uint16_t sz)
@@ -337,100 +235,216 @@ void LoopQueueAbs::InitBuff(uint16_t sz)
     if (sz < 1)
         return;
 
-    if (!m_data)
-        m_data = new DataNode(sz, getElementSize());
-    else if (sz > m_data->GetAllocSize())
-        m_data->Resize(sz);
+    if (!m_dataPush)
+        m_dataPush = new DataNode(sz, getElementSize());
+
+    if(!m_dataPop)
+        m_dataPop = m_dataPush;
 }
 
-void LoopQueueAbs::PushOne(void *data, bool b)
+void *LoopQueueAbs::PushOne(const void *data, bool b)
 {
-    if (m_data && m_data->PushOne(data, b))
-        m_bChanged = true;
-}
-
-int LoopQueueAbs::Push(const void *data, uint16_t sz, bool removeOld)
-{
-    if (m_data && m_data->Push(data, sz, removeOld))
+    void *men = NULL;
+    if (m_dataPush && data)
     {
-        m_bChanged = true;
-        return sz;
+        men = m_dataPush->PushOne(data);
+        if (!men && b)
+        {
+            m_dataPush = m_dataPush->NextNode(true);
+            men = m_dataPush->PushOne(data);
+        }
     }
-    return 0;
+    return men;
 }
 
-void *LoopQueueAbs::Pop()
+void *LoopQueueAbs::PopOne()
 {
-    void *ret = NULL;
-    if (!m_data)
-        ret = m_data->PopOne();
-    m_bChanged = false;
-    return ret;
-}
+    void *men = NULL;
+    if (m_dataPop)
+    {
+        men = m_dataPop->PopOne();
+        if (m_dataPop->IsEmpty() && m_dataPop != m_dataPush)
+        {
+            DataNode *next = m_dataPop->NextNode();
+            if (next)
+                m_dataPop = next;
+        }
+        Warning(men, "%s: failed!\r\n", __FUNCTION__);
+    }
 
-void LoopQueueAbs::Clear(uint16_t i)
-{
-    m_bChanged = false;
-    if (m_data && i!=0)
-        m_data = m_data->Clear(i, m_data);
+    return men;
 }
 
 bool LoopQueueAbs::IsValid() const
 {
-    return m_data && m_data->IsValid();
+    return m_dataPush && m_dataPush->IsValid();
 }
 
 int LoopQueueAbs::BuffSize() const
 {
-    if (m_data)
-        return m_data->GetAllocSize()-1;
+    if (m_dataPop)
+        return m_dataPop->GetAllocSize()-1;
 
     return 0;
 }
 
-bool LoopQueueAbs::IsChanged() const
-{
-    return m_bChanged;
-}
-
-void LoopQueueAbs::Clear()
-{
-    DataNode *nd = m_data->NextNode();
-    m_data->Clear();
-    while (nd && nd != m_data)
-    {
-        DataNode *tmp = nd->NextNode();
-        delete nd;
-        nd = tmp;
-    }
-}
-
 void LoopQueueAbs::releaseEmpty()
 {
-    while (m_data && m_data->GetLength()<1)
+    while (m_dataPop && m_dataPop->GetLength()<1)
     {
-        DataNode *tmp = m_data->NextNode();
-        if (m_data == tmp)
+        DataNode *tmp = m_dataPop->NextNode();
+        if (m_dataPop == tmp)
             break;
-        delete m_data;
-        m_data = tmp;
+        delete m_dataPop;
+        m_dataPop = tmp;
     }
+}
+
+bool LoopQueueAbs::empty() const
+{
+    return m_dataPop == NULL || m_dataPop->IsEmpty();
 }
 //////////////////////////////////////////////////////////////////////////
 //LoopQueueAbs
 //////////////////////////////////////////////////////////////////////////
-LoopQueBuff::LoopQueBuff(uint16_t sz /*= 0*/):LoopQueueAbs()
+LoopQueBuff::LoopQueBuff(uint32_t sz): m_buff(NULL),m_sizeBuff(0) 
+, m_bLastEmpty(true)
 {
-    InitBuff(sz);
+    m_pos[0] = 0;
+    m_pos[1] = 0;
+    ReSize(sz);
 }
 
-bool LoopQueBuff::ReSize(uint16_t sz)
+LoopQueBuff::~LoopQueBuff()
 {
-    InitBuff(sz);
-    return m_data->IsValid();
+    delete m_buff;
 }
 
-int LoopQueBuff::getElementSize() const
+bool LoopQueBuff::ReSize(uint32_t sz)
 {
-    return 1;
+    if (sz <= (uint32_t)m_sizeBuff)
+        return true;
+
+    int cnt = Count();
+    if (char *buf = new char[sz])
+    {
+        CopyData(buf, sz);
+        m_bLastEmpty = true;
+        m_pos[0] = 0;
+        m_pos[1] = cnt;
+        m_sizeBuff = sz;
+        delete m_buff;
+        m_buff = buf;
+        return true;
+    }
+
+    return false;
+}
+
+int LoopQueBuff::Count() const
+{
+    if (NULL == m_buff || m_sizeBuff<1)
+        return 0;
+
+    if (m_pos[0] == m_pos[1] && m_bLastEmpty)
+        return 0;
+
+    if (m_pos[1] > m_pos[0])
+        return m_pos[1] - m_pos[0];
+
+    return m_sizeBuff - m_pos[0] + m_pos[1];
+}
+
+bool LoopQueBuff::Push(const void *data, uint16_t len, bool removeOld /*= false*/)
+{
+    if (!data || len < 1 || (getRemained()<len && !removeOld))
+        return false;
+
+    const char *dataC = (char*)data;
+    if (len >= m_sizeBuff)
+    {
+        int tmp = m_sizeBuff - 1;
+        dataC += len - tmp;
+        len = tmp;
+    }
+    if (removeOld)
+        remainLast(m_sizeBuff - len);
+    int n = m_sizeBuff - m_pos[1];
+    if (m_pos[0] > m_pos[1])
+        n = m_pos[0] - m_pos[1];
+
+    if (n > len)
+        n = len;
+
+    if (n > 0)
+    {
+        memcpy(m_buff + m_pos[1], dataC, n);
+        m_pos[1] += n;
+    }
+    if (len > n)
+    {
+        m_pos[1] = len - n;
+        memcpy(m_buff, dataC + n, m_pos[1]);
+    }
+    if (m_pos[1] == m_pos[0])
+        m_bLastEmpty = false;
+    return true;
+}
+
+int LoopQueBuff::CopyData(void *data, int count) const
+{
+    int ret = Count();
+    if (ret < 1 || !data || count < 1)
+        return 0;
+
+    if (ret > (int)count)
+        ret = count;
+    bool bCped = m_pos[1] > m_pos[0];
+    int nTail = bCped ? m_pos[1]-m_pos[0] : m_sizeBuff-m_pos[0];
+    if (nTail > ret)
+        nTail = ret;
+    memcpy(data, m_buff + m_pos[0], nTail);
+    if (!bCped && nTail < ret)
+        memcpy((char*)data + nTail, m_buff, ret - nTail);
+
+    return ret;
+}
+
+void LoopQueBuff::Clear(int i)
+{
+    int sz = Count();
+    int clr = (i > 0 && i < sz) ? i : sz;
+    m_pos[0] = (m_pos[0] + clr) % m_sizeBuff;
+    if (!m_bLastEmpty)
+        m_bLastEmpty = false;
+}
+
+bool LoopQueBuff::IsValid() const
+{
+    return m_buff!=NULL && m_sizeBuff > 1;
+}
+
+int LoopQueBuff::BuffSize() const
+{
+    if (IsValid())
+        return m_sizeBuff;
+
+    return 0;
+}
+
+int LoopQueBuff::getRemained() const
+{
+    if (!IsValid())
+        return 0;
+
+    return m_sizeBuff - Count();
+}
+
+void LoopQueBuff::remainLast(uint32_t remain)
+{
+    int sz = Count();
+    if ((uint32_t)sz <= remain)
+        return;
+
+    m_pos[0] = (m_pos[1] - remain) % m_sizeBuff;
 }

@@ -27,6 +27,7 @@
     <ClCompile Include="src\socket_include.cpp" />
     <ClCompile Include="src\Thread.cpp" />
     <ClCompile Include="src\Utility.cpp" />
+    <ClCompile Include="src\Varient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Base64.h" />
@@ -48,6 +49,7 @@
     <ClInclude Include="src\socket_include.h" />
     <ClInclude Include="src\Thread.h" />
     <ClInclude Include="src\Utility.h" />
+    <ClInclude Include="src\Varient.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D56F43CB-E601-3EB0-B5C3-75EFE5141D56}</ProjectGuid>

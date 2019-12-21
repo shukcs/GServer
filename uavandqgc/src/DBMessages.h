@@ -2,7 +2,7 @@
 #define __DB_MESSGES_H__
 
 #include "IMessage.h"
-#include "Utility.h"
+#include "Varient.h"
 #include <map>
 
 #define INCREASEField "$increase"

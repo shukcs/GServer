@@ -1,8 +1,7 @@
 #ifndef __OBJECT_MANAGERS_H__
 #define __OBJECT_MANAGERS_H__
 
-#include "stdconfig.h"
-#include <list>
+#include "LoopQueue.h"
 #include <map>
 
 class SubcribeStruct;
@@ -58,7 +57,7 @@ class ObjectManagers
     typedef std::map<int, SubcribeList> SubcribeMap;
     typedef std::map<std::string, SubcribeMap> MessageSubcribes;
     typedef std::list<SubcribeStruct *> SubcribeQueue;
-    typedef std::list<IMessage *> MessageQueue;
+    typedef LoopQueue<IMessage *> MessageQueue;
 public:
     static ObjectManagers &Instance();
     static ILog &GetLog();

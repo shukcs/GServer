@@ -56,7 +56,7 @@ bool GSocket::ConnectTo(const std::string &hostRemote, int port)
         m_address = new Ipv4Address(hostRemote, port);
         m_stat = Connecting;
         m_bListen = false;
-        m_buffWrite->InitBuff(2048);
+        m_buffWrite->ReSize(2048);
         return true;
     }
     return false;

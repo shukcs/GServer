@@ -118,7 +118,7 @@ bool ObjectManagers::SendMsg(IMessage *msg)
         return false;
 
     m_mtxMsg->Lock();
-    m_messages.push_back(msg);
+    m_messages.Push(msg);
     m_mtxMsg->Unlock();
     return true;
 }
@@ -230,7 +230,7 @@ void ObjectManagers::DestroyMessage(IMessage *msg)
     if(msg)
     {
         m_mtxMsg->Lock();
-        m_releaseMsgs.push_back(msg);
+        m_releaseMsgs.Push(msg);
         m_mtxMsg->Unlock();
     }
 }
@@ -263,7 +263,7 @@ bool ObjectManagers::PrcsRcvBuff()
     for (const pair<ISocket *, LoopQueBuff*> &itr : m_socksRcv)
     {
         LoopQueBuff *buff = itr.second;
-        if (buff && buff->IsChanged())
+        if (buff && buff->Count() > 10)
         {
             int copied = buff->CopyData(m_buff, sizeof(m_buff));
             for (const pair<int, IObjectManager*> &mgr : m_managersMap)
@@ -348,15 +348,11 @@ void ObjectManagers::PrcsSubcribes()
 
 void ObjectManagers::PrcsMessages()
 {
-    if (m_messages.empty() && m_releaseMsgs.empty())
-        return;
-
-    while (!m_messages.empty())
+    while (!m_messages.IsEmpty())
     {
-        m_mtxMsg->Lock();
-        IMessage *msg = m_messages.front();
-        m_messages.pop_front();
-        m_mtxMsg->Unlock();
+        IMessage *msg = m_messages.Pop();
+        if(!msg)
+            continue;
         for (const ObjectDsc &s : getMessageSubcribes(msg))
         {
             if (IObjectManager *mgr = GetManagerByType(s.first))
@@ -368,12 +364,11 @@ void ObjectManagers::PrcsMessages()
             msg->Release();
     }
 
-    while (!m_releaseMsgs.empty())
+    while (!m_releaseMsgs.IsEmpty())
     {
-        m_mtxMsg->Lock();
-        IMessage *msg = m_releaseMsgs.front();
-        m_releaseMsgs.pop_front();
-        m_mtxMsg->Unlock();
+        IMessage *msg = m_releaseMsgs.Pop();
+        if (!msg)
+            continue;
         if (msg->IsClone())
             delete msg;
         else if (IObject *obj = msg->GetSender())

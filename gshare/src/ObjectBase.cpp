@@ -16,19 +16,6 @@ using namespace std;
 using namespace SOCKETS_NAMESPACE;
 #endif
 
-class ObjectMetuxs {
-public:
-    ObjectMetuxs() :
-        m_mtx(new Mutex), m_mtxMsg(new Mutex){};
-    ~ObjectMetuxs()
-    {
-        delete m_mtx;
-        delete m_mtxMsg;
-    }
-public:
-    IMutex                  *m_mtx;
-    IMutex                  *m_mtxMsg;
-};
 //////////////////////////////////////////////////////////////////
 //BussinessThread
 //////////////////////////////////////////////////////////////////
@@ -79,7 +66,7 @@ private:
 //IObject
 /////////////////////////////////////////////////////////////////////////////////////////
 IObject::IObject(ISocket *sock, const string &id): m_tmLastInfo(Utility::msTimeTick())
-, m_sock(sock), m_id(id), m_bRelease(false), m_stInit(Uninitial), m_buff(NULL), m_mtxMsg(NULL)
+, m_sock(sock), m_id(id), m_bRelease(false), m_stInit(Uninitial), m_buff(NULL)
 , m_thread(NULL)
 {
 }
@@ -95,22 +82,17 @@ IObject::~IObject()
 
 void IObject::_prcsMessage()
 {
-    m_mtxMsg->Lock();
-    while (!m_lsMsg.empty())
+    while (!m_lsMsg.IsEmpty())
     {
-        IMessage *msg = m_lsMsg.front();
-        m_lsMsg.pop_front();
+        IMessage *msg = m_lsMsg.Pop();
         if (msg->IsValid())
             ProcessMessage(msg);
         msg->Release();
     }
-    while (!m_lsMsgRelease.empty())
+    while (!m_lsMsgRelease.IsEmpty())
     {
-        IMessage *msg = m_lsMsgRelease.front();
-        m_lsMsgRelease.pop_front();
-        delete msg;
+        delete m_lsMsg.Pop();
     }
-    m_mtxMsg->Unlock();
 }
 
 const string &IObject::GetObjectID() const
@@ -145,8 +127,7 @@ void IObject::SetSocket(ISocket *s)
 
 void IObject::PushReleaseMsg(IMessage *msg)
 {
-    Lock l(m_mtxMsg);
-    m_lsMsgRelease.push_back(msg);
+    m_lsMsgRelease.Push(msg);
 }
 
 bool IObject::PrcsBussiness(uint64_t ms)
@@ -223,8 +204,7 @@ bool IObject::IsRealse()
 
 bool IObject::PushMessage(IMessage *msg)
 {
-    Lock l(m_mtxMsg);
-    m_lsMsg.push_back(msg);
+    m_lsMsg.Push(msg);
     return true;
 }
 
@@ -310,9 +290,9 @@ IObjectManager::~IObjectManager()
             itrO.second->Release();
         }
     }
-    for (IMessage *msg : m_lsMsg)
+    while (!m_lsMsg.IsEmpty())
     {
-        msg->Release();
+        m_lsMsg.Pop()->Release();
     }
     for (BussinessThread *t : m_lsThread)
     {
@@ -320,10 +300,6 @@ IObjectManager::~IObjectManager()
     }
     Utility::Sleep(100);
     delete m_mtx;
-    for (const pair<BussinessThread*, ObjectMetuxs*> &t : m_threadMutexts)
-    {
-        delete t.second;
-    }
     ObjectManagers::Instance().RemoveManager(this);
 }
 
@@ -351,21 +327,15 @@ bool IObjectManager::Receive(ISocket *s, int len, const char *buf)
 
 void IObjectManager::PushReleaseMsg(IMessage *msg)
 {
-    m_mtx->Lock(); //这个来自不同线程，需要加锁
-    m_lsMsgRelease.push_back(msg);
-    m_mtx->Unlock();
+    m_lsMsgRelease.Push(msg);
 }
 
 void IObjectManager::PrcsReleaseMsg()
 {
-    m_mtx->Lock();
-    while (!m_lsMsgRelease.empty())
+    while (!m_lsMsgRelease.IsEmpty())
     {
-        IMessage *ms = m_lsMsgRelease.front();
-        m_lsMsgRelease.pop_front();
-        delete ms;
+        delete m_lsMsgRelease.Pop();
     }
-    m_mtx->Unlock();
 }
 
 void IObjectManager::removeObject(ThreadObjects &objs, const std::string &id)
@@ -392,18 +362,14 @@ bool IObjectManager::ProcessBussiness(BussinessThread *)
     if (!InitManager())
         return ret;
 
-    if (!m_lsMsg.empty())
+    while (!m_lsMsg.IsEmpty())
     {
-        while (!m_lsMsg.empty())
+        IMessage *msg = m_lsMsg.Pop();
+        if (msg && msg->IsValid())
         {
-            IMessage *msg = m_lsMsg.front();
-            m_lsMsg.pop_front();    //队列方式, 不用枷锁
-            if (msg->IsValid())
-            {
-                ProcessMessage(msg);
-                msg->Release();
-                ret = true;
-            }
+            ProcessMessage(msg);
+            msg->Release();
+            ret = true;
         }
     }
    
@@ -487,10 +453,6 @@ bool IObjectManager::AddObject(IObject *obj)
         return false;
 
     BussinessThread *t = GetPropertyThread();
-    ThreadMetuxsMap::iterator itr = m_threadMutexts.find(t);
-    if(itr!=m_threadMutexts.end())
-        obj->m_mtxMsg = itr->second->m_mtxMsg;
-
     m_mtx->Lock();
     m_mapThreadObject[t][obj->GetObjectID()] = obj;
     m_mtx->Unlock();
@@ -521,8 +483,8 @@ void IObjectManager::PushMessage(IMessage *msg)
     IObject *obj = id.empty() ? NULL : GetObjectByID(id);
     if (obj)
         obj->PushMessage(msg);
-    else 
-        AddMessage(msg);
+    else
+        m_lsMsg.Push(msg);
 }
 
 bool IObjectManager::SendMsg(IMessage *msg)
@@ -545,8 +507,6 @@ void IObjectManager::InitThread(uint16_t nThread, uint16_t bufSz)
         {
             t->InitialBuff(bufSz);
             m_lsThread.push_back(t);
-            if (m_threadMutexts.find(t) == m_threadMutexts.end())
-                m_threadMutexts[t] = new ObjectMetuxs();
         }
     }
 }
@@ -569,11 +529,4 @@ BussinessThread *IObjectManager::GetPropertyThread() const
     }
 
     return ret;
-}
-
-void IObjectManager::AddMessage(IMessage *msg)
-{
-    m_mtx->Lock();
-    m_lsMsg.push_back(msg);
-    m_mtx->Unlock();
 }
