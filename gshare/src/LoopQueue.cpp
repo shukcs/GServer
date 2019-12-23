@@ -233,7 +233,7 @@ int LoopQueBuff::Count() const
     if (m_pos[1] > m_pos[0])
         return m_pos[1] - m_pos[0];
 
-    return m_sizeBuff - m_pos[0] + m_pos[1];
+    return (m_sizeBuff+1-m_pos[0])+m_pos[1];
 }
 
 bool LoopQueBuff::Push(const void *data, uint16_t len, bool removeOld /*= false*/)
@@ -279,7 +279,7 @@ int LoopQueBuff::CopyData(void *data, int count) const
     if (ret < 1 || !data || count < 1)
         return 0;
 
-    if (ret > (int)count)
+    if (ret > count)
         ret = count;
     bool bCped = m_pos[1] > m_pos[0];
     int nTail = bCped ? m_pos[1] - m_pos[0] : m_sizeBuff + 1 - m_pos[0];
@@ -295,8 +295,13 @@ int LoopQueBuff::CopyData(void *data, int count) const
 void LoopQueBuff::Clear(int i)
 {
     int sz = Count();
-    int clr = (i > 0 && i < sz) ? i : sz;
-    m_pos[0] = (m_pos[0] + clr) % m_sizeBuff;
+    if (i < 0 || i >= sz)
+    {
+        m_pos[0] = m_pos[1];
+        return;
+    }
+
+    m_pos[0] = (m_pos[0]+i)% (m_sizeBuff+1);
 }
 
 bool LoopQueBuff::IsValid() const
