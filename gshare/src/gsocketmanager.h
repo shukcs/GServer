@@ -6,6 +6,7 @@
 #include "socketBase.h"
 #include <map>
 #include <list>
+#include "LoopQueue.h"
 
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
@@ -14,8 +15,8 @@ class IMutex;
 class Thread;
 class ILog;
 class GSocketManager : public ISocketManager {
-    typedef std::list<ISocket *> SocketQue;
-    typedef std::list<int> SocketPrcsQue;
+    typedef LoopQueue<ISocket *> SocketQue;
+    typedef LoopQueue<int> SocketPrcsQue;
     typedef std::map<ISocket *, FuncOnBinded> SocketBindedCallbacks;
 public:
     SHARED_DECL static ISocketManager *CreateManager(int nThread = 0, int maxSock = 100000);

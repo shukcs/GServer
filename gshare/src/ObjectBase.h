@@ -118,7 +118,7 @@ public:
     SHARED_DECL void SetLog(ILog *);
     SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
 
-    void PushMessage(IMessage *);
+    void PushManagerMessage(IMessage *);
     void PushReleaseMsg(IMessage *);
     bool ProcessBussiness(BussinessThread *t);
     bool PrcsObjectsOfThread(BussinessThread &t);

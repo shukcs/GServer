@@ -207,7 +207,7 @@ void ObjectManagers::Subcribe(IObject *o, const std::string &sender, int tpMsg)
     if (SubcribeStruct *sub = new SubcribeStruct(*o, sender, tpMsg, true))
     {
         m_mtxMsg->Lock();
-        m_subcribeMsgs.push_back(sub);
+        m_subcribeMsgs.Push(sub);
         m_mtxMsg->Unlock();
     }
 }
@@ -220,7 +220,7 @@ void ObjectManagers::Unsubcribe(IObject *o, const std::string &sender, int tpMsg
     if (SubcribeStruct *sub = new SubcribeStruct(*o, sender, tpMsg, false))
     {
         m_mtxMsg->Lock();
-        m_subcribeMsgs.push_back(sub);
+        m_subcribeMsgs.Push(sub);
         m_mtxMsg->Unlock();
     }
 }
@@ -241,7 +241,7 @@ void ObjectManagers::Destroy(IObject *o)
         return;
 
     m_mtxObj->Lock();
-    m_objectsDestroy.push_back(o);
+    m_objectsDestroy.Push(o);
     m_mtxObj->Unlock();
 }
 
@@ -251,7 +251,7 @@ void ObjectManagers::OnSocketClose(ISocket *sock)
     if (itr != m_socksRcv.end())
     {
         m_mtxSock->Lock();
-        m_keysRemove.push_back(sock);
+        m_keysRemove.Push(sock);
         m_mtxSock->Unlock();
     }
 }
@@ -271,7 +271,7 @@ bool ObjectManagers::PrcsRcvBuff()
                 if (mgr.second->Receive(itr.first, copied, m_buff))
                 {
                     m_mtxSock->Lock();
-                    m_keysRemove.push_back(itr.first);
+                    m_keysRemove.Push(itr.first);
                     m_mtxSock->Unlock();
                     ret = true;
                     break;
@@ -285,38 +285,25 @@ bool ObjectManagers::PrcsRcvBuff()
 
 void ObjectManagers::PrcsCloseSocket()
 {
-    if (m_keysRemove.size() <= 0)
-        return;
-
-    m_mtxSock->Lock();
-    for (ISocket *s : m_keysRemove)
+    while (!m_keysRemove.IsEmpty())
     {
-        _removeBuff(s);
+        _removeBuff(m_keysRemove.Pop());
     }
-    m_keysRemove.clear();
-    m_mtxSock->Unlock();
 }
 
 void ObjectManagers::PrcsObjectsDestroy()
 {
-    if (m_objectsDestroy.empty())
-        return;
-
-    m_mtxObj->Lock();
-    while (m_objectsDestroy.size() > 0)
+    while (!m_objectsDestroy.IsEmpty())
     {
-        delete m_objectsDestroy.front();
-        m_objectsDestroy.pop_front();
+        delete m_objectsDestroy.Pop();
     }
-    m_mtxObj->Unlock();
 }
 
 void ObjectManagers::PrcsSubcribes()
 {
-    while (!m_subcribeMsgs.empty())
+    while (!m_subcribeMsgs.IsEmpty())
     {
-        SubcribeStruct *sub = m_subcribeMsgs.front();
-        m_subcribeMsgs.pop_front();
+        SubcribeStruct *sub = m_subcribeMsgs.Pop();
         ObjectDsc dsc(sub->m_subcribeType, sub->m_subcribeId);
         if (sub->m_bSubcribe)
         {
@@ -356,10 +343,10 @@ void ObjectManagers::PrcsMessages()
         for (const ObjectDsc &s : getMessageSubcribes(msg))
         {
             if (IObjectManager *mgr = GetManagerByType(s.first))
-                mgr->PushMessage(msg->Clone(s.second, s.first));
+                mgr->PushManagerMessage(msg->Clone(s.second, s.first));
         }
         if (IObjectManager *mgr = GetManagerByType(msg->GetReceiverType()))
-            mgr->PushMessage(msg);
+            mgr->PushManagerMessage(msg);
         else
             msg->Release();
     }

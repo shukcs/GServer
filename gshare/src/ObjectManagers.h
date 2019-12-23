@@ -52,11 +52,12 @@ protected:
 class ObjectManagers
 {
     typedef std::pair<int, std::string> ObjectDsc;
-    typedef std::list<IObject *> ObjectQueue;
+    typedef LoopQueue<IObject *> ObjectQueue;
     typedef std::list<ObjectDsc> SubcribeList;
+    typedef LoopQueue<ISocket *> SocketQue;
     typedef std::map<int, SubcribeList> SubcribeMap;
     typedef std::map<std::string, SubcribeMap> MessageSubcribes;
-    typedef std::list<SubcribeStruct *> SubcribeQueue;
+    typedef LoopQueue<SubcribeStruct *> SubcribeQueue;
     typedef LoopQueue<IMessage *> MessageQueue;
 public:
     static ObjectManagers &Instance();
@@ -92,7 +93,7 @@ private:
     friend class ManagerThread;
     std::map<int, IObjectManager*>      m_managersMap;
     std::map<ISocket*, LoopQueBuff*>    m_socksRcv;
-    std::list<ISocket *>                m_keysRemove;
+    SocketQue                           m_keysRemove;
     ObjectQueue                         m_objectsDestroy;//Ïú»Ù¶ÓÁÐ
     IMutex                              *m_mtxSock;
     IMutex                              *m_mtxObj;

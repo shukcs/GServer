@@ -100,18 +100,15 @@ bool GSocketManager::AddSocket(ISocket *s)
     if (int(m_sockets.size()+1) >= m_openMax)
         return false;
 
-    m_socketsAdd.push_back(s);
+    m_socketsAdd.Push(s);
     s->SetPrcsManager(this);
     return true;
 }
 
 void GSocketManager::ReleaseSocket(ISocket *s)
 {
-    if (IObject::IsContainsInList(m_socketsRemove, s))
-        return;
-
     m_mtx->Lock();
-    m_socketsRemove.push_back(s);
+    m_socketsRemove.Push(s);
     m_mtx->Unlock();
 }
 
@@ -147,7 +144,7 @@ bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
         return false;
 
     m_mtx->Lock();      //应对不同线程
-    m_socketsPrcs.push_back(s->GetHandle());
+    m_socketsPrcs.Push(s->GetHandle());
     m_mtx->Unlock();
     return true;
 }
@@ -165,15 +162,9 @@ void GSocketManager::InitThread(int nThread)
 
 void GSocketManager::PrcsAddSockets()
 {
-    if (m_socketsAdd.empty())
-        return;
-
-    while (m_socketsAdd.size() > 0)
+    while (!m_socketsAdd.IsEmpty())
     {
-        m_mtx->Lock();
-        ISocket *s = m_socketsAdd.front();
-        m_socketsAdd.pop_front();
-        m_mtx->Unlock();
+        ISocket *s = m_socketsAdd.Pop();
         int handle = s->GetHandle();
         switch (s->GetSocketStat())
         {
@@ -196,26 +187,17 @@ void GSocketManager::PrcsAddSockets()
 
 void GSocketManager::PrcsDestroySockets()
 {
-    while (m_socketsRemove.size() > 0)
+    while (!m_socketsRemove.IsEmpty())
     {
-        m_mtx->Lock();
-        ISocket *s =m_socketsRemove.front();
-        m_socketsRemove.pop_front();
-        m_mtx->Unlock();
-        delete s;
+        delete m_socketsRemove.Pop();
     }
 }
 
 bool GSocketManager::PrcsSockets()
 {
-    if (m_socketsPrcs.empty())
-        return false;
-
-    m_mtx->Lock();
-    while (!m_socketsPrcs.empty())
+    while (!m_socketsPrcs.IsEmpty())
     {
-        int fd = m_socketsPrcs.front();
-        m_socketsPrcs.pop_front();
+        int fd = m_socketsPrcs.Pop();
         map<int, ISocket*>::iterator itr = m_sockets.find(fd);
         if (itr != m_sockets.end())
         {

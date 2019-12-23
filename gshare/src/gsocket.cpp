@@ -69,7 +69,7 @@ int GSocket::Send(int len, void *buff)
 
     int ret = len;
     if(buff)
-        ret = m_buffWrite->Push(buff, len)>0 ? len : 0;
+        ret = m_buffWrite->Push(buff, len) ? len : 0;
 
     if (ret>0 && m_mgrPrcs)
         m_mgrPrcs->AddWaitPrcsSocket(this);

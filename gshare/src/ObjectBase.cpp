@@ -91,7 +91,7 @@ void IObject::_prcsMessage()
     }
     while (!m_lsMsgRelease.IsEmpty())
     {
-        delete m_lsMsg.Pop();
+        delete m_lsMsgRelease.Pop();
     }
 }
 
@@ -237,7 +237,7 @@ bool IObject::Receive(const void *buf, int len)
 {
     bool ret = false;
     if (buf && len > 0)
-        ret = m_buff->Push(buf, len) > 0;
+        ret = m_buff->Push(buf, len);
 
     if (ret)
         m_tmLastInfo = Utility::msTimeTick();
@@ -474,7 +474,7 @@ IObject *IObjectManager::GetObjectByID(const std::string &id) const
     return NULL;
 }
 
-void IObjectManager::PushMessage(IMessage *msg)
+void IObjectManager::PushManagerMessage(IMessage *msg)
 {
     if (!msg)
         return;

@@ -22,10 +22,9 @@ private:
     int getRemained()const;
     void remainLast(uint32_t remain);
 private:
-    char        *m_buff;
-    int         m_sizeBuff;
-    bool        m_bLastEmpty;
-    uint16_t    m_pos[2];
+    char                *m_buff;
+    int                 m_sizeBuff;
+    volatile uint16_t   m_pos[2];
 };
 
 class SHARED_DECL LoopQueueAbs
@@ -41,11 +40,10 @@ public:
     int BuffSize()const;
 protected:
     virtual int getElementSize()const = 0;
-    void releaseEmpty();
     bool empty()const;
 protected:
-    DataNode    *m_dataPush;
     DataNode    *m_dataPop;
+    DataNode    *m_dataPush;
 };
 
 template <class EC>
