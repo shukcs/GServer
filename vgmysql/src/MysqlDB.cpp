@@ -1,6 +1,6 @@
 #include "MysqlDB.h"
 #include "DBExecItem.h"
-#include "VGMySql.h"
+#include "VGMysql.h"
 #include <tinyxml.h>
 #include <VGTrigger.h>
 

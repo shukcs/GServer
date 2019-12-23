@@ -8,7 +8,7 @@
 #include <string.h>
 
 #include "MysqlDB.h"
-#include "VGMySql.h"
+#include "VGMysql.h"
 #include <tinyxml.h>
 
 ////////////////////////////////////////////////////////////////////////////////

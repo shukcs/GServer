@@ -7,7 +7,7 @@
 #endif
 
 #include "MysqlDB.h"
-#include "VGMySql.h"
+#include "VGMysql.h"
 #include <tinyxml.h>
 #include <string.h>
 

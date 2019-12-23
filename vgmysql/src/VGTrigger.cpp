@@ -1,7 +1,7 @@
 #include "VGTrigger.h"
 #include "DBExecItem.h"
 #include "MysqlDB.h"
-#include "VGMySql.h"
+#include "VGMysql.h"
 #include "tinyxml.h"
 #include <stdio.h>
 #include <string.h>
