@@ -6,7 +6,6 @@
 #if defined _WIN32 || defined _WIN64
 #include <conio.h>
 #endif //defined _WIN32 || defined _WIN64
-#include "LoopQueue.h"
 
 static ISocketManager *sSockMgr = NULL;
 void OnBindFinish(ISocket *sock, bool binded)
@@ -21,17 +20,6 @@ void OnBindFinish(ISocket *sock, bool binded)
 
 int main()
 {
-    LoopQueBuff que;
-    que.ReSize(2048);
-    char buff[1024] = {0};
-    for (int i = 0; i<1000; ++i)
-    {
-        for (int j = 0; j <= 35; ++j)
-            que.Push("1234567890\r\n", 12);
-        int tmp = que.CopyData(buff, 1024);
-        if (tmp < 1024)
-            que.Clear();
-    }
 #if defined _WIN32 || defined _WIN64
     //_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
 #endif //defined _WIN32 || defined _WIN64

@@ -260,7 +260,9 @@ bool LoopQueBuff::Push(const void *data, uint16_t len, bool removeOld /*= false*
     if (n > 0)
     {
         memcpy(m_buff + m_pos[1], dataC, n);
-        m_pos[1] = (m_pos[1] + n) % m_sizeBuff;
+        m_pos[1] += n;
+        if (m_pos[1] > m_sizeBuff)
+            m_pos[1] = 0;
     }
     if (len > n)
     {
