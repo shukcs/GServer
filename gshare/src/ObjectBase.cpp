@@ -7,15 +7,14 @@
 #include "Lock.h"
 #include "IMessage.h"
 #include "ILog.h"
-#include "LoopQueue.h"
 #include <stdarg.h>
 
 using namespace std;
-
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
 #endif
 
+typedef std::map<std::string, IObject*> ThreadObjects;
 //////////////////////////////////////////////////////////////////
 //BussinessThread
 //////////////////////////////////////////////////////////////////
@@ -47,20 +46,66 @@ public:
                 m_szBuff = sz;
         }
     }
+    IObject *GetObject(const string &id)
+    {
+        if (id.empty())
+            return NULL;
+        ThreadObjects::const_iterator itr = m_objects.find(id);
+        if (itr != m_objects.end())
+            return itr->second;
+
+        return NULL;
+    }
+    void RemoveObject(const std::string &id, IMutex &mtx)
+    {
+        ThreadObjects::iterator itr = m_objects.find(id);
+        if (itr != m_objects.end())
+        {
+            IObject *o = itr->second;
+            mtx.Lock();
+            m_objects.erase(itr);
+            mtx.Unlock();
+            ObjectManagers::Instance().Destroy(o);
+        }
+    }
 protected:
     bool RunLoop()
     {
         if (!m_mgr)
             return false;
 
+        while (!m_lsMsgRecycle.IsEmpty())
+        {
+            delete m_lsMsgRecycle.Pop();
+        }
+        while (!m_lsMsg.IsEmpty())
+        {
+            IMessage *msg = m_lsMsg.Pop();
+            if (msg && msg->IsValid())
+            {
+                if (IObject *obj = GetObject(msg->GetReceiverID()))
+                    obj->ProcessMessage(msg);
+                else
+                    m_mgr->ProcessMessage(msg);
+
+                m_lsMsgRelease.Push(msg);
+            }
+        }
         m_mgr->ProcessBussiness(this);
         return m_mgr->PrcsObjectsOfThread(*this);
     }
 private:
+    friend class IObject;
+    friend class IObjectManager;
     IObjectManager  *m_mgr;
     int             m_id;
     int             m_szBuff;
     char            *m_buff;
+    ThreadObjects   m_objects;
+    MessageQue      m_lsMsg;            //接收消息队列
+    MessageQue      m_lsMsgRecycle;     //消息回收队列
+    MessageQue      m_lsMsgSend;        //发送消息队列
+    MessageQue      m_lsMsgRelease;     //释放等待队列
 };
 /////////////////////////////////////////////////////////////////////////////////////////
 //IObject
@@ -77,21 +122,6 @@ IObject::~IObject()
     {
         m_sock->SetObject(NULL);
         m_sock->Close();
-    }
-}
-
-void IObject::_prcsMessage()
-{
-    while (!m_lsMsg.IsEmpty())
-    {
-        IMessage *msg = m_lsMsg.Pop();
-        if (msg->IsValid())
-            ProcessMessage(msg);
-        msg->Release();
-    }
-    while (!m_lsMsgRelease.IsEmpty())
-    {
-        delete m_lsMsgRelease.Pop();
     }
 }
 
@@ -127,13 +157,13 @@ void IObject::SetSocket(ISocket *s)
 
 void IObject::PushReleaseMsg(IMessage *msg)
 {
-    m_lsMsgRelease.Push(msg);
+    if (m_thread)
+        m_thread->m_lsMsgRecycle.Push(msg);
 }
 
 bool IObject::PrcsBussiness(uint64_t ms)
 {
     bool ret = false;
-    _prcsMessage();
     if (InitialFail == m_stInit)
     {
         Release();
@@ -144,7 +174,6 @@ bool IObject::PrcsBussiness(uint64_t ms)
         InitObject();
         return ret;
     }
-
     if (m_buff && m_buff->Count()>8 && m_thread)
     {
         void *buff = getThreadBuff();
@@ -192,6 +221,14 @@ void IObject::Unsubcribe(const std::string &sender, int msg)
     ObjectManagers::Instance().Unsubcribe(this, sender, msg);
 }
 
+bool IObject::SendMsg(IMessage *msg)
+{
+    if (!m_thread || !msg)
+        return false;
+
+    return m_thread->m_lsMsgSend.Push(msg);
+}
+
 void IObject::Release()
 {
     m_bRelease = true;
@@ -204,7 +241,8 @@ bool IObject::IsRealse()
 
 bool IObject::PushMessage(IMessage *msg)
 {
-    m_lsMsg.Push(msg);
+    if (m_thread && msg)
+        m_thread->m_lsMsg.Push(msg);
     return true;
 }
 
@@ -221,11 +259,6 @@ void IObject::SetBuffSize(uint16_t sz)
 IObjectManager *IObject::GetManager() const
 {
     return GetManagerByType(GetObjectType());
-}
-
-bool IObject::SendMsg(IMessage *msg)
-{
-    return ObjectManagers::Instance().SendMsg(msg);
 }
 
 IObjectManager *IObject::GetManagerByType(int tp)
@@ -283,17 +316,6 @@ IObjectManager::IObjectManager() :m_mtx(new Mutex)
 
 IObjectManager::~IObjectManager()
 {
-    for (const pair<BussinessThread*, ThreadObjects> &itr : m_mapThreadObject)
-    {
-        for (const pair<string, IObject*> &itrO : itr.second)
-        {
-            itrO.second->Release();
-        }
-    }
-    while (!m_lsMsg.IsEmpty())
-    {
-        m_lsMsg.Pop()->Release();
-    }
     for (BussinessThread *t : m_lsThread)
     {
         t->SetRunning(false);
@@ -327,28 +349,10 @@ bool IObjectManager::Receive(ISocket *s, int len, const char *buf)
 
 void IObjectManager::PushReleaseMsg(IMessage *msg)
 {
-    m_lsMsgRelease.Push(msg);
-}
-
-void IObjectManager::PrcsReleaseMsg()
-{
-    while (!m_lsMsgRelease.IsEmpty())
-    {
-        delete m_lsMsgRelease.Pop();
-    }
-}
-
-void IObjectManager::removeObject(ThreadObjects &objs, const std::string &id)
-{
-    ThreadObjects::iterator itr = objs.find(id);
-    if (itr != objs.end())
-    {
-        IObject *o = itr->second;
-        m_mtx->Lock();
-        objs.erase(itr);
-        m_mtx->Unlock();
-        ObjectManagers::Instance().Destroy(o);
-    }
+    if (IObject *tmp = GetObjectByID(msg->GetSenderID()))
+        tmp->PushReleaseMsg(msg);
+    else if (!m_lsThread.empty())
+        m_lsThread.front()->m_lsMsgRecycle.Push(msg);
 }
 
 bool IObjectManager::PrcsPublicMsg(const IMessage &)
@@ -356,37 +360,18 @@ bool IObjectManager::PrcsPublicMsg(const IMessage &)
     return false;
 }
 
-bool IObjectManager::ProcessBussiness(BussinessThread *)
+void IObjectManager::ProcessBussiness(BussinessThread *s)
 {
-    bool ret = false;
-    if (!InitManager())
-        return ret;
-
-    while (!m_lsMsg.IsEmpty())
-    {
-        IMessage *msg = m_lsMsg.Pop();
-        if (msg && msg->IsValid())
-        {
-            ProcessMessage(msg);
-            msg->Release();
-            ret = true;
-        }
-    }
-   
-    PrcsReleaseMsg();
-    return ret;
+    if (!m_lsThread.empty() && s==m_lsThread.front())
+        InitManager();
 }
 
 bool IObjectManager::PrcsObjectsOfThread(BussinessThread &t)
 {
-    ObjectsMap::iterator itrObjs = m_mapThreadObject.find(&t);
-    if (itrObjs == m_mapThreadObject.end())
-        return false;
-
     bool ret = false;
-    ThreadObjects::iterator itr = itrObjs->second.begin();
+    ThreadObjects::iterator itr = t.m_objects.begin();
     uint64_t ms = Utility::msTimeTick();
-    while (itr != itrObjs->second.end())
+    while (itr != t.m_objects.end())
     {
         if (itr->second->PrcsBussiness(ms))
             ret = true;
@@ -394,7 +379,7 @@ bool IObjectManager::PrcsObjectsOfThread(BussinessThread &t)
         if (itr->second->IsRealse())
         {
             ThreadObjects::iterator tmp = itr++;
-            removeObject(itrObjs->second, tmp->first);
+            t.RemoveObject(tmp->first, *m_mtx);
             continue;
         }
         itr++;
@@ -407,11 +392,11 @@ bool IObjectManager::Exist(IObject *obj) const
     if (!obj || obj->GetThread()==NULL)
         return false;
 
-    ObjectsMap::const_iterator itr = m_mapThreadObject.find(obj->GetThread());
-    if (itr != m_mapThreadObject.end())
+    BussinessThread *t = obj->GetThread();
+    if (t)
     {
-        ThreadObjects::const_iterator itrO = itr->second.find(obj->GetObjectID());
-        if (itrO != itr->second.end())
+        ThreadObjects::const_iterator itr = t->m_objects.find(obj->GetObjectID());
+        if (itr != t->m_objects.end())
             return true;
     }
     return false;
@@ -438,13 +423,39 @@ void IObjectManager::ProcessMessage(IMessage *msg)
     if (PrcsPublicMsg(*msg))
         return;
 
-    for (const pair<BussinessThread*, ThreadObjects> &itr : m_mapThreadObject)
+    for (BussinessThread *itr : m_lsThread)
     {
-        for (const pair<string, IObject*> &o : itr.second)
+        for (const pair<string, IObject*> &o : itr->m_objects)
         {
             o.second->ProcessMessage(msg);
         }
     }
+}
+
+MessageQue *IObjectManager::GetReleaseQue(int idThread)const
+{
+    if (idThread >= (int)m_lsThread.size() || idThread<0)
+        return NULL;
+
+    auto itr = m_lsThread.begin();
+    for (; idThread > 0; --idThread)
+    {
+        ++itr;
+    }
+    return &(*itr)->m_lsMsgRelease;
+}
+
+MessageQue *IObjectManager::GetSendQue(int idThread)const
+{
+    if (idThread >= (int)m_lsThread.size() || idThread<0)
+        return NULL;
+
+    auto itr = m_lsThread.begin();
+    for (; idThread > 0; --idThread)
+    {
+        ++itr;
+    }
+    return &(*itr)->m_lsMsgSend;
 }
 
 bool IObjectManager::AddObject(IObject *obj)
@@ -454,7 +465,7 @@ bool IObjectManager::AddObject(IObject *obj)
 
     BussinessThread *t = GetPropertyThread();
     m_mtx->Lock();
-    m_mapThreadObject[t][obj->GetObjectID()] = obj;
+    t->m_objects[obj->GetObjectID()] = obj;
     m_mtx->Unlock();
     obj->SetThread(t);
 
@@ -463,10 +474,10 @@ bool IObjectManager::AddObject(IObject *obj)
 
 IObject *IObjectManager::GetObjectByID(const std::string &id) const
 {
-    for (const pair<BussinessThread*, ThreadObjects> &itr : m_mapThreadObject)
+    for (BussinessThread *itr : m_lsThread)
     {
-        ThreadObjects::const_iterator itrObj = itr.second.find(id);
-        if(itrObj == itr.second.end())
+        ThreadObjects::const_iterator itrObj = itr->m_objects.find(id);
+        if(itrObj == itr->m_objects.end())
             continue;
 
         return itrObj->second;
@@ -483,13 +494,16 @@ void IObjectManager::PushManagerMessage(IMessage *msg)
     IObject *obj = id.empty() ? NULL : GetObjectByID(id);
     if (obj)
         obj->PushMessage(msg);
-    else
-        m_lsMsg.Push(msg);
+    else if (!m_lsThread.empty())
+        m_lsThread.front()->m_lsMsg.Push(msg);
 }
 
 bool IObjectManager::SendMsg(IMessage *msg)
 {
-    return IObject::SendMsg(msg);
+    if (!msg || m_lsThread.empty())
+        return false;
+
+    return m_lsThread.front()->m_lsMsgSend.Push(msg);
 }
 
 void IObjectManager::InitThread(uint16_t nThread, uint16_t bufSz)
@@ -513,18 +527,22 @@ void IObjectManager::InitThread(uint16_t nThread, uint16_t bufSz)
 
 BussinessThread *IObjectManager::GetPropertyThread() const
 {
-    int nCount = -1;
+    if (m_lsThread.empty())
+        return NULL;
+
+    int nCount = m_lsThread.front()->m_objects.size()+5;
     BussinessThread *ret = 0;
     for (BussinessThread *t : m_lsThread)
     {
-        ObjectsMap::const_iterator itr = m_mapThreadObject.find(t);
-        if (itr == m_mapThreadObject.end())
-            return m_lsThread.back();
-
-        if (nCount<0 || nCount>(int)itr->second.size())
+        int tmp = t->m_objects.size();
+        if (ret)
         {
-            nCount = itr->second.size();
-            ret = itr->first;
+            ret = t;
+        }
+        else if (tmp < nCount)
+        {
+            nCount = tmp;
+            ret = t;
         }
     }
 

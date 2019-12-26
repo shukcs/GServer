@@ -86,7 +86,7 @@ bool UavManager::PrcsPublicMsg(const IMessage &msg)
         _checkUavInfo(*(RequestUavStatus *)proto, (ObjectGS*)msg.GetSender());
         return true;
     case IMessage::ControlUav:
-        ObjectUav::AckControl2Uav(*(PostControl2Uav*)proto, -1);
+        SendMsg(ObjectUav::AckControl2Uav(*(PostControl2Uav*)proto, -1));
         return true;
     case IMessage::UavAllocation:
         processAllocationUav(((RequestIdentityAllocation *)proto)->seqno(), msg.GetSenderID());

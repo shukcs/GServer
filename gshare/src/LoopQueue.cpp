@@ -235,7 +235,14 @@ LoopQueueAbs::LoopQueueAbs() : m_dataRoot(new DataNode(0)), m_dataPush(NULL)
 
 LoopQueueAbs::~LoopQueueAbs()
 {
-    DataNode *nd = m_dataRoot;
+    DataNode *nd = m_dataPops;
+    while (nd)
+    {
+        DataNode *tmp = nd->NextNode();
+        delete nd;
+        nd = tmp;
+    }
+    nd = m_dataRoot;
     while (nd)
     {
         DataNode *tmp = nd->NextNode();

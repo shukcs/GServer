@@ -111,18 +111,6 @@ bool IMessage::IsValid() const
     return m_data && m_data->IsValid() && m_tpRcv > IObject::UnKnow;
 }
 
-void IMessage::Release()
-{
-    IObjectManager *om = ObjectManagers::Instance().GetManagerByType(GetSenderType());
-    if (!om)
-    {
-        delete this;
-        return;
-    }
-    if (m_clone)
-        ObjectManagers::Instance().DestroyMessage(this);
-}
-
 int IMessage::CountDataRef() const
 {
     return m_data ? m_data->m_countRef : 0;

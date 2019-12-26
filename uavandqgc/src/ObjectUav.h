@@ -48,7 +48,7 @@ protected:
     void OnConnected(bool bConnected);
     void InitObject();
 protected:
-    static void AckControl2Uav(const das::proto::PostControl2Uav &msg, int res, ObjectUav *obj = NULL);
+    static IMessage *AckControl2Uav(const das::proto::PostControl2Uav &msg, int res, ObjectUav *obj = NULL);
 private:
     void prcsRcvPostOperationInfo(das::proto::PostOperationInformation *msg);
     void prcsRcvPost2Gs(das::proto::PostStatus2GroundStation *msg);

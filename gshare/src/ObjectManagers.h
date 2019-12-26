@@ -58,12 +58,10 @@ class ObjectManagers
     typedef std::map<int, SubcribeList> SubcribeMap;
     typedef std::map<std::string, SubcribeMap> MessageSubcribes;
     typedef LoopQueue<SubcribeStruct *> SubcribeQueue;
-    typedef LoopQueue<IMessage *> MessageQueue;
 public:
     static ObjectManagers &Instance();
     static ILog &GetLog();
 public:
-    bool SendMsg(IMessage *msg);
     void AddManager(IObjectManager *m);
     void RemoveManager(int type);
     void RemoveManager(const IObjectManager *m);
@@ -74,7 +72,6 @@ public:
     void ProcessReceive(ISocket *sock, void const *buf, int len);
     void Subcribe(IObject *o, const std::string &sender, int tpMsg);
     void Unsubcribe(IObject *o, const std::string &sender, int tpMsg);
-    void DestroyMessage(IMessage *msg);
 protected:
     bool PrcsRcvBuff();
     void PrcsCloseSocket();
@@ -101,8 +98,6 @@ private:
     Thread                              *m_thread;
     MessageSubcribes                    m_subcribes;
     SubcribeQueue                       m_subcribeMsgs;
-    MessageQueue                        m_messages;
-    MessageQueue                        m_releaseMsgs;
     char                                m_buff[1024];
 };
 

@@ -59,6 +59,14 @@ public:
     LoopQueue() : LoopQueueAbs()
     {
     }
+    ~LoopQueue()
+    {
+        while (!empty())
+        {
+            defaultDestruction((EC*)CurrentBuff());
+            PopFinish();
+        }
+    }
     bool Push(const EC &d)
     {
         if (void *men = PushOne(&d))
@@ -94,7 +102,7 @@ protected:
     }
     static void defaultDestruction(EC *t)
     {
-        if (TypeInfo<EC>::isComplex)
+        if (t && TypeInfo<EC>::isComplex)
             t->~EC();
     }
     int getElementSize()const

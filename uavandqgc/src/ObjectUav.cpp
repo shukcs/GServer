@@ -117,7 +117,7 @@ void ObjectUav::InitialUAV(const DBMessage &rslt, ObjectUav &uav)
         uav.m_authCheck = authCheck.ToString();
 }
 
-void ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *obj)
+IMessage *ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *obj)
 {
     Uav2GSMessage *ms = NULL;
     if (obj)
@@ -131,15 +131,15 @@ void ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *o
         if (!ack)
         {
             delete ms;
-            return;
+            return NULL;
         }
         ack->set_seqno(msg.seqno());
         ack->set_result(res);
         ack->set_uavid(msg.uavid());
         ack->set_userid(msg.userid());
         ms->AttachProto(ack);
-        SendMsg(ms);
     }
+    return ms;
 }
 
 void ObjectUav::ProcessMessage(IMessage *msg)
@@ -365,7 +365,7 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
     if (m_lastBinder == msg->userid() && m_bBind)
         res = send(*msg) ? 1 : -1;
     
-    AckControl2Uav(*msg, res, this);
+    SendMsg(AckControl2Uav(*msg, res, this));
 }
 
 void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)

@@ -109,7 +109,6 @@ public:
     SHARED_DECL IObject *GetSender()const;
 
     SHARED_DECL bool IsValid()const;
-    SHARED_DECL void Release();
     SHARED_DECL int CountDataRef()const;
     SHARED_DECL virtual IMessage *Clone(const std::string &idRcv, int tpRcv)const;
     int IsClone()const;

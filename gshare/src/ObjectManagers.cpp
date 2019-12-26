@@ -112,17 +112,6 @@ ILog &ObjectManagers::GetLog()
     return sLog;
 }
 
-bool ObjectManagers::SendMsg(IMessage *msg)
-{
-    if (!msg)
-        return false;
-
-    m_mtxMsg->Lock();
-    m_messages.Push(msg);
-    m_mtxMsg->Unlock();
-    return true;
-}
-
 void ObjectManagers::AddManager(IObjectManager *m)
 {
     if (m)
@@ -157,7 +146,6 @@ void ObjectManagers::RemoveManager(const IObjectManager *m)
             break;
         }
     }
-
 }
 
 IObjectManager *ObjectManagers::GetManagerByType(int tp) const
@@ -221,16 +209,6 @@ void ObjectManagers::Unsubcribe(IObject *o, const std::string &sender, int tpMsg
     {
         m_mtxMsg->Lock();
         m_subcribeMsgs.Push(sub);
-        m_mtxMsg->Unlock();
-    }
-}
-
-void ObjectManagers::DestroyMessage(IMessage *msg)
-{
-    if(msg)
-    {
-        m_mtxMsg->Lock();
-        m_releaseMsgs.Push(msg);
         m_mtxMsg->Unlock();
     }
 }
@@ -335,33 +313,42 @@ void ObjectManagers::PrcsSubcribes()
 
 void ObjectManagers::PrcsMessages()
 {
-    while (!m_messages.IsEmpty())
+    map<int, IObjectManager*>::iterator itr = m_managersMap.begin();
+    for (; itr != m_managersMap.end(); ++itr)
     {
-        IMessage *msg = m_messages.Pop();
-        if(!msg)
-            continue;
-        for (const ObjectDsc &s : getMessageSubcribes(msg))
+        int n = 0;
+        while (MessageQue *que = itr->second->GetSendQue(n++))
         {
-            if (IObjectManager *mgr = GetManagerByType(s.first))
-                mgr->PushManagerMessage(msg->Clone(s.second, s.first));
+            while (!que->IsEmpty())
+            {
+                IMessage *msg = que->Pop();
+                if (!msg)
+                    continue;
+                for (const ObjectDsc &s : getMessageSubcribes(msg))
+                {
+                    if (IObjectManager *mgr = GetManagerByType(s.first))
+                        mgr->PushManagerMessage(msg->Clone(s.second, s.first));
+                }
+                if (IObjectManager *mgr = GetManagerByType(msg->GetReceiverType()))
+                    mgr->PushManagerMessage(msg);
+                else
+                    delete msg;
+            }
         }
-        if (IObjectManager *mgr = GetManagerByType(msg->GetReceiverType()))
-            mgr->PushManagerMessage(msg);
-        else
-            msg->Release();
-    }
-
-    while (!m_releaseMsgs.IsEmpty())
-    {
-        IMessage *msg = m_releaseMsgs.Pop();
-        if (!msg)
-            continue;
-        if (msg->IsClone())
-            delete msg;
-        else if (IObject *obj = msg->GetSender())
-            obj->PushReleaseMsg(msg);
-        else if (IObjectManager *m = GetManagerByType(msg->GetSenderType()))
-            m->PushReleaseMsg(msg);
+        n = 0;
+        while (MessageQue *que = itr->second->GetReleaseQue(n++))
+        {
+            while (!que->IsEmpty())
+            {
+                IMessage *msg = que->Pop();
+                if (!msg)
+                    continue;
+                if (msg->IsClone())
+                    delete msg;
+                else if (IObjectManager *m = GetManagerByType(msg->GetSenderType()))
+                    m->PushReleaseMsg(msg);
+            }
+        }
     }
 }
 
