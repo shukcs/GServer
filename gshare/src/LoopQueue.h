@@ -1,6 +1,9 @@
 ﻿#ifndef __LOOP_QUEUE_H__
 #define __LOOP_QUEUE_H__
 
+/********************************************************************************
+*多线程的循环队列，解决生产者/消费者之间不用加锁
+*********************************************************************************/
 #include <Varient.h>
 
 class DataNode;
@@ -24,6 +27,8 @@ private:
 private:
     char                *m_buff;
     int                 m_sizeBuff;
+
+    //按道理不需要使用内存变量，安全起见
     volatile uint16_t   m_pos[2];
 };
 
@@ -33,17 +38,18 @@ public:
     LoopQueueAbs();
     virtual ~LoopQueueAbs();
 
-    void InitBuff(uint16_t sz);
-    void *PushOne(const void *data, bool b = true);
-    void *PopOne();
-    bool IsValid()const;
-    int BuffSize()const;
+    void *PushOne(const void *data);
+    void *CurrentBuff()const;
+    void PopFinish();
 protected:
     virtual int getElementSize()const = 0;
     bool empty()const;
+    DataNode *recyclePop();
 protected:
-    DataNode    *m_dataPop;
+    DataNode    *m_dataRoot;
     DataNode    *m_dataPush;
+    DataNode    *m_dataPops;
+    DataNode    *m_popLast;
 };
 
 template <class EC>
@@ -55,10 +61,7 @@ public:
     }
     bool Push(const EC &d)
     {
-        if (!m_dataPush)
-            InitBuff(32);
-
-        if (void *men = PushOne(&d, true))
+        if (void *men = PushOne(&d))
         {
             defaultConstruction((EC*)men, d);
             return true;
@@ -67,14 +70,15 @@ public:
     }
     EC Pop()
     {
-        if(void *men = PopOne())
+        if(void *men = CurrentBuff())
         {
             EC ret(*(EC *)men);
             defaultDestruction((EC*)men);
+            PopFinish();
             return ret;
         }
         if (TypeInfo<EC>::isPointer)
-            return NULL;
+            return 0;
 
         return EC();
     }

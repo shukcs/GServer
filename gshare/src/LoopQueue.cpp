@@ -15,35 +15,25 @@ if(warn)\
 class DataNode
 {
 public:
-    DataNode(uint16_t sz, uint16_t elSz = 1);
+    DataNode(uint16_t elSz);
     ~DataNode();
 
-    bool IsValid()const;
-    void *GetElement(uint32_t i);
-    int GetLength()const;
-    bool IsEmpty()const;
-    DataNode *NextNode(DataNode *root=NULL);
-    void *PushOne(const void *data);
-    void *PopOne();
-    int GetRemained()const;
-    int GetAllocSize()const;
+    bool IsValid() const;
+    void *GetBuff()const;
+    DataNode *AddNode(int elSz);
+    DataNode *NextNode()const;
+    void SetNextNode(DataNode *nd);
 protected:
-    void initNode(uint32_t sz, uint32_t elSz);
-    void remainLast(uint16_t n);
-    DataNode *genNewEmpty();
-    DataNode *addNode(DataNode *root = NULL);
+    void initNode(uint32_t elSz);
 protected:
     char                *m_buff;
     DataNode            *m_next;
-    volatile uint16_t   m_posPop;
-    volatile uint16_t   m_posPush;
-    uint16_t            m_size[2];
 };
 
-DataNode::DataNode(uint16_t sz, uint16_t elSz)
-:m_buff(NULL),m_next(NULL)
+DataNode::DataNode(uint16_t elSz) : m_buff(NULL)
+, m_next(NULL)
 {
-    initNode(sz, elSz);
+    initNode(elSz);
 }
 
 DataNode::~DataNode()
@@ -56,136 +46,38 @@ bool DataNode::IsValid() const
     return m_buff != NULL;
 }
 
-void *DataNode::GetElement(uint32_t i)
+void *DataNode::GetBuff()const
 {
-    if (IsValid() && i < m_size[0])
-    {
-        int tmp = (m_posPop + i) % m_size[0];
-        if (tmp > m_size[1])
-            tmp -= m_size[1];
-        return m_buff + tmp*m_size[1];
-    }
-
-    return NULL;
+    return m_buff;
 }
 
-int DataNode::GetLength() const
+DataNode * DataNode::AddNode(int elSz)
 {
-    if (IsEmpty())
-        return 0;
-
-    if (m_posPush > m_posPop)
-        return m_posPush - m_posPop;
-
-    return int(m_size[0]-m_posPop+1) + m_posPush;
-}
-
-bool DataNode::IsEmpty() const
-{
-    bool ret = m_buff==NULL || m_posPop==m_posPush;
-    return ret;
-}
-
-DataNode *DataNode::NextNode(DataNode *root)
-{
-    if (IsValid() && root)
-    {
-        if(m_next && m_next!=this && m_next->GetRemained()>0)
-            return m_next;
-
-        return addNode(root);
-    }
-    return m_next;
-}
-
-DataNode *DataNode::addNode(DataNode *root)
-{
-    if (!IsValid())
-        return NULL;
-
-    if (!root)
-        root = this;
-
-    DataNode *tmp = genNewEmpty();
+    DataNode *tmp = new DataNode(elSz);
     if (!tmp->IsValid())
     {
         delete tmp;
         return NULL;
     }
-    tmp->m_next = m_next ? m_next : root;
+
     m_next = tmp;
     return tmp;
 }
 
-void *DataNode::PushOne(const void *data)
+DataNode *DataNode::NextNode()const
 {
-    if (!data || GetRemained() <= 0)
-        return NULL;
-
-    void *buff = m_buff + int(m_posPush)*m_size[1];
-    memcpy(buff, data, m_size[1]);
-    int tmp = m_posPush + 1;
-    if (tmp > m_size[0])
-        m_posPush = 0;
-    else
-        m_posPush = tmp;
-    return buff;
+    return m_next;
 }
 
-void *DataNode::PopOne()
+void DataNode::SetNextNode(DataNode *nd)
 {
-    if (IsEmpty())
-        return NULL;
-
-    char *buff = m_buff + int(m_posPop)*m_size[1];
-    int tmp = m_posPop + 1;
-    if (tmp > m_size[0])
-        m_posPop = 0;
-    else
-        m_posPop = tmp;
-
-    return buff;
+    m_next = nd;
 }
 
-int DataNode::GetRemained() const
+void DataNode::initNode(uint32_t elSz)
 {
-    if (!IsValid())
-        return 0;
-    return GetAllocSize() - GetLength();
-}
-
-int DataNode::GetAllocSize() const
-{
-    return IsValid() ? m_size[0] : 0;
-}
-
-void DataNode::initNode(uint32_t sz, uint32_t elSz)
-{
-    delete m_buff;
-    int count = (sz+1) * elSz;
-    m_buff = new char[count];
-    if (m_buff != NULL && m_size)
-    {
-        memset(m_buff, 0, count);
-        m_size[0] = sz;
-        m_size[1] = elSz;
-        m_posPop = 0;
-        m_posPush = 0;
-    }
-}
-
-void DataNode::remainLast(uint16_t n)
-{
-    int sz = GetLength();
-    if (sz <= n)
-        return;
-
-    m_posPop = (m_posPush - n) % m_size[0];
-}
-
-DataNode *DataNode::genNewEmpty()
-{
-    return new DataNode(m_size[0], m_size[1]);
+    if (elSz)
+        m_buff = new char[elSz];
 }
 //////////////////////////////////////////////////////////////////////////
 //LoopQueueAbs
@@ -333,18 +225,18 @@ void LoopQueBuff::remainLast(uint32_t remain)
 
     m_pos[0] = (m_pos[1] - remain) % m_sizeBuff;
 }
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 //LoopQueueAbs
-//////////////////////////////////////////////////////////////////////////
-LoopQueueAbs::LoopQueueAbs() : m_dataPop(NULL)
-, m_dataPush(NULL)
+////////////////////////////////////////////////////////////////////////////
+LoopQueueAbs::LoopQueueAbs() : m_dataRoot(new DataNode(0)), m_dataPush(NULL)
+, m_dataPops(NULL), m_popLast(NULL)
 {
 }
 
 LoopQueueAbs::~LoopQueueAbs()
 {
-    DataNode *nd = m_dataPop;
-    while (nd && nd != m_dataPop)
+    DataNode *nd = m_dataRoot;
+    while (nd)
     {
         DataNode *tmp = nd->NextNode();
         delete nd;
@@ -352,62 +244,77 @@ LoopQueueAbs::~LoopQueueAbs()
     }
 }
 
-void LoopQueueAbs::InitBuff(uint16_t sz)
+void *LoopQueueAbs::PushOne(const void *data)
 {
-    if (sz < 1)
-        return;
+    if (!m_dataPush && m_dataRoot)
+    {
+        DataNode *cur = m_dataRoot->AddNode(getElementSize());
+        if (!cur)
+            return NULL;
 
-    if (!m_dataPush)
-        m_dataPush = new DataNode(sz, getElementSize());
-
-    if(!m_dataPop)
-        m_dataPop = m_dataPush;
-}
-
-void *LoopQueueAbs::PushOne(const void *data, bool b)
-{
-    void *men = NULL;
+        m_dataPush = cur;
+    }
     if (m_dataPush && data)
     {
-        men = m_dataPush->PushOne(data);
-        if (!men && b)
+        memcpy(m_dataPush->GetBuff(), data, getElementSize());
+        if (!m_dataPush->NextNode())
         {
-            m_dataPush = m_dataPush->NextNode(m_dataPop);
-            men = m_dataPush->PushOne(data);
+            if (auto tmp = recyclePop())
+            {
+                m_dataPush->SetNextNode(tmp);
+                m_dataPush = tmp;
+            }
+            else
+            {
+                m_dataPush = m_dataPush->AddNode(getElementSize());
+            }
         }
+        return m_dataPush->GetBuff();
     }
-    return men;
+
+    return NULL;
 }
 
-void *LoopQueueAbs::PopOne()
+void *LoopQueueAbs::CurrentBuff()const
 {
-    void *men = NULL;
-    if (m_dataPop && !m_dataPop->IsEmpty())
+    DataNode *tmp = m_dataRoot ? m_dataRoot->NextNode() : NULL;
+    if (tmp && tmp!=m_dataPush)
+        return tmp->GetBuff();
+
+    return NULL;
+}
+
+void LoopQueueAbs::PopFinish()
+{
+    DataNode *tmp = m_dataRoot ? m_dataRoot->NextNode() : NULL;
+    if (tmp && tmp != m_dataPush)
     {
-        men = m_dataPop->PopOne();
-        if (m_dataPop->IsEmpty() && m_dataPop != m_dataPush)
+        m_dataRoot->SetNextNode(tmp->NextNode());
+        if (!m_dataPops)
         {
-            if (DataNode *next = m_dataPop->NextNode())
-                m_dataPop = next;
+            m_dataPops = tmp;
+            m_popLast = tmp;
+        }
+        else
+        {
+            m_popLast->SetNextNode(tmp);
+            m_popLast = tmp;
         }
     }
-    return men;
-}
-
-bool LoopQueueAbs::IsValid() const
-{
-    return m_dataPush && m_dataPush->IsValid();
-}
-
-int LoopQueueAbs::BuffSize() const
-{
-    if (m_dataPop)
-        return m_dataPop->GetAllocSize()-1;
-
-    return 0;
 }
 
 bool LoopQueueAbs::empty() const
 {
-    return m_dataPop == NULL || m_dataPop->IsEmpty();
+    return !m_dataRoot || m_dataPush == NULL || m_dataRoot->NextNode()==m_dataPush;
+}
+
+DataNode *LoopQueueAbs::recyclePop()
+{
+    if (!m_dataPops || m_dataPops==m_popLast || !m_dataPush)
+        return NULL;
+
+    DataNode *nd = m_dataPops;
+    m_dataPops = m_dataPops->NextNode();
+    nd->SetNextNode(NULL);
+    return nd;
 }
