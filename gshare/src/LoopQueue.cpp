@@ -297,6 +297,7 @@ void LoopQueueAbs::PopFinish()
     if (tmp && tmp != m_dataPush)
     {
         m_dataRoot->SetNextNode(tmp->NextNode());
+        tmp->SetNextNode(NULL);
         if (!m_dataPops)
         {
             m_dataPops = tmp;
