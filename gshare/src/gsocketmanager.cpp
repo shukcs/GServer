@@ -210,7 +210,6 @@ bool GSocketManager::PrcsSockets()
                 _send(s);
         }
     }
-    m_mtx->Unlock();
     return true;
 }
 
