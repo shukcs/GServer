@@ -168,7 +168,9 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
     if (!sock)
         return;
 
+    m_mtxSock->Lock();
     map<ISocket *, LoopQueBuff*>::iterator itr = m_socksRcv.find(sock);
+    m_mtxSock->Unlock();
     LoopQueBuff *bb = NULL;
     if (itr == m_socksRcv.end())
     {
@@ -225,7 +227,9 @@ void ObjectManagers::Destroy(IObject *o)
 
 void ObjectManagers::OnSocketClose(ISocket *sock)
 {
+    m_mtxSock->Lock();
     map<ISocket *, LoopQueBuff*>::iterator itr = m_socksRcv.find(sock);
+    m_mtxSock->Unlock();
     if (itr != m_socksRcv.end())
     {
         m_mtxSock->Lock();
@@ -238,6 +242,7 @@ bool ObjectManagers::PrcsRcvBuff()
 {
     PrcsCloseSocket();
     bool ret = false;
+    m_mtxSock->Lock();
     for (const pair<ISocket *, LoopQueBuff*> &itr : m_socksRcv)
     {
         LoopQueBuff *buff = itr.second;
@@ -248,9 +253,7 @@ bool ObjectManagers::PrcsRcvBuff()
             {
                 if (mgr.second->Receive(itr.first, copied, m_buff))
                 {
-                    m_mtxSock->Lock();
                     m_keysRemove.Push(itr.first);
-                    m_mtxSock->Unlock();
                     ret = true;
                     break;
                 }
@@ -258,6 +261,7 @@ bool ObjectManagers::PrcsRcvBuff()
             buff->Clear(0);
         }
     }
+    m_mtxSock->Unlock();
     return ret;
 }
 
