@@ -170,24 +170,19 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
 
     m_mtxSock->Lock();
     map<ISocket *, LoopQueBuff*>::iterator itr = m_socksRcv.find(sock);
-    m_mtxSock->Unlock();
     LoopQueBuff *bb = NULL;
     if (itr == m_socksRcv.end())
     {
         bb = new LoopQueBuff(2048);
         if (bb)
-        {
-            m_mtxSock->Lock();
             m_socksRcv[sock] = bb;
-            m_mtxSock->Unlock();
-        }
     }
     else
     {
         bb = itr->second;
     }
-
     bb->Push(buf, len, true);
+    m_mtxSock->Unlock();
 }
 
 void ObjectManagers::Subcribe(IObject *o, const std::string &sender, int tpMsg)
@@ -228,49 +223,36 @@ void ObjectManagers::Destroy(IObject *o)
 void ObjectManagers::OnSocketClose(ISocket *sock)
 {
     m_mtxSock->Lock();
-    map<ISocket *, LoopQueBuff*>::iterator itr = m_socksRcv.find(sock);
+    _removeBuff(sock);
     m_mtxSock->Unlock();
-    if (itr != m_socksRcv.end())
-    {
-        m_mtxSock->Lock();
-        m_keysRemove.Push(sock);
-        m_mtxSock->Unlock();
-    }
 }
 
 bool ObjectManagers::PrcsRcvBuff()
 {
-    PrcsCloseSocket();
     bool ret = false;
     m_mtxSock->Lock();
-    for (const pair<ISocket *, LoopQueBuff*> &itr : m_socksRcv)
+    MapBuffRecieve::iterator itr = m_socksRcv.begin();
+    for (; itr != m_socksRcv.end(); ++itr)
     {
-        LoopQueBuff *buff = itr.second;
+        LoopQueBuff *buff = itr->second;
+        ISocket *s = itr->first;
         if (buff && buff->Count() > 10)
         {
             int copied = buff->CopyData(m_buff, sizeof(m_buff));
             for (const pair<int, IObjectManager*> &mgr : m_managersMap)
             {
-                if (mgr.second->Receive(itr.first, copied, m_buff))
+                if (mgr.second->Receive(itr->first, copied, m_buff))
                 {
-                    m_keysRemove.Push(itr.first);
+                    itr = itr--;
+                    _removeBuff(s);
                     ret = true;
                     break;
                 }
             }
-            buff->Clear(0);
         }
     }
     m_mtxSock->Unlock();
     return ret;
-}
-
-void ObjectManagers::PrcsCloseSocket()
-{
-    while (!m_keysRemove.IsEmpty())
-    {
-        _removeBuff(m_keysRemove.Pop());
-    }
 }
 
 void ObjectManagers::PrcsObjectsDestroy()
@@ -367,7 +349,7 @@ void ObjectManagers::_removeBuff(ISocket *sock)
     if (itr != m_socksRcv.end())
     {
         delete itr->second;
-        m_socksRcv.erase(sock);
+        m_socksRcv.erase(itr);
     }
 }
 
