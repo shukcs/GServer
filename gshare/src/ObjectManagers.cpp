@@ -159,16 +159,13 @@ IObjectManager *ObjectManagers::GetManagerByType(int tp) const
 
 void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
 {
-    if (!m_thread->IsRunning())
-    {
-        m_thread->SetRunning();
-        printf("ObjectManagers::%s: managers size %d\n", __FUNCTION__, (int)m_managersMap.size());
-    }
-
     if (!sock)
         return;
 
-    m_mtxSock->Lock();
+    Lock l(m_mtxSock);
+    if (sock->GetOwnObject())
+        return;
+
     map<ISocket *, LoopQueBuff*>::iterator itr = m_socksRcv.find(sock);
     LoopQueBuff *bb = NULL;
     if (itr == m_socksRcv.end())
@@ -182,7 +179,6 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
         bb = itr->second;
     }
     bb->Push(buf, len, true);
-    m_mtxSock->Unlock();
 }
 
 void ObjectManagers::Subcribe(IObject *o, const std::string &sender, int tpMsg)
