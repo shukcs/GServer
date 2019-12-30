@@ -163,8 +163,11 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
         return;
 
     Lock l(m_mtxSock);
-    if (sock->GetOwnObject())
+    if (IObject *obj = sock->GetOwnObject())
+    {
+        obj->Receive(buf, len);
         return;
+    }
 
     map<ISocket *, LoopQueBuff*>::iterator itr = m_socksRcv.find(sock);
     LoopQueBuff *bb = NULL;
@@ -228,10 +231,11 @@ bool ObjectManagers::PrcsRcvBuff()
     bool ret = false;
     m_mtxSock->Lock();
     MapBuffRecieve::iterator itr = m_socksRcv.begin();
-    for (; itr != m_socksRcv.end(); ++itr)
+    while (itr != m_socksRcv.end())
     {
         LoopQueBuff *buff = itr->second;
         ISocket *s = itr->first;
+        bool bPrcs = false;
         if (buff && buff->Count() > 10)
         {
             int copied = buff->CopyData(m_buff, sizeof(m_buff));
@@ -239,13 +243,16 @@ bool ObjectManagers::PrcsRcvBuff()
             {
                 if (mgr.second->Receive(itr->first, copied, m_buff))
                 {
-                    itr = itr--;
+                    itr++; 
+                    bPrcs = true;
                     _removeBuff(s);
                     ret = true;
                     break;
                 }
             }
         }
+        if(!bPrcs)
+            itr++;
     }
     m_mtxSock->Unlock();
     return ret;
