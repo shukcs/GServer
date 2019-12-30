@@ -39,7 +39,8 @@ protected:
     void CheckTimer(uint64_t ms);
 private:
     void _initSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx);
-    void _executeSql(ExecutItem *sql, DBMessage *msg, int idx);
+    void _initRefField(ExecutItem &sql, const std::string &field, uint64_t idx);
+    int64_t _executeSql(ExecutItem *sql, DBMessage *msg, int idx);
     static void _initFieldByVarient(FiledVal &fd, const Variant &v);
     static void _save2Message(const FiledVal &fd, DBMessage &msg);
 private:

@@ -214,7 +214,7 @@ int ObjectGS::ProcessReceive(void *buf, int len)
         else if (strMsg == d_p_ClassName(RequestOperationDescriptions))
             _prcsReqPlan((RequestOperationDescriptions *)m_p->GetProtoMessage());
         else if (strMsg == d_p_ClassName(DeleteOperationDescription))
-            _prcsDelPlan(( DeleteOperationDescription*)m_p->GetProtoMessage());
+            _prcsDeletePlan(( DeleteOperationDescription*)m_p->GetProtoMessage());
         else if (strMsg == d_p_ClassName(PostOperationRoute))
             _prcsPostMission((PostOperationRoute*)m_p->DeatachProto());
         else if (strMsg == d_p_ClassName(GroundStationsMessage))
@@ -400,20 +400,20 @@ void ObjectGS::processFriends(const DBMessage &msg)
 
 void ObjectGS::processQueryLands(const DBMessage &msg)
 {
-    StringList namesPc = msg.GetRead("1.name").GetVarList<string>();
-    auto birthdayPc = msg.GetRead("1.birthdate").GetVarList<int64_t>();
-    StringList addresses = msg.GetRead("1.address").GetVarList<string>();
-    StringList mobilenos = msg.GetRead("1.mobileno").GetVarList<string>();
-    StringList phonenos = msg.GetRead("1.phoneno").GetVarList<string>();
-    StringList weixins = msg.GetRead("1.weixin").GetVarList<string>();
+    auto ids = msg.GetRead("LandInfo.id").GetVarList<int64_t>();
+    StringList namesLand = msg.GetRead("LandInfo.name").GetVarList<string>();
+    StringList users = msg.GetRead("LandInfo.gsuser").GetVarList<string>();
+    auto lats = msg.GetRead("LandInfo.lat").GetVarList<double>();
+    auto lons = msg.GetRead("LandInfo.lon").GetVarList<double>();
+    auto acreages = msg.GetRead("LandInfo.acreage").GetVarList<float>();
+    StringList boundary = msg.GetRead("LandInfo.boundary").GetVarList<string>();
 
-    StringList namesLand = msg.GetRead("2.name").GetVarList<string>();
-    StringList users = msg.GetRead("2.gsuser").GetVarList<string>();
-    auto acreages = msg.GetRead("2.acreage").GetVarList<float>();
-    auto lats = msg.GetRead("2.lat").GetVarList<double>();
-    auto lons = msg.GetRead("2.lon").GetVarList<double>();
-    auto ids = msg.GetRead("2.id").GetVarList<uint64_t>();
-    StringList boundary = msg.GetRead("2.boundary").GetVarList<string>();
+    StringList namesPc = msg.GetRead("OwnerInfo.name").GetVarList<string>();
+    auto birthdayPc = msg.GetRead("OwnerInfo.birthdate").GetVarList<int64_t>();
+    StringList addresses = msg.GetRead("OwnerInfo.address").GetVarList<string>();
+    StringList mobilenos = msg.GetRead("OwnerInfo.mobileno").GetVarList<string>();
+    StringList phonenos = msg.GetRead("OwnerInfo.phoneno").GetVarList<string>();
+    StringList weixins = msg.GetRead("OwnerInfo.weixin").GetVarList<string>();
 
     AckRequestParcelDescriptions ack;
     ack.set_seqno(msg.GetSeqNomb());
@@ -470,11 +470,11 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
         if (itrnamesLand != namesLand.end())
         {
             pd->set_name(*itrnamesLand);
-            ++itrweixins;
+            ++itrnamesLand;
         }
         if (itrusers != users.end())
         {
-            pd->set_registerid(*itrnamesLand);
+            pd->set_registerid(*itrusers);
             ++itrusers;
         }
         pd->set_acreage(itracreages!=acreages.end() ? (*itracreages) : 0);
@@ -502,6 +502,7 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
             psi->set_id(Utility::bigint2string(*itrids));
             pd->set_id(Utility::bigint2string(*itrids));
             pd->set_allocated_psi(psi);
+            ++itrboundary;
         }
     }
     send(ack);
@@ -633,6 +634,18 @@ void ObjectGS::InitObject()
     }
 }
 
+void ObjectGS::CheckTimer(uint64_t ms)
+{
+    ObjectAbsPB::CheckTimer(ms);
+    if (!m_protosSend.empty() && m_sock && m_sock->IsNoWriteData())
+    {
+        Message *msg = m_protosSend.front();
+        send(*msg);
+        delete msg;
+        m_protosSend.pop_front();
+    }
+}
+
 void ObjectGS::SetCheck(const std::string &str)
 {
     m_check = str;
@@ -689,6 +702,11 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
     bool bSuc;
     uint64_t nCon = Utility::str2int(land.has_pc() ? land.pc().id() : "", 10, &bSuc);
     db->SetSql(bSuc ? "updateOwner" : "insertOwner");
+    if (bSuc)
+    {
+        db->SetWrite("id", nCon, 1);
+        db->SetWrite(INCREASEField, nCon, 1);
+    }
     if (pc.has_name())
         db->SetWrite("name", pc.name(), 1);
     if (pc.has_birthdate())
@@ -701,14 +719,10 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
         db->SetWrite("phoneno", pc.phoneno(), 1);
     if (pc.has_weixin())
         db->SetWrite("weixin", pc.weixin(), 1);
-    if (bSuc)
-    {
-        db->SetWrite("id", nCon, 1);
-        db->SetWrite(INCREASEField, nCon, 1);
-    }
 
     nCon = Utility::str2int(land.has_pc() ? land.pc().id() : "", 10, &bSuc);
     db->AddSql(bSuc ? "updateLand" : "insertLand");
+    db->SetRefFiled("ownerID");
     if (land.has_name())
         db->SetWrite("name", land.name(), 2);
     if (land.has_registerid())
@@ -720,7 +734,6 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
         db->SetWrite("id", nCon, 2);
         db->SetWrite(INCREASEField, nCon, 2);
     }
-
     if (land.has_coordinate())
     {
         db->SetWrite("lat", double(land.coordinate().latitude() / 1e7), 2);
@@ -840,7 +853,7 @@ void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
 
 void ObjectGS::_prcsPostPlan(PostOperationDescription *msg)
 {
-    if (msg)
+    if (!msg)
         return;
     const OperationDescription &od = msg->od();
     if (od.pdid().empty() || od.registerid().empty())
@@ -916,7 +929,7 @@ void ObjectGS::_prcsReqPlan(RequestOperationDescriptions *msg)
         delete msgDb;
 }
 
-void ObjectGS::_prcsDelPlan(das::proto::DeleteOperationDescription *msg)
+void ObjectGS::_prcsDeletePlan(das::proto::DeleteOperationDescription *msg)
 {
     if (!msg)
         return;
@@ -927,14 +940,14 @@ void ObjectGS::_prcsDelPlan(das::proto::DeleteOperationDescription *msg)
         return;
 
     msgDb->SetSql("deletePlan");
-    msgDb->SetCondition("LandInfo.id", id);
+    msgDb->SetCondition("id", id);
     SendMsg(msgDb);
 
     AckDeleteOperationDescription ackDP;
     ackDP.set_seqno(msg->seqno());
     ackDP.set_result(1);
     send(ackDP);
-    GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %s!", id.c_str());
+    GetManager()->Log(0, GetObjectID(), 0, "Delete mission plan %s!", id.c_str());
 }
 
 void ObjectGS::_prcsPostMission(PostOperationRoute *msg)

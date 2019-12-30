@@ -203,9 +203,10 @@ bool FiledVal::IsEmpty() const
 void FiledVal::SetEmpty()
 {
     if (0 == ((StaticParam | StaticRef)&m_tpField))
-        m_bEmpty = true;
-    else
+    {
         m_param.clear();
+        m_bEmpty = true;
+    }
 
     m_len = 0;
 }

@@ -67,6 +67,7 @@ protected:
 
     void SetPrcsManager(ISocketManager *h);
     bool ResizeBuff(int sz);
+    bool IsNoWriteData()const;
 protected:
     friend class GSocketManager;
     ISocketManager  *m_manager;

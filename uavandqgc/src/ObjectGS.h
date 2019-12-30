@@ -74,6 +74,7 @@ protected:
     void processQueryLands(const DBMessage &msg);
     void processGSInsert(const DBMessage &msg);
     void InitObject();
+    void CheckTimer(uint64_t ms);
 private:
     void _prcsLogin(das::proto::RequestGSIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
@@ -87,7 +88,7 @@ private:
     void _prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg);
     void _prcsPostPlan(das::proto::PostOperationDescription *msg);
     void _prcsReqPlan(das::proto::RequestOperationDescriptions *msg);
-    void _prcsDelPlan(das::proto::DeleteOperationDescription *msg);
+    void _prcsDeletePlan(das::proto::DeleteOperationDescription *msg);
     void _prcsPostMission(das::proto::PostOperationRoute *msg);
     void _prcsReqNewGs(das::proto::RequestNewGS *msg);
     void _prcsGsMessage(das::proto::GroundStationsMessage *msg);
@@ -104,6 +105,7 @@ private:
     std::string     m_check;
     bool            m_bInitFriends;
     std::list<std::string> m_friends;
+    std::list<google::protobuf::Message*> m_protosSend;
 };
 
 #ifdef SOCKETS_NAMESPACE

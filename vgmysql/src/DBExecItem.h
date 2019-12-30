@@ -19,9 +19,9 @@ public:
         Double,
         Float,
         String,
-        List = 0x400,
         StaticParam = 0x100,
-        StaticRef = 0x200,
+        StaticRef = StaticParam << 1,
+        List = StaticRef<<1,
     };
     enum BraceFlag{
         NoBrace,

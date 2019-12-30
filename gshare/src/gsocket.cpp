@@ -250,6 +250,11 @@ bool GSocket::ResizeBuff(int sz)
     return false;
 }
 
+bool GSocket::IsNoWriteData() const
+{
+    return m_buffWrite && m_buffWrite->Count() == 0;
+}
+
 void GSocket::Log(int err, const std::string &obj, int evT, const char *fmt, ...)
 {
     char slask[1024];

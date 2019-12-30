@@ -13,36 +13,37 @@ using namespace SOCKETS_NAMESPACE;
 #endif
 
 static Variant sVarEmpty;
+static const string sStrEmpty;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //DBMessage
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 DBMessage::DBMessage(ObjectGS *sender, MessageType ack, const string &rcv)
 : IMessage(new MessageData(sender, DBExec), rcv, IObject::DBMySql)
-, m_seq(0), m_ackTp(ack), m_bQueryList(false)
+, m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
 {
 }
 
 DBMessage::DBMessage(ObjectUav *sender, MessageType ack, const string &rcv)
 : IMessage(new MessageData(sender, DBExec), rcv, IObject::DBMySql)
-, m_seq(0), m_ackTp(ack), m_bQueryList(false)
+, m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
 {
 }
 
 DBMessage::DBMessage(GSManager *sender, MessageType ack, const string &rcv)
 : IMessage(new MessageData(sender, DBExec), rcv, IObject::DBMySql)
-, m_seq(0), m_ackTp(ack), m_bQueryList(false)
+, m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
 {
 }
 
 DBMessage::DBMessage(UavManager *sender, MessageType ack, const string &rcv)
 : IMessage(new MessageData(sender, DBExec), rcv, IObject::DBMySql)
-, m_seq(0), m_ackTp(ack), m_bQueryList(false)
+, m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
 {
 }
 
 DBMessage::DBMessage(ObjectDB *sender, int tpMsg, int tpRcv, const std::string &idRcv)
 : IMessage(new MessageData(sender, tpMsg), idRcv, tpRcv), m_seq(0), m_ackTp(Unknown)
-, m_bQueryList(false)
+, m_bQueryList(false), m_idxRefSql(0)
 {
 }
 
@@ -138,6 +139,20 @@ int DBMessage::GetSeqNomb() const
 bool DBMessage::IsQueryList() const
 {
     return m_bQueryList;
+}
+
+void DBMessage::SetRefFiled(const std::string &filed, int idx)
+{
+    m_refFiled = filed;
+    m_idxRefSql = idx;
+}
+
+const std::string &DBMessage::GetRefFiled(int idx) const
+{
+    if (m_idxRefSql == idx)
+        return m_refFiled;
+
+    return sStrEmpty;
 }
 
 DBMessage *DBMessage::GenerateAck(ObjectDB *db) const

@@ -43,7 +43,9 @@ public:
     void SetSeqNomb(int no);
     int GetSeqNomb()const;
     bool IsQueryList() const;
-
+   
+    void SetRefFiled(const std::string &filed, int idx=2);
+    const std::string &GetRefFiled(int idx)const;
     DBMessage *GenerateAck(ObjectDB *db)const;
 protected:
     std::string propertyKey(const std::string &key, int idx)const;
@@ -51,10 +53,12 @@ protected:
     int             m_seq;
     MessageType     m_ackTp;
     bool            m_bQueryList;
+    int             m_idxRefSql;
     StringList      m_sqls;
     VariantMap      m_writes;
     VariantMap      m_conditions;
     VariantMap      m_reads;
+    std::string     m_refFiled;
 };
 
 #ifdef SOCKETS_NAMESPACE

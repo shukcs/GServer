@@ -306,6 +306,7 @@ void Variant::ensureConstruction(VariantType tp)
     switch (tp)
     {
     case Variant::Type_string:
+    case Variant::Type_buff:
         m_list = new string;  break;
     case Variant::Type_StringList:
         m_list = new StringList;  break;
@@ -371,7 +372,7 @@ void Variant::ensureDestruct()
 
 bool Variant::isBasicalType() const
 {
-    return m_tp >= Type_string && m_tp < Type_bool;
+    return m_tp == Type_buff || (m_tp >= Type_string && m_tp < Type_bool);
 }
 
 Variant::VariantType Variant::elementListType() const

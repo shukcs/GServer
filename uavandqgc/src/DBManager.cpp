@@ -70,6 +70,7 @@ void ObjectDB::ProcessMessage(IMessage *msg)
 
     DBMessage *ack = db->GenerateAck(this);
     int idx = db->GetSqls().size()>1 ? 1 : 0;
+    uint64_t ref = 0;
     for (const string sql : db->GetSqls())
     {
         ExecutItem *item = GetSqlByName(sql);
@@ -78,7 +79,11 @@ void ObjectDB::ProcessMessage(IMessage *msg)
             continue;
         item->ClearData();
         _initSqlByMsg(*item, *db, tmp);
-        _executeSql(item, ack, tmp);
+        if (ref>0)
+            _initRefField(*item, db->GetRefFiled(tmp), ref);
+        ref = _executeSql(item, ack, tmp);
+        if (ref < 1)
+            ref = db->GetRead(INCREASEField, tmp).ToUint64();
     }
     if (ack)
         SendMsg(ack);
@@ -111,14 +116,26 @@ void ObjectDB::_initSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx)
     }
 }
 
-void ObjectDB::_executeSql(ExecutItem *sql, DBMessage *msg, int idx)
+void ObjectDB::_initRefField(ExecutItem &sql, const std::string &field, uint64_t idx)
 {
+    if (field.empty())
+        return;
+    if (FiledVal *fd = sql.GetWriteItem(field))
+        fd->InitOf(idx);
+}
+
+int64_t ObjectDB::_executeSql(ExecutItem *sql, DBMessage *msg, int idx)
+{
+    uint64_t ret = 0;
     bool bRes = m_sqlEngine->Execut(sql);
     if (bRes && msg)
     {
         FiledVal *fd = sql->GetIncrement();
         if (fd && msg)
-            msg->SetRead(INCREASEField, fd->GetValue(), idx);
+        {
+            ret = fd->GetValue();
+            msg->SetRead(INCREASEField, ret, idx);
+        }
 
         if ( sql->GetType()==ExecutItem::Select)
         {
@@ -133,6 +150,8 @@ void ObjectDB::_executeSql(ExecutItem *sql, DBMessage *msg, int idx)
     }
     if (msg)
         msg->SetRead(EXECRSLT, bRes, idx);
+
+    return ret;
 }
 
 void ObjectDB::_initFieldByVarient(FiledVal &fd, const Variant &v)
@@ -199,6 +218,10 @@ void ObjectDB::_save2Message(const FiledVal &fd, DBMessage &msg)
     case FiledVal::String:
         msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), string((char*)fd.GetBuff(), fd.GetValidLen()))
             : msg.SetRead(fd.GetFieldName(), string((char*)fd.GetBuff(), fd.GetValidLen()));
+        break;
+    case FiledVal::Buff:
+        msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), Variant(fd.GetValidLen(), (char*)fd.GetBuff()))
+            : msg.SetRead(fd.GetFieldName(), Variant(fd.GetValidLen(), (char*)fd.GetBuff()));
         break;
     }
 }
