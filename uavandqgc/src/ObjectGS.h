@@ -69,6 +69,8 @@ protected:
     void processCheckGS(const DBMessage &msg);
     void processPostLandRslt(const DBMessage &msg);
     void processPostPlanRslt(const DBMessage &msg);
+    void processCountLandRslt(const DBMessage &msg);
+    void processCountPlanRslt(const DBMessage &msg);
     void processQueryPlans(const DBMessage &msg);
     void processFriends(const DBMessage &msg);
     void processQueryLands(const DBMessage &msg);
@@ -104,6 +106,8 @@ private:
     std::string     m_pswd;
     std::string     m_check;
     bool            m_bInitFriends;
+    int             m_countLand;
+    int             m_countPlan;
     std::list<std::string> m_friends;
     std::list<google::protobuf::Message*> m_protosSend;
 };

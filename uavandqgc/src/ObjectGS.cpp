@@ -12,6 +12,8 @@
 #include "ObjectUav.h"
 
 #define WRITE_BUFFLEN 1024 * 8
+#define MAXLANDRECORDS 200
+#define MAXPLANRECORDS 200
 using namespace das::proto;
 using namespace google::protobuf;
 using namespace std;
@@ -22,7 +24,8 @@ using namespace SOCKETS_NAMESPACE;
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
 ObjectGS::ObjectGS(const std::string &id): ObjectAbsPB(id)
-, m_auth(1), m_bInitFriends(false)
+, m_auth(1), m_bInitFriends(false), m_countLand(0)
+, m_countPlan(0)
 {
     SetBuffSize(WRITE_BUFFLEN);
 }
@@ -164,6 +167,12 @@ void ObjectGS::ProcessMessage(IMessage *msg)
             break;
         case IMessage::LandQueryRslt:
             processQueryLands(*(DBMessage*)msg);
+            break;
+        case IMessage::CountLandRslt:
+            processCountLandRslt(*(DBMessage*)msg);
+            break;
+        case IMessage::CountPlanRslt:
+            processCountPlanRslt(*(DBMessage*)msg);
             break;
         case IMessage::PlanInsertRslt:
             processPostPlanRslt(*(DBMessage*)msg);
@@ -348,6 +357,21 @@ void ObjectGS::processGSInfo(const DBMessage &msg)
     m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : InitialFail;
     m_pswd = msg.GetRead("pswd").ToString();
     m_auth = msg.GetRead("auth").ToInt32();
+    if (Initialed == m_stInit)
+    {
+        if (DBMessage *msg = new DBMessage(this, IMessage::CountLandRslt))
+        {
+            msg->SetSql("countLand");
+            msg->SetCondition("gsuser", m_id);
+            SendMsg(msg);
+        }
+        if (DBMessage *msg = new DBMessage(this, IMessage::CountPlanRslt))
+        {
+            msg->SetSql("countPlan");
+            msg->SetCondition("planuser", m_id);
+            SendMsg(msg);
+        }
+    }
 }
 
 void ObjectGS::processCheckGS(const DBMessage &msg)
@@ -434,10 +458,19 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
     auto itrlons = lons.begin();
     auto itrids = ids.begin();
     auto itrboundary = boundary.begin();
-
+    auto ptr = &ack;
     for (; itrids != ids.end(); ++itrids)
     {
-        ParcelDescription *pd = ack.add_pds();
+        if (ack.ByteSize() > 4096)
+        {
+            if (ptr != &ack)
+                m_protosSend.push_back(ptr);
+
+            ptr = new AckRequestParcelDescriptions;
+            ack.set_seqno(msg.GetSeqNomb());
+            ack.set_result(1);
+        }
+        ParcelDescription *pd = ptr->add_pds();
         if (itrNamesPc != namesPc.end())
         {
             ParcelContracter *pc = new ParcelContracter();
@@ -537,10 +570,25 @@ void ObjectGS::processPostPlanRslt(const DBMessage &msg)
     GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %ld!", id);
 }
 
+void ObjectGS::processCountLandRslt(const DBMessage &msg)
+{
+    if (msg.GetRead(EXECRSLT).ToBool())
+        m_countLand = msg.GetRead("count(id)").ToInt32();
+}
+
+void ObjectGS::processCountPlanRslt(const DBMessage &msg)
+{
+    if (msg.GetRead(EXECRSLT).ToBool())
+        m_countLand = msg.GetRead("count(id)").ToInt32();
+}
+
 void ObjectGS::processQueryPlans(const DBMessage &msg)
 {
+    bool suc = msg.GetRead(EXECRSLT).ToBool();
     AckRequestOperationDescriptions ack;
     ack.set_seqno(msg.GetSeqNomb());
+    ack.set_result(suc ? 1 : 0);
+
     auto ids = msg.GetRead("id").GetVarList<int64_t>();
     auto landIds = msg.GetRead("landId").GetVarList<int64_t>();
     auto planTimes = msg.GetRead("planTime").GetVarList<int64_t>();
@@ -561,9 +609,19 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
     auto prizesItr = prizes.begin();
     auto ridgeItr = ridgeSzs.begin();
     auto planParamsItr = planParams.begin();
+    auto ptr = &ack;
     for (auto idItr = ids.begin(); idItr != ids.end(); ++idItr)
     {
-        auto od = ack.add_ods();
+        if (ack.ByteSize() > 4096)
+        {
+            if (ptr != &ack)
+                m_protosSend.push_back(ptr);
+
+            ptr = new AckRequestOperationDescriptions;;
+            ack.set_seqno(msg.GetSeqNomb());
+            ack.set_result(suc ? 1 : 0);
+        }
+        auto od = ptr->add_ods();
         od->set_odid(Utility::bigint2string(*idItr));
         if (landIdsItr != landIds.end())
         {
@@ -613,8 +671,6 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
             ++planParamsItr;
         }
     }
-    bool suc = msg.GetRead(EXECRSLT).ToBool();
-    ack.set_result(suc ? 1 : 0);
     send(ack);
 }
 

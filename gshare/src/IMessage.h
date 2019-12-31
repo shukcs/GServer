@@ -83,6 +83,8 @@ public:
         FriendQueryRslt,
         LandInsertRslt,
         LandQueryRslt,
+        CountLandRslt,
+        CountPlanRslt,
         PlanInsertRslt,
         PlanQueryRslt,
 

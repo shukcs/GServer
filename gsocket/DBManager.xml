@@ -140,6 +140,10 @@
 					<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
 					<item name="LandInfo.id" param="PlanInfo.landId" type="Condition" />
 				</SQL>
+				<SQL name="countLand" table="LandInfo" type="Select" >
+					<item name="count(id)" sqlTp="INT" type="Read" />
+					<item name="gsuser" type="Condition" />
+				</SQL>
 				<SQL name="InsertPlan" table="PlanInfo" type="Insert" >
 					<item name="landId" type="Write" />
 					<item name="planuser" type="Write" />
@@ -179,6 +183,10 @@
 					<item name="planParam" ref="PlanInfo" type="Read" />
 					<item name="id" type="Condition" />
 					<item name="landId" type="Condition" />
+					<item name="planuser" type="Condition" />
+				</SQL>
+				<SQL name="countPlan" table="PlanInfo" type="Select" >
+					<item name="count(id)" sqlTp="INT" type="Read" />
 					<item name="planuser" type="Condition" />
 				</SQL>
 				<SQL name="checkGS" table="GSInfo" type="Select" >
