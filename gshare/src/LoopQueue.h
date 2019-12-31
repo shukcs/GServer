@@ -85,8 +85,6 @@ public:
             PopFinish();
             return ret;
         }
-        if (TypeInfo<EC>::isPointer)
-            return 0;
 
         return EC();
     }

@@ -39,11 +39,12 @@
 					<field name="landId"  type="BIGINT" />
 					<field name="planTime"  type="BIGINT" />
 					<field name="planuser"  type="char(32)" />
-					<field name="planParam" type="VARBINARY(64)" />
 					<field name="notes" type="char(128)" />
 					<field name="crop"  type="char(32)" />
 					<field name="drug"  type="char(32)" />
 					<field name="prize"  type="float" />
+					<field name="ridgeSz"  type="INT" />
+					<field name="planParam" type="VARBINARY(64)" />
 					<foreign name="landId" foreign="id" ref="LandInfo" />
 					<foreign name="planuser" foreign="user" ref="GSInfo" />
 				</table>
@@ -145,9 +146,10 @@
 					<item name="notes" type="Write" />
 					<item name="crop" type="Write" />
 					<item name="drug" type="Write" />
+					<item name="prize" ref="PlanInfo" type="Write"/>
+					<item name="ridgeSz" ref="PlanInfo" type="Write"/>
 					<item name="planTime" ref="PlanInfo" type="Write" />
 					<item name="planParam" ref="PlanInfo" type="Write" />
-					<item name="prize" ref="PlanInfo" type="Write"/>
 					<item type="AutoIncrement" />
 				</SQL>
 				<SQL name="UpdatePlan" table="PlanInfo" type="Update" >
@@ -169,11 +171,12 @@
 					<item name="landId" ref="PlanInfo" type="Read" />
 					<item name="planTime" ref="PlanInfo" type="Read" />
 					<item name="planuser" ref="PlanInfo" type="Read" />
-					<item name="planParam" ref="PlanInfo" type="Read" />
 					<item name="notes" ref="PlanInfo" type="Read" />
 					<item name="crop" ref="PlanInfo" type="Read" />
 					<item name="drug" ref="PlanInfo" type="Read" />
 					<item name="prize" ref="PlanInfo" type="Read" />
+					<item name="ridgeSz" ref="PlanInfo" type="Read"/>
+					<item name="planParam" ref="PlanInfo" type="Read" />
 					<item name="id" type="Condition" />
 					<item name="landId" type="Condition" />
 					<item name="planuser" type="Condition" />

@@ -213,7 +213,7 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
         }
     }
     if (strLs.size() > 0)
-        queryUavInfo(gs, uia.seqno(), strLs, bMgr&&uia.uavid_size()>1);
+        queryUavInfo(gs, uia.seqno(), strLs, bMgr);
 
     if (gs)
     {

@@ -77,9 +77,12 @@ void ObjectGS::_prcsLogin(RequestGSIdentityAuthentication *msg)
     if (msg && m_p)
     {
         bool suc = m_pswd == msg->password();
-        GetManager()->Log(0, m_id, 0, "[%s:%d]%s", m_sock->GetHost().c_str(), m_sock->GetPort(), suc?"logined":"login fail");
-        if (!suc)
-            m_sock->Close();
+        if (m_sock)
+        {
+            GetManager()->Log(0, m_id, 0, "[%s:%d]%s", m_sock->GetHost().c_str(), m_sock->GetPort(), suc ? "logined" : "login fail");
+            if (!suc)
+                m_sock->Close();
+        }
 
         AckGSIdentityAuthentication ack;
         ack.set_seqno(msg->seqno());
@@ -538,13 +541,6 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
 {
     AckRequestOperationDescriptions ack;
     ack.set_seqno(msg.GetSeqNomb());
-    bool suc = msg.GetRead(EXECRSLT).ToBool();
-    ack.set_result(suc ? 0 : 1);
-    if (!suc)
-    {
-        send(ack);
-        return;
-    }
     auto ids = msg.GetRead("id").GetVarList<int64_t>();
     auto landIds = msg.GetRead("landId").GetVarList<int64_t>();
     auto planTimes = msg.GetRead("planTime").GetVarList<int64_t>();
@@ -552,10 +548,10 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
     auto notes = msg.GetRead("notes").GetVarList<string>();
     auto crops = msg.GetRead("crop").GetVarList<string>();
     auto drugs = msg.GetRead("drug").GetVarList<string>();
+    auto ridgeSzs = msg.GetRead("ridgeSz").GetVarList<int>();
     auto prizes = msg.GetRead("prize").GetVarList<float>();
     auto planParams = msg.GetRead("planParam").GetVarList<string>();
 
-    auto idsItr = ids.begin();
     auto landIdsItr = landIds.begin();
     auto planTimesItr = planTimes.begin();
     auto planusersItr = planusers.begin();
@@ -563,11 +559,12 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
     auto cropsItr = crops.begin();
     auto drugsItr = drugs.begin();
     auto prizesItr = prizes.begin();
+    auto ridgeItr = ridgeSzs.begin();
     auto planParamsItr = planParams.begin();
-    for (; idsItr != ids.end(); ++idsItr)
+    for (auto idItr = ids.begin(); idItr != ids.end(); ++idItr)
     {
         auto od = ack.add_ods();
-        od->set_odid(Utility::bigint2string(*idsItr));
+        od->set_odid(Utility::bigint2string(*idItr));
         if (landIdsItr != landIds.end())
         {
             od->set_pdid(Utility::bigint2string(*landIdsItr));
@@ -593,6 +590,11 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
             od->set_crop(*cropsItr);
             ++cropsItr;
         }
+        if (ridgeItr != ridgeSzs.end())
+        {
+            od->set_ridge(*ridgeItr);
+            ++ridgeItr;
+        }
         if (drugsItr != drugs.end())
         {
             od->set_drug(*drugsItr);
@@ -611,6 +613,8 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
             ++planParamsItr;
         }
     }
+    bool suc = msg.GetRead(EXECRSLT).ToBool();
+    ack.set_result(suc ? 1 : 0);
     send(ack);
 }
 
@@ -884,14 +888,16 @@ void ObjectGS::_prcsPostPlan(PostOperationDescription *msg)
         msgDb->SetWrite("crop", od.crop());
     if (!od.drug().empty())
         msgDb->SetWrite("drug", od.drug());
+    if (od.has_ridge())
+        msgDb->SetWrite("ridgeSz", od.ridge());
     msgDb->SetWrite("prize", od.prize());
-    if (!od.has_notes())
+    if (od.has_notes())
         msgDb->SetWrite("notes", od.notes());
     msgDb->SetWrite("planTime", od.has_plantime() ? od.plantime() : Utility::msTimeTick());
     string buff;
     buff.resize(od.op().ByteSize());
     od.op().SerializeToArray(&buff.front(), buff.size());
-    msgDb->SetWrite("planParam", Variant(int(buff.size()), buff.c_str()));
+    msgDb->SetWrite("planParam", Variant(buff.size(), buff.c_str()));
 
     SendMsg(msgDb);
 }

@@ -497,7 +497,7 @@ bool GSocketManager::_recv(ISocket *sock)
         return false;
 
     int n = sizeof(m_buff);
-    for (int i=0; n >= int(sizeof(m_buff)); ++i)
+    while (sizeof(m_buff) == n)
     {
 #if defined _WIN32 ||  defined _WIN64
         n = recv(fd, m_buff, sizeof(m_buff), 0);
@@ -505,7 +505,7 @@ bool GSocketManager::_recv(ISocket *sock)
         n = read(fd, m_buff, sizeof(m_buff));
 #endif
         if (n <= 0)//关闭触发EPOLLIN，但接收不到数据
-            return i > 0;
+            return n < 0;
 
         sock->OnRead(m_buff, n);
     }
