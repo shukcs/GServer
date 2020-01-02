@@ -71,6 +71,8 @@ protected:
     void processPostPlanRslt(const DBMessage &msg);
     void processCountLandRslt(const DBMessage &msg);
     void processCountPlanRslt(const DBMessage &msg);
+    void processDeleteLandRslt(const DBMessage &msg);
+    void processDeletePlanRslt(const DBMessage &msg);
     void processQueryPlans(const DBMessage &msg);
     void processFriends(const DBMessage &msg);
     void processQueryLands(const DBMessage &msg);

@@ -174,6 +174,12 @@ void ObjectGS::ProcessMessage(IMessage *msg)
         case IMessage::CountPlanRslt:
             processCountPlanRslt(*(DBMessage*)msg);
             break;
+        case IMessage::DeleteLandRslt:
+            processDeleteLandRslt(*(DBMessage*)msg);
+            break;
+        case IMessage::DeletePlanRslt:
+            processDeletePlanRslt(*(DBMessage*)msg);
+            break;
         case IMessage::PlanInsertRslt:
             processPostPlanRslt(*(DBMessage*)msg);
             break;
@@ -579,7 +585,21 @@ void ObjectGS::processCountLandRslt(const DBMessage &msg)
 void ObjectGS::processCountPlanRslt(const DBMessage &msg)
 {
     if (msg.GetRead(EXECRSLT).ToBool())
-        m_countLand = msg.GetRead("count(id)").ToInt32();
+        m_countPlan = msg.GetRead("count(id)").ToInt32();
+}
+
+void ObjectGS::processDeleteLandRslt(const DBMessage &msg)
+{
+    if (msg.GetRead(EXECRSLT, 1).ToBool())
+        m_countLand--;
+    if (msg.GetRead(EXECRSLT, 2).ToBool())
+        m_countPlan--;
+}
+
+void ObjectGS::processDeletePlanRslt(const DBMessage &msg)
+{
+    if (msg.GetRead(EXECRSLT).ToBool())
+        m_countPlan--;
 }
 
 void ObjectGS::processQueryPlans(const DBMessage &msg)
@@ -612,7 +632,7 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
     auto ptr = &ack;
     for (auto idItr = ids.begin(); idItr != ids.end(); ++idItr)
     {
-        if (ack.ByteSize() > 4096)
+        if (ptr->ByteSize() >= 3072)
         {
             if (ptr != &ack)
                 m_protosSend.push_back(ptr);
@@ -751,6 +771,13 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
 {
     if (!msg)
         return;
+    if (m_countLand >= MAXLANDRECORDS)
+    {
+        AckPostParcelDescription appd;
+        appd.set_seqno(msg->seqno());
+        appd.set_result(-1); //µØ¿éÌ«¶àÁË
+        send(appd);
+    }
 
     DBMessage *db = new DBMessage(this, IMessage::LandInsertRslt);
     if (!db)
@@ -871,16 +898,18 @@ void ObjectGS::addDBFriend(const string &user1, const string &user2)
 
 void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
 {
-    if (msg)
+    if (!msg)
         return;
 
     const std::string &id = msg->pdid();
-    DBMessage *msgDb = new DBMessage(this);
+    DBMessage *msgDb = new DBMessage(this, IMessage::DeleteLandRslt);
     if (!msgDb || id.empty())
         return;
 
     msgDb->SetSql("deleteLand");
-    msgDb->SetCondition("LandInfo.id", id);
+    msgDb->AddSql("deletePlan");
+    msgDb->SetCondition("LandInfo.id", id, 1);
+    msgDb->SetCondition("landId", id, 2);
     SendMsg(msgDb);
     GetManager()->Log(0, GetObjectID(), 0, "Delete land %s!", id.c_str());
 
@@ -997,7 +1026,7 @@ void ObjectGS::_prcsDeletePlan(das::proto::DeleteOperationDescription *msg)
         return;
 
     const std::string &id = msg->odid();
-    DBMessage *msgDb = new DBMessage(this);
+    DBMessage *msgDb = new DBMessage(this, IMessage::DeletePlanRslt);
     if (!msgDb || id.empty())
         return;
 

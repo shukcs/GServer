@@ -87,6 +87,8 @@ public:
         CountPlanRslt,
         PlanInsertRslt,
         PlanQueryRslt,
+        DeleteLandRslt,
+        DeletePlanRslt,
 
         DBAckEnd,
 

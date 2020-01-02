@@ -135,10 +135,9 @@
 					<item name="gsuser" ref="LandInfo" type="Condition" condition="=" />
 					<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
 				</SQL>
-				<SQL name="deleteLand" table="LandInfo;OwnerInfo;PlanInfo" type="Delete" >
+				<SQL name="deleteLand" table="LandInfo;OwnerInfo" type="Delete" >
 					<item name="id" ref="LandInfo" type="Condition" />
 					<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
-					<item name="LandInfo.id" param="PlanInfo.landId" type="Condition" />
 				</SQL>
 				<SQL name="countLand" table="LandInfo" type="Select" >
 					<item name="count(id)" sqlTp="INT" type="Read" />
@@ -169,6 +168,7 @@
 				</SQL>
 				<SQL name="deletePlan" table="PlanInfo" type="Delete" >
 					<item name="id" type="Condition" />
+					<item name="landId" type="Condition" />
 				</SQL>
 				<SQL name="queryPlan" table="PlanInfo" type="Select" >
 					<item name="id" ref="PlanInfo" type="Read" />
