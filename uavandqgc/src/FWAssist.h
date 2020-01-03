@@ -7,6 +7,7 @@
 class FWItem;
 class FWAssist
 {
+    typedef std::map<std::string, FWItem*> FWMap;
 public:
     enum FWType
     {
@@ -15,18 +16,27 @@ public:
         FW_FMU,
         FW_IMU,
     };
+    enum FWStat
+    {
+        Stat_Uploading,
+        Stat_Uploaded,
+        Stat_UploadError,
+    };
 public:
     static FWAssist &Instance();
 public:
-    bool ProcessFW(const std::string &name, const void *buf, unsigned len, unsigned offset=0, int tp=FW_Unknow, int size=0);
+    FWStat ProcessFW(const std::string &name, const void *buf, unsigned len, unsigned offset=0, int tp=FW_Unknow, int size=0);
     int GetFw(const std::string &name, void *buf, int len, unsigned offset, unsigned *sz = 0);
     std::string LastFwName(FWType tp = FW_Flight)const;
+    FWType GetFWType(const std::string &name)const;
+    int GetFWLength(const std::string &name)const;
+    uint32_t GetFWCrc32(const std::string &name)const;
 protected:
     FWAssist();
     ~FWAssist();
     FWItem *getFWItem(const std::string &name, FWType tp=FW_Unknow, unsigned sz=0);
 private:
-    std::map<std::string, FWItem*> m_fws;
+    FWMap m_fws;
 };
 
 

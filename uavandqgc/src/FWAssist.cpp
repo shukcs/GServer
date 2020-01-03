@@ -3,7 +3,6 @@
 #include "Utility.h"
 
 using namespace std;
-
 /////////////////////////////////////////////////////////
 //FWAssist
 /////////////////////////////////////////////////////////
@@ -21,12 +20,20 @@ FWAssist &FWAssist::Instance()
     return sAssist;
 }
 
-bool FWAssist::ProcessFW(const string &name, const void *buf, unsigned len, unsigned offset, int tp, int sz)
+FWAssist::FWStat FWAssist::ProcessFW(const string &name, const void *buf, unsigned len, unsigned offset, int tp, int sz)
 {
     FWItem *item = getFWItem(name, (FWType)tp, sz);
-    bool ret = item && item->GetFilled() == offset;
-    if (ret)
-        return item->AddData(buf, len);
+    FWStat ret = (item && item->GetFilled() == offset) ? Stat_Uploading : Stat_UploadError;
+    if (ret!=Stat_UploadError)
+    {
+        item->AddData(buf, len);
+        ret = (FWStat)item->CheckUploaded();
+        if (Stat_UploadError == ret)
+        {
+            delete item;
+            m_fws.erase(name);
+        }
+    }
 
     return ret;
 }
@@ -61,12 +68,39 @@ string FWAssist::LastFwName(FWType tp)const
     return last? last->first : string();
 }
 
+FWAssist::FWType FWAssist::GetFWType(const string &name) const
+{
+    FWMap::const_iterator itr = m_fws.find(name);
+    if (itr != m_fws.end())
+        return (FWType)itr->second->GetType();
+
+    return FW_Unknow;
+}
+
+int FWAssist::GetFWLength(const string &name) const
+{
+    FWMap::const_iterator itr = m_fws.find(name);
+    if (itr != m_fws.end())
+        return itr->second->GetFWSize();
+
+    return 0;
+}
+
+uint32_t FWAssist::GetFWCrc32(const string &name) const
+{
+    FWMap::const_iterator itr = m_fws.find(name);
+    if (itr != m_fws.end())
+        return (FWType)itr->second->GetCrc32();
+
+    return 0;
+}
+
 FWItem *FWAssist::getFWItem(const string &name, FWType tp, unsigned sz)
 {
     if (name.empty())
         return NULL;
 
-    map<string, FWItem*>::iterator itr = m_fws.find(name);
+    FWMap::iterator itr = m_fws.find(name);
     if (itr != m_fws.end())
         return itr->second;
 

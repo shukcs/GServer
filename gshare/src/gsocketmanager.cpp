@@ -140,11 +140,13 @@ void GSocketManager::AddProcessThread()
 
 bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
 {
-    if (!s || m_sockets.find(s->GetHandle()) == m_sockets.end())
+    int fd = s != NULL ? s->GetHandle() : -1;
+    if (fd==-1 || m_sockets.find(fd)==m_sockets.end())
         return false;
 
     m_mtx->Lock();      //应对不同线程
-    m_socketsPrcs.Push(s->GetHandle());
+    if (!m_socketsPrcs.IsContains(fd))
+        m_socketsPrcs.Push(s->GetHandle());
     m_mtx->Unlock();
     return true;
 }

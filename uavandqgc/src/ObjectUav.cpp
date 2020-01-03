@@ -66,10 +66,12 @@ void ObjectUav::RespondLogin(int seq, int res)
 {
     if(m_p && m_sock)
     {
-        AckUavIdentityAuthentication ack;
-        ack.set_seqno(seq);
-        ack.set_result(res);
-        send(ack);
+        if (auto ack = new AckUavIdentityAuthentication)
+        {
+            ack->set_seqno(seq);
+            ack->set_result(res);
+            send(ack);
+        }
         GetManager()->Log(0, m_id, 0, "[%s:%d]%s", m_sock->GetHost().c_str(), m_sock->GetPort(), res==1 ? "logined" : "login fail");
     }
 }
@@ -242,10 +244,12 @@ void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
         SendMsg(ms);
     }
 
-    AckOperationInformation ack;
-    ack.set_seqno(msg->seqno());
-    ack.set_result(1);
-    send(ack);
+    if (auto ack = new AckOperationInformation)
+    {
+        ack->set_seqno(msg->seqno());
+        ack->set_result(1);
+        send(ack);
+    }
 }
 
 void ObjectUav::prcsRcvPost2Gs(PostStatus2GroundStation *msg)
@@ -265,20 +269,23 @@ void ObjectUav::prcsRcvReqMissions(RequestRouteMissions *msg)
     if (!msg)
         return;
 
-    AckRequestRouteMissions ack;
+    auto ack = new AckRequestRouteMissions;
+    if (!ack)
+        return;
+
     bool hasItem = _hasMission(*msg);
     int offset = msg->offset();
-    ack.set_seqno(msg->seqno());
-    ack.set_result(hasItem ? 1 : 0);
-    ack.set_boundary(msg->boundary());
-    ack.set_offset(hasItem ? offset : -1);
+    ack->set_seqno(msg->seqno());
+    ack->set_result(hasItem ? 1 : 0);
+    ack->set_boundary(msg->boundary());
+    ack->set_offset(hasItem ? offset : -1);
     if (m_mission)
     {
         int count = msg->boundary() ? m_mission->boundarys_size() : m_mission->missions_size();
         for (int i = 0; i<msg->count()&&count>=offset+i; ++i)
         {
             const string &msItem = msg->boundary() ? m_mission->boundarys(i+offset):m_mission->missions(i+offset);
-            ack.add_missions(msItem.c_str(), msItem.size());
+            ack->add_missions(msItem.c_str(), msItem.size());
         }
     }
     m_bSys = true;
@@ -307,13 +314,15 @@ void ObjectUav::prcsPosAuth(RequestPositionAuthentication *msg)
         return;
 
     const GpsInformation &pos = msg->pos();
-    AckPositionAuthentication ack;
-    ack.set_seqno(msg->seqno());
-    int n = _checkPos(pos.latitude()/10e7, pos.longitude()/10e7, pos.altitude()/10e3);
-    ack.set_result(n);
-    GetManager()->Log(0, GetObjectID(), 0, "Arm!");
-    ack.set_devid(GetObjectID());
-    send(ack);
+    if (auto ack = new AckPositionAuthentication)
+    {
+        ack->set_seqno(msg->seqno());
+        int n = _checkPos(pos.latitude() / 10e7, pos.longitude() / 10e7, pos.altitude() / 10e3);
+        ack->set_result(n);
+        GetManager()->Log(0, GetObjectID(), 0, "Arm!");
+        ack->set_devid(GetObjectID());
+        send(ack);
+    }
 }
 
 void ObjectUav::processBind(RequestBindUav *msg, IObject *obj)
@@ -363,7 +372,11 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
 
     int res = 0;
     if (m_lastBinder == msg->userid() && m_bBind)
-        res = send(*msg) ? 1 : -1;
+    {
+        auto ms = new PostControl2Uav(*msg);
+        send(ms);
+        res = 1;
+    }
     
     SendMsg(AckControl2Uav(*msg, res, this));
 }
@@ -425,15 +438,17 @@ bool ObjectUav::_hasMission(const das::proto::RequestRouteMissions &req) const
 void ObjectUav::_notifyUavUOR(const OperationRoute &ort)
 {
     static uint32_t sSeqno = 1;
-    UploadOperationRoutes upload;
-    upload.set_seqno(sSeqno++);
-    upload.set_uavid(ort.uavid());
-    upload.set_userid(ort.gsid());
-    upload.set_timestamp(ort.createtime());
-    upload.set_countmission(ort.missions_size());
-    upload.set_countboundary(ort.boundarys_size());
+    if (auto upload = new UploadOperationRoutes)
+    {
+        upload->set_seqno(sSeqno++);
+        upload->set_uavid(ort.uavid());
+        upload->set_userid(ort.gsid());
+        upload->set_timestamp(ort.createtime());
+        upload->set_countmission(ort.missions_size());
+        upload->set_countboundary(ort.boundarys_size());
+        send(upload);
+    }
     m_lastORNotify = (uint32_t)Utility::msTimeTick();
-    send(upload);
 }
 
 int ObjectUav::_checkPos(double lat, double lon, double alt)

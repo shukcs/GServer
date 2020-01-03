@@ -13,6 +13,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #endif
+#include "FWAssist.h"
 
 FWItem::FWItem(int tp, unsigned sz, const std::string &name)
 : m_timeUpload(Utility::msTimeTick()), m_lenFw(sz), m_fillFw(0)
@@ -48,6 +49,16 @@ bool FWItem::AddData(const void *dt, int len)
         return true;
     }
     return false;
+}
+
+int FWItem::CheckUploaded()
+{
+    if (m_fillFw == m_lenFw)
+    {
+        uint32_t crc = Utility::Crc32(m_dataFw, m_lenFw);
+        return crc == m_crc32 ? FWAssist::Stat_Uploaded : FWAssist::Stat_UploadError;
+    }
+    return FWAssist::Stat_Uploading;
 }
 
 int FWItem::CopyData(void *dt, int len, int offset)

@@ -53,7 +53,7 @@ public:
     virtual void SetObject(IObject *o) = 0;
     virtual bool Bind(int port, const std::string &hostLocal="") = 0;
     virtual bool ConnectTo(const std::string &hostRemote, int port) = 0;
-    virtual int Send(int len, void *buff) = 0;
+    virtual int Send(int len, void *buff=NULL) = 0;
     virtual bool ResizeBuff(int sz) = 0;
     virtual bool IsNoWriteData()const = 0;
 

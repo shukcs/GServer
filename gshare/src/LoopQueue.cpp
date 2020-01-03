@@ -282,9 +282,12 @@ void *LoopQueueAbs::PushOne(const void *data)
     return NULL;
 }
 
-void *LoopQueueAbs::CurrentBuff()const
+void *LoopQueueAbs::CurrentBuff(DataNode *nd)const
 {
-    DataNode *tmp = m_dataRoot ? m_dataRoot->NextNode() : NULL;
+    if (!nd)
+        nd = m_dataRoot;
+
+    DataNode *tmp = nd ? nd->NextNode() : NULL;
     if (tmp && tmp!=m_dataPush)
         return tmp->GetBuff();
 
@@ -325,4 +328,13 @@ DataNode *LoopQueueAbs::recyclePop()
     m_dataPops = m_dataPops->NextNode();
     nd->SetNextNode(NULL);
     return nd;
+}
+
+DataNode *LoopQueueAbs::nextNode(DataNode *nd)const
+{
+    DataNode *ret = nd ? nd->NextNode() : NULL;
+    if (ret == m_dataPush)
+        return NULL;
+
+    return ret;
 }

@@ -11,6 +11,7 @@ public:
     virtual ~FWItem();
 
     bool AddData(const void* dt, int len);
+    int CheckUploaded();
     int CopyData(void* dt, int len, int offset);
     bool IsValid()const;
     unsigned GetFilled()const;

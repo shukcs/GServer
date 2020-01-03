@@ -83,6 +83,12 @@ Message *GSOrUavMessage::GetProtobuf()const
     return m_data ? ((GSOrUav*)m_data)->GetProtoBuf() : NULL;
 }
 
+void GSOrUavMessage::SetPBContent(const Message &msg)
+{
+    Message *msgTmp = msg.New();
+    _copyMsg(msgTmp, msg);
+}
+
 string GSOrUavMessage::GenCheckString(int len)
 {
     if (len > 16)
@@ -161,7 +167,7 @@ Uav2GSMessage::Uav2GSMessage(IObjectManager *sender, const std::string &idRcv)
 IMessage::MessageType Uav2GSMessage::getMessageType(const Message &msg)
 {
     MessageType ret = Unknown;
-    const string &name = msg.GetTypeName();
+    const string &name = msg.GetDescriptor()->full_name();
     if (name == d_p_ClassName(AckRequestBindUav))
         ret = BindUavRes;
     else if (name == d_p_ClassName(AckPostControl2Uav))
@@ -208,7 +214,7 @@ GS2UavMessage::GS2UavMessage(IObjectManager *sender, const std::string &idRcv)
 IMessage::MessageType GS2UavMessage::getMessageType(const google::protobuf::Message &msg)
 {
     MessageType ret = Unknown;
-    const string &name = msg.GetTypeName();
+    const string &name = msg.GetDescriptor()->full_name();
     if (name == d_p_ClassName(RequestBindUav))
         ret = BindUav;
     if (name == d_p_ClassName(PostOperationRoute))
@@ -221,6 +227,10 @@ IMessage::MessageType GS2UavMessage::getMessageType(const google::protobuf::Mess
         ret = QueryUav;
     else if (name == d_p_ClassName(RequestIdentityAllocation))
         ret = UavAllocation;
+    else if (name == d_p_ClassName(RequestIdentityAllocation))
+        ret = UavAllocation;
+    else if (name == d_p_ClassName(NotifyProgram))
+        ret = NotifyFWUpdate;
 
     return ret;
 }
@@ -241,7 +251,7 @@ Gs2GsMessage::Gs2GsMessage(IObjectManager *sender, const std::string &idRcv)
 IMessage::MessageType Gs2GsMessage::getMessageType(const google::protobuf::Message &msg)
 {
     MessageType ret = Unknown;
-    const string &name = msg.GetTypeName();
+    const string &name = msg.GetDescriptor()->full_name();
     if (name == d_p_ClassName(GroundStationsMessage))
         ret = Gs2GsMsg;
     if (name == d_p_ClassName(AckGroundStationsMessage))

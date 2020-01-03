@@ -27,12 +27,7 @@ public:
     int GetContentLength() const;
     void AttachProto(google::protobuf::Message *msg);
     google::protobuf::Message *GetProtobuf()const;
-    template<class E>
-    void SetPBContent(const E &msg)
-    {
-        E *msgTmp = new E;
-        _copyMsg(msgTmp, msg);
-    }
+    void SetPBContent(const google::protobuf::Message &msg);
 public:
     static std::string GenCheckString(int len = 6);
     static bool IsGSUserValide(const std::string &user);

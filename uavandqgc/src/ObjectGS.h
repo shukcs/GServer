@@ -27,7 +27,7 @@ namespace das {
         class RequestFriends;
     }
 }
-
+class FWItem;
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
@@ -62,6 +62,7 @@ protected:
     void ProcessMessage(IMessage *msg);
     int ProcessReceive(void *buf, int len);
 
+    void process2GsMsg(const google::protobuf::Message *msg);
     void processGs2Gs(const google::protobuf::Message &msg, int tp);
     void processBind(const DBMessage &msg);
     void processUavsInfo(const DBMessage &msg);
@@ -79,6 +80,7 @@ protected:
     void processGSInsert(const DBMessage &msg);
     void InitObject();
     void CheckTimer(uint64_t ms);
+    void WaitSend(google::protobuf::Message *msg);
 private:
     void _prcsLogin(das::proto::RequestGSIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
@@ -99,9 +101,11 @@ private:
     void _prcsReqFriends(das::proto::RequestFriends *msg);
 private:
     void _checkGS(const std::string &user, int ack);
+    void _sendNow(google::protobuf::Message *msg, bool b);
     void initFriend();
     void addDBFriend(const std::string &user1, const std::string &user2);
     int _addDatabaseUser(const std::string &user, const std::string &pswd, int seq);
+    void notifyUavNewFw(const std::string &fw, int seq);
 private:
     friend class GSManager;
     int             m_auth;

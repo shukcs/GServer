@@ -67,20 +67,29 @@ void ObjectAbsPB::OnConnected(bool bConnected)
     }
 }
 
-bool ObjectAbsPB::send(const google::protobuf::Message &msg)
+void ObjectAbsPB::send(google::protobuf::Message *msg, bool bRm)
 {
-    if (!m_sock)
-        return false;
-
-    char *buf = (char *)getThreadBuff();
-    int sendSz = serialize(msg, buf, getThreadBuffLen());
-    if (sendSz > 0)
+    if (m_sock)
     {
-        m_sock->Send(sendSz, buf);
-        return true;
+        char *buf = (char *)getThreadBuff();
+        int sendSz = serialize(*msg, buf, getThreadBuffLen());
+        if (sendSz > 0)
+        {
+            if (sendSz == m_sock->Send(sendSz, buf))
+                bRm = true;
+
+            if (!bRm)
+                WaitSend(msg);
+        }
     }
 
-    return false;
+    if (bRm)
+        delete msg;
+}
+
+void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
+{
+    delete msg;
 }
 
 int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int sz)
@@ -88,7 +97,7 @@ int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int s
     if (!buf)
         return 0;
 
-    string name = msg.GetTypeName();
+    const string &name = msg.GetDescriptor()->full_name();
     if (name.length() < 1)
         return 0;
     int nameLen = name.length() + 1;

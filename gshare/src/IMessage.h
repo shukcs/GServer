@@ -49,6 +49,7 @@ public:
         SychMission,
         QueryUav,
         UavAllocation,
+        NotifyFWUpdate,
         Gs2UavEnd,
 
         BindUavRes,

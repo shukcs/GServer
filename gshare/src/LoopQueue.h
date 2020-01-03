@@ -39,12 +39,13 @@ public:
     virtual ~LoopQueueAbs();
 
     void *PushOne(const void *data);
-    void *CurrentBuff()const;
+    void *CurrentBuff(DataNode *nd=NULL)const;
     void PopFinish();
 protected:
     virtual int getElementSize()const = 0;
     bool empty()const;
     DataNode *recyclePop();
+    DataNode *nextNode(DataNode *nd)const;
 protected:
     DataNode    *m_dataRoot;
     DataNode    *m_dataPush;
@@ -91,6 +92,22 @@ public:
     bool IsEmpty()const
     {
         return empty();
+    }
+    bool IsContains(const EC &d)const
+    {
+        DataNode *nd = m_dataRoot;
+        while (nd)
+        {
+            void *men = CurrentBuff(nd);
+            if (!men)
+                return false;
+            const EC &tmp = *(EC *)men;
+            if (tmp == d)
+                return true;
+
+            nd = nextNode(nd);
+        }
+        return false;
     }
 protected:
     static void defaultConstruction(EC *te, const EC &d)
