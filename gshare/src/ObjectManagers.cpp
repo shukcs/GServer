@@ -6,7 +6,6 @@
 #include "socketBase.h"
 #include "IMessage.h"
 #include "GOutLog.h"
-#include "LoopQueue.h"
 
 using namespace std;
 

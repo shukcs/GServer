@@ -1,12 +1,11 @@
 #ifndef __GSOCKET_MANAGER_H__
 #define __GSOCKET_MANAGER_H__
 
-#include "stdconfig.h"
+#include "LoopQueue.h"
 #include "socket_include.h"
 #include "socketBase.h"
 #include <map>
 #include <list>
-#include "LoopQueue.h"
 
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {

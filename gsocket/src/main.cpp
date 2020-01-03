@@ -21,7 +21,7 @@ void OnBindFinish(ISocket *sock, bool binded)
 int main()
 {
 #if defined _WIN32 || defined _WIN64
-    //_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
+    _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
 #endif //defined _WIN32 || defined _WIN64
     GLibrary l2("uavandqgc", GLibrary::CurrentPath());
     sSockMgr = GSocketManager::CreateManager(1);

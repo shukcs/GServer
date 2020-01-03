@@ -1,13 +1,13 @@
 ﻿#ifndef __LOOP_QUEUE_H__
 #define __LOOP_QUEUE_H__
 
+#define USINGORIGINNEW
+#include "Varient.h"
+
 /********************************************************************************
 *多线程的循环队列，解决生产者/消费者之间不用加锁
 *********************************************************************************/
-#include <Varient.h>
-
 class DataNode;
-
 class SHARED_DECL LoopQueBuff
 {
 public:
@@ -126,4 +126,5 @@ protected:
     }
 };
 
+#undef USINGORIGINNEW
 #endif //__LOOP_QUEUE_H__

@@ -101,8 +101,8 @@
     delete p;\
     p = NULL;\
 }
-/*
-#if defined _WIN32 || defined _WIN64
+
+#if (defined _WIN32 || defined _WIN64) && !defined USINGORIGINNEW
 #ifdef _DEBUG
 #define DEBUG_CLIENTBLOCK new(_CLIENT_BLOCK, __FILE__, __LINE__)
 #define new DEBUG_CLIENTBLOCK
@@ -110,5 +110,5 @@
 #define DEBUG_CLIENTBLOCK
 #endif//_DEBUG
 #endif //defined _WIN32 || defined _WIN64
-*/
+
 #endif // _SOCKETS_CONFIG_H

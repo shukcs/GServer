@@ -4,7 +4,7 @@
 #include <string>
 #include <list>
 #include <type_traits>
-#include <stdconfig.h>
+#include "stdconfig.h"
 
 template<typename E>
 class VarTypeDef {
