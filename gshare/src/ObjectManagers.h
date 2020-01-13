@@ -15,7 +15,6 @@ class ISocket;
 class IMessage;
 class IObject;
 class IObjectManager;
-class LoopQueBuff;
 class ILog;
 
 //数据处理工厂元素抽象
@@ -45,7 +44,9 @@ public:
 protected:
     IObjectManager *CreateManager()
     {
-        return new Item;
+        if (!m_mgr)
+            m_mgr = new Item;
+        return m_mgr;
     }
 };
 
@@ -58,13 +59,13 @@ class ObjectManagers
     typedef std::map<std::string, SubcribeMap> MessageSubcribes;
     typedef LoopQueue<SubcribeStruct *> SubcribeQueue;
     typedef std::map<ISocket*, LoopQueBuff*> MapBuffRecieve;
+    typedef LoopQueue<int> RemoveManagerQueue;
 public:
     static ObjectManagers &Instance();
     static ILog &GetLog();
 public:
     void AddManager(IObjectManager *m);
     void RemoveManager(int type);
-    void RemoveManager(const IObjectManager *m);
     IObjectManager *GetManagerByType(int tp)const;
 
     void Destroy(IObject *o);
@@ -85,6 +86,8 @@ private:
 
     void _removeBuff(ISocket *sock);
     SubcribeList &_getSubcribes(const std::string &sender, int tpMsg);
+    void _prcsSendMessages(IObjectManager *mgr);
+    void _prcsReleaseMessages(IObjectManager *mgr);
 private:
     friend class ManagerThread;
     std::map<int, IObjectManager*>      m_managersMap;
@@ -95,6 +98,7 @@ private:
     IMutex                              *m_mtxMsg;
     Thread                              *m_thread;
     MessageSubcribes                    m_subcribes;
+    RemoveManagerQueue                  m_mgrsRemove;
     SubcribeQueue                       m_subcribeMsgs;
     char                                m_buff[1024];
 };

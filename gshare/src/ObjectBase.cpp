@@ -27,6 +27,11 @@ public:
     }
     ~BussinessThread() 
     {
+        ThreadObjects::iterator itr = m_objects.begin();
+        for (; itr != m_objects.end(); ++itr)
+        {
+            ObjectManagers::Instance().Destroy(itr->second);
+        }
         delete m_buff;
     }
     char *GetBuff()const 
@@ -321,8 +326,8 @@ IObjectManager::~IObjectManager()
         t->SetRunning(false);
     }
     Utility::Sleep(100);
+    m_lsThread.clear();
     delete m_mtx;
-    ObjectManagers::Instance().RemoveManager(this);
 }
 
 void IObjectManager::LoadConfig()

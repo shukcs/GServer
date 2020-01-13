@@ -40,7 +40,7 @@ Thread::~Thread()
 threadfunc_t STDPREFIX Thread::StartThread(threadparam_t zz)
 {
     Thread *p = (Thread *)zz;
-    while (p && p->m_running)
+    while (p && p->IsRunning())
     {
         if (!p->RunLoop())
             Utility::Sleep(p->m_msSleep);

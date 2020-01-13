@@ -23,7 +23,7 @@ int main()
 #if defined _WIN32 || defined _WIN64
     _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
 #endif //defined _WIN32 || defined _WIN64
-    GLibrary l2("uavandqgc", GLibrary::CurrentPath());
+    GLibrary lib("uavandqgc", GLibrary::CurrentPath());
     sSockMgr = GSocketManager::CreateManager(1);
     GSocket *s = new GSocket(NULL);
     if (s)
@@ -45,6 +45,7 @@ int main()
 #endif //defined _WIN32 || defined _WIN64
         sSockMgr->Poll(50);
     }
+    lib.Unload();
     delete s;
     delete sSockMgr;
     return 0;

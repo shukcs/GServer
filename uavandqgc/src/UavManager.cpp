@@ -91,6 +91,9 @@ bool UavManager::PrcsPublicMsg(const IMessage &msg)
     case IMessage::UavAllocation:
         processAllocationUav(((RequestIdentityAllocation *)proto)->seqno(), msg.GetSenderID());
         return true;
+    case IMessage::NotifyFWUpdate:
+        processNotifyProgram(*(NotifyProgram *)proto);
+        return true;
     case IMessage::UavsMaxIDRslt:
         processMaxID(*(DBMessage *)&msg);
         return true;
@@ -247,6 +250,11 @@ void UavManager::processAllocationUav(int seqno, const string &id)
         if (res == 1)
             Log(0, id, 0, "Allocate ID(%d) for UAV!", idTmp);
     }
+}
+
+void UavManager::processNotifyProgram(const NotifyProgram &proto)
+{
+
 }
 
 void UavManager::processMaxID(const DBMessage &msg)

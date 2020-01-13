@@ -24,13 +24,15 @@ public:
     };
 public:
     static FWAssist &Instance();
-public:
-    FWStat ProcessFW(const std::string &name, const void *buf, unsigned len, unsigned offset=0, int tp=FW_Unknow, int size=0);
-    int GetFw(const std::string &name, void *buf, int len, unsigned offset, unsigned *sz = 0);
-    std::string LastFwName(FWType tp = FW_Flight)const;
-    FWType GetFWType(const std::string &name)const;
-    int GetFWLength(const std::string &name)const;
-    uint32_t GetFWCrc32(const std::string &name)const;
+    static FWStat ProcessFW(const std::string &name, const void *buf, unsigned len, unsigned offset = 0, int tp = FW_Unknow, int size = 0);
+    static int GetFw(const std::string &name, void *buf, int len, unsigned offset, unsigned *sz = 0);
+    static std::string LastFwName(FWType tp = FW_Flight);
+    static FWType GetFWType(const std::string &name);
+    static int GetFWLength(const std::string &name);
+    static uint32_t GetFWCrc32(const std::string &name);
+    static void SetFWCrc32(const std::string &name, uint32_t crc);
+    static bool GetFWRelease(const std::string &name);
+    static void SetFWRelease(const std::string &name, bool release);
 protected:
     FWAssist();
     ~FWAssist();

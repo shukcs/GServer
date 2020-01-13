@@ -7,21 +7,23 @@ class VGMySql;
 class FWItem
 {
 public:
-    FWItem(int tp, unsigned sz, const std::string &name=std::string());
+    FWItem(const std::string &name, unsigned sz=0, int tp=-1);
     virtual ~FWItem();
 
     bool AddData(const void* dt, int len);
     int CheckUploaded();
     int CopyData(void* dt, int len, int offset);
     bool IsValid()const;
+    bool IsRelease()const;
+    void SetRelease(bool b);
     unsigned GetFilled()const;
     unsigned GetFWSize()const;
     int64_t UploadTime()const;
-    void SetUploadTime(int64_t tm);
     int GetType()const;
-    void SetCrc32(unsigned crc);
     unsigned GetCrc32()const;
-    bool LoadFW(const std::string &name);
+    void SetCrc32(unsigned crc);
+public:
+    static FWItem *LoadFW(const std::string &name);
 protected:
     void creatFw(const std::string &name);
 private:
@@ -31,6 +33,7 @@ private:
     unsigned    m_crc32;
     int         m_type;
     char        *m_dataFw;
+    bool        m_bRelease;
 
 #if defined _WIN32 || defined _WIN64
     void        *m_hFile;

@@ -18,6 +18,7 @@ namespace das {
         class RequestUavIdentityAuthentication;
         class RequestUavStatus;
         class AckRequestUavStatus;
+        class NotifyProgram;
     }
 }
 
@@ -53,6 +54,7 @@ private:
     void _checkBindUav(const das::proto::RequestBindUav &rbu, ObjectGS *gs);
     void _checkUavInfo(const das::proto::RequestUavStatus &uia, ObjectGS *gs);
     void processAllocationUav(int seqno, const std::string &id);
+    void processNotifyProgram(const das::proto::NotifyProgram &proto);
     void processMaxID(const DBMessage &msg);
     void addUavId(int seq, const std::string &uav);
     void queryUavInfo(ObjectGS *gs, int seq, const std::list<std::string> &uavs, bool bAdd);

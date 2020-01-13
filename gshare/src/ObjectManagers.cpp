@@ -64,8 +64,8 @@ ManagerAbstractItem::ManagerAbstractItem():m_type(-1)
 
 ManagerAbstractItem::~ManagerAbstractItem()
 {
-    delete m_mgr;
     Unregister();
+    delete m_mgr;
 }
 
 void ManagerAbstractItem::Register()
@@ -127,24 +127,9 @@ void ObjectManagers::AddManager(IObjectManager *m)
 
 void ObjectManagers::RemoveManager(int type)
 {
-    map<int, IObjectManager*>::iterator itr = m_managersMap.find(type);
-    if (itr != m_managersMap.end())
-    {
-        m_managersMap.erase(itr);
-    }
-}
-
-void ObjectManagers::RemoveManager(const IObjectManager *m)
-{
-    map<int, IObjectManager*>::iterator itr = m_managersMap.begin();
-    for (; itr != m_managersMap.end(); ++itr)
-    {
-        if (m == itr->second)
-        {
-            m_managersMap.erase(itr);
-            break;
-        }
-    }
+    m_mtxObj->Lock();
+    m_mgrsRemove.Push(type);
+    m_mtxObj->Unlock();
 }
 
 IObjectManager *ObjectManagers::GetManagerByType(int tp) const
@@ -301,42 +286,19 @@ void ObjectManagers::PrcsSubcribes()
 
 void ObjectManagers::PrcsMessages()
 {
+    while (!m_mgrsRemove.IsEmpty())
+    {
+        int type = m_mgrsRemove.Pop();
+        map<int, IObjectManager*>::iterator itr = m_managersMap.find(type);
+        if (itr != m_managersMap.end())
+            m_managersMap.erase(itr);
+    }
+
     map<int, IObjectManager*>::iterator itr = m_managersMap.begin();
     for (; itr != m_managersMap.end(); ++itr)
     {
-        int n = 0;
-        while (MessageQue *que = itr->second->GetSendQue(n++))
-        {
-            while (!que->IsEmpty())
-            {
-                IMessage *msg = que->Pop();
-                if (!msg)
-                    continue;
-                for (const ObjectDsc &s : getMessageSubcribes(msg))
-                {
-                    if (IObjectManager *mgr = GetManagerByType(s.first))
-                        mgr->PushManagerMessage(msg->Clone(s.second, s.first));
-                }
-                if (IObjectManager *mgr = GetManagerByType(msg->GetReceiverType()))
-                    mgr->PushManagerMessage(msg);
-                else
-                    delete msg;
-            }
-        }
-        n = 0;
-        while (MessageQue *que = itr->second->GetReleaseQue(n++))
-        {
-            while (!que->IsEmpty())
-            {
-                IMessage *msg = que->Pop();
-                if (!msg)
-                    continue;
-                if (msg->IsClone())
-                    delete msg;
-                else if (IObjectManager *m = GetManagerByType(msg->GetSenderType()))
-                    m->PushReleaseMsg(msg);
-            }
-        }
+        _prcsSendMessages(itr->second);
+        _prcsReleaseMessages(itr->second);
     }
 }
 
@@ -369,4 +331,45 @@ ObjectManagers::SubcribeList &ObjectManagers::_getSubcribes(const string &sender
         }
     }
     return sEpty;
+}
+
+void ObjectManagers::_prcsSendMessages(IObjectManager *mgr)
+{
+    int n = 0;
+    while (MessageQue *que = mgr->GetSendQue(n++))
+    {
+        while (!que->IsEmpty())
+        {
+            IMessage *msg = que->Pop();
+            if (!msg)
+                continue;
+            for (const ObjectDsc &s : getMessageSubcribes(msg))
+            {
+                if (IObjectManager *mgr = GetManagerByType(s.first))
+                    mgr->PushManagerMessage(msg->Clone(s.second, s.first));
+            }
+            if (IObjectManager *mgr = GetManagerByType(msg->GetReceiverType()))
+                mgr->PushManagerMessage(msg);
+            else
+                delete msg;
+        }
+    }
+}
+
+void ObjectManagers::_prcsReleaseMessages(IObjectManager *mgr)
+{
+    int n = 0;
+    while (MessageQue *que = mgr->GetReleaseQue(n++))
+    {
+        while (!que->IsEmpty())
+        {
+            IMessage *msg = que->Pop();
+            if (!msg)
+                continue;
+            if (msg->IsClone())
+                delete msg;
+            else if (IObjectManager *m = GetManagerByType(msg->GetSenderType()))
+                m->PushReleaseMsg(msg);
+        }
+    }
 }

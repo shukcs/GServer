@@ -113,7 +113,11 @@ void ObjectGS::_prcsProgram(PostProgram *msg)
     int res = (m_auth&Type_Admin) ? 1 : -1;
     if (res > 0 && msg->has_name())
     {
-        int ret = FWAssist::Instance().ProcessFW( msg->name()
+        if (msg->has_crc32())
+            FWAssist::SetFWCrc32(msg->name(), msg->crc32());
+        if (msg->has_release())
+            FWAssist::SetFWRelease(msg->name(), msg->release());
+        int ret = FWAssist::ProcessFW( msg->name()
             , msg->has_data() ? msg->data().c_str() : NULL
             , msg->has_data() ? msg->data().size() : 0
             , msg->offset()
@@ -926,9 +930,9 @@ void ObjectGS::notifyUavNewFw(const std::string &fw, int seq)
         NotifyProgram *np = new NotifyProgram;
         np->set_seqno(seq);
         np->set_name(fw);
-        np->set_fwtype(FWAssist::Instance().GetFWType(fw));
-        np->set_length(FWAssist::Instance().GetFWLength(fw));
-        np->set_crc32(FWAssist::Instance().GetFWCrc32(fw));
+        np->set_fwtype(FWAssist::GetFWType(fw));
+        np->set_length(FWAssist::GetFWLength(fw));
+        np->set_crc32(FWAssist::GetFWCrc32(fw));
         ms->AttachProto(np);
         SendMsg(ms);
     }
@@ -1159,7 +1163,6 @@ void ObjectGS::_prcsReqNewGs(RequestNewGS *msg)
             send(ack);
         }
     }
-
 }
 
 void ObjectGS::_prcsGsMessage(GroundStationsMessage *msg)
@@ -1232,10 +1235,5 @@ void ObjectGS::_checkGS(const string &user, int ack)
 void ObjectGS::_sendNow(google::protobuf::Message *msg, bool b)
 {
     if (msg)
-    {
-        if (b)
-            send(msg);
-        else
-            WaitSend(msg);
-    }
+        b ? send(msg) : WaitSend(msg);
 }
