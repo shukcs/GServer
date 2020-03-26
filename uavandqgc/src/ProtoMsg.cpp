@@ -139,6 +139,8 @@ void ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new PostStatus2GroundStation;
     else if (name == d_p_ClassName(RequestPositionAuthentication))
         m_msg = new RequestPositionAuthentication;          //查询是否禁飞位置
+    else if (name == d_p_ClassName(RequestFriends))
+        m_msg = new RequestFriends;
     else if (name == d_p_ClassName(GroundStationsMessage))
         m_msg = new GroundStationsMessage;                  //好友消息
     else if (name == d_p_ClassName(AckGroundStationsMessage))
