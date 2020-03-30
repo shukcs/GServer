@@ -103,6 +103,7 @@ bool GSManager::PrcsPublicMsg(const IMessage &ms)
             auto ack = new AckGroundStationsMessage;
             ack->set_seqno(gsmsg->seqno());
             ack->set_res(0);
+            ack->set_gs(ms.GetReceiverID());
             msg->AttachProto(ack);
             SendMsg(msg);
         }

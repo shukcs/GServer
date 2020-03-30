@@ -277,6 +277,7 @@ void ObjectGS::processGs2Gs(const Message &msg, int tp)
             auto ack = new AckGroundStationsMessage;
             ack->set_seqno(gsmsg->seqno());
             ack->set_res(1);
+            ack->set_gs(gsmsg->to());
             ms->AttachProto(ack);
             SendMsg(ms);
         }

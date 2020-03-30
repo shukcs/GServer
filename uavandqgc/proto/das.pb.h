@@ -1667,22 +1667,10 @@ class NotifyProgram : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 seqno() const;
   inline void set_seqno(::google::protobuf::uint32 value);
 
-  // required string uavid = 2;
-  inline bool has_uavid() const;
-  inline void clear_uavid();
-  static const int kUavidFieldNumber = 2;
-  inline const ::std::string& uavid() const;
-  inline void set_uavid(const ::std::string& value);
-  inline void set_uavid(const char* value);
-  inline void set_uavid(const char* value, size_t size);
-  inline ::std::string* mutable_uavid();
-  inline ::std::string* release_uavid();
-  inline void set_allocated_uavid(::std::string* uavid);
-
-  // required string name = 3;
+  // required string name = 2;
   inline bool has_name() const;
   inline void clear_name();
-  static const int kNameFieldNumber = 3;
+  static const int kNameFieldNumber = 2;
   inline const ::std::string& name() const;
   inline void set_name(const ::std::string& value);
   inline void set_name(const char* value);
@@ -1691,33 +1679,43 @@ class NotifyProgram : public ::google::protobuf::Message {
   inline ::std::string* release_name();
   inline void set_allocated_name(::std::string* name);
 
-  // required int32 fwtype = 4;
+  // required int32 fwtype = 3;
   inline bool has_fwtype() const;
   inline void clear_fwtype();
-  static const int kFwtypeFieldNumber = 4;
+  static const int kFwtypeFieldNumber = 3;
   inline ::google::protobuf::int32 fwtype() const;
   inline void set_fwtype(::google::protobuf::int32 value);
 
-  // required int32 length = 5;
+  // required int32 length = 4;
   inline bool has_length() const;
   inline void clear_length();
-  static const int kLengthFieldNumber = 5;
+  static const int kLengthFieldNumber = 4;
   inline ::google::protobuf::int32 length() const;
   inline void set_length(::google::protobuf::int32 value);
 
-  // required uint32 crc32 = 6;
+  // required uint32 crc32 = 5;
   inline bool has_crc32() const;
   inline void clear_crc32();
-  static const int kCrc32FieldNumber = 6;
+  static const int kCrc32FieldNumber = 5;
   inline ::google::protobuf::uint32 crc32() const;
   inline void set_crc32(::google::protobuf::uint32 value);
+
+  // optional string uavid = 6;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 6;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
 
   // @@protoc_insertion_point(class_scope:das.proto.NotifyProgram)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
-  inline void set_has_uavid();
-  inline void clear_has_uavid();
   inline void set_has_name();
   inline void clear_has_name();
   inline void set_has_fwtype();
@@ -1726,15 +1724,17 @@ class NotifyProgram : public ::google::protobuf::Message {
   inline void clear_has_length();
   inline void set_has_crc32();
   inline void clear_has_crc32();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::std::string* uavid_;
+  ::std::string* name_;
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 fwtype_;
-  ::std::string* name_;
   ::google::protobuf::int32 length_;
   ::google::protobuf::uint32 crc32_;
+  ::std::string* uavid_;
 
   mutable int _cached_size_;
   ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
@@ -3252,20 +3252,35 @@ class AckGroundStationsMessage : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 res() const;
   inline void set_res(::google::protobuf::uint32 value);
 
+  // required string gs = 3;
+  inline bool has_gs() const;
+  inline void clear_gs();
+  static const int kGsFieldNumber = 3;
+  inline const ::std::string& gs() const;
+  inline void set_gs(const ::std::string& value);
+  inline void set_gs(const char* value);
+  inline void set_gs(const char* value, size_t size);
+  inline ::std::string* mutable_gs();
+  inline ::std::string* release_gs();
+  inline void set_allocated_gs(::std::string* gs);
+
   // @@protoc_insertion_point(class_scope:das.proto.AckGroundStationsMessage)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
   inline void set_has_res();
   inline void clear_has_res();
+  inline void set_has_gs();
+  inline void clear_has_gs();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::uint32 res_;
+  ::std::string* gs_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -11821,85 +11836,15 @@ inline void NotifyProgram::set_seqno(::google::protobuf::uint32 value) {
   seqno_ = value;
 }
 
-// required string uavid = 2;
-inline bool NotifyProgram::has_uavid() const {
+// required string name = 2;
+inline bool NotifyProgram::has_name() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void NotifyProgram::set_has_uavid() {
+inline void NotifyProgram::set_has_name() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void NotifyProgram::clear_has_uavid() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void NotifyProgram::clear_uavid() {
-  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
-    uavid_->clear();
-  }
-  clear_has_uavid();
-}
-inline const ::std::string& NotifyProgram::uavid() const {
-  return *uavid_;
-}
-inline void NotifyProgram::set_uavid(const ::std::string& value) {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  uavid_->assign(value);
-}
-inline void NotifyProgram::set_uavid(const char* value) {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  uavid_->assign(value);
-}
-inline void NotifyProgram::set_uavid(const char* value, size_t size) {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  uavid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* NotifyProgram::mutable_uavid() {
-  set_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    uavid_ = new ::std::string;
-  }
-  return uavid_;
-}
-inline ::std::string* NotifyProgram::release_uavid() {
-  clear_has_uavid();
-  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = uavid_;
-    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void NotifyProgram::set_allocated_uavid(::std::string* uavid) {
-  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
-    delete uavid_;
-  }
-  if (uavid) {
-    set_has_uavid();
-    uavid_ = uavid;
-  } else {
-    clear_has_uavid();
-    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required string name = 3;
-inline bool NotifyProgram::has_name() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void NotifyProgram::set_has_name() {
-  _has_bits_[0] |= 0x00000004u;
-}
 inline void NotifyProgram::clear_has_name() {
-  _has_bits_[0] &= ~0x00000004u;
+  _has_bits_[0] &= ~0x00000002u;
 }
 inline void NotifyProgram::clear_name() {
   if (name_ != &::google::protobuf::internal::kEmptyString) {
@@ -11961,15 +11906,15 @@ inline void NotifyProgram::set_allocated_name(::std::string* name) {
   }
 }
 
-// required int32 fwtype = 4;
+// required int32 fwtype = 3;
 inline bool NotifyProgram::has_fwtype() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+  return (_has_bits_[0] & 0x00000004u) != 0;
 }
 inline void NotifyProgram::set_has_fwtype() {
-  _has_bits_[0] |= 0x00000008u;
+  _has_bits_[0] |= 0x00000004u;
 }
 inline void NotifyProgram::clear_has_fwtype() {
-  _has_bits_[0] &= ~0x00000008u;
+  _has_bits_[0] &= ~0x00000004u;
 }
 inline void NotifyProgram::clear_fwtype() {
   fwtype_ = 0;
@@ -11983,15 +11928,15 @@ inline void NotifyProgram::set_fwtype(::google::protobuf::int32 value) {
   fwtype_ = value;
 }
 
-// required int32 length = 5;
+// required int32 length = 4;
 inline bool NotifyProgram::has_length() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
 inline void NotifyProgram::set_has_length() {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000008u;
 }
 inline void NotifyProgram::clear_has_length() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000008u;
 }
 inline void NotifyProgram::clear_length() {
   length_ = 0;
@@ -12005,15 +11950,15 @@ inline void NotifyProgram::set_length(::google::protobuf::int32 value) {
   length_ = value;
 }
 
-// required uint32 crc32 = 6;
+// required uint32 crc32 = 5;
 inline bool NotifyProgram::has_crc32() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
+  return (_has_bits_[0] & 0x00000010u) != 0;
 }
 inline void NotifyProgram::set_has_crc32() {
-  _has_bits_[0] |= 0x00000020u;
+  _has_bits_[0] |= 0x00000010u;
 }
 inline void NotifyProgram::clear_has_crc32() {
-  _has_bits_[0] &= ~0x00000020u;
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void NotifyProgram::clear_crc32() {
   crc32_ = 0u;
@@ -12025,6 +11970,76 @@ inline ::google::protobuf::uint32 NotifyProgram::crc32() const {
 inline void NotifyProgram::set_crc32(::google::protobuf::uint32 value) {
   set_has_crc32();
   crc32_ = value;
+}
+
+// optional string uavid = 6;
+inline bool NotifyProgram::has_uavid() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void NotifyProgram::set_has_uavid() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void NotifyProgram::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void NotifyProgram::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
+  }
+  clear_has_uavid();
+}
+inline const ::std::string& NotifyProgram::uavid() const {
+  return *uavid_;
+}
+inline void NotifyProgram::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void NotifyProgram::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void NotifyProgram::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* NotifyProgram::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  return uavid_;
+}
+inline ::std::string* NotifyProgram::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void NotifyProgram::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
+  } else {
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
 }
 
 // -------------------------------------------------------------------
@@ -14206,6 +14221,76 @@ inline ::google::protobuf::uint32 AckGroundStationsMessage::res() const {
 inline void AckGroundStationsMessage::set_res(::google::protobuf::uint32 value) {
   set_has_res();
   res_ = value;
+}
+
+// required string gs = 3;
+inline bool AckGroundStationsMessage::has_gs() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void AckGroundStationsMessage::set_has_gs() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void AckGroundStationsMessage::clear_has_gs() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void AckGroundStationsMessage::clear_gs() {
+  if (gs_ != &::google::protobuf::internal::kEmptyString) {
+    gs_->clear();
+  }
+  clear_has_gs();
+}
+inline const ::std::string& AckGroundStationsMessage::gs() const {
+  return *gs_;
+}
+inline void AckGroundStationsMessage::set_gs(const ::std::string& value) {
+  set_has_gs();
+  if (gs_ == &::google::protobuf::internal::kEmptyString) {
+    gs_ = new ::std::string;
+  }
+  gs_->assign(value);
+}
+inline void AckGroundStationsMessage::set_gs(const char* value) {
+  set_has_gs();
+  if (gs_ == &::google::protobuf::internal::kEmptyString) {
+    gs_ = new ::std::string;
+  }
+  gs_->assign(value);
+}
+inline void AckGroundStationsMessage::set_gs(const char* value, size_t size) {
+  set_has_gs();
+  if (gs_ == &::google::protobuf::internal::kEmptyString) {
+    gs_ = new ::std::string;
+  }
+  gs_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* AckGroundStationsMessage::mutable_gs() {
+  set_has_gs();
+  if (gs_ == &::google::protobuf::internal::kEmptyString) {
+    gs_ = new ::std::string;
+  }
+  return gs_;
+}
+inline ::std::string* AckGroundStationsMessage::release_gs() {
+  clear_has_gs();
+  if (gs_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = gs_;
+    gs_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void AckGroundStationsMessage::set_allocated_gs(::std::string* gs) {
+  if (gs_ != &::google::protobuf::internal::kEmptyString) {
+    delete gs_;
+  }
+  if (gs) {
+    set_has_gs();
+    gs_ = gs;
+  } else {
+    clear_has_gs();
+    gs_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
 }
 
 // -------------------------------------------------------------------
