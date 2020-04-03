@@ -334,6 +334,8 @@ string VGTable::ToCreateSQL() const
         ret += ret.length() > 0 ? ", ":"(";
         ret += itr->ToString();
     }
+    if (m_primaryKeys.length() > 0)
+        ret += ", primary key(" + m_primaryKeys + ")";
 
     for (VGForeignKey *itr : m_foreigns)
     {
@@ -369,7 +371,10 @@ VGTable *VGTable::ParseTable(const TiXmlElement &e, const MysqlDB &db)
     if (name.length() < 1)
         return NULL;
 
+    tmp = e.Attribute("keys");
     VGTable *tb = new VGTable(name);
+    if (tmp && tb)
+        tb->m_primaryKeys = tmp;
     const TiXmlNode *node = e.FirstChild("field");
     while (node)
     {

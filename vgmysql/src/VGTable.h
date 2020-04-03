@@ -70,6 +70,7 @@ private:
     bool                    m_bForeignRef;
     list<VGTableField *>    m_fields;
     list<VGForeignKey *>    m_foreigns;
+    string                  m_primaryKeys;
 };
 
 #endif // __VG_TABLE_H__
