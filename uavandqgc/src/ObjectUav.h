@@ -29,13 +29,14 @@ class ObjectGS;
 class ObjectUav : public ObjectAbsPB
 {
 public:
-    ObjectUav(const std::string &id);
+    ObjectUav(const std::string &id, const std::string &sim="");
     ~ObjectUav();
 
     void TransUavStatus(das::proto::UavStatus &us, bool bAuth = false)const;
     void RespondLogin(int seq, int res);
     bool IsValid()const;
     void SetValideTime(int64_t tmV);
+    void SetSimId(const std::string &sim);
 public:
     static int UAVType();
     static void InitialUAV(const DBMessage &msg, ObjectUav &uav);
@@ -70,6 +71,7 @@ private:
     void sendBindAck(int ack, int res, bool bind, const std::string &gs);
 private:
     friend class UavManager;
+    std::string                     m_strSim;
     bool                            m_bBind;
     uint32_t                        m_lastORNotify;
     double                          m_lat;

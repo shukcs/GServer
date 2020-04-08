@@ -47,6 +47,16 @@
 					<field name="planParam" type="VARBINARY(64)" />
 					<foreign name="landId" foreign="id" ref="LandInfo" />
 					<foreign name="planuser" foreign="user" ref="GSInfo" />
+				</table>			
+				<table name="MissionInfo" keys="planID,uploadTime">
+					<field name="userID" type="char(24)"/>
+					<field name="uavID" type="char(16)"/>
+					<field name="landId" type="char(16)"/>
+					<field name="planID" type="char(16)"/>
+					<field name="uploadTime" type="BIGINT"/>
+					<field name="begin" type="Int" />
+					<field name="end" type="Int" />
+					<field name="route" type="VARCHAR(4200)" />
 				</table>
 			</Tables>
 			<SQLs>
@@ -195,6 +205,12 @@
 					<item name="user" ref="GSInfo" type="Read" />
 					<item name="user" type="Condition" />
 				</SQL>
+				<SQL name="updateMission" table="UavInfo" type="Update">
+					<item name="lat" ref="UavInfo" type="Write"/>
+					<item name="lon" ref="UavInfo" type="Write" />
+					<item name="timePos" ref="UavInfo" type="Write" />
+					<item name="id" type="Condition" />
+				</SQL>
 			</SQLs>
 			<!--Triggers>
 				<Trigger name="trigger_bef" table="LandInfo" event="Insert" before="false" refsql="updatePos" />
@@ -220,15 +236,7 @@
 					<field name="lon" type="double" />
 					<field name="timePos" type="BIGINT" />
 					<field name="authCheck" type="char(10)" />
-				</table>
-				<table name="MissionInfo" keys="uploadTime,uavID">
-					<field name="uavID" type="char(16)"/>
-					<field name="landId" type="char(16)"/>
-					<field name="PlanID" type="char(16)"/>
-					<field name="uploadTime" type="BIGINT"/>
-					<field name="begin" type="Int" />
-					<field name="end" type="Int" />
-					<field name="route" type="VARCHAR(4200)" />
+					<field name="simID" type="char(24)" />
 				</table>
 			</Tables>
 			<SQLs>
@@ -249,6 +257,7 @@
 					<item name="lon" ref="UavInfo" type="Read" />
 					<item name="timePos" ref="UavInfo" type="Read" />
 					<item name="authCheck" ref="UavInfo" type="Read" />
+					<item name="simID" ref="UavInfo" type="Read" />
 					<item name="id" type="Condition" />
 				</SQL>
 				<SQL name="updateBinded" table="UavInfo" type="Update" condition="and;(or;)">
@@ -266,12 +275,7 @@
 					<item name="lat" ref="UavInfo" type="Write"/>
 					<item name="lon" ref="UavInfo" type="Write" />
 					<item name="timePos" ref="UavInfo" type="Write" />
-					<item name="id" type="Condition" />
-				</SQL>
-				<SQL name="updateMission" table="UavInfo" type="Update">
-					<item name="lat" ref="UavInfo" type="Write"/>
-					<item name="lon" ref="UavInfo" type="Write" />
-					<item name="timePos" ref="UavInfo" type="Write" />
+					<item name="simID" ref="UavInfo" type="Write" />
 					<item name="id" type="Condition" />
 				</SQL>
 			</SQLs>

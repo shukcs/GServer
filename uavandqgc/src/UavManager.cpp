@@ -163,12 +163,14 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
 {
     string uavid = Utility::Upper(uia.uavid());
     ObjectUav *ret = (ObjectUav *)GetObjectByID(uavid);
+    string sim = uia.has_extradata() ? uia.extradata() : "";
     if (ret)
     {
         int res = -1;
         if (!ret->IsConnect())
         {
             ret->SetSocket(s);
+            ret->SetSimId(sim);
             return ret;
         }
 
@@ -180,7 +182,7 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
     }
     else
     {
-        return new ObjectUav(uavid);
+        return new ObjectUav(uavid, sim);
     }
 
     return NULL;

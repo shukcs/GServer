@@ -21,8 +21,8 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
-ObjectUav::ObjectUav(const std::string &id): ObjectAbsPB(id)
-, m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0)
+ObjectUav::ObjectUav(const std::string &id, const std::string &sim): ObjectAbsPB(id)
+, m_strSim(sim), m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0)
 , m_tmLastBind(0), m_tmLastPos(0),m_tmValidLast(-1)
 , m_mission(NULL), m_bSys(false)
 {
@@ -55,6 +55,7 @@ void ObjectUav::TransUavStatus(UavStatus &us, bool bAuth)const
         gps->set_altitude(0);
         us.set_allocated_pos(gps);
     }
+    us.set_simid(m_strSim);
 }
 
 int ObjectUav::GetObjectType() const
@@ -84,6 +85,11 @@ bool ObjectUav::IsValid() const
 void ObjectUav::SetValideTime(int64_t tmV)
 {
     m_tmValidLast = tmV;
+}
+
+void ObjectUav::SetSimId(const std::string &sim)
+{
+    m_strSim = sim;
 }
 
 int ObjectUav::UAVType()
@@ -471,6 +477,9 @@ void ObjectUav::savePos()
         msg->SetWrite("lat", m_lat);
         msg->SetWrite("lon", m_lon);
         msg->SetWrite("timePos", m_tmLastPos);
+        if(!m_strSim.empty())
+            msg->SetWrite("simID", m_strSim);
+
         SendMsg(msg);
     }
 }

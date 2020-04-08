@@ -329,6 +329,7 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
     auto timeBinds = msg.GetRead("timeBind").GetVarList<int64_t>();
     auto valids = msg.GetRead("valid").GetVarList<int64_t>();
     auto authChecks = msg.GetRead("authCheck").GetVarList<string>();
+    auto sims = msg.GetRead("simID").GetVarList<string>();
 
     ack->set_seqno(msg.GetSeqNomb());
     auto idItr = ids.begin();
@@ -339,6 +340,7 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
     auto timeBindItr = timeBinds.begin();
     auto validItr = valids.begin();
     auto authCheckItr = authChecks.begin();
+    auto simItr = sims.begin();
 
     for (; idItr != ids.end(); ++idItr)
     {
@@ -385,6 +387,11 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
             us->set_allocated_pos(gps);
             latItr++;
             lonItr++;
+        }
+        if (simItr != sims.end())
+        {
+            us->set_simid(*simItr);
+            ++simItr;
         }
     }
     send(ack);
