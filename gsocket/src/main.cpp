@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
         port = DefaultPort;
     if (s)
     {
-        s->Bind(8198, "");
+        s->Bind(port, "");
         sSockMgr->AddSocket(s);
         sSockMgr->SetBindedCB(s, &OnBindFinish);
     }
