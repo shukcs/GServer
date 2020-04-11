@@ -22,10 +22,16 @@ class DBMessage : public IMessage
 {
     typedef std::map<std::string, Variant> VariantMap;
 public:
-    DBMessage(ObjectGS *sender, MessageType ack=IMessage::Unknown, const std::string &rcv="DBGS");
-    DBMessage(ObjectUav *sender, MessageType ack=IMessage::Unknown, const std::string &rcv = "DBUav");
-    DBMessage(GSManager *sender, MessageType ack=IMessage::Unknown, const std::string &rcv = "DBGS");
-    DBMessage(UavManager *sender, MessageType ack= IMessage::Unknown, const std::string &rcv = "DBUav");
+    enum OBjectFlag
+    {
+        DB_GS,
+        DB_Uav
+    };
+public:
+    DBMessage(ObjectGS *sender, MessageType ack=IMessage::Unknown, OBjectFlag rcv = DB_GS);
+    DBMessage(ObjectUav *sender, MessageType ack=IMessage::Unknown, OBjectFlag rcv = DB_Uav);
+    DBMessage(GSManager *sender, MessageType ack=IMessage::Unknown, OBjectFlag rcv = DB_GS);
+    DBMessage(UavManager *sender, MessageType ack= IMessage::Unknown, OBjectFlag rcv = DB_Uav);
     DBMessage(ObjectDB *senderv, int tpMsg, int tpRcv, const std::string &idRc);
 
     void *GetContent() const;

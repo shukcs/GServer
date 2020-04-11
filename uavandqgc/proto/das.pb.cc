@@ -1433,15 +1433,18 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(BillInformation));
   OperationRoute_descriptor_ = file->message_type(64);
-  static const int OperationRoute_offsets_[8] = {
+  static const int OperationRoute_offsets_[11] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, gsid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, uavid_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, rpid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, createtime_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, maxvoyage_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, missions_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, boundarys_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, bi_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, rpid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, beg_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, end_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, landid_),
   };
   OperationRoute_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -1487,17 +1490,13 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostOperationRoute));
   UploadOperationRoutes_descriptor_ = file->message_type(67);
-  static const int UploadOperationRoutes_offsets_[10] = {
+  static const int UploadOperationRoutes_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, uavid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, userid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, timestamp_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, countmission_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, countboundary_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, planid_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, landid_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, beg_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, end_),
   };
   UploadOperationRoutes_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -1586,7 +1585,8 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestUavMission));
   UavRoute_descriptor_ = file->message_type(72);
-  static const int UavRoute_offsets_[1] = {
+  static const int UavRoute_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavRoute, optm_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavRoute, missions_),
   };
   UavRoute_reflection_ =
@@ -2383,66 +2383,66 @@ void protobuf_AddDesc_das_2eproto() {
     "\025\n\rservicecharge\030\001 \001(\002\022\027\n\017pesticidecharg"
     "e\030\002 \001(\002\022\023\n\013othercharge\030\003 \001(\002\022\021\n\tsumcharg"
     "e\030\004 \002(\002\022\021\n\tpesticide\030\005 \002(\t\022\014\n\004crop\030\006 \002(\t"
-    "\"\257\001\n\016OperationRoute\022\014\n\004gsid\030\001 \002(\t\022\r\n\005uav"
-    "id\030\002 \002(\t\022\014\n\004rpid\030\003 \002(\t\022\022\n\ncreatetime\030\004 \002"
-    "(\004\022\021\n\tmaxvoyage\030\005 \002(\002\022\020\n\010missions\030\006 \003(\014\022"
-    "\021\n\tboundarys\030\007 \003(\014\022&\n\002bi\030\010 \001(\0132\032.das.pro"
-    "to.BillInformation\"J\n\022PostOperationRoute"
-    "\022\r\n\005seqno\030\001 \002(\r\022%\n\002or\030\002 \002(\0132\031.das.proto."
-    "OperationRoute\"6\n\025AckPostOperationRoute\022"
-    "\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"\277\001\n\025Uploa"
-    "dOperationRoutes\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid"
-    "\030\002 \002(\t\022\016\n\006userid\030\003 \002(\t\022\021\n\ttimestamp\030\004 \002("
-    "\004\022\024\n\014countmission\030\005 \002(\005\022\025\n\rcountboundary"
-    "\030\006 \002(\005\022\016\n\006planid\030\007 \001(\t\022\016\n\006landid\030\010 \001(\t\022\013"
-    "\n\003beg\030\t \001(\005\022\013\n\003end\030\n \001(\005\"a\n\023SyscOperatio"
-    "nRoutes\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r"
-    "\n\005uavid\030\003 \002(\t\022\r\n\005index\030\004 \001(\005\022\r\n\005count\030\005 "
-    "\001(\005\"e\n\024RequestRouteMissions\022\r\n\005seqno\030\001 \002"
-    "(\r\022\r\n\005uavid\030\002 \002(\t\022\020\n\010boundary\030\003 \002(\010\022\016\n\006o"
-    "ffset\030\004 \002(\005\022\r\n\005count\030\005 \002(\005\"l\n\027AckRequest"
-    "RouteMissions\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002"
-    " \002(\005\022\020\n\010boundary\030\003 \002(\010\022\016\n\006offset\030\004 \002(\005\022\020"
-    "\n\010missions\030\005 \003(\014\"H\n\021RequestUavMission\022\r\n"
-    "\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \001(\t\022\013\n\003beg\030\003 \001(\004\022\013\n"
-    "\003end\030\004 \001(\004\"\034\n\010UavRoute\022\020\n\010missions\030\001 \003(\014"
-    "\"T\n\rAckUavMission\022\020\n\010boundary\030\001 \002(\014\022\014\n\004p"
-    "lan\030\002 \002(\014\022#\n\006routes\030\003 \003(\0132\023.das.proto.Ua"
-    "vRoute\"\350\001\n\tUavStatus\022\r\n\005uavid\030\001 \002(\t\022\016\n\006r"
-    "esult\030\002 \002(\005\022\016\n\006online\030\003 \001(\010\022\016\n\006landed\030\004 "
-    "\001(\010\022\020\n\010deadline\030\005 \001(\004\022\016\n\006binded\030\006 \001(\010\022\016\n"
-    "\006binder\030\007 \001(\t\022\014\n\004time\030\010 \001(\004\022&\n\003pos\030\t \001(\013"
-    "2\031.das.proto.GpsInformation\022\021\n\ttimestamp"
-    "\030\n \001(\004\022\022\n\nauthString\030\013 \001(\t\022\r\n\005simId\030\014 \001("
-    "\t\"0\n\020RequestUavStatus\022\r\n\005seqno\030\001 \002(\r\022\r\n\005"
-    "uavid\030\002 \003(\t\"J\n\023AckRequestUavStatus\022\r\n\005se"
-    "qno\030\001 \002(\r\022$\n\006status\030\002 \003(\0132\024.das.proto.Ua"
-    "vStatus\"`\n\016RequestBindUav\022\r\n\005seqno\030\001 \002(\r"
-    "\022\014\n\004opid\030\002 \002(\r\022\r\n\005uavid\030\003 \002(\t\022\016\n\006binder\030"
-    "\004 \002(\t\022\022\n\nauthString\030\005 \001(\t\"f\n\021AckRequestB"
-    "indUav\022\r\n\005seqno\030\001 \002(\r\022\014\n\004opid\030\002 \002(\r\022\016\n\006r"
-    "esult\030\003 \002(\005\022$\n\006status\030\004 \001(\0132\024.das.proto."
-    "UavStatus\"v\n\016UavProductInfo\022\r\n\005uavid\030\001 \001"
-    "(\t\022\023\n\013producttype\030\002 \001(\t\022\021\n\tproductid\030\003 \001"
-    "(\t\022\017\n\007fwLight\030\004 \001(\t\022\r\n\005fwFMU\030\005 \001(\t\022\r\n\005fw"
-    "IMU\030\006 \001(\t\"I\n\026RequestUavProductInfos\022\r\n\005s"
-    "eqno\030\001 \002(\r\022\021\n\tproductid\030\002 \003(\t\022\r\n\005uavid\030\003"
-    " \003(\t\"b\n\031AckRequestUavProductInfos\022\r\n\005seq"
-    "no\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022&\n\003upi\030\003 \003(\0132\031."
-    "das.proto.UavProductInfo\"L\n\023PostUavProdu"
-    "ctInfos\022\r\n\005seqno\030\001 \002(\r\022&\n\003upi\030\002 \003(\0132\031.da"
-    "s.proto.UavProductInfo\"7\n\026AckPostUavProd"
-    "uctInfos\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\""
-    "M\n\017PostControl2Uav\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uav"
-    "id\030\002 \002(\t\022\016\n\006userid\030\003 \002(\t\022\014\n\004data\030\004 \003(\014\"R"
-    "\n\022AckPostControl2Uav\022\r\n\005seqno\030\001 \002(\r\022\016\n\006r"
-    "esult\030\002 \002(\005\022\r\n\005uavid\030\003 \002(\t\022\016\n\006userid\030\004 \002"
-    "(\t\"F\n\030PostStatus2GroundStation\022\r\n\005seqno\030"
-    "\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\014\n\004data\030\003 \003(\014*g\n\tGS"
-    "MsgType\022\020\n\014DeleteFriend\020\001\022\021\n\rRequestFrie"
-    "nd\020\002\022\017\n\013AgreeFriend\020\003\022\020\n\014RejectFriend\020\004\022"
-    "\010\n\004Text\020\005\022\010\n\004Land\020\006*1\n\020SurveryPrecision\022"
-    "\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\002\022\010\n\004HIGH\020\003", 8630);
+    "\"\331\001\n\016OperationRoute\022\014\n\004gsid\030\001 \002(\t\022\r\n\005uav"
+    "id\030\002 \002(\t\022\022\n\ncreatetime\030\003 \002(\004\022\021\n\tmaxvoyag"
+    "e\030\004 \002(\002\022\020\n\010missions\030\005 \003(\014\022\021\n\tboundarys\030\006"
+    " \003(\014\022&\n\002bi\030\007 \001(\0132\032.das.proto.BillInforma"
+    "tion\022\014\n\004rpid\030\010 \001(\t\022\013\n\003beg\030\t \001(\005\022\013\n\003end\030\n"
+    " \001(\005\022\016\n\006landid\030\013 \001(\t\"J\n\022PostOperationRou"
+    "te\022\r\n\005seqno\030\001 \002(\r\022%\n\002or\030\002 \002(\0132\031.das.prot"
+    "o.OperationRoute\"6\n\025AckPostOperationRout"
+    "e\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"\205\001\n\025Upl"
+    "oadOperationRoutes\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uav"
+    "id\030\002 \002(\t\022\016\n\006userid\030\003 \002(\t\022\021\n\ttimestamp\030\004 "
+    "\002(\004\022\024\n\014countmission\030\005 \002(\005\022\025\n\rcountbounda"
+    "ry\030\006 \002(\005\"a\n\023SyscOperationRoutes\022\r\n\005seqno"
+    "\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005uavid\030\003 \002(\t\022\r\n"
+    "\005index\030\004 \001(\005\022\r\n\005count\030\005 \001(\005\"e\n\024RequestRo"
+    "uteMissions\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002("
+    "\t\022\020\n\010boundary\030\003 \002(\010\022\016\n\006offset\030\004 \002(\005\022\r\n\005c"
+    "ount\030\005 \002(\005\"l\n\027AckRequestRouteMissions\022\r\n"
+    "\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\020\n\010boundary"
+    "\030\003 \002(\010\022\016\n\006offset\030\004 \002(\005\022\020\n\010missions\030\005 \003(\014"
+    "\"H\n\021RequestUavMission\022\r\n\005seqno\030\001 \002(\r\022\n\n\002"
+    "id\030\002 \001(\t\022\013\n\003beg\030\003 \001(\004\022\013\n\003end\030\004 \001(\004\"*\n\010Ua"
+    "vRoute\022\014\n\004opTm\030\004 \001(\004\022\020\n\010missions\030\001 \003(\014\"T"
+    "\n\rAckUavMission\022\020\n\010boundary\030\001 \002(\014\022\014\n\004pla"
+    "n\030\002 \002(\014\022#\n\006routes\030\003 \003(\0132\023.das.proto.UavR"
+    "oute\"\350\001\n\tUavStatus\022\r\n\005uavid\030\001 \002(\t\022\016\n\006res"
+    "ult\030\002 \002(\005\022\016\n\006online\030\003 \001(\010\022\016\n\006landed\030\004 \001("
+    "\010\022\020\n\010deadline\030\005 \001(\004\022\016\n\006binded\030\006 \001(\010\022\016\n\006b"
+    "inder\030\007 \001(\t\022\014\n\004time\030\010 \001(\004\022&\n\003pos\030\t \001(\0132\031"
+    ".das.proto.GpsInformation\022\021\n\ttimestamp\030\n"
+    " \001(\004\022\022\n\nauthString\030\013 \001(\t\022\r\n\005simId\030\014 \001(\t\""
+    "0\n\020RequestUavStatus\022\r\n\005seqno\030\001 \002(\r\022\r\n\005ua"
+    "vid\030\002 \003(\t\"J\n\023AckRequestUavStatus\022\r\n\005seqn"
+    "o\030\001 \002(\r\022$\n\006status\030\002 \003(\0132\024.das.proto.UavS"
+    "tatus\"`\n\016RequestBindUav\022\r\n\005seqno\030\001 \002(\r\022\014"
+    "\n\004opid\030\002 \002(\r\022\r\n\005uavid\030\003 \002(\t\022\016\n\006binder\030\004 "
+    "\002(\t\022\022\n\nauthString\030\005 \001(\t\"f\n\021AckRequestBin"
+    "dUav\022\r\n\005seqno\030\001 \002(\r\022\014\n\004opid\030\002 \002(\r\022\016\n\006res"
+    "ult\030\003 \002(\005\022$\n\006status\030\004 \001(\0132\024.das.proto.Ua"
+    "vStatus\"v\n\016UavProductInfo\022\r\n\005uavid\030\001 \001(\t"
+    "\022\023\n\013producttype\030\002 \001(\t\022\021\n\tproductid\030\003 \001(\t"
+    "\022\017\n\007fwLight\030\004 \001(\t\022\r\n\005fwFMU\030\005 \001(\t\022\r\n\005fwIM"
+    "U\030\006 \001(\t\"I\n\026RequestUavProductInfos\022\r\n\005seq"
+    "no\030\001 \002(\r\022\021\n\tproductid\030\002 \003(\t\022\r\n\005uavid\030\003 \003"
+    "(\t\"b\n\031AckRequestUavProductInfos\022\r\n\005seqno"
+    "\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022&\n\003upi\030\003 \003(\0132\031.da"
+    "s.proto.UavProductInfo\"L\n\023PostUavProduct"
+    "Infos\022\r\n\005seqno\030\001 \002(\r\022&\n\003upi\030\002 \003(\0132\031.das."
+    "proto.UavProductInfo\"7\n\026AckPostUavProduc"
+    "tInfos\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"M\n"
+    "\017PostControl2Uav\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid"
+    "\030\002 \002(\t\022\016\n\006userid\030\003 \002(\t\022\014\n\004data\030\004 \003(\014\"R\n\022"
+    "AckPostControl2Uav\022\r\n\005seqno\030\001 \002(\r\022\016\n\006res"
+    "ult\030\002 \002(\005\022\r\n\005uavid\030\003 \002(\t\022\016\n\006userid\030\004 \002(\t"
+    "\"F\n\030PostStatus2GroundStation\022\r\n\005seqno\030\001 "
+    "\002(\r\022\r\n\005uavid\030\002 \002(\t\022\014\n\004data\030\003 \003(\014*g\n\tGSMs"
+    "gType\022\020\n\014DeleteFriend\020\001\022\021\n\rRequestFriend"
+    "\020\002\022\017\n\013AgreeFriend\020\003\022\020\n\014RejectFriend\020\004\022\010\n"
+    "\004Text\020\005\022\010\n\004Land\020\006*1\n\020SurveryPrecision\022\007\n"
+    "\003LOW\020\001\022\n\n\006MEDIUM\020\002\022\010\n\004HIGH\020\003", 8628);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "das.proto", &protobuf_RegisterTypes);
   PostHeartBeat::default_instance_ = new PostHeartBeat();
@@ -24647,12 +24647,15 @@ void BillInformation::Swap(BillInformation* other) {
 #ifndef _MSC_VER
 const int OperationRoute::kGsidFieldNumber;
 const int OperationRoute::kUavidFieldNumber;
-const int OperationRoute::kRpidFieldNumber;
 const int OperationRoute::kCreatetimeFieldNumber;
 const int OperationRoute::kMaxvoyageFieldNumber;
 const int OperationRoute::kMissionsFieldNumber;
 const int OperationRoute::kBoundarysFieldNumber;
 const int OperationRoute::kBiFieldNumber;
+const int OperationRoute::kRpidFieldNumber;
+const int OperationRoute::kBegFieldNumber;
+const int OperationRoute::kEndFieldNumber;
+const int OperationRoute::kLandidFieldNumber;
 #endif  // !_MSC_VER
 
 OperationRoute::OperationRoute()
@@ -24674,10 +24677,13 @@ void OperationRoute::SharedCtor() {
   _cached_size_ = 0;
   gsid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  rpid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   createtime_ = GOOGLE_ULONGLONG(0);
   maxvoyage_ = 0;
   bi_ = NULL;
+  rpid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  beg_ = 0;
+  end_ = 0;
+  landid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -24694,6 +24700,9 @@ void OperationRoute::SharedDtor() {
   }
   if (rpid_ != &::google::protobuf::internal::kEmptyString) {
     delete rpid_;
+  }
+  if (landid_ != &::google::protobuf::internal::kEmptyString) {
+    delete landid_;
   }
   if (this != default_instance_) {
     delete bi_;
@@ -24733,15 +24742,24 @@ void OperationRoute::Clear() {
         uavid_->clear();
       }
     }
+    createtime_ = GOOGLE_ULONGLONG(0);
+    maxvoyage_ = 0;
+    if (has_bi()) {
+      if (bi_ != NULL) bi_->::das::proto::BillInformation::Clear();
+    }
     if (has_rpid()) {
       if (rpid_ != &::google::protobuf::internal::kEmptyString) {
         rpid_->clear();
       }
     }
-    createtime_ = GOOGLE_ULONGLONG(0);
-    maxvoyage_ = 0;
-    if (has_bi()) {
-      if (bi_ != NULL) bi_->::das::proto::BillInformation::Clear();
+  }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    beg_ = 0;
+    end_ = 0;
+    if (has_landid()) {
+      if (landid_ != &::google::protobuf::internal::kEmptyString) {
+        landid_->clear();
+      }
     }
   }
   missions_.Clear();
@@ -24785,12 +24803,88 @@ bool OperationRoute::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(26)) goto parse_rpid;
+        if (input->ExpectTag(24)) goto parse_createtime;
         break;
       }
 
-      // required string rpid = 3;
+      // required uint64 createtime = 3;
       case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_createtime:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &createtime_)));
+          set_has_createtime();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(37)) goto parse_maxvoyage;
+        break;
+      }
+
+      // required float maxvoyage = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_maxvoyage:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &maxvoyage_)));
+          set_has_maxvoyage();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(42)) goto parse_missions;
+        break;
+      }
+
+      // repeated bytes missions = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_missions:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->add_missions()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(42)) goto parse_missions;
+        if (input->ExpectTag(50)) goto parse_boundarys;
+        break;
+      }
+
+      // repeated bytes boundarys = 6;
+      case 6: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_boundarys:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->add_boundarys()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(50)) goto parse_boundarys;
+        if (input->ExpectTag(58)) goto parse_bi;
+        break;
+      }
+
+      // optional .das.proto.BillInformation bi = 7;
+      case 7: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_bi:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_bi()));
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(66)) goto parse_rpid;
+        break;
+      }
+
+      // optional string rpid = 8;
+      case 8: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_rpid:
@@ -24802,79 +24896,52 @@ bool OperationRoute::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(32)) goto parse_createtime;
+        if (input->ExpectTag(72)) goto parse_beg;
         break;
       }
 
-      // required uint64 createtime = 4;
-      case 4: {
+      // optional int32 beg = 9;
+      case 9: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_createtime:
+         parse_beg:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
-                 input, &createtime_)));
-          set_has_createtime();
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &beg_)));
+          set_has_beg();
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(45)) goto parse_maxvoyage;
+        if (input->ExpectTag(80)) goto parse_end;
         break;
       }
 
-      // required float maxvoyage = 5;
-      case 5: {
+      // optional int32 end = 10;
+      case 10: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
-         parse_maxvoyage:
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_end:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
-                 input, &maxvoyage_)));
-          set_has_maxvoyage();
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &end_)));
+          set_has_end();
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(50)) goto parse_missions;
+        if (input->ExpectTag(90)) goto parse_landid;
         break;
       }
 
-      // repeated bytes missions = 6;
-      case 6: {
+      // optional string landid = 11;
+      case 11: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_missions:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
-                input, this->add_missions()));
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(50)) goto parse_missions;
-        if (input->ExpectTag(58)) goto parse_boundarys;
-        break;
-      }
-
-      // repeated bytes boundarys = 7;
-      case 7: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_boundarys:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
-                input, this->add_boundarys()));
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(58)) goto parse_boundarys;
-        if (input->ExpectTag(66)) goto parse_bi;
-        break;
-      }
-
-      // optional .das.proto.BillInformation bi = 8;
-      case 8: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_bi:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_bi()));
+         parse_landid:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_landid()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->landid().data(), this->landid().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
         } else {
           goto handle_uninterpreted;
         }
@@ -24918,41 +24985,60 @@ void OperationRoute::SerializeWithCachedSizes(
       2, this->uavid(), output);
   }
 
-  // required string rpid = 3;
+  // required uint64 createtime = 3;
+  if (has_createtime()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(3, this->createtime(), output);
+  }
+
+  // required float maxvoyage = 4;
+  if (has_maxvoyage()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(4, this->maxvoyage(), output);
+  }
+
+  // repeated bytes missions = 5;
+  for (int i = 0; i < this->missions_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytes(
+      5, this->missions(i), output);
+  }
+
+  // repeated bytes boundarys = 6;
+  for (int i = 0; i < this->boundarys_size(); i++) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytes(
+      6, this->boundarys(i), output);
+  }
+
+  // optional .das.proto.BillInformation bi = 7;
+  if (has_bi()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      7, this->bi(), output);
+  }
+
+  // optional string rpid = 8;
   if (has_rpid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->rpid().data(), this->rpid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      3, this->rpid(), output);
+      8, this->rpid(), output);
   }
 
-  // required uint64 createtime = 4;
-  if (has_createtime()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(4, this->createtime(), output);
+  // optional int32 beg = 9;
+  if (has_beg()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(9, this->beg(), output);
   }
 
-  // required float maxvoyage = 5;
-  if (has_maxvoyage()) {
-    ::google::protobuf::internal::WireFormatLite::WriteFloat(5, this->maxvoyage(), output);
+  // optional int32 end = 10;
+  if (has_end()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(10, this->end(), output);
   }
 
-  // repeated bytes missions = 6;
-  for (int i = 0; i < this->missions_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteBytes(
-      6, this->missions(i), output);
-  }
-
-  // repeated bytes boundarys = 7;
-  for (int i = 0; i < this->boundarys_size(); i++) {
-    ::google::protobuf::internal::WireFormatLite::WriteBytes(
-      7, this->boundarys(i), output);
-  }
-
-  // optional .das.proto.BillInformation bi = 8;
-  if (has_bi()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      8, this->bi(), output);
+  // optional string landid = 11;
+  if (has_landid()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->landid().data(), this->landid().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      11, this->landid(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -24983,43 +25069,63 @@ void OperationRoute::SerializeWithCachedSizes(
         2, this->uavid(), target);
   }
 
-  // required string rpid = 3;
+  // required uint64 createtime = 3;
+  if (has_createtime()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(3, this->createtime(), target);
+  }
+
+  // required float maxvoyage = 4;
+  if (has_maxvoyage()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(4, this->maxvoyage(), target);
+  }
+
+  // repeated bytes missions = 5;
+  for (int i = 0; i < this->missions_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteBytesToArray(5, this->missions(i), target);
+  }
+
+  // repeated bytes boundarys = 6;
+  for (int i = 0; i < this->boundarys_size(); i++) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteBytesToArray(6, this->boundarys(i), target);
+  }
+
+  // optional .das.proto.BillInformation bi = 7;
+  if (has_bi()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteMessageNoVirtualToArray(
+        7, this->bi(), target);
+  }
+
+  // optional string rpid = 8;
   if (has_rpid()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->rpid().data(), this->rpid().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        3, this->rpid(), target);
+        8, this->rpid(), target);
   }
 
-  // required uint64 createtime = 4;
-  if (has_createtime()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(4, this->createtime(), target);
+  // optional int32 beg = 9;
+  if (has_beg()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(9, this->beg(), target);
   }
 
-  // required float maxvoyage = 5;
-  if (has_maxvoyage()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(5, this->maxvoyage(), target);
+  // optional int32 end = 10;
+  if (has_end()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(10, this->end(), target);
   }
 
-  // repeated bytes missions = 6;
-  for (int i = 0; i < this->missions_size(); i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteBytesToArray(6, this->missions(i), target);
-  }
-
-  // repeated bytes boundarys = 7;
-  for (int i = 0; i < this->boundarys_size(); i++) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteBytesToArray(7, this->boundarys(i), target);
-  }
-
-  // optional .das.proto.BillInformation bi = 8;
-  if (has_bi()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        8, this->bi(), target);
+  // optional string landid = 11;
+  if (has_landid()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->landid().data(), this->landid().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        11, this->landid(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -25047,41 +25153,64 @@ int OperationRoute::ByteSize() const {
           this->uavid());
     }
 
-    // required string rpid = 3;
-    if (has_rpid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->rpid());
-    }
-
-    // required uint64 createtime = 4;
+    // required uint64 createtime = 3;
     if (has_createtime()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt64Size(
           this->createtime());
     }
 
-    // required float maxvoyage = 5;
+    // required float maxvoyage = 4;
     if (has_maxvoyage()) {
       total_size += 1 + 4;
     }
 
-    // optional .das.proto.BillInformation bi = 8;
+    // optional .das.proto.BillInformation bi = 7;
     if (has_bi()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
           this->bi());
     }
 
+    // optional string rpid = 8;
+    if (has_rpid()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->rpid());
+    }
+
   }
-  // repeated bytes missions = 6;
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    // optional int32 beg = 9;
+    if (has_beg()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->beg());
+    }
+
+    // optional int32 end = 10;
+    if (has_end()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->end());
+    }
+
+    // optional string landid = 11;
+    if (has_landid()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->landid());
+    }
+
+  }
+  // repeated bytes missions = 5;
   total_size += 1 * this->missions_size();
   for (int i = 0; i < this->missions_size(); i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::BytesSize(
       this->missions(i));
   }
 
-  // repeated bytes boundarys = 7;
+  // repeated bytes boundarys = 6;
   total_size += 1 * this->boundarys_size();
   for (int i = 0; i < this->boundarys_size(); i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::BytesSize(
@@ -25122,9 +25251,6 @@ void OperationRoute::MergeFrom(const OperationRoute& from) {
     if (from.has_uavid()) {
       set_uavid(from.uavid());
     }
-    if (from.has_rpid()) {
-      set_rpid(from.rpid());
-    }
     if (from.has_createtime()) {
       set_createtime(from.createtime());
     }
@@ -25133,6 +25259,20 @@ void OperationRoute::MergeFrom(const OperationRoute& from) {
     }
     if (from.has_bi()) {
       mutable_bi()->::das::proto::BillInformation::MergeFrom(from.bi());
+    }
+    if (from.has_rpid()) {
+      set_rpid(from.rpid());
+    }
+  }
+  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    if (from.has_beg()) {
+      set_beg(from.beg());
+    }
+    if (from.has_end()) {
+      set_end(from.end());
+    }
+    if (from.has_landid()) {
+      set_landid(from.landid());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -25151,7 +25291,7 @@ void OperationRoute::CopyFrom(const OperationRoute& from) {
 }
 
 bool OperationRoute::IsInitialized() const {
-  if ((_has_bits_[0] & 0x0000001f) != 0x0000001f) return false;
+  if ((_has_bits_[0] & 0x0000000f) != 0x0000000f) return false;
 
   if (has_bi()) {
     if (!this->bi().IsInitialized()) return false;
@@ -25163,12 +25303,15 @@ void OperationRoute::Swap(OperationRoute* other) {
   if (other != this) {
     std::swap(gsid_, other->gsid_);
     std::swap(uavid_, other->uavid_);
-    std::swap(rpid_, other->rpid_);
     std::swap(createtime_, other->createtime_);
     std::swap(maxvoyage_, other->maxvoyage_);
     missions_.Swap(&other->missions_);
     boundarys_.Swap(&other->boundarys_);
     std::swap(bi_, other->bi_);
+    std::swap(rpid_, other->rpid_);
+    std::swap(beg_, other->beg_);
+    std::swap(end_, other->end_);
+    std::swap(landid_, other->landid_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -25699,10 +25842,6 @@ const int UploadOperationRoutes::kUseridFieldNumber;
 const int UploadOperationRoutes::kTimestampFieldNumber;
 const int UploadOperationRoutes::kCountmissionFieldNumber;
 const int UploadOperationRoutes::kCountboundaryFieldNumber;
-const int UploadOperationRoutes::kPlanidFieldNumber;
-const int UploadOperationRoutes::kLandidFieldNumber;
-const int UploadOperationRoutes::kBegFieldNumber;
-const int UploadOperationRoutes::kEndFieldNumber;
 #endif  // !_MSC_VER
 
 UploadOperationRoutes::UploadOperationRoutes()
@@ -25727,10 +25866,6 @@ void UploadOperationRoutes::SharedCtor() {
   timestamp_ = GOOGLE_ULONGLONG(0);
   countmission_ = 0;
   countboundary_ = 0;
-  planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  landid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  beg_ = 0;
-  end_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -25744,12 +25879,6 @@ void UploadOperationRoutes::SharedDtor() {
   }
   if (userid_ != &::google::protobuf::internal::kEmptyString) {
     delete userid_;
-  }
-  if (planid_ != &::google::protobuf::internal::kEmptyString) {
-    delete planid_;
-  }
-  if (landid_ != &::google::protobuf::internal::kEmptyString) {
-    delete landid_;
   }
   if (this != default_instance_) {
   }
@@ -25792,20 +25921,6 @@ void UploadOperationRoutes::Clear() {
     timestamp_ = GOOGLE_ULONGLONG(0);
     countmission_ = 0;
     countboundary_ = 0;
-    if (has_planid()) {
-      if (planid_ != &::google::protobuf::internal::kEmptyString) {
-        planid_->clear();
-      }
-    }
-    if (has_landid()) {
-      if (landid_ != &::google::protobuf::internal::kEmptyString) {
-        landid_->clear();
-      }
-    }
-  }
-  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
-    beg_ = 0;
-    end_ = 0;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -25910,72 +26025,6 @@ bool UploadOperationRoutes::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(58)) goto parse_planid;
-        break;
-      }
-
-      // optional string planid = 7;
-      case 7: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_planid:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_planid()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->planid().data(), this->planid().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(66)) goto parse_landid;
-        break;
-      }
-
-      // optional string landid = 8;
-      case 8: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_landid:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_landid()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->landid().data(), this->landid().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(72)) goto parse_beg;
-        break;
-      }
-
-      // optional int32 beg = 9;
-      case 9: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_beg:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &beg_)));
-          set_has_beg();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(80)) goto parse_end;
-        break;
-      }
-
-      // optional int32 end = 10;
-      case 10: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_end:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &end_)));
-          set_has_end();
-        } else {
-          goto handle_uninterpreted;
-        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -26036,34 +26085,6 @@ void UploadOperationRoutes::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->countboundary(), output);
   }
 
-  // optional string planid = 7;
-  if (has_planid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->planid().data(), this->planid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      7, this->planid(), output);
-  }
-
-  // optional string landid = 8;
-  if (has_landid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->landid().data(), this->landid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      8, this->landid(), output);
-  }
-
-  // optional int32 beg = 9;
-  if (has_beg()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(9, this->beg(), output);
-  }
-
-  // optional int32 end = 10;
-  if (has_end()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(10, this->end(), output);
-  }
-
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -26110,36 +26131,6 @@ void UploadOperationRoutes::SerializeWithCachedSizes(
   // required int32 countboundary = 6;
   if (has_countboundary()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->countboundary(), target);
-  }
-
-  // optional string planid = 7;
-  if (has_planid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->planid().data(), this->planid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        7, this->planid(), target);
-  }
-
-  // optional string landid = 8;
-  if (has_landid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->landid().data(), this->landid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        8, this->landid(), target);
-  }
-
-  // optional int32 beg = 9;
-  if (has_beg()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(9, this->beg(), target);
-  }
-
-  // optional int32 end = 10;
-  if (has_end()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(10, this->end(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -26195,36 +26186,6 @@ int UploadOperationRoutes::ByteSize() const {
           this->countboundary());
     }
 
-    // optional string planid = 7;
-    if (has_planid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->planid());
-    }
-
-    // optional string landid = 8;
-    if (has_landid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->landid());
-    }
-
-  }
-  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
-    // optional int32 beg = 9;
-    if (has_beg()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->beg());
-    }
-
-    // optional int32 end = 10;
-    if (has_end()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->end());
-    }
-
   }
   if (!unknown_fields().empty()) {
     total_size +=
@@ -26270,20 +26231,6 @@ void UploadOperationRoutes::MergeFrom(const UploadOperationRoutes& from) {
     if (from.has_countboundary()) {
       set_countboundary(from.countboundary());
     }
-    if (from.has_planid()) {
-      set_planid(from.planid());
-    }
-    if (from.has_landid()) {
-      set_landid(from.landid());
-    }
-  }
-  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
-    if (from.has_beg()) {
-      set_beg(from.beg());
-    }
-    if (from.has_end()) {
-      set_end(from.end());
-    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -26314,10 +26261,6 @@ void UploadOperationRoutes::Swap(UploadOperationRoutes* other) {
     std::swap(timestamp_, other->timestamp_);
     std::swap(countmission_, other->countmission_);
     std::swap(countboundary_, other->countboundary_);
-    std::swap(planid_, other->planid_);
-    std::swap(landid_, other->landid_);
-    std::swap(beg_, other->beg_);
-    std::swap(end_, other->end_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -27817,6 +27760,7 @@ void RequestUavMission::Swap(RequestUavMission* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int UavRoute::kOpTmFieldNumber;
 const int UavRoute::kMissionsFieldNumber;
 #endif  // !_MSC_VER
 
@@ -27836,6 +27780,7 @@ UavRoute::UavRoute(const UavRoute& from)
 
 void UavRoute::SharedCtor() {
   _cached_size_ = 0;
+  optm_ = GOOGLE_ULONGLONG(0);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -27870,6 +27815,9 @@ UavRoute* UavRoute::New() const {
 }
 
 void UavRoute::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    optm_ = GOOGLE_ULONGLONG(0);
+  }
   missions_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -27892,6 +27840,22 @@ bool UavRoute::MergePartialFromCodedStream(
           goto handle_uninterpreted;
         }
         if (input->ExpectTag(10)) goto parse_missions;
+        if (input->ExpectTag(32)) goto parse_opTm;
+        break;
+      }
+
+      // optional uint64 opTm = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_opTm:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &optm_)));
+          set_has_optm();
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -27920,6 +27884,11 @@ void UavRoute::SerializeWithCachedSizes(
       1, this->missions(i), output);
   }
 
+  // optional uint64 opTm = 4;
+  if (has_optm()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(4, this->optm(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -27934,6 +27903,11 @@ void UavRoute::SerializeWithCachedSizes(
       WriteBytesToArray(1, this->missions(i), target);
   }
 
+  // optional uint64 opTm = 4;
+  if (has_optm()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(4, this->optm(), target);
+  }
+
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -27944,6 +27918,15 @@ void UavRoute::SerializeWithCachedSizes(
 int UavRoute::ByteSize() const {
   int total_size = 0;
 
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // optional uint64 opTm = 4;
+    if (has_optm()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt64Size(
+          this->optm());
+    }
+
+  }
   // repeated bytes missions = 1;
   total_size += 1 * this->missions_size();
   for (int i = 0; i < this->missions_size(); i++) {
@@ -27977,6 +27960,11 @@ void UavRoute::MergeFrom(const ::google::protobuf::Message& from) {
 void UavRoute::MergeFrom(const UavRoute& from) {
   GOOGLE_CHECK_NE(&from, this);
   missions_.MergeFrom(from.missions_);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_optm()) {
+      set_optm(from.optm());
+    }
+  }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
@@ -27999,6 +27987,7 @@ bool UavRoute::IsInitialized() const {
 
 void UavRoute::Swap(UavRoute* other) {
   if (other != this) {
+    std::swap(optm_, other->optm_);
     missions_.Swap(&other->missions_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);

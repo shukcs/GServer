@@ -14,29 +14,42 @@ using namespace SOCKETS_NAMESPACE;
 
 static Variant sVarEmpty;
 static const string sStrEmpty;
+static const char *rcvId(DBMessage::OBjectFlag f)
+{
+    switch (f)
+    {
+    case DBMessage::DB_GS:
+        return "DBGS";
+    case DBMessage::DB_Uav:
+        return "DBUav";
+    default:
+        break;
+    }
+    return "";
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //DBMessage
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-DBMessage::DBMessage(ObjectGS *sender, MessageType ack, const string &rcv)
-: IMessage(new MessageData(sender, DBExec), rcv, IObject::DBMySql)
+DBMessage::DBMessage(ObjectGS *sender, MessageType ack, OBjectFlag rcv)
+: IMessage(new MessageData(sender, DBExec), rcvId(rcv), IObject::DBMySql)
 , m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
 {
 }
 
-DBMessage::DBMessage(ObjectUav *sender, MessageType ack, const string &rcv)
-: IMessage(new MessageData(sender, DBExec), rcv, IObject::DBMySql)
+DBMessage::DBMessage(ObjectUav *sender, MessageType ack, OBjectFlag rcv)
+: IMessage(new MessageData(sender, DBExec), rcvId(rcv), IObject::DBMySql)
 , m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
 {
 }
 
-DBMessage::DBMessage(GSManager *sender, MessageType ack, const string &rcv)
-: IMessage(new MessageData(sender, DBExec), rcv, IObject::DBMySql)
+DBMessage::DBMessage(GSManager *sender, MessageType ack, OBjectFlag rcv)
+: IMessage(new MessageData(sender, DBExec), rcvId(rcv), IObject::DBMySql)
 , m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
 {
 }
 
-DBMessage::DBMessage(UavManager *sender, MessageType ack, const string &rcv)
-: IMessage(new MessageData(sender, DBExec), rcv, IObject::DBMySql)
+DBMessage::DBMessage(UavManager *sender, MessageType ack, OBjectFlag rcv)
+: IMessage(new MessageData(sender, DBExec), rcvId(rcv), IObject::DBMySql)
 , m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
 {
 }

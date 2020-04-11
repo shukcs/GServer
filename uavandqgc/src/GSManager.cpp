@@ -47,6 +47,7 @@ int GSManager::AddDatabaseUser(const string &user, const string &pswd, ObjectGS 
         msg->SetSql("insertGSInfo");
         if (seq > 0)
             msg->SetSeqNomb(seq);
+
         msg->SetWrite("user", user);
         msg->SetWrite("pswd", pswd);
         msg->SetWrite("auth", auth);

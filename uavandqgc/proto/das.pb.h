@@ -7767,36 +7767,24 @@ class OperationRoute : public ::google::protobuf::Message {
   inline ::std::string* release_uavid();
   inline void set_allocated_uavid(::std::string* uavid);
 
-  // required string rpid = 3;
-  inline bool has_rpid() const;
-  inline void clear_rpid();
-  static const int kRpidFieldNumber = 3;
-  inline const ::std::string& rpid() const;
-  inline void set_rpid(const ::std::string& value);
-  inline void set_rpid(const char* value);
-  inline void set_rpid(const char* value, size_t size);
-  inline ::std::string* mutable_rpid();
-  inline ::std::string* release_rpid();
-  inline void set_allocated_rpid(::std::string* rpid);
-
-  // required uint64 createtime = 4;
+  // required uint64 createtime = 3;
   inline bool has_createtime() const;
   inline void clear_createtime();
-  static const int kCreatetimeFieldNumber = 4;
+  static const int kCreatetimeFieldNumber = 3;
   inline ::google::protobuf::uint64 createtime() const;
   inline void set_createtime(::google::protobuf::uint64 value);
 
-  // required float maxvoyage = 5;
+  // required float maxvoyage = 4;
   inline bool has_maxvoyage() const;
   inline void clear_maxvoyage();
-  static const int kMaxvoyageFieldNumber = 5;
+  static const int kMaxvoyageFieldNumber = 4;
   inline float maxvoyage() const;
   inline void set_maxvoyage(float value);
 
-  // repeated bytes missions = 6;
+  // repeated bytes missions = 5;
   inline int missions_size() const;
   inline void clear_missions();
-  static const int kMissionsFieldNumber = 6;
+  static const int kMissionsFieldNumber = 5;
   inline const ::std::string& missions(int index) const;
   inline ::std::string* mutable_missions(int index);
   inline void set_missions(int index, const ::std::string& value);
@@ -7809,10 +7797,10 @@ class OperationRoute : public ::google::protobuf::Message {
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& missions() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_missions();
 
-  // repeated bytes boundarys = 7;
+  // repeated bytes boundarys = 6;
   inline int boundarys_size() const;
   inline void clear_boundarys();
-  static const int kBoundarysFieldNumber = 7;
+  static const int kBoundarysFieldNumber = 6;
   inline const ::std::string& boundarys(int index) const;
   inline ::std::string* mutable_boundarys(int index);
   inline void set_boundarys(int index, const ::std::string& value);
@@ -7825,14 +7813,52 @@ class OperationRoute : public ::google::protobuf::Message {
   inline const ::google::protobuf::RepeatedPtrField< ::std::string>& boundarys() const;
   inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_boundarys();
 
-  // optional .das.proto.BillInformation bi = 8;
+  // optional .das.proto.BillInformation bi = 7;
   inline bool has_bi() const;
   inline void clear_bi();
-  static const int kBiFieldNumber = 8;
+  static const int kBiFieldNumber = 7;
   inline const ::das::proto::BillInformation& bi() const;
   inline ::das::proto::BillInformation* mutable_bi();
   inline ::das::proto::BillInformation* release_bi();
   inline void set_allocated_bi(::das::proto::BillInformation* bi);
+
+  // optional string rpid = 8;
+  inline bool has_rpid() const;
+  inline void clear_rpid();
+  static const int kRpidFieldNumber = 8;
+  inline const ::std::string& rpid() const;
+  inline void set_rpid(const ::std::string& value);
+  inline void set_rpid(const char* value);
+  inline void set_rpid(const char* value, size_t size);
+  inline ::std::string* mutable_rpid();
+  inline ::std::string* release_rpid();
+  inline void set_allocated_rpid(::std::string* rpid);
+
+  // optional int32 beg = 9;
+  inline bool has_beg() const;
+  inline void clear_beg();
+  static const int kBegFieldNumber = 9;
+  inline ::google::protobuf::int32 beg() const;
+  inline void set_beg(::google::protobuf::int32 value);
+
+  // optional int32 end = 10;
+  inline bool has_end() const;
+  inline void clear_end();
+  static const int kEndFieldNumber = 10;
+  inline ::google::protobuf::int32 end() const;
+  inline void set_end(::google::protobuf::int32 value);
+
+  // optional string landid = 11;
+  inline bool has_landid() const;
+  inline void clear_landid();
+  static const int kLandidFieldNumber = 11;
+  inline const ::std::string& landid() const;
+  inline void set_landid(const ::std::string& value);
+  inline void set_landid(const char* value);
+  inline void set_landid(const char* value, size_t size);
+  inline ::std::string* mutable_landid();
+  inline ::std::string* release_landid();
+  inline void set_allocated_landid(::std::string* landid);
 
   // @@protoc_insertion_point(class_scope:das.proto.OperationRoute)
  private:
@@ -7840,28 +7866,37 @@ class OperationRoute : public ::google::protobuf::Message {
   inline void clear_has_gsid();
   inline void set_has_uavid();
   inline void clear_has_uavid();
-  inline void set_has_rpid();
-  inline void clear_has_rpid();
   inline void set_has_createtime();
   inline void clear_has_createtime();
   inline void set_has_maxvoyage();
   inline void clear_has_maxvoyage();
   inline void set_has_bi();
   inline void clear_has_bi();
+  inline void set_has_rpid();
+  inline void clear_has_rpid();
+  inline void set_has_beg();
+  inline void clear_has_beg();
+  inline void set_has_end();
+  inline void clear_has_end();
+  inline void set_has_landid();
+  inline void clear_has_landid();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* gsid_;
   ::std::string* uavid_;
-  ::std::string* rpid_;
   ::google::protobuf::uint64 createtime_;
   ::google::protobuf::RepeatedPtrField< ::std::string> missions_;
   ::google::protobuf::RepeatedPtrField< ::std::string> boundarys_;
-  ::das::proto::BillInformation* bi_;
   float maxvoyage_;
+  ::google::protobuf::int32 beg_;
+  ::das::proto::BillInformation* bi_;
+  ::std::string* rpid_;
+  ::std::string* landid_;
+  ::google::protobuf::int32 end_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(8 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(11 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -8164,44 +8199,6 @@ class UploadOperationRoutes : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 countboundary() const;
   inline void set_countboundary(::google::protobuf::int32 value);
 
-  // optional string planid = 7;
-  inline bool has_planid() const;
-  inline void clear_planid();
-  static const int kPlanidFieldNumber = 7;
-  inline const ::std::string& planid() const;
-  inline void set_planid(const ::std::string& value);
-  inline void set_planid(const char* value);
-  inline void set_planid(const char* value, size_t size);
-  inline ::std::string* mutable_planid();
-  inline ::std::string* release_planid();
-  inline void set_allocated_planid(::std::string* planid);
-
-  // optional string landid = 8;
-  inline bool has_landid() const;
-  inline void clear_landid();
-  static const int kLandidFieldNumber = 8;
-  inline const ::std::string& landid() const;
-  inline void set_landid(const ::std::string& value);
-  inline void set_landid(const char* value);
-  inline void set_landid(const char* value, size_t size);
-  inline ::std::string* mutable_landid();
-  inline ::std::string* release_landid();
-  inline void set_allocated_landid(::std::string* landid);
-
-  // optional int32 beg = 9;
-  inline bool has_beg() const;
-  inline void clear_beg();
-  static const int kBegFieldNumber = 9;
-  inline ::google::protobuf::int32 beg() const;
-  inline void set_beg(::google::protobuf::int32 value);
-
-  // optional int32 end = 10;
-  inline bool has_end() const;
-  inline void clear_end();
-  static const int kEndFieldNumber = 10;
-  inline ::google::protobuf::int32 end() const;
-  inline void set_end(::google::protobuf::int32 value);
-
   // @@protoc_insertion_point(class_scope:das.proto.UploadOperationRoutes)
  private:
   inline void set_has_seqno();
@@ -8216,14 +8213,6 @@ class UploadOperationRoutes : public ::google::protobuf::Message {
   inline void clear_has_countmission();
   inline void set_has_countboundary();
   inline void clear_has_countboundary();
-  inline void set_has_planid();
-  inline void clear_has_planid();
-  inline void set_has_landid();
-  inline void clear_has_landid();
-  inline void set_has_beg();
-  inline void clear_has_beg();
-  inline void set_has_end();
-  inline void clear_has_end();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -8232,14 +8221,10 @@ class UploadOperationRoutes : public ::google::protobuf::Message {
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 countmission_;
   ::google::protobuf::uint64 timestamp_;
-  ::std::string* planid_;
   ::google::protobuf::int32 countboundary_;
-  ::google::protobuf::int32 beg_;
-  ::std::string* landid_;
-  ::google::protobuf::int32 end_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(10 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -8804,6 +8789,13 @@ class UavRoute : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
+  // optional uint64 opTm = 4;
+  inline bool has_optm() const;
+  inline void clear_optm();
+  static const int kOpTmFieldNumber = 4;
+  inline ::google::protobuf::uint64 optm() const;
+  inline void set_optm(::google::protobuf::uint64 value);
+
   // repeated bytes missions = 1;
   inline int missions_size() const;
   inline void clear_missions();
@@ -8822,13 +8814,16 @@ class UavRoute : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:das.proto.UavRoute)
  private:
+  inline void set_has_optm();
+  inline void clear_has_optm();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
+  ::google::protobuf::uint64 optm_;
   ::google::protobuf::RepeatedPtrField< ::std::string> missions_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -20534,15 +20529,185 @@ inline void OperationRoute::set_allocated_uavid(::std::string* uavid) {
   }
 }
 
-// required string rpid = 3;
-inline bool OperationRoute::has_rpid() const {
+// required uint64 createtime = 3;
+inline bool OperationRoute::has_createtime() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void OperationRoute::set_has_rpid() {
+inline void OperationRoute::set_has_createtime() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void OperationRoute::clear_has_rpid() {
+inline void OperationRoute::clear_has_createtime() {
   _has_bits_[0] &= ~0x00000004u;
+}
+inline void OperationRoute::clear_createtime() {
+  createtime_ = GOOGLE_ULONGLONG(0);
+  clear_has_createtime();
+}
+inline ::google::protobuf::uint64 OperationRoute::createtime() const {
+  return createtime_;
+}
+inline void OperationRoute::set_createtime(::google::protobuf::uint64 value) {
+  set_has_createtime();
+  createtime_ = value;
+}
+
+// required float maxvoyage = 4;
+inline bool OperationRoute::has_maxvoyage() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void OperationRoute::set_has_maxvoyage() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void OperationRoute::clear_has_maxvoyage() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void OperationRoute::clear_maxvoyage() {
+  maxvoyage_ = 0;
+  clear_has_maxvoyage();
+}
+inline float OperationRoute::maxvoyage() const {
+  return maxvoyage_;
+}
+inline void OperationRoute::set_maxvoyage(float value) {
+  set_has_maxvoyage();
+  maxvoyage_ = value;
+}
+
+// repeated bytes missions = 5;
+inline int OperationRoute::missions_size() const {
+  return missions_.size();
+}
+inline void OperationRoute::clear_missions() {
+  missions_.Clear();
+}
+inline const ::std::string& OperationRoute::missions(int index) const {
+  return missions_.Get(index);
+}
+inline ::std::string* OperationRoute::mutable_missions(int index) {
+  return missions_.Mutable(index);
+}
+inline void OperationRoute::set_missions(int index, const ::std::string& value) {
+  missions_.Mutable(index)->assign(value);
+}
+inline void OperationRoute::set_missions(int index, const char* value) {
+  missions_.Mutable(index)->assign(value);
+}
+inline void OperationRoute::set_missions(int index, const void* value, size_t size) {
+  missions_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* OperationRoute::add_missions() {
+  return missions_.Add();
+}
+inline void OperationRoute::add_missions(const ::std::string& value) {
+  missions_.Add()->assign(value);
+}
+inline void OperationRoute::add_missions(const char* value) {
+  missions_.Add()->assign(value);
+}
+inline void OperationRoute::add_missions(const void* value, size_t size) {
+  missions_.Add()->assign(reinterpret_cast<const char*>(value), size);
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+OperationRoute::missions() const {
+  return missions_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+OperationRoute::mutable_missions() {
+  return &missions_;
+}
+
+// repeated bytes boundarys = 6;
+inline int OperationRoute::boundarys_size() const {
+  return boundarys_.size();
+}
+inline void OperationRoute::clear_boundarys() {
+  boundarys_.Clear();
+}
+inline const ::std::string& OperationRoute::boundarys(int index) const {
+  return boundarys_.Get(index);
+}
+inline ::std::string* OperationRoute::mutable_boundarys(int index) {
+  return boundarys_.Mutable(index);
+}
+inline void OperationRoute::set_boundarys(int index, const ::std::string& value) {
+  boundarys_.Mutable(index)->assign(value);
+}
+inline void OperationRoute::set_boundarys(int index, const char* value) {
+  boundarys_.Mutable(index)->assign(value);
+}
+inline void OperationRoute::set_boundarys(int index, const void* value, size_t size) {
+  boundarys_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* OperationRoute::add_boundarys() {
+  return boundarys_.Add();
+}
+inline void OperationRoute::add_boundarys(const ::std::string& value) {
+  boundarys_.Add()->assign(value);
+}
+inline void OperationRoute::add_boundarys(const char* value) {
+  boundarys_.Add()->assign(value);
+}
+inline void OperationRoute::add_boundarys(const void* value, size_t size) {
+  boundarys_.Add()->assign(reinterpret_cast<const char*>(value), size);
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+OperationRoute::boundarys() const {
+  return boundarys_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+OperationRoute::mutable_boundarys() {
+  return &boundarys_;
+}
+
+// optional .das.proto.BillInformation bi = 7;
+inline bool OperationRoute::has_bi() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void OperationRoute::set_has_bi() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void OperationRoute::clear_has_bi() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void OperationRoute::clear_bi() {
+  if (bi_ != NULL) bi_->::das::proto::BillInformation::Clear();
+  clear_has_bi();
+}
+inline const ::das::proto::BillInformation& OperationRoute::bi() const {
+  return bi_ != NULL ? *bi_ : *default_instance_->bi_;
+}
+inline ::das::proto::BillInformation* OperationRoute::mutable_bi() {
+  set_has_bi();
+  if (bi_ == NULL) bi_ = new ::das::proto::BillInformation;
+  return bi_;
+}
+inline ::das::proto::BillInformation* OperationRoute::release_bi() {
+  clear_has_bi();
+  ::das::proto::BillInformation* temp = bi_;
+  bi_ = NULL;
+  return temp;
+}
+inline void OperationRoute::set_allocated_bi(::das::proto::BillInformation* bi) {
+  delete bi_;
+  bi_ = bi;
+  if (bi) {
+    set_has_bi();
+  } else {
+    clear_has_bi();
+  }
+}
+
+// optional string rpid = 8;
+inline bool OperationRoute::has_rpid() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void OperationRoute::set_has_rpid() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void OperationRoute::clear_has_rpid() {
+  _has_bits_[0] &= ~0x00000080u;
 }
 inline void OperationRoute::clear_rpid() {
   if (rpid_ != &::google::protobuf::internal::kEmptyString) {
@@ -20604,173 +20769,117 @@ inline void OperationRoute::set_allocated_rpid(::std::string* rpid) {
   }
 }
 
-// required uint64 createtime = 4;
-inline bool OperationRoute::has_createtime() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
+// optional int32 beg = 9;
+inline bool OperationRoute::has_beg() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
 }
-inline void OperationRoute::set_has_createtime() {
-  _has_bits_[0] |= 0x00000008u;
+inline void OperationRoute::set_has_beg() {
+  _has_bits_[0] |= 0x00000100u;
 }
-inline void OperationRoute::clear_has_createtime() {
-  _has_bits_[0] &= ~0x00000008u;
+inline void OperationRoute::clear_has_beg() {
+  _has_bits_[0] &= ~0x00000100u;
 }
-inline void OperationRoute::clear_createtime() {
-  createtime_ = GOOGLE_ULONGLONG(0);
-  clear_has_createtime();
+inline void OperationRoute::clear_beg() {
+  beg_ = 0;
+  clear_has_beg();
 }
-inline ::google::protobuf::uint64 OperationRoute::createtime() const {
-  return createtime_;
+inline ::google::protobuf::int32 OperationRoute::beg() const {
+  return beg_;
 }
-inline void OperationRoute::set_createtime(::google::protobuf::uint64 value) {
-  set_has_createtime();
-  createtime_ = value;
-}
-
-// required float maxvoyage = 5;
-inline bool OperationRoute::has_maxvoyage() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void OperationRoute::set_has_maxvoyage() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void OperationRoute::clear_has_maxvoyage() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void OperationRoute::clear_maxvoyage() {
-  maxvoyage_ = 0;
-  clear_has_maxvoyage();
-}
-inline float OperationRoute::maxvoyage() const {
-  return maxvoyage_;
-}
-inline void OperationRoute::set_maxvoyage(float value) {
-  set_has_maxvoyage();
-  maxvoyage_ = value;
+inline void OperationRoute::set_beg(::google::protobuf::int32 value) {
+  set_has_beg();
+  beg_ = value;
 }
 
-// repeated bytes missions = 6;
-inline int OperationRoute::missions_size() const {
-  return missions_.size();
+// optional int32 end = 10;
+inline bool OperationRoute::has_end() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
 }
-inline void OperationRoute::clear_missions() {
-  missions_.Clear();
+inline void OperationRoute::set_has_end() {
+  _has_bits_[0] |= 0x00000200u;
 }
-inline const ::std::string& OperationRoute::missions(int index) const {
-  return missions_.Get(index);
+inline void OperationRoute::clear_has_end() {
+  _has_bits_[0] &= ~0x00000200u;
 }
-inline ::std::string* OperationRoute::mutable_missions(int index) {
-  return missions_.Mutable(index);
+inline void OperationRoute::clear_end() {
+  end_ = 0;
+  clear_has_end();
 }
-inline void OperationRoute::set_missions(int index, const ::std::string& value) {
-  missions_.Mutable(index)->assign(value);
+inline ::google::protobuf::int32 OperationRoute::end() const {
+  return end_;
 }
-inline void OperationRoute::set_missions(int index, const char* value) {
-  missions_.Mutable(index)->assign(value);
-}
-inline void OperationRoute::set_missions(int index, const void* value, size_t size) {
-  missions_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* OperationRoute::add_missions() {
-  return missions_.Add();
-}
-inline void OperationRoute::add_missions(const ::std::string& value) {
-  missions_.Add()->assign(value);
-}
-inline void OperationRoute::add_missions(const char* value) {
-  missions_.Add()->assign(value);
-}
-inline void OperationRoute::add_missions(const void* value, size_t size) {
-  missions_.Add()->assign(reinterpret_cast<const char*>(value), size);
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-OperationRoute::missions() const {
-  return missions_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-OperationRoute::mutable_missions() {
-  return &missions_;
+inline void OperationRoute::set_end(::google::protobuf::int32 value) {
+  set_has_end();
+  end_ = value;
 }
 
-// repeated bytes boundarys = 7;
-inline int OperationRoute::boundarys_size() const {
-  return boundarys_.size();
+// optional string landid = 11;
+inline bool OperationRoute::has_landid() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
 }
-inline void OperationRoute::clear_boundarys() {
-  boundarys_.Clear();
+inline void OperationRoute::set_has_landid() {
+  _has_bits_[0] |= 0x00000400u;
 }
-inline const ::std::string& OperationRoute::boundarys(int index) const {
-  return boundarys_.Get(index);
+inline void OperationRoute::clear_has_landid() {
+  _has_bits_[0] &= ~0x00000400u;
 }
-inline ::std::string* OperationRoute::mutable_boundarys(int index) {
-  return boundarys_.Mutable(index);
+inline void OperationRoute::clear_landid() {
+  if (landid_ != &::google::protobuf::internal::kEmptyString) {
+    landid_->clear();
+  }
+  clear_has_landid();
 }
-inline void OperationRoute::set_boundarys(int index, const ::std::string& value) {
-  boundarys_.Mutable(index)->assign(value);
+inline const ::std::string& OperationRoute::landid() const {
+  return *landid_;
 }
-inline void OperationRoute::set_boundarys(int index, const char* value) {
-  boundarys_.Mutable(index)->assign(value);
+inline void OperationRoute::set_landid(const ::std::string& value) {
+  set_has_landid();
+  if (landid_ == &::google::protobuf::internal::kEmptyString) {
+    landid_ = new ::std::string;
+  }
+  landid_->assign(value);
 }
-inline void OperationRoute::set_boundarys(int index, const void* value, size_t size) {
-  boundarys_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
+inline void OperationRoute::set_landid(const char* value) {
+  set_has_landid();
+  if (landid_ == &::google::protobuf::internal::kEmptyString) {
+    landid_ = new ::std::string;
+  }
+  landid_->assign(value);
 }
-inline ::std::string* OperationRoute::add_boundarys() {
-  return boundarys_.Add();
+inline void OperationRoute::set_landid(const char* value, size_t size) {
+  set_has_landid();
+  if (landid_ == &::google::protobuf::internal::kEmptyString) {
+    landid_ = new ::std::string;
+  }
+  landid_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline void OperationRoute::add_boundarys(const ::std::string& value) {
-  boundarys_.Add()->assign(value);
+inline ::std::string* OperationRoute::mutable_landid() {
+  set_has_landid();
+  if (landid_ == &::google::protobuf::internal::kEmptyString) {
+    landid_ = new ::std::string;
+  }
+  return landid_;
 }
-inline void OperationRoute::add_boundarys(const char* value) {
-  boundarys_.Add()->assign(value);
-}
-inline void OperationRoute::add_boundarys(const void* value, size_t size) {
-  boundarys_.Add()->assign(reinterpret_cast<const char*>(value), size);
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-OperationRoute::boundarys() const {
-  return boundarys_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-OperationRoute::mutable_boundarys() {
-  return &boundarys_;
-}
-
-// optional .das.proto.BillInformation bi = 8;
-inline bool OperationRoute::has_bi() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
-}
-inline void OperationRoute::set_has_bi() {
-  _has_bits_[0] |= 0x00000080u;
-}
-inline void OperationRoute::clear_has_bi() {
-  _has_bits_[0] &= ~0x00000080u;
-}
-inline void OperationRoute::clear_bi() {
-  if (bi_ != NULL) bi_->::das::proto::BillInformation::Clear();
-  clear_has_bi();
-}
-inline const ::das::proto::BillInformation& OperationRoute::bi() const {
-  return bi_ != NULL ? *bi_ : *default_instance_->bi_;
-}
-inline ::das::proto::BillInformation* OperationRoute::mutable_bi() {
-  set_has_bi();
-  if (bi_ == NULL) bi_ = new ::das::proto::BillInformation;
-  return bi_;
-}
-inline ::das::proto::BillInformation* OperationRoute::release_bi() {
-  clear_has_bi();
-  ::das::proto::BillInformation* temp = bi_;
-  bi_ = NULL;
-  return temp;
-}
-inline void OperationRoute::set_allocated_bi(::das::proto::BillInformation* bi) {
-  delete bi_;
-  bi_ = bi;
-  if (bi) {
-    set_has_bi();
+inline ::std::string* OperationRoute::release_landid() {
+  clear_has_landid();
+  if (landid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
   } else {
-    clear_has_bi();
+    ::std::string* temp = landid_;
+    landid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void OperationRoute::set_allocated_landid(::std::string* landid) {
+  if (landid_ != &::google::protobuf::internal::kEmptyString) {
+    delete landid_;
+  }
+  if (landid) {
+    set_has_landid();
+    landid_ = landid;
+  } else {
+    clear_has_landid();
+    landid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
@@ -21116,190 +21225,6 @@ inline ::google::protobuf::int32 UploadOperationRoutes::countboundary() const {
 inline void UploadOperationRoutes::set_countboundary(::google::protobuf::int32 value) {
   set_has_countboundary();
   countboundary_ = value;
-}
-
-// optional string planid = 7;
-inline bool UploadOperationRoutes::has_planid() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
-}
-inline void UploadOperationRoutes::set_has_planid() {
-  _has_bits_[0] |= 0x00000040u;
-}
-inline void UploadOperationRoutes::clear_has_planid() {
-  _has_bits_[0] &= ~0x00000040u;
-}
-inline void UploadOperationRoutes::clear_planid() {
-  if (planid_ != &::google::protobuf::internal::kEmptyString) {
-    planid_->clear();
-  }
-  clear_has_planid();
-}
-inline const ::std::string& UploadOperationRoutes::planid() const {
-  return *planid_;
-}
-inline void UploadOperationRoutes::set_planid(const ::std::string& value) {
-  set_has_planid();
-  if (planid_ == &::google::protobuf::internal::kEmptyString) {
-    planid_ = new ::std::string;
-  }
-  planid_->assign(value);
-}
-inline void UploadOperationRoutes::set_planid(const char* value) {
-  set_has_planid();
-  if (planid_ == &::google::protobuf::internal::kEmptyString) {
-    planid_ = new ::std::string;
-  }
-  planid_->assign(value);
-}
-inline void UploadOperationRoutes::set_planid(const char* value, size_t size) {
-  set_has_planid();
-  if (planid_ == &::google::protobuf::internal::kEmptyString) {
-    planid_ = new ::std::string;
-  }
-  planid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* UploadOperationRoutes::mutable_planid() {
-  set_has_planid();
-  if (planid_ == &::google::protobuf::internal::kEmptyString) {
-    planid_ = new ::std::string;
-  }
-  return planid_;
-}
-inline ::std::string* UploadOperationRoutes::release_planid() {
-  clear_has_planid();
-  if (planid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = planid_;
-    planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void UploadOperationRoutes::set_allocated_planid(::std::string* planid) {
-  if (planid_ != &::google::protobuf::internal::kEmptyString) {
-    delete planid_;
-  }
-  if (planid) {
-    set_has_planid();
-    planid_ = planid;
-  } else {
-    clear_has_planid();
-    planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string landid = 8;
-inline bool UploadOperationRoutes::has_landid() const {
-  return (_has_bits_[0] & 0x00000080u) != 0;
-}
-inline void UploadOperationRoutes::set_has_landid() {
-  _has_bits_[0] |= 0x00000080u;
-}
-inline void UploadOperationRoutes::clear_has_landid() {
-  _has_bits_[0] &= ~0x00000080u;
-}
-inline void UploadOperationRoutes::clear_landid() {
-  if (landid_ != &::google::protobuf::internal::kEmptyString) {
-    landid_->clear();
-  }
-  clear_has_landid();
-}
-inline const ::std::string& UploadOperationRoutes::landid() const {
-  return *landid_;
-}
-inline void UploadOperationRoutes::set_landid(const ::std::string& value) {
-  set_has_landid();
-  if (landid_ == &::google::protobuf::internal::kEmptyString) {
-    landid_ = new ::std::string;
-  }
-  landid_->assign(value);
-}
-inline void UploadOperationRoutes::set_landid(const char* value) {
-  set_has_landid();
-  if (landid_ == &::google::protobuf::internal::kEmptyString) {
-    landid_ = new ::std::string;
-  }
-  landid_->assign(value);
-}
-inline void UploadOperationRoutes::set_landid(const char* value, size_t size) {
-  set_has_landid();
-  if (landid_ == &::google::protobuf::internal::kEmptyString) {
-    landid_ = new ::std::string;
-  }
-  landid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* UploadOperationRoutes::mutable_landid() {
-  set_has_landid();
-  if (landid_ == &::google::protobuf::internal::kEmptyString) {
-    landid_ = new ::std::string;
-  }
-  return landid_;
-}
-inline ::std::string* UploadOperationRoutes::release_landid() {
-  clear_has_landid();
-  if (landid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = landid_;
-    landid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void UploadOperationRoutes::set_allocated_landid(::std::string* landid) {
-  if (landid_ != &::google::protobuf::internal::kEmptyString) {
-    delete landid_;
-  }
-  if (landid) {
-    set_has_landid();
-    landid_ = landid;
-  } else {
-    clear_has_landid();
-    landid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional int32 beg = 9;
-inline bool UploadOperationRoutes::has_beg() const {
-  return (_has_bits_[0] & 0x00000100u) != 0;
-}
-inline void UploadOperationRoutes::set_has_beg() {
-  _has_bits_[0] |= 0x00000100u;
-}
-inline void UploadOperationRoutes::clear_has_beg() {
-  _has_bits_[0] &= ~0x00000100u;
-}
-inline void UploadOperationRoutes::clear_beg() {
-  beg_ = 0;
-  clear_has_beg();
-}
-inline ::google::protobuf::int32 UploadOperationRoutes::beg() const {
-  return beg_;
-}
-inline void UploadOperationRoutes::set_beg(::google::protobuf::int32 value) {
-  set_has_beg();
-  beg_ = value;
-}
-
-// optional int32 end = 10;
-inline bool UploadOperationRoutes::has_end() const {
-  return (_has_bits_[0] & 0x00000200u) != 0;
-}
-inline void UploadOperationRoutes::set_has_end() {
-  _has_bits_[0] |= 0x00000200u;
-}
-inline void UploadOperationRoutes::clear_has_end() {
-  _has_bits_[0] &= ~0x00000200u;
-}
-inline void UploadOperationRoutes::clear_end() {
-  end_ = 0;
-  clear_has_end();
-}
-inline ::google::protobuf::int32 UploadOperationRoutes::end() const {
-  return end_;
-}
-inline void UploadOperationRoutes::set_end(::google::protobuf::int32 value) {
-  set_has_end();
-  end_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -21905,6 +21830,28 @@ inline void RequestUavMission::set_end(::google::protobuf::uint64 value) {
 // -------------------------------------------------------------------
 
 // UavRoute
+
+// optional uint64 opTm = 4;
+inline bool UavRoute::has_optm() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void UavRoute::set_has_optm() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void UavRoute::clear_has_optm() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void UavRoute::clear_optm() {
+  optm_ = GOOGLE_ULONGLONG(0);
+  clear_has_optm();
+}
+inline ::google::protobuf::uint64 UavRoute::optm() const {
+  return optm_;
+}
+inline void UavRoute::set_optm(::google::protobuf::uint64 value) {
+  set_has_optm();
+  optm_ = value;
+}
 
 // repeated bytes missions = 1;
 inline int UavRoute::missions_size() const {

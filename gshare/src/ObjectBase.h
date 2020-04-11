@@ -4,6 +4,12 @@
 #include <map>
 #include "LoopQueue.h"
 
+#ifdef __GNUC__
+#define PACKEDSTRUCT( _Strc ) _Strc __attribute__((packed))
+#else
+#define PACKEDSTRUCT( _Strc ) __pragma( pack(push, 1) ) _Strc __pragma( pack(pop) )
+#endif
+
 class LoopQueBuff;
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {

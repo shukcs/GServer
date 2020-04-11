@@ -11,7 +11,32 @@
 #include "UavManager.h"
 #include "ObjectGS.h"
 
-#define WRITE_BUFFLEN 1024
+#define WRITE_BUFFLEN   1024
+#define MissionFinish   9
+#define MissionMod      "Mission"
+#define ReturnMod       "Return"
+typedef union {
+    float tmp[7];
+    PACKEDSTRUCT(struct {
+        float velocity[3];
+        uint16_t precision;     //航线精度
+        uint16_t gndHeight;     //地面高度
+        uint16_t gpsVSpeed;     //垂直速度
+        uint16_t curMs;         //当前任务点
+        uint8_t fixType;        //定位模式及模块状态
+        uint8_t baseMode;       //飞控模块状态
+        uint8_t satellites;     //卫星数
+        uint8_t sysStat;        //飞控状态
+        uint8_t missionRes : 4; //任务状态
+        uint8_t voltageErr : 4; //电压报警
+        uint8_t sprayState : 4; //喷洒报警
+        uint8_t magneErr : 2;   //校磁报警
+        uint8_t gpsJam : 1;     //GPS干扰
+        uint8_t stDown : 1;     //下载状态 0:没有或者完成，1:正下载
+        uint8_t sysType;        //飞控类型
+    });
+} GpsAdtionValue;
+
 using namespace std;
 using namespace das::proto;
 using namespace ::google::protobuf;
@@ -24,7 +49,7 @@ using namespace SOCKETS_NAMESPACE;
 ObjectUav::ObjectUav(const std::string &id, const std::string &sim): ObjectAbsPB(id)
 , m_strSim(sim), m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0)
 , m_tmLastBind(0), m_tmLastPos(0),m_tmValidLast(-1)
-, m_mission(NULL), m_bSys(false)
+, m_mission(NULL), m_nCurMsItem(-1), m_bSys(false)
 {
     SetBuffSize(1024 * 2);
 }
@@ -236,12 +261,8 @@ void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
     {
         OperationInformation *oi = msg->mutable_oi(i);
         oi->set_uavid(GetObjectID());
-        if (oi->has_gps())
-        {
-            const GpsInformation &gps = oi->gps();
-            m_lat = gps.latitude() / 1e7;
-            m_lon = gps.longitude() / 1e7;
-        }
+        if (oi->has_gps() || oi->has_status())
+            _prcsGps(oi->gps(), oi->status().operationmode());
     }
 
     if (Uav2GSMessage *ms = new Uav2GSMessage(this, m_bBind?m_lastBinder:string()))
@@ -406,6 +427,7 @@ void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)
             m_mission->set_createtime(Utility::msTimeTick());
 
         m_bSys = false;
+        m_nCurMsItem = 0;
         ret = 1;
         GetManager()->Log(0, mission.gsid(), 0, "Upload mission for %s!", GetObjectID().c_str());
         _notifyUavUOR(*m_mission);
@@ -468,6 +490,51 @@ int ObjectUav::_checkPos(double lat, double lon, double alt)
     return 0;
 }
 
+void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
+{
+    m_lat = gps.latitude() / 1e7;
+    m_lon = gps.longitude() / 1e7;
+    int itemCount = m_mission->missions_size();
+    if (m_mission && m_bSys && (mod==MissionMod || mod==ReturnMod) && m_nCurMsItem>-1)
+    {
+        GpsAdtionValue gpsAdt = { 0 };
+        int count = (sizeof(GpsAdtionValue) + sizeof(float) - 1) / sizeof(float);
+        for (int i = 0; i < gps.velocity_size() && i < count; ++i)
+        {
+            gpsAdt.tmp[i] = gps.velocity(i);
+        }
+        if (mod == ReturnMod && m_nCurMsItem+1== itemCount && gpsAdt.curMs>=itemCount)
+            _missionFinish();
+        else
+            m_nCurMsItem = gpsAdt.curMs;
+    }
+}
+
+void ObjectUav::_missionFinish()
+{
+    m_nCurMsItem = -1;
+    if (!m_mission)
+        return;
+
+    if (DBMessage *msg = new DBMessage(this))
+    {
+        msg->SetSql("updateMissions");
+        msg->SetWrite("userID", m_mission->gsid());
+        msg->SetWrite("uavID", m_mission->uavid());
+        if (m_mission->has_rpid())
+            msg->SetWrite("planID", Utility::str2int(m_mission->rpid()));
+        if (m_mission->has_landid())
+            msg->SetWrite("landId", Utility::str2int(m_mission->landid()));
+
+        msg->SetWrite("finishTime", Utility::msTimeTick());
+        if (m_mission->has_beg())
+            msg->SetWrite("begin", m_mission->beg());
+        if (m_mission->has_end())
+            msg->SetWrite("end", m_mission->end());
+        SendMsg(msg);
+    }
+}
+
 void ObjectUav::savePos()
 {
     if (DBMessage *msg = new DBMessage(this))
@@ -493,8 +560,8 @@ void ObjectUav::saveBind(bool bBind, const string &gs, bool bForce)
         msg->SetWrite("binded", bBind);
         msg->SetWrite("timeBind", Utility::msTimeTick());
         msg->SetCondition("id", m_id);
-        msg->SetCondition("UavInfo.binded", false);
-        msg->SetCondition("UavInfo.binder", bForce ? gs : m_lastBinder);
+        msg->SetCondition("binded", false);
+        msg->SetCondition("binder", bForce ? gs : m_lastBinder);
 
         SendMsg(msg);
         GetManager()->Log(0, gs, 0, "%s %s", bBind ? "bind" : "unbind", m_id.c_str());

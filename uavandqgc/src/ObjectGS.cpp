@@ -281,6 +281,7 @@ void ObjectGS::processGs2Gs(const Message &msg, int tp)
             ms->AttachProto(ack);
             SendMsg(ms);
         }
+
         if (gsmsg->type() == DeleteFriend)
             m_friends.remove(gsmsg->from());
         else if (gsmsg->type() == AgreeFriend)

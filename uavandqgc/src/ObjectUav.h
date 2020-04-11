@@ -17,6 +17,7 @@ namespace das {
         class UavStatus;
         class RequestPositionAuthentication;
         class AckPositionAuthentication;
+        class GpsInformation;
     }
 }
 
@@ -65,7 +66,9 @@ private:
     bool _hasMission(const das::proto::RequestRouteMissions &req)const;
     void _notifyUavUOR(const das::proto::OperationRoute &ort);
     int _checkPos(double lat, double lon, double alt);
+    void _prcsGps(const das::proto::GpsInformation &gps, const std::string &mod);
 private:
+    void _missionFinish();
     void savePos();
     void saveBind(bool bBind, const std::string &gs, bool bForce=false);
     void sendBindAck(int ack, int res, bool bind, const std::string &gs);
@@ -80,6 +83,7 @@ private:
     int64_t                         m_tmLastPos;
     int64_t                         m_tmValidLast;
     das::proto::OperationRoute      *m_mission;
+    int                             m_nCurMsItem;
     bool                            m_bSys;
     std::string                     m_lastBinder;
     std::string                     m_authCheck;

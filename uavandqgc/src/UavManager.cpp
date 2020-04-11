@@ -254,9 +254,8 @@ void UavManager::processAllocationUav(int seqno, const string &id)
     }
 }
 
-void UavManager::processNotifyProgram(const NotifyProgram &proto)
+void UavManager::processNotifyProgram(const NotifyProgram &)
 {
-
 }
 
 void UavManager::processMaxID(const DBMessage &msg)
@@ -287,7 +286,7 @@ void UavManager::queryUavInfo(ObjectGS *gs, int seq, const std::list<std::string
     if (!gs)
         return;
 
-    if (DBMessage *msg = new DBMessage(gs, IMessage::UavsQueryRslt, "DBUav"))
+    if (DBMessage *msg = new DBMessage(gs, IMessage::UavsQueryRslt, DBMessage::DB_Uav))
     {
         msg->SetSeqNomb(seq);
         int idx = 0;
@@ -319,7 +318,7 @@ void UavManager::saveBind(const std::string &uav, bool bBind, ObjectGS *gs)
     if (!gs)
         return;
 
-    if (DBMessage *msg = new DBMessage(gs, IMessage::UavBindRslt, "DBUav"))
+    if (DBMessage *msg = new DBMessage(gs, IMessage::UavBindRslt, DBMessage::DB_Uav))
     {
         msg->SetSql("updateBinded");
         msg->AddSql("queryUavInfo");
