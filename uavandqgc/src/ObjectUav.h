@@ -27,6 +27,7 @@ namespace SOCKETS_NAMESPACE {
 
 class DBMessage;
 class ObjectGS;
+class Variant;
 class ObjectUav : public ObjectAbsPB
 {
 public:
@@ -41,6 +42,8 @@ public:
 public:
     static int UAVType();
     static void InitialUAV(const DBMessage &msg, ObjectUav &uav);
+    static bool transToMissionItems(const Variant &v, das::proto::OperationRoute &ms);
+    static bool transFormMissionItems(Variant &v, const das::proto::OperationRoute &ms);
 protected:
     virtual int GetObjectType()const;
     virtual void ProcessMessage(IMessage *msg);

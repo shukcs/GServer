@@ -48,7 +48,7 @@
 					<foreign name="landId" foreign="id" ref="LandInfo" />
 					<foreign name="planuser" foreign="user" ref="GSInfo" />
 				</table>			
-				<table name="MissionInfo" keys="planID,uploadTime">
+				<table name="MissionInfo" keys="planID,finishTime">
 					<field name="userID" type="char(24)"/>
 					<field name="uavID" type="char(16)"/>
 					<field name="landId" type="BIGINT" />

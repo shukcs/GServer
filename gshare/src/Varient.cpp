@@ -225,6 +225,16 @@ const char *Variant::GetBuff() const
     return NULL;
 }
 
+void Variant::SetBuff(const char *b, int sz)
+{
+    if (b && sz>0)
+    {
+        ensureDestruct();
+        m_tp = Type_buff;
+        m_list = new string(b, sz);
+    }
+}
+
 int Variant::GetBuffLength() const
 {
     if (Type_buff == m_tp)

@@ -150,6 +150,37 @@ void ObjectUav::InitialUAV(const DBMessage &rslt, ObjectUav &uav)
         uav.m_authCheck = authCheck.ToString();
 }
 
+bool ObjectUav::transToMissionItems(const Variant &v, das::proto::OperationRoute &ms)
+{
+    int sz = v.GetBuffLength();
+    UavRoute rt;
+    if (sz > 0 && rt.ParseFromArray(v.GetBuff(), sz))
+    {
+        ms.set_createtime(rt.optm());
+        for (int i = 0; i < rt.missions_size(); ++i)
+        {
+            ms.add_missions(rt.missions(i));
+        }
+        return true;
+    }
+    return false;
+}
+
+bool ObjectUav::transFormMissionItems(Variant &v, const das::proto::OperationRoute &ms)
+{
+    UavRoute rt;
+    rt.set_optm(ms.createtime());
+    for (int i = 0; i < ms.missions_size(); ++i)
+    {
+        rt.add_missions(ms.missions(i));
+    }
+    string buff;
+    buff.resize(rt.ByteSize());
+    rt.SerializeToArray(&buff.front(), buff.size());
+    v.SetBuff(buff.c_str(), buff.size());
+    return true;
+}
+
 IMessage *ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *obj)
 {
     Uav2GSMessage *ms = NULL;
@@ -494,7 +525,7 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
 {
     m_lat = gps.latitude() / 1e7;
     m_lon = gps.longitude() / 1e7;
-    int itemCount = m_mission->missions_size();
+    int itemCount = m_mission ? m_mission->missions_size() : 0;
     if (m_mission && m_bSys && (mod==MissionMod || mod==ReturnMod) && m_nCurMsItem>-1)
     {
         GpsAdtionValue gpsAdt = { 0 };
@@ -531,6 +562,9 @@ void ObjectUav::_missionFinish()
             msg->SetWrite("begin", m_mission->beg());
         if (m_mission->has_end())
             msg->SetWrite("end", m_mission->end());
+        Variant v;
+        transFormMissionItems(v, *m_mission);
+        msg->SetWrite("route", v);
         SendMsg(msg);
     }
 }

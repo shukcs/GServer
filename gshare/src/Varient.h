@@ -128,6 +128,7 @@ public:
     bool ToBool()const;
     const StringList &ToStringList()const;
     const char *GetBuff()const;
+    void SetBuff(const char *b, int sz);
     int GetBuffLength()const;
     bool IsNull()const;
     Variant &operator=(const Variant &oth);
