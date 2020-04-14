@@ -617,7 +617,8 @@ ExecutItem *ExecutItem::parse(const TiXmlElement *e, const MysqlDB &db)
 
     if (const char *tmpC = e->Attribute("condition"))
         sql->m_conditions = VGMySql::SplitString(tmpC, ";");
-
+    if (const char *tmpC = e->Attribute("group"))
+        sql->m_group = tmpC;
     sql->SetExecutTables(VGMySql::SplitString(table, ";"), db);
     sql->_parseItems(e, db);
 
@@ -752,19 +753,28 @@ std::string ExecutItem::_toSelect(MYSQL_BIND *param, int &pos) const
         fields += " " + item->GetFieldName();
     }
     string sql = string("select") + fields+ " from" + _getTablesString() + _conditionsString(param, pos);
+    if (!m_group.empty())
+        sql += " group by " + m_group;
+
     return sql;
 }
 
 string ExecutItem::_conditionsString(MYSQL_BIND *bind, int &pos) const
 {
-    string conditions;
-    StringList::const_iterator itrC = m_conditions.begin();
+    auto itrC = m_conditions.begin();
     string strL;
+    string conditions;
     for (FiledVal *itr : m_itemsCondition)
     {
-        string tmp = itrC != m_conditions.end() ? *itrC : "and";
+        string tmp = m_conditions.size() == 1 ? m_conditions.front() : (itrC != m_conditions.end() ? *itrC : "and");
+        if (itrC != m_conditions.end())
+            ++itrC;
+
         if(itr->IsEmpty())
+        {
+            strL = _getCondition(tmp);
             continue;
+        }
 
         if (conditions.empty())
             conditions = string(" where ")+ itr->ToConditionString(tmp);
@@ -772,8 +782,6 @@ string ExecutItem::_conditionsString(MYSQL_BIND *bind, int &pos) const
             conditions += strL + itr->ToConditionString(tmp);
 
         strL = _getCondition(tmp);
-        if (itrC != m_conditions.end())
-            ++itrC;
         if(bind && !itr->IsStringParam())
             transformBind(itr, bind[pos++]);
     }

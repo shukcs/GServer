@@ -163,6 +163,7 @@ private:
     FiledVal          *m_autoIncrement;
     bool              m_bHasForeignRefTable;
     bool              m_bRef;
+    string            m_group;
     StringList        m_tables;
     StringList        m_conditions;
     list<FiledVal*>   m_itemsRead;

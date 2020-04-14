@@ -48,11 +48,11 @@
 					<foreign name="landId" foreign="id" ref="LandInfo" />
 					<foreign name="planuser" foreign="user" ref="GSInfo" />
 				</table>			
-				<table name="MissionInfo" keys="planID,finishTime">
+				<table name="MissionInfo" keys="uavID,finishTime">
 					<field name="userID" type="char(24)"/>
 					<field name="uavID" type="char(16)"/>
-					<field name="landId" type="BIGINT" />
-					<field name="planID" type="BIGINT" />
+					<field name="landId" type="BIGINT" constraint="DEFAULT ''"/>
+					<field name="planID" type="BIGINT" constraint="DEFAULT ''"/>
 					<field name="finishTime" type="BIGINT"/>
 					<field name="begin" type="Int" />
 					<field name="end" type="Int" />
@@ -269,8 +269,8 @@
 					<item name="binder" ref="UavInfo" type="Write" />
 					<item name="timeBind" ref="UavInfo" type="Write"/>
 					<item name="id" type="Condition" />
-					<item name="binded" type="Condition" />
-					<item name="binder" type="Condition" />
+					<item name="UavInfo.binded" type="Condition" />
+					<item name="UavInfo.binder" type="Condition" />
 				</SQL>
 				<SQL name="deleteUavInfo" table="UavInfo" type="Delete" >
 					<item name="id" type="Condition" />

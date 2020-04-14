@@ -190,8 +190,9 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
 
 void UavManager::_checkBindUav(const RequestBindUav &rbu, ObjectGS *gs)
 {
-    if (gs && !gs->GetAuth(ObjectGS::Type_UavManager))
-        saveBind(rbu.uavid(), rbu.opid()==1, gs);
+    bool bBind = gs->GetAuth(ObjectGS::Type_UavManager);
+    if (gs || bBind)
+        saveBind(rbu.uavid(), rbu.opid()==1&&!bBind, gs);
 }
 
 void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)

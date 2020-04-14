@@ -217,7 +217,7 @@ IMessage::MessageType GS2UavMessage::getMessageType(const google::protobuf::Mess
     const string &name = msg.GetDescriptor()->full_name();
     if (name == d_p_ClassName(RequestBindUav))
         ret = BindUav;
-    if (name == d_p_ClassName(PostOperationRoute))
+    else if (name == d_p_ClassName(PostOperationRoute))
         ret = PostOR;
     else if (name == d_p_ClassName(PostControl2Uav))
         ret = ControlUav;

@@ -150,23 +150,16 @@ void ObjectUav::InitialUAV(const DBMessage &rslt, ObjectUav &uav)
         uav.m_authCheck = authCheck.ToString();
 }
 
-bool ObjectUav::transToMissionItems(const Variant &v, das::proto::OperationRoute &ms)
+bool ObjectUav::transToMissionItems(const Variant &v, UavRoute &rt)
 {
     int sz = v.GetBuffLength();
-    UavRoute rt;
-    if (sz > 0 && rt.ParseFromArray(v.GetBuff(), sz))
-    {
-        ms.set_createtime(rt.optm());
-        for (int i = 0; i < rt.missions_size(); ++i)
-        {
-            ms.add_missions(rt.missions(i));
-        }
+    if (sz > 0 && rt.ParseFromArray(v.GetBuff(), sz))  
         return true;
-    }
+
     return false;
 }
 
-bool ObjectUav::transFormMissionItems(Variant &v, const das::proto::OperationRoute &ms)
+bool ObjectUav::transFormMissionItems(Variant &v, const OperationRoute &ms)
 {
     UavRoute rt;
     rt.set_optm(ms.createtime());
@@ -409,7 +402,7 @@ void ObjectUav::processBind(RequestBindUav *msg, IObject *obj)
         if (bBind != m_bBind)
         {
             m_bBind = bBind;
-            saveBind(bBind, gs);
+            saveBind(bBind, gs, bForceUnbind);
         }
     }
     if (sender && bForceUnbind)
@@ -534,7 +527,7 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
         {
             gpsAdt.tmp[i] = gps.velocity(i);
         }
-        if (mod == ReturnMod && m_nCurMsItem+1== itemCount && gpsAdt.curMs>=itemCount)
+        if (gpsAdt.curMs+1 == itemCount)
             _missionFinish();
         else
             m_nCurMsItem = gpsAdt.curMs;
@@ -594,8 +587,8 @@ void ObjectUav::saveBind(bool bBind, const string &gs, bool bForce)
         msg->SetWrite("binded", bBind);
         msg->SetWrite("timeBind", Utility::msTimeTick());
         msg->SetCondition("id", m_id);
-        msg->SetCondition("binded", false);
-        msg->SetCondition("binder", bForce ? gs : m_lastBinder);
+        msg->SetCondition("UavInfo.binded", false);
+        msg->SetCondition("UavInfo.binder", bForce ? gs : m_lastBinder);
 
         SendMsg(msg);
         GetManager()->Log(0, gs, 0, "%s %s", bBind ? "bind" : "unbind", m_id.c_str());
