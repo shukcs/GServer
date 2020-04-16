@@ -12,6 +12,7 @@ class GOutLog : public ILog
 public:
     GOutLog(){}
 	void Log(const std::string &dsc, const std::string &obj, int evT = 0, int err = 0);
+    void ProcessLog();
 };
 
 

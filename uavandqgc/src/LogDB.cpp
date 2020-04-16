@@ -1,16 +1,22 @@
-#ifdef _MSC_VER
-#pragma warning(disable:4786)
-#include <time.h>
-#endif
-#include "GOutLog.h"
+#include "LogDB.h"
 #include <stdio.h>
 #include "socket_include.h"
 
-#ifdef SOCKETS_NAMESPACE
-using namespace SOCKETS_NAMESPACE;
-#endif
+LogDB::LogDB() : ILog()
+{
+}
 
-void GOutLog::Log(const std::string &dsc, const std::string &obj, int evT, int err)
+LogDB::~LogDB()
+{
+}
+
+LogDB &LogDB::Instance()
+{
+    static LogDB sLog;
+    return sLog;
+}
+
+void LogDB::Log(const std::string &dsc, const std::string &obj, int evT, int err)
 {
     char dt[48];
     std::string level("");
@@ -37,14 +43,10 @@ void GOutLog::Log(const std::string &dsc, const std::string &obj, int evT, int e
     localtime_r(&t, &tp);
 #endif
     sprintf(dt, "%s(%d-%02d-%02d %02d:%02d:%02d)", level.c_str(),
-        tp.tm_year + 1900, tp.tm_mon + 1,tp.tm_mday,
-        tp.tm_hour, tp.tm_min, tp.tm_sec );
+        tp.tm_year + 1900, tp.tm_mon + 1, tp.tm_mday,
+        tp.tm_hour, tp.tm_min, tp.tm_sec);
     if (err)
         printf("%s%s: %s; %s!\n", dt, obj.c_str(), dsc.c_str(), StrError(err));
     else
         printf("%s%s: %s!\n", dt, obj.c_str(), dsc.c_str());
-}
-
-void GOutLog::ProcessLog()
-{
 }

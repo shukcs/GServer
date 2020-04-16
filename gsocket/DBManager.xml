@@ -51,8 +51,8 @@
 				<table name="MissionInfo" keys="uavID,finishTime">
 					<field name="userID" type="char(24)"/>
 					<field name="uavID" type="char(16)"/>
-					<field name="landId" type="BIGINT" constraint="DEFAULT ''"/>
-					<field name="planID" type="BIGINT" constraint="DEFAULT ''"/>
+					<field name="landId" type="BIGINT" constraint="DEFAULT 0"/>
+					<field name="planID" type="BIGINT" constraint="DEFAULT 0"/>
 					<field name="finishTime" type="BIGINT"/>
 					<field name="begin" type="Int" />
 					<field name="end" type="Int" />

@@ -91,6 +91,7 @@ void ObjectGS::_prcsLogin(RequestGSIdentityAuthentication *msg)
         {
             ack->set_seqno(msg->seqno());
             ack->set_result(suc ? 1 : -1);
+            ack->set_auth(m_auth);
             send(ack);
         }
     }

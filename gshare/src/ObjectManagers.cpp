@@ -86,7 +86,7 @@ void ManagerAbstractItem::Unregister()
 ////////////////////////////////////////////////////////////
 ObjectManagers::ObjectManagers():m_mtxSock(new Mutex)
 , m_mtxObj(new Mutex), m_mtxMsg(new Mutex)
-, m_thread(new ManagerThread)
+, m_thread(new ManagerThread), m_log(NULL)
 {
     if (m_thread)
         m_thread->SetRunning();
@@ -107,8 +107,13 @@ ObjectManagers &ObjectManagers::Instance()
 
 ILog &ObjectManagers::GetLog()
 {
-    static GOutLog sLog;
-    return sLog;
+    ILog *ret = Instance().m_log;
+    if (NULL == ret)
+    {
+        static GOutLog sLog;
+        return sLog;
+    }
+    return *ret;
 }
 
 void ObjectManagers::AddManager(IObjectManager *m)
@@ -191,6 +196,12 @@ void ObjectManagers::Unsubcribe(IObject *o, const std::string &sender, int tpMsg
         m_subcribeMsgs.Push(sub);
         m_mtxMsg->Unlock();
     }
+}
+
+void ObjectManagers::SetLog(ILog *log)
+{
+    if (!m_log)
+        m_log = log;
 }
 
 void ObjectManagers::Destroy(IObject *o)
@@ -354,6 +365,7 @@ void ObjectManagers::_prcsSendMessages(IObjectManager *mgr)
                 delete msg;
         }
     }
+    GetLog().ProcessLog();
 }
 
 void ObjectManagers::_prcsReleaseMessages(IObjectManager *mgr)

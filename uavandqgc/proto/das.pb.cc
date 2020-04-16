@@ -717,10 +717,11 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestGSIdentityAuthentication));
   AckGSIdentityAuthentication_descriptor_ = file->message_type(24);
-  static const int AckGSIdentityAuthentication_offsets_[3] = {
+  static const int AckGSIdentityAuthentication_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckGSIdentityAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckGSIdentityAuthentication, result_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckGSIdentityAuthentication, password_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckGSIdentityAuthentication, auth_),
   };
   AckGSIdentityAuthentication_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -1567,8 +1568,9 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestRouteMissions));
   RequestUavMission_descriptor_ = file->message_type(71);
-  static const int RequestUavMission_offsets_[4] = {
+  static const int RequestUavMission_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavMission, seqno_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavMission, uav_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavMission, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavMission, beg_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavMission, end_),
@@ -1601,9 +1603,10 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UavRoute));
   AckUavMission_descriptor_ = file->message_type(73);
-  static const int AckUavMission_offsets_[3] = {
+  static const int AckUavMission_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavMission, boundary_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavMission, plan_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavMission, lands_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavMission, routes_),
   };
   AckUavMission_reflection_ =
@@ -2276,173 +2279,174 @@ void protobuf_AddDesc_das_2eproto() {
     " \002(\005\022\r\n\005check\030\003 \001(\t\"p\n\037RequestGSIdentity"
     "Authentication\022\r\n\005seqno\030\001 \002(\r\022\016\n\006userid\030"
     "\002 \002(\t\022\020\n\010password\030\003 \001(\t\022\r\n\005phone\030\004 \001(\t\022\r"
-    "\n\005check\030\005 \001(\t\"N\n\033AckGSIdentityAuthentica"
+    "\n\005check\030\005 \001(\t\"\\\n\033AckGSIdentityAuthentica"
     "tion\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\020\n\010p"
-    "assword\030\003 \001(\t\"u\n\025GroundStationsMessage\022\r"
-    "\n\005seqno\030\001 \002(\r\022\"\n\004type\030\002 \002(\0162\024.das.proto."
-    "GSMsgType\022\014\n\004from\030\003 \002(\t\022\n\n\002to\030\004 \002(\t\022\017\n\007c"
-    "ontent\030\005 \001(\014\"B\n\030AckGroundStationsMessage"
-    "\022\r\n\005seqno\030\001 \002(\r\022\013\n\003res\030\002 \002(\r\022\n\n\002gs\030\003 \002(\t"
-    "\"\037\n\016RequestFriends\022\r\n\005seqno\030\001 \002(\r\",\n\nAck"
-    "Friends\022\r\n\005seqno\030\001 \002(\r\022\017\n\007friends\030\002 \003(\t\""
-    "Y\n\016GpsInformation\022\021\n\tlongitude\030\001 \002(\005\022\020\n\010"
-    "latitude\030\002 \002(\005\022\020\n\010altitude\030\003 \002(\005\022\020\n\010velo"
-    "city\030\004 \003(\002\"b\n\013UavAttitude\022\014\n\004roll\030\001 \002(\002\022"
-    "\r\n\005pitch\030\002 \002(\002\022\013\n\003yaw\030\003 \002(\002\022\024\n\014relative_"
-    "alt\030\004 \002(\002\022\023\n\013groundspeed\030\005 \002(\002\"z\n\017Operat"
-    "ionStatus\022\025\n\roperationmode\030\001 \001(\t\022\017\n\007volt"
-    "age\030\002 \001(\002\022\025\n\rsurplusenergy\030\003 \001(\002\022\023\n\013jetv"
-    "elocity\030\004 \001(\002\022\023\n\013sprayeddose\030\005 \001(\002\"\230\001\n\017O"
-    "perationParams\022\024\n\014alarmvoltage\030\001 \001(\002\022\021\n\t"
-    "alarmdose\030\002 \001(\002\022\025\n\rsprayingwidth\030\003 \001(\002\022\027"
-    "\n\017desiredaltitude\030\004 \001(\002\022\027\n\017desiredveloci"
-    "ty\030\005 \001(\002\022\023\n\013jetvelocity\030\006 \001(\002\"\342\001\n\024Operat"
-    "ionInformation\022\r\n\005uavid\030\001 \002(\t\022\021\n\ttimesta"
-    "mp\030\002 \002(\004\022&\n\003gps\030\003 \002(\0132\031.das.proto.GpsInf"
-    "ormation\022*\n\006status\030\004 \001(\0132\032.das.proto.Ope"
-    "rationStatus\022*\n\006params\030\005 \001(\0132\032.das.proto"
-    ".OperationParams\022(\n\010attitude\030\006 \001(\0132\026.das"
-    ".proto.UavAttitude\"V\n\030PostOperationInfor"
-    "mation\022\r\n\005seqno\030\001 \002(\r\022+\n\002oi\030\002 \003(\0132\037.das."
-    "proto.OperationInformation\"8\n\027AckOperati"
-    "onInformation\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002"
-    " \002(\005\"C\n\nCoordinate\022\021\n\tlongitude\030\001 \002(\005\022\020\n"
-    "\010latitude\030\002 \002(\005\022\020\n\010altitude\030\003 \001(\005\"t\n\021Ope"
-    "rationSnapshot\022\r\n\005devid\030\001 \002(\t\022\021\n\ttimesta"
-    "mp\030\002 \002(\004\022\"\n\003pos\030\003 \001(\0132\025.das.proto.Coordi"
-    "nate\022\014\n\004size\030\004 \001(\005\022\013\n\003pic\030\005 \002(\014\"P\n\025PostO"
-    "perationSnapshot\022\r\n\005seqno\030\001 \002(\r\022(\n\002os\030\002 "
-    "\002(\0132\034.das.proto.OperationSnapshot\"9\n\030Ack"
-    "PostOperationSnapshot\022\r\n\005seqno\030\001 \002(\r\022\016\n\006"
-    "result\030\002 \002(\005\"5\n\007Outline\022*\n\013coordinates\030\001"
-    " \003(\0132\025.das.proto.Coordinate\"\270\001\n\027ParcelSu"
-    "rveyInformation\022\023\n\013surveryorid\030\001 \002(\t\022\023\n\013"
-    "surverytime\030\002 \002(\004\022\'\n\002sp\030\003 \002(\0162\033.das.prot"
-    "o.SurveryPrecision\022\036\n\002po\030\004 \002(\0132\022.das.pro"
-    "to.Outline\022\036\n\002bo\030\005 \003(\0132\022.das.proto.Outli"
-    "ne\022\n\n\002id\030\006 \001(\t\"]\n\033PostParcelSurveyInform"
-    "ation\022\r\n\005seqno\030\001 \002(\r\022/\n\003psi\030\002 \002(\0132\".das."
-    "proto.ParcelSurveyInformation\"N\n\036AckPost"
-    "ParcelSurveyInformation\022\r\n\005seqno\030\001 \002(\r\022\016"
-    "\n\006result\030\002 \002(\005\022\r\n\005psiid\030\003 \001(\t\"j\n\037Request"
-    "ParcelSurveyInformations\022\r\n\005seqno\030\001 \002(\r\022"
-    "\r\n\005psiid\030\002 \001(\t\022)\n\ncoordinate\030\003 \001(\0132\025.das"
-    ".proto.Coordinate\"u\n\"AckRequestParcelSur"
-    "veyInformations\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result"
-    "\030\002 \002(\005\0220\n\004psis\030\003 \003(\0132\".das.proto.ParcelS"
-    "urveyInformation\"\203\001\n\020ParcelContracter\022\014\n"
-    "\004name\030\001 \002(\t\022\021\n\tbirthdate\030\002 \002(\004\022\017\n\007addres"
-    "s\030\003 \002(\t\022\020\n\010mobileno\030\004 \002(\t\022\017\n\007phoneno\030\005 \001"
-    "(\t\022\016\n\006weixin\030\006 \001(\t\022\n\n\002id\030\007 \001(\t\"\346\001\n\021Parce"
-    "lDescription\022\014\n\004name\030\001 \002(\t\022\022\n\nregisterid"
-    "\030\002 \002(\t\022\'\n\002pc\030\003 \002(\0132\033.das.proto.ParcelCon"
-    "tracter\022\017\n\007acreage\030\004 \002(\002\022\r\n\005psiid\030\005 \001(\t\022"
-    "/\n\003psi\030\006 \001(\0132\".das.proto.ParcelSurveyInf"
-    "ormation\022)\n\ncoordinate\030\007 \001(\0132\025.das.proto"
-    ".Coordinate\022\n\n\002id\030\010 \001(\t\"P\n\025PostParcelDes"
-    "cription\022\r\n\005seqno\030\001 \002(\r\022(\n\002pd\030\002 \002(\0132\034.da"
-    "s.proto.ParcelDescription\"d\n\030AckPostParc"
-    "elDescription\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002"
-    " \002(\005\022\014\n\004pcid\030\003 \001(\t\022\r\n\005psiid\030\004 \001(\t\022\014\n\004pdi"
-    "d\030\005 \001(\t\"\231\002\n\031RequestParcelDescriptions\022\r\n"
-    "\005seqno\030\001 \002(\r\022\014\n\004pdid\030\002 \001(\t\022)\n\ncoordinate"
-    "\030\003 \001(\0132\025.das.proto.Coordinate\022\025\n\rsurvery"
-    "orname\030\004 \001(\t\022\023\n\013surveryorid\030\005 \001(\t\022\024\n\014reg"
-    "istername\030\006 \001(\t\022\022\n\nregisterid\030\007 \001(\t\022\022\n\np"
-    "arcelname\030\010 \001(\t\022\022\n\ncontracter\030\t \001(\t\022\020\n\010m"
-    "obileno\030\n \001(\t\022$\n\005zones\030\013 \003(\0132\025.das.proto"
-    ".Coordinate\"h\n\034AckRequestParcelDescripti"
-    "ons\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022)\n\003pd"
-    "s\030\003 \003(\0132\034.das.proto.ParcelDescription\"U\n"
-    "\027DeleteParcelDescription\022\r\n\005seqno\030\001 \002(\r\022"
-    "\014\n\004pdid\030\002 \002(\t\022\016\n\006delpsi\030\003 \001(\010\022\r\n\005delpc\030\004"
-    " \001(\010\";\n\032AckDeleteParcelDescription\022\r\n\005se"
-    "qno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\")\n\014SingleShrin"
-    "k\022\013\n\003bdr\030\001 \002(\005\022\014\n\004safe\030\002 \002(\001\"\204\001\n\rOperati"
-    "onPlan\022\r\n\005width\030\001 \002(\001\022\r\n\005angle\030\002 \002(\002\022\014\n\004"
-    "anti\030\003 \002(\010\022\016\n\006single\030\004 \002(\010\022(\n\007bdrsafe\030\005 "
-    "\003(\0132\027.das.proto.SingleShrink\022\r\n\005block\030\006 "
-    "\002(\001\"\307\001\n\024OperationDescription\022\022\n\nregister"
-    "id\030\001 \002(\t\022\014\n\004pdid\030\002 \002(\t\022$\n\002op\030\003 \002(\0132\030.das"
-    ".proto.OperationPlan\022\014\n\004crop\030\004 \002(\t\022\014\n\004dr"
-    "ug\030\005 \002(\t\022\r\n\005prize\030\006 \002(\002\022\r\n\005ridge\030\007 \002(\005\022\020"
-    "\n\010plantime\030\010 \001(\004\022\r\n\005notes\030\t \001(\t\022\014\n\004odid\030"
-    "\n \001(\t\"V\n\030PostOperationDescription\022\r\n\005seq"
-    "no\030\001 \002(\r\022+\n\002od\030\002 \002(\0132\037.das.proto.Operati"
-    "onDescription\"J\n\033AckPostOperationDescrip"
-    "tion\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\014\n\004o"
-    "did\030\003 \001(\t\"]\n\034RequestOperationDescription"
-    "s\022\r\n\005seqno\030\001 \002(\r\022\014\n\004odid\030\002 \001(\t\022\014\n\004pdid\030\003"
-    " \001(\t\022\022\n\nregisterid\030\004 \001(\t\"n\n\037AckRequestOp"
-    "erationDescriptions\022\r\n\005seqno\030\001 \002(\r\022\016\n\006re"
-    "sult\030\002 \002(\005\022,\n\003ods\030\003 \003(\0132\037.das.proto.Oper"
-    "ationDescription\"9\n\032DeleteOperationDescr"
-    "iption\022\r\n\005seqno\030\001 \002(\r\022\014\n\004odid\030\002 \002(\t\">\n\035A"
-    "ckDeleteOperationDescription\022\r\n\005seqno\030\001 "
-    "\002(\r\022\016\n\006result\030\002 \002(\005\"\212\001\n\017BillInformation\022"
-    "\025\n\rservicecharge\030\001 \001(\002\022\027\n\017pesticidecharg"
-    "e\030\002 \001(\002\022\023\n\013othercharge\030\003 \001(\002\022\021\n\tsumcharg"
-    "e\030\004 \002(\002\022\021\n\tpesticide\030\005 \002(\t\022\014\n\004crop\030\006 \002(\t"
-    "\"\331\001\n\016OperationRoute\022\014\n\004gsid\030\001 \002(\t\022\r\n\005uav"
-    "id\030\002 \002(\t\022\022\n\ncreatetime\030\003 \002(\004\022\021\n\tmaxvoyag"
-    "e\030\004 \002(\002\022\020\n\010missions\030\005 \003(\014\022\021\n\tboundarys\030\006"
-    " \003(\014\022&\n\002bi\030\007 \001(\0132\032.das.proto.BillInforma"
-    "tion\022\014\n\004rpid\030\010 \001(\t\022\013\n\003beg\030\t \001(\005\022\013\n\003end\030\n"
-    " \001(\005\022\016\n\006landid\030\013 \001(\t\"J\n\022PostOperationRou"
-    "te\022\r\n\005seqno\030\001 \002(\r\022%\n\002or\030\002 \002(\0132\031.das.prot"
-    "o.OperationRoute\"6\n\025AckPostOperationRout"
-    "e\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"\205\001\n\025Upl"
-    "oadOperationRoutes\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uav"
-    "id\030\002 \002(\t\022\016\n\006userid\030\003 \002(\t\022\021\n\ttimestamp\030\004 "
-    "\002(\004\022\024\n\014countmission\030\005 \002(\005\022\025\n\rcountbounda"
-    "ry\030\006 \002(\005\"a\n\023SyscOperationRoutes\022\r\n\005seqno"
-    "\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005uavid\030\003 \002(\t\022\r\n"
-    "\005index\030\004 \001(\005\022\r\n\005count\030\005 \001(\005\"e\n\024RequestRo"
-    "uteMissions\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002("
-    "\t\022\020\n\010boundary\030\003 \002(\010\022\016\n\006offset\030\004 \002(\005\022\r\n\005c"
-    "ount\030\005 \002(\005\"l\n\027AckRequestRouteMissions\022\r\n"
-    "\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\020\n\010boundary"
-    "\030\003 \002(\010\022\016\n\006offset\030\004 \002(\005\022\020\n\010missions\030\005 \003(\014"
-    "\"H\n\021RequestUavMission\022\r\n\005seqno\030\001 \002(\r\022\n\n\002"
-    "id\030\002 \001(\t\022\013\n\003beg\030\003 \001(\004\022\013\n\003end\030\004 \001(\004\"*\n\010Ua"
-    "vRoute\022\014\n\004opTm\030\004 \001(\004\022\020\n\010missions\030\001 \003(\014\"T"
-    "\n\rAckUavMission\022\020\n\010boundary\030\001 \002(\014\022\014\n\004pla"
-    "n\030\002 \002(\014\022#\n\006routes\030\003 \003(\0132\023.das.proto.UavR"
-    "oute\"\350\001\n\tUavStatus\022\r\n\005uavid\030\001 \002(\t\022\016\n\006res"
-    "ult\030\002 \002(\005\022\016\n\006online\030\003 \001(\010\022\016\n\006landed\030\004 \001("
-    "\010\022\020\n\010deadline\030\005 \001(\004\022\016\n\006binded\030\006 \001(\010\022\016\n\006b"
-    "inder\030\007 \001(\t\022\014\n\004time\030\010 \001(\004\022&\n\003pos\030\t \001(\0132\031"
-    ".das.proto.GpsInformation\022\021\n\ttimestamp\030\n"
-    " \001(\004\022\022\n\nauthString\030\013 \001(\t\022\r\n\005simId\030\014 \001(\t\""
-    "0\n\020RequestUavStatus\022\r\n\005seqno\030\001 \002(\r\022\r\n\005ua"
-    "vid\030\002 \003(\t\"J\n\023AckRequestUavStatus\022\r\n\005seqn"
-    "o\030\001 \002(\r\022$\n\006status\030\002 \003(\0132\024.das.proto.UavS"
-    "tatus\"`\n\016RequestBindUav\022\r\n\005seqno\030\001 \002(\r\022\014"
-    "\n\004opid\030\002 \002(\r\022\r\n\005uavid\030\003 \002(\t\022\016\n\006binder\030\004 "
-    "\002(\t\022\022\n\nauthString\030\005 \001(\t\"f\n\021AckRequestBin"
-    "dUav\022\r\n\005seqno\030\001 \002(\r\022\014\n\004opid\030\002 \002(\r\022\016\n\006res"
-    "ult\030\003 \002(\005\022$\n\006status\030\004 \001(\0132\024.das.proto.Ua"
-    "vStatus\"v\n\016UavProductInfo\022\r\n\005uavid\030\001 \001(\t"
-    "\022\023\n\013producttype\030\002 \001(\t\022\021\n\tproductid\030\003 \001(\t"
-    "\022\017\n\007fwLight\030\004 \001(\t\022\r\n\005fwFMU\030\005 \001(\t\022\r\n\005fwIM"
-    "U\030\006 \001(\t\"I\n\026RequestUavProductInfos\022\r\n\005seq"
-    "no\030\001 \002(\r\022\021\n\tproductid\030\002 \003(\t\022\r\n\005uavid\030\003 \003"
-    "(\t\"b\n\031AckRequestUavProductInfos\022\r\n\005seqno"
-    "\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022&\n\003upi\030\003 \003(\0132\031.da"
-    "s.proto.UavProductInfo\"L\n\023PostUavProduct"
-    "Infos\022\r\n\005seqno\030\001 \002(\r\022&\n\003upi\030\002 \003(\0132\031.das."
-    "proto.UavProductInfo\"7\n\026AckPostUavProduc"
-    "tInfos\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"M\n"
-    "\017PostControl2Uav\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid"
-    "\030\002 \002(\t\022\016\n\006userid\030\003 \002(\t\022\014\n\004data\030\004 \003(\014\"R\n\022"
-    "AckPostControl2Uav\022\r\n\005seqno\030\001 \002(\r\022\016\n\006res"
-    "ult\030\002 \002(\005\022\r\n\005uavid\030\003 \002(\t\022\016\n\006userid\030\004 \002(\t"
-    "\"F\n\030PostStatus2GroundStation\022\r\n\005seqno\030\001 "
-    "\002(\r\022\r\n\005uavid\030\002 \002(\t\022\014\n\004data\030\003 \003(\014*g\n\tGSMs"
-    "gType\022\020\n\014DeleteFriend\020\001\022\021\n\rRequestFriend"
-    "\020\002\022\017\n\013AgreeFriend\020\003\022\020\n\014RejectFriend\020\004\022\010\n"
-    "\004Text\020\005\022\010\n\004Land\020\006*1\n\020SurveryPrecision\022\007\n"
-    "\003LOW\020\001\022\n\n\006MEDIUM\020\002\022\010\n\004HIGH\020\003", 8628);
+    "assword\030\003 \001(\t\022\014\n\004auth\030\004 \001(\r\"u\n\025GroundSta"
+    "tionsMessage\022\r\n\005seqno\030\001 \002(\r\022\"\n\004type\030\002 \002("
+    "\0162\024.das.proto.GSMsgType\022\014\n\004from\030\003 \002(\t\022\n\n"
+    "\002to\030\004 \002(\t\022\017\n\007content\030\005 \001(\014\"B\n\030AckGroundS"
+    "tationsMessage\022\r\n\005seqno\030\001 \002(\r\022\013\n\003res\030\002 \002"
+    "(\r\022\n\n\002gs\030\003 \002(\t\"\037\n\016RequestFriends\022\r\n\005seqn"
+    "o\030\001 \002(\r\",\n\nAckFriends\022\r\n\005seqno\030\001 \002(\r\022\017\n\007"
+    "friends\030\002 \003(\t\"Y\n\016GpsInformation\022\021\n\tlongi"
+    "tude\030\001 \002(\005\022\020\n\010latitude\030\002 \002(\005\022\020\n\010altitude"
+    "\030\003 \002(\005\022\020\n\010velocity\030\004 \003(\002\"b\n\013UavAttitude\022"
+    "\014\n\004roll\030\001 \002(\002\022\r\n\005pitch\030\002 \002(\002\022\013\n\003yaw\030\003 \002("
+    "\002\022\024\n\014relative_alt\030\004 \002(\002\022\023\n\013groundspeed\030\005"
+    " \002(\002\"z\n\017OperationStatus\022\025\n\roperationmode"
+    "\030\001 \001(\t\022\017\n\007voltage\030\002 \001(\002\022\025\n\rsurplusenergy"
+    "\030\003 \001(\002\022\023\n\013jetvelocity\030\004 \001(\002\022\023\n\013sprayeddo"
+    "se\030\005 \001(\002\"\230\001\n\017OperationParams\022\024\n\014alarmvol"
+    "tage\030\001 \001(\002\022\021\n\talarmdose\030\002 \001(\002\022\025\n\rsprayin"
+    "gwidth\030\003 \001(\002\022\027\n\017desiredaltitude\030\004 \001(\002\022\027\n"
+    "\017desiredvelocity\030\005 \001(\002\022\023\n\013jetvelocity\030\006 "
+    "\001(\002\"\342\001\n\024OperationInformation\022\r\n\005uavid\030\001 "
+    "\002(\t\022\021\n\ttimestamp\030\002 \002(\004\022&\n\003gps\030\003 \002(\0132\031.da"
+    "s.proto.GpsInformation\022*\n\006status\030\004 \001(\0132\032"
+    ".das.proto.OperationStatus\022*\n\006params\030\005 \001"
+    "(\0132\032.das.proto.OperationParams\022(\n\010attitu"
+    "de\030\006 \001(\0132\026.das.proto.UavAttitude\"V\n\030Post"
+    "OperationInformation\022\r\n\005seqno\030\001 \002(\r\022+\n\002o"
+    "i\030\002 \003(\0132\037.das.proto.OperationInformation"
+    "\"8\n\027AckOperationInformation\022\r\n\005seqno\030\001 \002"
+    "(\r\022\016\n\006result\030\002 \002(\005\"C\n\nCoordinate\022\021\n\tlong"
+    "itude\030\001 \002(\005\022\020\n\010latitude\030\002 \002(\005\022\020\n\010altitud"
+    "e\030\003 \001(\005\"t\n\021OperationSnapshot\022\r\n\005devid\030\001 "
+    "\002(\t\022\021\n\ttimestamp\030\002 \002(\004\022\"\n\003pos\030\003 \001(\0132\025.da"
+    "s.proto.Coordinate\022\014\n\004size\030\004 \001(\005\022\013\n\003pic\030"
+    "\005 \002(\014\"P\n\025PostOperationSnapshot\022\r\n\005seqno\030"
+    "\001 \002(\r\022(\n\002os\030\002 \002(\0132\034.das.proto.OperationS"
+    "napshot\"9\n\030AckPostOperationSnapshot\022\r\n\005s"
+    "eqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"5\n\007Outline\022*\n"
+    "\013coordinates\030\001 \003(\0132\025.das.proto.Coordinat"
+    "e\"\270\001\n\027ParcelSurveyInformation\022\023\n\013survery"
+    "orid\030\001 \002(\t\022\023\n\013surverytime\030\002 \002(\004\022\'\n\002sp\030\003 "
+    "\002(\0162\033.das.proto.SurveryPrecision\022\036\n\002po\030\004"
+    " \002(\0132\022.das.proto.Outline\022\036\n\002bo\030\005 \003(\0132\022.d"
+    "as.proto.Outline\022\n\n\002id\030\006 \001(\t\"]\n\033PostParc"
+    "elSurveyInformation\022\r\n\005seqno\030\001 \002(\r\022/\n\003ps"
+    "i\030\002 \002(\0132\".das.proto.ParcelSurveyInformat"
+    "ion\"N\n\036AckPostParcelSurveyInformation\022\r\n"
+    "\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005psiid\030\003 "
+    "\001(\t\"j\n\037RequestParcelSurveyInformations\022\r"
+    "\n\005seqno\030\001 \002(\r\022\r\n\005psiid\030\002 \001(\t\022)\n\ncoordina"
+    "te\030\003 \001(\0132\025.das.proto.Coordinate\"u\n\"AckRe"
+    "questParcelSurveyInformations\022\r\n\005seqno\030\001"
+    " \002(\r\022\016\n\006result\030\002 \002(\005\0220\n\004psis\030\003 \003(\0132\".das"
+    ".proto.ParcelSurveyInformation\"\203\001\n\020Parce"
+    "lContracter\022\014\n\004name\030\001 \002(\t\022\021\n\tbirthdate\030\002"
+    " \002(\004\022\017\n\007address\030\003 \002(\t\022\020\n\010mobileno\030\004 \002(\t\022"
+    "\017\n\007phoneno\030\005 \001(\t\022\016\n\006weixin\030\006 \001(\t\022\n\n\002id\030\007"
+    " \001(\t\"\346\001\n\021ParcelDescription\022\014\n\004name\030\001 \002(\t"
+    "\022\022\n\nregisterid\030\002 \002(\t\022\'\n\002pc\030\003 \002(\0132\033.das.p"
+    "roto.ParcelContracter\022\017\n\007acreage\030\004 \002(\002\022\r"
+    "\n\005psiid\030\005 \001(\t\022/\n\003psi\030\006 \001(\0132\".das.proto.P"
+    "arcelSurveyInformation\022)\n\ncoordinate\030\007 \001"
+    "(\0132\025.das.proto.Coordinate\022\n\n\002id\030\010 \001(\t\"P\n"
+    "\025PostParcelDescription\022\r\n\005seqno\030\001 \002(\r\022(\n"
+    "\002pd\030\002 \002(\0132\034.das.proto.ParcelDescription\""
+    "d\n\030AckPostParcelDescription\022\r\n\005seqno\030\001 \002"
+    "(\r\022\016\n\006result\030\002 \002(\005\022\014\n\004pcid\030\003 \001(\t\022\r\n\005psii"
+    "d\030\004 \001(\t\022\014\n\004pdid\030\005 \001(\t\"\231\002\n\031RequestParcelD"
+    "escriptions\022\r\n\005seqno\030\001 \002(\r\022\014\n\004pdid\030\002 \001(\t"
+    "\022)\n\ncoordinate\030\003 \001(\0132\025.das.proto.Coordin"
+    "ate\022\025\n\rsurveryorname\030\004 \001(\t\022\023\n\013surveryori"
+    "d\030\005 \001(\t\022\024\n\014registername\030\006 \001(\t\022\022\n\nregiste"
+    "rid\030\007 \001(\t\022\022\n\nparcelname\030\010 \001(\t\022\022\n\ncontrac"
+    "ter\030\t \001(\t\022\020\n\010mobileno\030\n \001(\t\022$\n\005zones\030\013 \003"
+    "(\0132\025.das.proto.Coordinate\"h\n\034AckRequestP"
+    "arcelDescriptions\022\r\n\005seqno\030\001 \002(\r\022\016\n\006resu"
+    "lt\030\002 \002(\005\022)\n\003pds\030\003 \003(\0132\034.das.proto.Parcel"
+    "Description\"U\n\027DeleteParcelDescription\022\r"
+    "\n\005seqno\030\001 \002(\r\022\014\n\004pdid\030\002 \002(\t\022\016\n\006delpsi\030\003 "
+    "\001(\010\022\r\n\005delpc\030\004 \001(\010\";\n\032AckDeleteParcelDes"
+    "cription\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\""
+    ")\n\014SingleShrink\022\013\n\003bdr\030\001 \002(\005\022\014\n\004safe\030\002 \002"
+    "(\001\"\204\001\n\rOperationPlan\022\r\n\005width\030\001 \002(\001\022\r\n\005a"
+    "ngle\030\002 \002(\002\022\014\n\004anti\030\003 \002(\010\022\016\n\006single\030\004 \002(\010"
+    "\022(\n\007bdrsafe\030\005 \003(\0132\027.das.proto.SingleShri"
+    "nk\022\r\n\005block\030\006 \002(\001\"\307\001\n\024OperationDescripti"
+    "on\022\022\n\nregisterid\030\001 \002(\t\022\014\n\004pdid\030\002 \002(\t\022$\n\002"
+    "op\030\003 \002(\0132\030.das.proto.OperationPlan\022\014\n\004cr"
+    "op\030\004 \002(\t\022\014\n\004drug\030\005 \002(\t\022\r\n\005prize\030\006 \002(\002\022\r\n"
+    "\005ridge\030\007 \002(\005\022\020\n\010plantime\030\010 \001(\004\022\r\n\005notes\030"
+    "\t \001(\t\022\014\n\004odid\030\n \001(\t\"V\n\030PostOperationDesc"
+    "ription\022\r\n\005seqno\030\001 \002(\r\022+\n\002od\030\002 \002(\0132\037.das"
+    ".proto.OperationDescription\"J\n\033AckPostOp"
+    "erationDescription\022\r\n\005seqno\030\001 \002(\r\022\016\n\006res"
+    "ult\030\002 \002(\005\022\014\n\004odid\030\003 \001(\t\"]\n\034RequestOperat"
+    "ionDescriptions\022\r\n\005seqno\030\001 \002(\r\022\014\n\004odid\030\002"
+    " \001(\t\022\014\n\004pdid\030\003 \001(\t\022\022\n\nregisterid\030\004 \001(\t\"n"
+    "\n\037AckRequestOperationDescriptions\022\r\n\005seq"
+    "no\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022,\n\003ods\030\003 \003(\0132\037."
+    "das.proto.OperationDescription\"9\n\032Delete"
+    "OperationDescription\022\r\n\005seqno\030\001 \002(\r\022\014\n\004o"
+    "did\030\002 \002(\t\">\n\035AckDeleteOperationDescripti"
+    "on\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"\212\001\n\017Bi"
+    "llInformation\022\025\n\rservicecharge\030\001 \001(\002\022\027\n\017"
+    "pesticidecharge\030\002 \001(\002\022\023\n\013othercharge\030\003 \001"
+    "(\002\022\021\n\tsumcharge\030\004 \002(\002\022\021\n\tpesticide\030\005 \002(\t"
+    "\022\014\n\004crop\030\006 \002(\t\"\331\001\n\016OperationRoute\022\014\n\004gsi"
+    "d\030\001 \002(\t\022\r\n\005uavid\030\002 \002(\t\022\022\n\ncreatetime\030\003 \002"
+    "(\004\022\021\n\tmaxvoyage\030\004 \002(\002\022\020\n\010missions\030\005 \003(\014\022"
+    "\021\n\tboundarys\030\006 \003(\014\022&\n\002bi\030\007 \001(\0132\032.das.pro"
+    "to.BillInformation\022\014\n\004rpid\030\010 \001(\t\022\013\n\003beg\030"
+    "\t \001(\005\022\013\n\003end\030\n \001(\005\022\016\n\006landid\030\013 \001(\t\"J\n\022Po"
+    "stOperationRoute\022\r\n\005seqno\030\001 \002(\r\022%\n\002or\030\002 "
+    "\002(\0132\031.das.proto.OperationRoute\"6\n\025AckPos"
+    "tOperationRoute\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result"
+    "\030\002 \002(\005\"\205\001\n\025UploadOperationRoutes\022\r\n\005seqn"
+    "o\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\016\n\006userid\030\003 \002(\t\022\021"
+    "\n\ttimestamp\030\004 \002(\004\022\024\n\014countmission\030\005 \002(\005\022"
+    "\025\n\rcountboundary\030\006 \002(\005\"a\n\023SyscOperationR"
+    "outes\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005"
+    "uavid\030\003 \002(\t\022\r\n\005index\030\004 \001(\005\022\r\n\005count\030\005 \001("
+    "\005\"e\n\024RequestRouteMissions\022\r\n\005seqno\030\001 \002(\r"
+    "\022\r\n\005uavid\030\002 \002(\t\022\020\n\010boundary\030\003 \002(\010\022\016\n\006off"
+    "set\030\004 \002(\005\022\r\n\005count\030\005 \002(\005\"l\n\027AckRequestRo"
+    "uteMissions\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002"
+    "(\005\022\020\n\010boundary\030\003 \002(\010\022\016\n\006offset\030\004 \002(\005\022\020\n\010"
+    "missions\030\005 \003(\014\"U\n\021RequestUavMission\022\r\n\005s"
+    "eqno\030\001 \002(\r\022\013\n\003uav\030\002 \002(\t\022\n\n\002id\030\003 \001(\t\022\013\n\003b"
+    "eg\030\004 \001(\004\022\013\n\003end\030\005 \001(\004\"*\n\010UavRoute\022\014\n\004opT"
+    "m\030\004 \001(\004\022\020\n\010missions\030\001 \003(\014\"c\n\rAckUavMissi"
+    "on\022\020\n\010boundary\030\001 \001(\014\022\014\n\004plan\030\002 \001(\014\022\r\n\005la"
+    "nds\030\003 \003(\t\022#\n\006routes\030\004 \003(\0132\023.das.proto.Ua"
+    "vRoute\"\350\001\n\tUavStatus\022\r\n\005uavid\030\001 \002(\t\022\016\n\006r"
+    "esult\030\002 \002(\005\022\016\n\006online\030\003 \001(\010\022\016\n\006landed\030\004 "
+    "\001(\010\022\020\n\010deadline\030\005 \001(\004\022\016\n\006binded\030\006 \001(\010\022\016\n"
+    "\006binder\030\007 \001(\t\022\014\n\004time\030\010 \001(\004\022&\n\003pos\030\t \001(\013"
+    "2\031.das.proto.GpsInformation\022\021\n\ttimestamp"
+    "\030\n \001(\004\022\022\n\nauthString\030\013 \001(\t\022\r\n\005simId\030\014 \001("
+    "\t\"0\n\020RequestUavStatus\022\r\n\005seqno\030\001 \002(\r\022\r\n\005"
+    "uavid\030\002 \003(\t\"J\n\023AckRequestUavStatus\022\r\n\005se"
+    "qno\030\001 \002(\r\022$\n\006status\030\002 \003(\0132\024.das.proto.Ua"
+    "vStatus\"`\n\016RequestBindUav\022\r\n\005seqno\030\001 \002(\r"
+    "\022\014\n\004opid\030\002 \002(\r\022\r\n\005uavid\030\003 \002(\t\022\016\n\006binder\030"
+    "\004 \002(\t\022\022\n\nauthString\030\005 \001(\t\"f\n\021AckRequestB"
+    "indUav\022\r\n\005seqno\030\001 \002(\r\022\014\n\004opid\030\002 \002(\r\022\016\n\006r"
+    "esult\030\003 \002(\005\022$\n\006status\030\004 \001(\0132\024.das.proto."
+    "UavStatus\"v\n\016UavProductInfo\022\r\n\005uavid\030\001 \001"
+    "(\t\022\023\n\013producttype\030\002 \001(\t\022\021\n\tproductid\030\003 \001"
+    "(\t\022\017\n\007fwLight\030\004 \001(\t\022\r\n\005fwFMU\030\005 \001(\t\022\r\n\005fw"
+    "IMU\030\006 \001(\t\"I\n\026RequestUavProductInfos\022\r\n\005s"
+    "eqno\030\001 \002(\r\022\021\n\tproductid\030\002 \003(\t\022\r\n\005uavid\030\003"
+    " \003(\t\"b\n\031AckRequestUavProductInfos\022\r\n\005seq"
+    "no\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022&\n\003upi\030\003 \003(\0132\031."
+    "das.proto.UavProductInfo\"L\n\023PostUavProdu"
+    "ctInfos\022\r\n\005seqno\030\001 \002(\r\022&\n\003upi\030\002 \003(\0132\031.da"
+    "s.proto.UavProductInfo\"7\n\026AckPostUavProd"
+    "uctInfos\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\""
+    "M\n\017PostControl2Uav\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uav"
+    "id\030\002 \002(\t\022\016\n\006userid\030\003 \002(\t\022\014\n\004data\030\004 \003(\014\"R"
+    "\n\022AckPostControl2Uav\022\r\n\005seqno\030\001 \002(\r\022\016\n\006r"
+    "esult\030\002 \002(\005\022\r\n\005uavid\030\003 \002(\t\022\016\n\006userid\030\004 \002"
+    "(\t\"F\n\030PostStatus2GroundStation\022\r\n\005seqno\030"
+    "\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\014\n\004data\030\003 \003(\014*g\n\tGS"
+    "MsgType\022\020\n\014DeleteFriend\020\001\022\021\n\rRequestFrie"
+    "nd\020\002\022\017\n\013AgreeFriend\020\003\022\020\n\014RejectFriend\020\004\022"
+    "\010\n\004Text\020\005\022\010\n\004Land\020\006*1\n\020SurveryPrecision\022"
+    "\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\002\022\010\n\004HIGH\020\003", 8670);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "das.proto", &protobuf_RegisterTypes);
   PostHeartBeat::default_instance_ = new PostHeartBeat();
@@ -10733,6 +10737,7 @@ void RequestGSIdentityAuthentication::Swap(RequestGSIdentityAuthentication* othe
 const int AckGSIdentityAuthentication::kSeqnoFieldNumber;
 const int AckGSIdentityAuthentication::kResultFieldNumber;
 const int AckGSIdentityAuthentication::kPasswordFieldNumber;
+const int AckGSIdentityAuthentication::kAuthFieldNumber;
 #endif  // !_MSC_VER
 
 AckGSIdentityAuthentication::AckGSIdentityAuthentication()
@@ -10754,6 +10759,7 @@ void AckGSIdentityAuthentication::SharedCtor() {
   seqno_ = 0u;
   result_ = 0;
   password_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  auth_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -10799,6 +10805,7 @@ void AckGSIdentityAuthentication::Clear() {
         password_->clear();
       }
     }
+    auth_ = 0u;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -10854,6 +10861,22 @@ bool AckGSIdentityAuthentication::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(32)) goto parse_auth;
+        break;
+      }
+
+      // optional uint32 auth = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_auth:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &auth_)));
+          set_has_auth();
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -10895,6 +10918,11 @@ void AckGSIdentityAuthentication::SerializeWithCachedSizes(
       3, this->password(), output);
   }
 
+  // optional uint32 auth = 4;
+  if (has_auth()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->auth(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -10921,6 +10949,11 @@ void AckGSIdentityAuthentication::SerializeWithCachedSizes(
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         3, this->password(), target);
+  }
+
+  // optional uint32 auth = 4;
+  if (has_auth()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->auth(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -10953,6 +10986,13 @@ int AckGSIdentityAuthentication::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->password());
+    }
+
+    // optional uint32 auth = 4;
+    if (has_auth()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->auth());
     }
 
   }
@@ -10991,6 +11031,9 @@ void AckGSIdentityAuthentication::MergeFrom(const AckGSIdentityAuthentication& f
     if (from.has_password()) {
       set_password(from.password());
     }
+    if (from.has_auth()) {
+      set_auth(from.auth());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -11018,6 +11061,7 @@ void AckGSIdentityAuthentication::Swap(AckGSIdentityAuthentication* other) {
     std::swap(seqno_, other->seqno_);
     std::swap(result_, other->result_);
     std::swap(password_, other->password_);
+    std::swap(auth_, other->auth_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -27415,6 +27459,7 @@ void AckRequestRouteMissions::Swap(AckRequestRouteMissions* other) {
 
 #ifndef _MSC_VER
 const int RequestUavMission::kSeqnoFieldNumber;
+const int RequestUavMission::kUavFieldNumber;
 const int RequestUavMission::kIdFieldNumber;
 const int RequestUavMission::kBegFieldNumber;
 const int RequestUavMission::kEndFieldNumber;
@@ -27437,6 +27482,7 @@ RequestUavMission::RequestUavMission(const RequestUavMission& from)
 void RequestUavMission::SharedCtor() {
   _cached_size_ = 0;
   seqno_ = 0u;
+  uav_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   beg_ = GOOGLE_ULONGLONG(0);
   end_ = GOOGLE_ULONGLONG(0);
@@ -27448,6 +27494,9 @@ RequestUavMission::~RequestUavMission() {
 }
 
 void RequestUavMission::SharedDtor() {
+  if (uav_ != &::google::protobuf::internal::kEmptyString) {
+    delete uav_;
+  }
   if (id_ != &::google::protobuf::internal::kEmptyString) {
     delete id_;
   }
@@ -27479,6 +27528,11 @@ RequestUavMission* RequestUavMission::New() const {
 void RequestUavMission::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     seqno_ = 0u;
+    if (has_uav()) {
+      if (uav_ != &::google::protobuf::internal::kEmptyString) {
+        uav_->clear();
+      }
+    }
     if (has_id()) {
       if (id_ != &::google::protobuf::internal::kEmptyString) {
         id_->clear();
@@ -27508,12 +27562,29 @@ bool RequestUavMission::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(18)) goto parse_id;
+        if (input->ExpectTag(18)) goto parse_uav;
         break;
       }
 
-      // optional string id = 2;
+      // required string uav = 2;
       case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_uav:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_uav()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->uav().data(), this->uav().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_id;
+        break;
+      }
+
+      // optional string id = 3;
+      case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_id:
@@ -27525,12 +27596,12 @@ bool RequestUavMission::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(24)) goto parse_beg;
+        if (input->ExpectTag(32)) goto parse_beg;
         break;
       }
 
-      // optional uint64 beg = 3;
-      case 3: {
+      // optional uint64 beg = 4;
+      case 4: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_beg:
@@ -27541,12 +27612,12 @@ bool RequestUavMission::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(32)) goto parse_end;
+        if (input->ExpectTag(40)) goto parse_end;
         break;
       }
 
-      // optional uint64 end = 4;
-      case 4: {
+      // optional uint64 end = 5;
+      case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_end:
@@ -27584,23 +27655,32 @@ void RequestUavMission::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
   }
 
-  // optional string id = 2;
+  // required string uav = 2;
+  if (has_uav()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->uav().data(), this->uav().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      2, this->uav(), output);
+  }
+
+  // optional string id = 3;
   if (has_id()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->id().data(), this->id().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      2, this->id(), output);
+      3, this->id(), output);
   }
 
-  // optional uint64 beg = 3;
+  // optional uint64 beg = 4;
   if (has_beg()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(3, this->beg(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(4, this->beg(), output);
   }
 
-  // optional uint64 end = 4;
+  // optional uint64 end = 5;
   if (has_end()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt64(4, this->end(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(5, this->end(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -27616,24 +27696,34 @@ void RequestUavMission::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
   }
 
-  // optional string id = 2;
+  // required string uav = 2;
+  if (has_uav()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->uav().data(), this->uav().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->uav(), target);
+  }
+
+  // optional string id = 3;
   if (has_id()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->id().data(), this->id().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->id(), target);
+        3, this->id(), target);
   }
 
-  // optional uint64 beg = 3;
+  // optional uint64 beg = 4;
   if (has_beg()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(3, this->beg(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(4, this->beg(), target);
   }
 
-  // optional uint64 end = 4;
+  // optional uint64 end = 5;
   if (has_end()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(4, this->end(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(5, this->end(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -27654,21 +27744,28 @@ int RequestUavMission::ByteSize() const {
           this->seqno());
     }
 
-    // optional string id = 2;
+    // required string uav = 2;
+    if (has_uav()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->uav());
+    }
+
+    // optional string id = 3;
     if (has_id()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->id());
     }
 
-    // optional uint64 beg = 3;
+    // optional uint64 beg = 4;
     if (has_beg()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt64Size(
           this->beg());
     }
 
-    // optional uint64 end = 4;
+    // optional uint64 end = 5;
     if (has_end()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::UInt64Size(
@@ -27705,6 +27802,9 @@ void RequestUavMission::MergeFrom(const RequestUavMission& from) {
     if (from.has_seqno()) {
       set_seqno(from.seqno());
     }
+    if (from.has_uav()) {
+      set_uav(from.uav());
+    }
     if (from.has_id()) {
       set_id(from.id());
     }
@@ -27731,7 +27831,7 @@ void RequestUavMission::CopyFrom(const RequestUavMission& from) {
 }
 
 bool RequestUavMission::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
 
   return true;
 }
@@ -27739,6 +27839,7 @@ bool RequestUavMission::IsInitialized() const {
 void RequestUavMission::Swap(RequestUavMission* other) {
   if (other != this) {
     std::swap(seqno_, other->seqno_);
+    std::swap(uav_, other->uav_);
     std::swap(id_, other->id_);
     std::swap(beg_, other->beg_);
     std::swap(end_, other->end_);
@@ -28009,6 +28110,7 @@ void UavRoute::Swap(UavRoute* other) {
 #ifndef _MSC_VER
 const int AckUavMission::kBoundaryFieldNumber;
 const int AckUavMission::kPlanFieldNumber;
+const int AckUavMission::kLandsFieldNumber;
 const int AckUavMission::kRoutesFieldNumber;
 #endif  // !_MSC_VER
 
@@ -28082,6 +28184,7 @@ void AckUavMission::Clear() {
       }
     }
   }
+  lands_.Clear();
   routes_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -28093,7 +28196,7 @@ bool AckUavMission::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   while ((tag = input->ReadTag()) != 0) {
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required bytes boundary = 1;
+      // optional bytes boundary = 1;
       case 1: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -28106,7 +28209,7 @@ bool AckUavMission::MergePartialFromCodedStream(
         break;
       }
 
-      // required bytes plan = 2;
+      // optional bytes plan = 2;
       case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -28116,12 +28219,31 @@ bool AckUavMission::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(26)) goto parse_routes;
+        if (input->ExpectTag(26)) goto parse_lands;
         break;
       }
 
-      // repeated .das.proto.UavRoute routes = 3;
+      // repeated string lands = 3;
       case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_lands:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->add_lands()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->lands(this->lands_size() - 1).data(),
+            this->lands(this->lands_size() - 1).length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_lands;
+        if (input->ExpectTag(34)) goto parse_routes;
+        break;
+      }
+
+      // repeated .das.proto.UavRoute routes = 4;
+      case 4: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_routes:
@@ -28130,7 +28252,7 @@ bool AckUavMission::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(26)) goto parse_routes;
+        if (input->ExpectTag(34)) goto parse_routes;
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -28153,22 +28275,31 @@ bool AckUavMission::MergePartialFromCodedStream(
 
 void AckUavMission::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // required bytes boundary = 1;
+  // optional bytes boundary = 1;
   if (has_boundary()) {
     ::google::protobuf::internal::WireFormatLite::WriteBytes(
       1, this->boundary(), output);
   }
 
-  // required bytes plan = 2;
+  // optional bytes plan = 2;
   if (has_plan()) {
     ::google::protobuf::internal::WireFormatLite::WriteBytes(
       2, this->plan(), output);
   }
 
-  // repeated .das.proto.UavRoute routes = 3;
+  // repeated string lands = 3;
+  for (int i = 0; i < this->lands_size(); i++) {
+  ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    this->lands(i).data(), this->lands(i).length(),
+    ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      3, this->lands(i), output);
+  }
+
+  // repeated .das.proto.UavRoute routes = 4;
   for (int i = 0; i < this->routes_size(); i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      3, this->routes(i), output);
+      4, this->routes(i), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -28179,25 +28310,34 @@ void AckUavMission::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* AckUavMission::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // required bytes boundary = 1;
+  // optional bytes boundary = 1;
   if (has_boundary()) {
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         1, this->boundary(), target);
   }
 
-  // required bytes plan = 2;
+  // optional bytes plan = 2;
   if (has_plan()) {
     target =
       ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
         2, this->plan(), target);
   }
 
-  // repeated .das.proto.UavRoute routes = 3;
+  // repeated string lands = 3;
+  for (int i = 0; i < this->lands_size(); i++) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->lands(i).data(), this->lands(i).length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteStringToArray(3, this->lands(i), target);
+  }
+
+  // repeated .das.proto.UavRoute routes = 4;
   for (int i = 0; i < this->routes_size(); i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        3, this->routes(i), target);
+        4, this->routes(i), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -28211,14 +28351,14 @@ int AckUavMission::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required bytes boundary = 1;
+    // optional bytes boundary = 1;
     if (has_boundary()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::BytesSize(
           this->boundary());
     }
 
-    // required bytes plan = 2;
+    // optional bytes plan = 2;
     if (has_plan()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::BytesSize(
@@ -28226,7 +28366,14 @@ int AckUavMission::ByteSize() const {
     }
 
   }
-  // repeated .das.proto.UavRoute routes = 3;
+  // repeated string lands = 3;
+  total_size += 1 * this->lands_size();
+  for (int i = 0; i < this->lands_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->lands(i));
+  }
+
+  // repeated .das.proto.UavRoute routes = 4;
   total_size += 1 * this->routes_size();
   for (int i = 0; i < this->routes_size(); i++) {
     total_size +=
@@ -28259,6 +28406,7 @@ void AckUavMission::MergeFrom(const ::google::protobuf::Message& from) {
 
 void AckUavMission::MergeFrom(const AckUavMission& from) {
   GOOGLE_CHECK_NE(&from, this);
+  lands_.MergeFrom(from.lands_);
   routes_.MergeFrom(from.routes_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_boundary()) {
@@ -28284,7 +28432,6 @@ void AckUavMission::CopyFrom(const AckUavMission& from) {
 }
 
 bool AckUavMission::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
 
   return true;
 }
@@ -28293,6 +28440,7 @@ void AckUavMission::Swap(AckUavMission* other) {
   if (other != this) {
     std::swap(boundary_, other->boundary_);
     std::swap(plan_, other->plan_);
+    lands_.Swap(&other->lands_);
     routes_.Swap(&other->routes_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
