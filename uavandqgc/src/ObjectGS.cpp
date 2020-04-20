@@ -39,9 +39,8 @@ void ObjectGS::OnConnected(bool bConnected)
     ObjectAbsPB::OnConnected(bConnected);
     if (bConnected && m_sock)
         m_sock->ResizeBuff(WRITE_BUFFLEN);
-    if(bConnected)
-        initFriend();
-    else if (!m_check.empty())
+
+    if (!bConnected && !m_check.empty())
         Release();
 }
 
@@ -406,6 +405,7 @@ void ObjectGS::processGSInfo(const DBMessage &msg)
     m_auth = msg.GetRead("auth").ToInt32();
     if (Initialed == m_stInit)
     {
+        initFriend();
         if (DBMessage *msg = new DBMessage(this, IMessage::CountLandRslt))
         {
             msg->SetSql("countLand");
