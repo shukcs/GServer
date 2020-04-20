@@ -200,8 +200,7 @@ namespace SOCKETS_NAMESPACE {
 #define SHUT_WR 1
 
 #define Errno WSAGetLastError()
-const char *StrError(int x);
-
+SHARED_DECL const char *StrError(int x);
 #else 
 // ----------------------------------------
 // LINUX 

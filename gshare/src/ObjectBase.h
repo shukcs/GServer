@@ -125,7 +125,7 @@ public:
     void PushManagerMessage(IMessage *);
     void PushReleaseMsg(IMessage *);
     void ProcessBussiness(BussinessThread *t);
-    bool PrcsObjectsOfThread(BussinessThread &t);
+    SHARED_DECL virtual bool PrcsObjectsOfThread(BussinessThread &t);
     bool Exist(IObject *obj)const;
     void ProcessMessage(IMessage *msg);
     MessageQue *GetReleaseQue(int idThread)const;

@@ -29,7 +29,7 @@ class ILog
 public:
 	virtual ~ILog() {}
     virtual void Log(const std::string &dsc, const std::string &obj, int evT = 0, int err = 0) = 0;
-    virtual void ProcessLog() = 0;
+    virtual void ProcessLog(void) = 0;
 };
 
 

@@ -1,3 +1,7 @@
+#ifdef _MSC_VER
+#pragma warning(disable:4786)
+#include <time.h>
+#endif
 #include "LogDB.h"
 #include <stdio.h>
 #include "socket_include.h"
@@ -49,4 +53,8 @@ void LogDB::Log(const std::string &dsc, const std::string &obj, int evT, int err
         printf("%s%s: %s; %s!\n", dt, obj.c_str(), dsc.c_str(), StrError(err));
     else
         printf("%s%s: %s!\n", dt, obj.c_str(), dsc.c_str());
+}
+
+void LogDB::ProcessLog()
+{
 }

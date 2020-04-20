@@ -73,6 +73,8 @@ void ObjectUav::TransUavStatus(UavStatus &us, bool bAuth)const
     if (bAuth)
         us.set_authstring(m_authCheck);
 
+    us.set_simid(m_strSim);
+
     if (GpsInformation *gps = new GpsInformation)
     {
         gps->set_latitude(int(m_lat*1e7));
@@ -80,7 +82,6 @@ void ObjectUav::TransUavStatus(UavStatus &us, bool bAuth)const
         gps->set_altitude(0);
         us.set_allocated_pos(gps);
     }
-    us.set_simid(m_strSim);
 }
 
 int ObjectUav::GetObjectType() const
@@ -540,17 +541,18 @@ void ObjectUav::_missionFinish()
     if (!m_mission)
         return;
 
-    if (DBMessage *msg = new DBMessage(this))
+    if (DBMessage *msg = new DBMessage(this, IMessage::Unknown, DBMessage::DB_GS))
     {
-        msg->SetSql("updateMissions");
+        msg->SetSql("insertMissions");
         msg->SetWrite("userID", m_mission->gsid());
         msg->SetWrite("uavID", m_mission->uavid());
         if (m_mission->has_rpid())
-            msg->SetWrite("planID", Utility::str2int(m_mission->rpid()));
+            msg->SetWrite("planID", m_mission->rpid());
         if (m_mission->has_landid())
-            msg->SetWrite("landId", Utility::str2int(m_mission->landid()));
+            msg->SetWrite("landId", m_mission->landid());
 
-        msg->SetWrite("finishTime", Utility::msTimeTick());
+        auto curTm = Utility::msTimeTick();
+        msg->SetWrite("finishTime", curTm);
         if (m_mission->has_beg())
             msg->SetWrite("begin", m_mission->beg());
         if (m_mission->has_end())

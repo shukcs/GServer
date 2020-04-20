@@ -59,7 +59,7 @@ int GSManager::AddDatabaseUser(const string &user, const string &pswd, ObjectGS 
 
 string GSManager::CatString(const string &s1, const string &s2)
 {
-    return s1 < s2 ? s1 + ":" + s1 : s2 + ":" + s1;
+    return s1 < s2 ? s1 + ":" + s2 : s2 + ":" + s1;
 }
 
 int GSManager::GetObjectType() const

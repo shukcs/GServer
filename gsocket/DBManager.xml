@@ -56,7 +56,7 @@
 					<field name="finishTime" type="BIGINT"/>
 					<field name="begin" type="Int" />
 					<field name="end" type="Int" />
-					<field name="route" type="VARCHAR(4200)" />
+					<field name="route" type="VARBINARY(4200)" />
 				</table>
 			</Tables>
 			<SQLs>
@@ -205,11 +205,11 @@
 					<item name="user" ref="GSInfo" type="Read" />
 					<item name="user" type="Condition" />
 				</SQL>
-				<SQL name="updateMission" table="MissionInfo" type="Update">
+				<SQL name="insertMissions" table="MissionInfo" type="Insert">
 					<item name="userID" type="Write" />
 					<item name="uavID"  type="Write" />
-					<item name="landId" ref="MissionInfo" type="Write" />
-					<item name="planID" ref="MissionInfo" type="Write" />
+					<item name="landId" type="Write" />
+					<item name="planID" type="Write" />
 					<item name="finishTime" ref="MissionInfo" type="Write" />
 					<item name="begin" ref="MissionInfo" type="Write" />
 					<item name="end" ref="MissionInfo" type="Write" />
