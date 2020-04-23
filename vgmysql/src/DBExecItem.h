@@ -37,6 +37,7 @@ public:
     SHARED_SQL FieldType GetParamType()const;
     SHARED_SQL void InitBuff(unsigned len, const void *buf = NULL);
     SHARED_SQL const string &GetFieldName()const;
+    SHARED_SQL const string &GetJudge()const;
 
     string ToConditionString(const string &str)const;
     int GetType()const;
@@ -46,7 +47,6 @@ public:
     void SetEmpty();
     const string &GetParam()const;
     unsigned long &ReadLength();
-
 public:
     template<class T>
     void InitOf(const T &t)

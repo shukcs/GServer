@@ -19,6 +19,7 @@ namespace das {
         class RequestOperationDescriptions;
         class DeleteOperationDescription;
         class PostOperationRoute;
+        class RequestUavMission;
         class PostControl2Uav;
         class ParcelDescription;
         class ParcelContracter;
@@ -78,6 +79,8 @@ protected:
     void processFriends(const DBMessage &msg);
     void processQueryLands(const DBMessage &msg);
     void processGSInsert(const DBMessage &msg);
+    void processMissionLand(const DBMessage &msg);
+    void processMissions(const DBMessage &msg);
     void InitObject();
     void CheckTimer(uint64_t ms);
     void WaitSend(google::protobuf::Message *msg);
@@ -99,6 +102,7 @@ private:
     void _prcsReqNewGs(das::proto::RequestNewGS *msg);
     void _prcsGsMessage(das::proto::GroundStationsMessage *msg);
     void _prcsReqFriends(das::proto::RequestFriends *msg);
+    void _prcsReqMissons(das::proto::RequestUavMission &msg);
 private:
     void _checkGS(const std::string &user, int ack);
     void _sendNow(google::protobuf::Message *msg, bool b);

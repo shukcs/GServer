@@ -127,6 +127,8 @@ void ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new SyscOperationRoutes;                   //同步航线结果
     else if (name == d_p_ClassName(RequestRouteMissions))
         m_msg = new RequestRouteMissions;                  //飞机下载航线
+    else if (name == d_p_ClassName(RequestUavMission))
+        m_msg = new RequestUavMission;                     //飞机作业查询
     else if (name == d_p_ClassName(RequestUavStatus))
         m_msg = new RequestUavStatus;                      //查询飞机状态结果
     else if (name == d_p_ClassName(RequestBindUav))

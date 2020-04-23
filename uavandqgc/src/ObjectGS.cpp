@@ -200,6 +200,12 @@ void ObjectGS::ProcessMessage(IMessage *msg)
         case IMessage::FriendQueryRslt:
             processFriends(*(DBMessage*)msg);
             break;
+        case IMessage::QueryMissionLandRslt:
+            processMissionLand(*(DBMessage*)msg);
+            break;
+        case IMessage::QueryMissionsRslt:
+            processMissions(*(DBMessage*)msg);
+            break;
         default:
             break;
         }
@@ -250,6 +256,8 @@ int ObjectGS::ProcessReceive(void *buf, int len)
             _prcsGsMessage((GroundStationsMessage*)m_p->DeatachProto());
         else if (strMsg == d_p_ClassName(RequestFriends))
             _prcsReqFriends((RequestFriends*)m_p->GetProtoMessage());
+        else if (strMsg == d_p_ClassName(RequestUavMission))
+            _prcsReqMissons(*(RequestUavMission*)m_p->GetProtoMessage());
     }
     pos += l;
     return pos;
@@ -485,19 +493,19 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
     ack->set_seqno(msg.GetSeqNomb());
     ack->set_result(1);
     auto ids = msg.GetRead("LandInfo.id").GetVarList<int64_t>();
-    StringList namesLand = msg.GetRead("LandInfo.name").GetVarList<string>();
-    StringList users = msg.GetRead("LandInfo.gsuser").GetVarList<string>();
+    StringList namesLand = msg.GetRead("LandInfo.name").ToStringList();
+    StringList users = msg.GetRead("LandInfo.gsuser").ToStringList();
     auto lats = msg.GetRead("LandInfo.lat").GetVarList<double>();
     auto lons = msg.GetRead("LandInfo.lon").GetVarList<double>();
     auto acreages = msg.GetRead("LandInfo.acreage").GetVarList<float>();
-    StringList boundary = msg.GetRead("LandInfo.boundary").GetVarList<string>();
+    StringList boundary = msg.GetRead("LandInfo.boundary").ToStringList();
 
-    StringList namesPc = msg.GetRead("OwnerInfo.name").GetVarList<string>();
+    StringList namesPc = msg.GetRead("OwnerInfo.name").ToStringList();
     auto birthdayPc = msg.GetRead("OwnerInfo.birthdate").GetVarList<int64_t>();
-    StringList addresses = msg.GetRead("OwnerInfo.address").GetVarList<string>();
-    StringList mobilenos = msg.GetRead("OwnerInfo.mobileno").GetVarList<string>();
-    StringList phonenos = msg.GetRead("OwnerInfo.phoneno").GetVarList<string>();
-    StringList weixins = msg.GetRead("OwnerInfo.weixin").GetVarList<string>();
+    StringList addresses = msg.GetRead("OwnerInfo.address").ToStringList();
+    StringList mobilenos = msg.GetRead("OwnerInfo.mobileno").ToStringList();
+    StringList phonenos = msg.GetRead("OwnerInfo.phoneno").ToStringList();
+    StringList weixins = msg.GetRead("OwnerInfo.weixin").ToStringList();
 
     auto itrNamesPc = namesPc.begin();
     auto itrbirthday = birthdayPc.begin();
@@ -611,6 +619,64 @@ void ObjectGS::processGSInsert(const DBMessage &msg)
     m_check.clear();
     if (!bSuc)
         m_stInit = IObject::Uninitial;
+}
+
+void ObjectGS::processMissionLand(const DBMessage &msg)
+{
+    auto sd = new AckUavMission;
+    if (!sd)
+        return;
+    sd->set_seqno(msg.GetSeqNomb());
+    auto lands = msg.GetRead("landId").GetVarList<int64_t>();
+    auto landsItr = lands.begin();
+    for (auto itr : msg.GetRead("planID").GetVarList<int64_t>())
+    {
+        if (landsItr == lands.end())
+        {
+            delete sd;
+            return;
+        }
+
+        if (UavRoute *rt = sd->add_routes())
+        {
+            rt->set_land(Utility::bigint2string(*landsItr));
+            rt->set_plan(Utility::bigint2string(itr));
+        }
+        ++landsItr;
+    }
+    send(sd);
+}
+
+void ObjectGS::processMissions(const DBMessage &msg)
+{
+    auto sd = new AckUavMission;
+    if (!sd)
+        return;
+    sd->set_seqno(msg.GetSeqNomb());
+    auto lands = msg.GetRead("landId").GetVarList<int64_t>();
+    auto tmsF = msg.GetRead("landId").GetVarList<int64_t>();
+    auto routes = msg.GetRead("landId").ToStringList();
+    auto landsItr = lands.begin();
+    auto tmItr = tmsF.begin();
+    auto rtItr = routes.begin();
+    for (auto itr : msg.GetRead("planID").GetVarList<int64_t>())
+    {
+        if (landsItr == lands.end() || tmItr== tmsF.end() || rtItr== routes.end())
+        {
+            delete sd;
+            return;
+        }
+
+        if (UavRoute *rt = sd->add_routes())
+        {
+            ObjectUav::transToMissionItems(*rtItr, *rt);
+            rt->set_optm(*tmItr);
+            rt->set_land(Utility::bigint2string(*landsItr));
+            rt->set_plan(Utility::bigint2string(itr));
+        }
+        ++landsItr;
+    }
+    send(sd);
 }
 
 void ObjectGS::processPostPlanRslt(const DBMessage &msg)
@@ -967,7 +1033,7 @@ void ObjectGS::addDBFriend(const string &user1, const string &user2)
 {
     if (DBMessage *msg = new DBMessage(this))
     {
-        msg->SetSql("insertGSFrienfs");
+        msg->SetSql("insertGSFriends");
         msg->SetWrite("id", GSManager::CatString(user1, user2));
         msg->SetWrite("usr1", user1);
         msg->SetWrite("usr2", user2);
@@ -1148,9 +1214,10 @@ void ObjectGS::_prcsReqNewGs(RequestNewGS *msg)
         return;
 
     int res = 1;
-    if (Utility::Lower(msg->userid()) != m_id)
+    string user = Utility::Lower(msg->userid());
+    if (user != m_id)
         res = -4;
-    else if (!GSOrUavMessage::IsGSUserValide(msg->userid()))
+    else if (!GSOrUavMessage::IsGSUserValide(user))
         res = -2;
     else if (msg->check().empty())
         return _checkGS(m_id, msg->seqno());
@@ -1167,7 +1234,7 @@ void ObjectGS::_prcsReqNewGs(RequestNewGS *msg)
             if (1 != res || msg->check().empty())
             {
                 m_check = GSOrUavMessage::GenCheckString();
-                ack->set_check(m_check);
+                ack->set_check(-3 == res ? m_check : "");
             }
             ack->set_result(res);
             send(ack);
@@ -1201,7 +1268,7 @@ void ObjectGS::_prcsGsMessage(GroundStationsMessage *msg)
         m_friends.remove(msg->to());
         if (DBMessage *db = new DBMessage(this))
         {
-            db->SetSql("insertGSFrienfs");
+            db->SetSql("insertGSFriends");
             db->SetCondition("id", GSManager::CatString(m_id, msg->to()));
             SendMsg(db);
         }
@@ -1228,6 +1295,43 @@ void ObjectGS::_prcsReqFriends(das::proto::RequestFriends *msg)
         }
         send(ack);
     }
+}
+
+void ObjectGS::_prcsReqMissons(das::proto::RequestUavMission &msg)
+{
+    DBMessage *msgDb = NULL;
+    if (!msg.has_id())
+    {
+        msgDb = new DBMessage(this, IMessage::QueryMissionLandRslt);
+        if (!msgDb)
+            return;
+        msgDb->SetSeqNomb(msg.seqno());
+        msgDb->SetSql("queryMissionLands");
+        msgDb->SetCondition("uavID", msg.uav());
+        if (!GetAuth(ObjectGS::Type_UavManager))
+            msgDb->SetCondition("userID", m_id);
+        if (msg.has_beg())
+            msgDb->SetCondition("finishTime:>", msg.beg());
+        if (msg.has_end())
+            msgDb->SetCondition("finishTime:<", msg.end());
+    }
+    else if (msg.has_planid())
+    {
+        msgDb = new DBMessage(this, IMessage::QueryMissionsRslt);
+        if (!msgDb)
+            return;
+        msgDb->SetSeqNomb(msg.seqno());
+        msgDb->SetSql("queryMission");
+        msgDb->SetCondition("uavID", msg.uav());
+        if (!GetAuth(ObjectGS::Type_UavManager))
+            msgDb->SetCondition("userID", m_id);
+        msgDb->SetCondition("landId", msg.uav());
+        if (msg.has_beg())
+            msgDb->SetCondition("finishTime:>", msg.beg());
+        if (msg.has_end())
+            msgDb->SetCondition("finishTime:<", msg.end());
+    }
+    SendMsg(msgDb);
 }
 
 void ObjectGS::_checkGS(const string &user, int ack)

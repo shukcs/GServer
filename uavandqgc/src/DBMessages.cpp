@@ -112,13 +112,18 @@ void DBMessage::SetCondition(const std::string &key, const Variant &v, int idx)
         m_conditions[propertyKey(key, idx)] = v;
 }
 
-const Variant &DBMessage::GetCondition(const std::string &key, int idx) const
+const Variant &DBMessage::GetCondition(const string &key, int idx, const std::string &ju) const
 {
-    VariantMap::const_iterator itr = m_conditions.find(propertyKey(key, idx));
+    auto itr = m_conditions.find(propertyKey(key, idx));
     if (itr == m_conditions.end())
-        return sVarEmpty;
+    {
+        if (ju!="=")
+            itr = m_conditions.find(propertyKey(key+":"+ju, idx));
+        else
+            return sVarEmpty;
+    }
 
-    return itr->second;
+    return itr!=m_conditions.end() ? itr->second : sVarEmpty;
 }
 
 void DBMessage::SetSql(const std::string &sql, bool bQuerylist)

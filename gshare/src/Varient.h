@@ -140,12 +140,13 @@ public:
         *this = Variant(val);
     }
     template<typename T, typename Contianer = std::list<T> >
-    Contianer GetVarList()const
+    const Contianer &GetVarList()const
     {
         VariantType tp = GetVarType<Contianer>();
         if (tp == m_tp && tp >= Type_StringList && tp <= Type_ListF32)
             return *(Contianer*)m_list;
-        return Contianer();
+        static Contianer sEmpty;
+        return sEmpty;
     }
 public:
     template<typename T>

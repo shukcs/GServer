@@ -151,10 +151,10 @@ void ObjectUav::InitialUAV(const DBMessage &rslt, ObjectUav &uav)
         uav.m_authCheck = authCheck.ToString();
 }
 
-bool ObjectUav::transToMissionItems(const Variant &v, UavRoute &rt)
+bool ObjectUav::transToMissionItems(const std::string &v, UavRoute &rt)
 {
-    int sz = v.GetBuffLength();
-    if (sz > 0 && rt.ParseFromArray(v.GetBuff(), sz))  
+    int sz = v.size();
+    if (sz > 0 && rt.ParseFromArray(v.c_str(), sz))  
         return true;
 
     return false;
@@ -163,7 +163,6 @@ bool ObjectUav::transToMissionItems(const Variant &v, UavRoute &rt)
 bool ObjectUav::transFormMissionItems(Variant &v, const OperationRoute &ms)
 {
     UavRoute rt;
-    rt.set_optm(ms.createtime());
     for (int i = 0; i < ms.missions_size(); ++i)
     {
         rt.add_missions(ms.missions(i));

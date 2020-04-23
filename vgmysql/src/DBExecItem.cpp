@@ -70,14 +70,19 @@ void FiledVal::transType(int sqlType)
     }
 }
 
-void FiledVal::SetFieldName(const std::string &name)
+void FiledVal::SetFieldName(const string &name)
 {
     m_name = name;
 }
 
-const std::string &FiledVal::GetFieldName() const
+const string &FiledVal::GetFieldName() const
 {
     return m_name;
+}
+
+const string & FiledVal::GetJudge() const
+{
+    return m_condition;
 }
 
 void FiledVal::SetParam(const string &param, FieldType tp)

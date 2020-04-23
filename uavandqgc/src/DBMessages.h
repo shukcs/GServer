@@ -42,7 +42,7 @@ public:
     void AddRead(const std::string &key, const Variant &v, int idx = 0);
     const Variant &GetRead(const std::string &key, int idx = 0)const;
     void SetCondition(const std::string &key, const Variant &v, int idx = 0);
-    const Variant &GetCondition(const std::string &key, int idx = 0)const;
+    const Variant &GetCondition(const std::string &key, int idx = 0, const std::string &ju="=")const;
     void SetSql(const std::string &sql, bool bQuerylist = false);
     void AddSql(const std::string &sql);
     const StringList &GetSqls()const;

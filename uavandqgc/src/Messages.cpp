@@ -14,6 +14,14 @@ using namespace std;
 using namespace SOCKETS_NAMESPACE;
 #endif
 static const char *sRandStrTab = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789";
+enum 
+{
+    Numb_Min = '0',
+    Numb_Max = '9',
+    Char_Space = '_',
+    Char_Min = 'a',
+    Char_Max = 'z',
+};
 
 class GSOrUav : public MessageData
 {
@@ -120,21 +128,23 @@ string GSOrUavMessage::GenCheckString(int len)
 bool GSOrUavMessage::IsGSUserValide(const std::string &user)
 {
     size_t count = user.length();
-    if (count==0 || count > 24)
+    if (count < 3 || count > 24)
         return false;
 
     const uint8_t *tmp = (uint8_t *)user.c_str();
     for (size_t i = 0; i < count; ++i)
     {
-        if (tmp[i] >= 'A' && tmp[i] <= 'Z')
-            continue;
-        if (tmp[i] >= 'a' && tmp[i] <= 'z')
-            continue;
-        if (tmp[i] >= '0' && tmp[i] <= '9')
-            continue;
-
-        if(i == 0 || tmp[i] != '_')
+        if (0==i)
+        {
+            if (tmp[i] < Char_Min || tmp[i]>Char_Max)
+                return false;
+        }
+        else if ( tmp[i] != Char_Space
+               && (tmp[i] < Char_Min || tmp[i] > Char_Max)
+               && (tmp[i] < Numb_Min || tmp[i] > Numb_Max) )
+        {
             return false;
+        }
     }
     return true;
 }

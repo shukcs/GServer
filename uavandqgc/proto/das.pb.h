@@ -8713,17 +8713,29 @@ class RequestUavMission : public ::google::protobuf::Message {
   inline ::std::string* release_id();
   inline void set_allocated_id(::std::string* id);
 
-  // optional uint64 beg = 4;
+  // optional string planid = 4;
+  inline bool has_planid() const;
+  inline void clear_planid();
+  static const int kPlanidFieldNumber = 4;
+  inline const ::std::string& planid() const;
+  inline void set_planid(const ::std::string& value);
+  inline void set_planid(const char* value);
+  inline void set_planid(const char* value, size_t size);
+  inline ::std::string* mutable_planid();
+  inline ::std::string* release_planid();
+  inline void set_allocated_planid(::std::string* planid);
+
+  // optional uint64 beg = 5;
   inline bool has_beg() const;
   inline void clear_beg();
-  static const int kBegFieldNumber = 4;
+  static const int kBegFieldNumber = 5;
   inline ::google::protobuf::uint64 beg() const;
   inline void set_beg(::google::protobuf::uint64 value);
 
-  // optional uint64 end = 5;
+  // optional uint64 end = 6;
   inline bool has_end() const;
   inline void clear_end();
-  static const int kEndFieldNumber = 5;
+  static const int kEndFieldNumber = 6;
   inline ::google::protobuf::uint64 end() const;
   inline void set_end(::google::protobuf::uint64 value);
 
@@ -8735,6 +8747,8 @@ class RequestUavMission : public ::google::protobuf::Message {
   inline void clear_has_uav();
   inline void set_has_id();
   inline void clear_has_id();
+  inline void set_has_planid();
+  inline void clear_has_planid();
   inline void set_has_beg();
   inline void clear_has_beg();
   inline void set_has_end();
@@ -8744,12 +8758,13 @@ class RequestUavMission : public ::google::protobuf::Message {
 
   ::std::string* uav_;
   ::std::string* id_;
+  ::std::string* planid_;
   ::google::protobuf::uint64 beg_;
   ::google::protobuf::uint64 end_;
   ::google::protobuf::uint32 seqno_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -8814,17 +8829,41 @@ class UavRoute : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional uint64 opTm = 4;
+  // optional uint64 opTm = 1;
   inline bool has_optm() const;
   inline void clear_optm();
-  static const int kOpTmFieldNumber = 4;
+  static const int kOpTmFieldNumber = 1;
   inline ::google::protobuf::uint64 optm() const;
   inline void set_optm(::google::protobuf::uint64 value);
 
-  // repeated bytes missions = 1;
+  // optional string land = 2;
+  inline bool has_land() const;
+  inline void clear_land();
+  static const int kLandFieldNumber = 2;
+  inline const ::std::string& land() const;
+  inline void set_land(const ::std::string& value);
+  inline void set_land(const char* value);
+  inline void set_land(const char* value, size_t size);
+  inline ::std::string* mutable_land();
+  inline ::std::string* release_land();
+  inline void set_allocated_land(::std::string* land);
+
+  // optional string plan = 3;
+  inline bool has_plan() const;
+  inline void clear_plan();
+  static const int kPlanFieldNumber = 3;
+  inline const ::std::string& plan() const;
+  inline void set_plan(const ::std::string& value);
+  inline void set_plan(const char* value);
+  inline void set_plan(const char* value, size_t size);
+  inline ::std::string* mutable_plan();
+  inline ::std::string* release_plan();
+  inline void set_allocated_plan(::std::string* plan);
+
+  // repeated bytes missions = 4;
   inline int missions_size() const;
   inline void clear_missions();
-  static const int kMissionsFieldNumber = 1;
+  static const int kMissionsFieldNumber = 4;
   inline const ::std::string& missions(int index) const;
   inline ::std::string* mutable_missions(int index);
   inline void set_missions(int index, const ::std::string& value);
@@ -8841,14 +8880,20 @@ class UavRoute : public ::google::protobuf::Message {
  private:
   inline void set_has_optm();
   inline void clear_has_optm();
+  inline void set_has_land();
+  inline void clear_has_land();
+  inline void set_has_plan();
+  inline void clear_has_plan();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::google::protobuf::uint64 optm_;
+  ::std::string* land_;
+  ::std::string* plan_;
   ::google::protobuf::RepeatedPtrField< ::std::string> missions_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -8913,50 +8958,17 @@ class AckUavMission : public ::google::protobuf::Message {
 
   // accessors -------------------------------------------------------
 
-  // optional bytes boundary = 1;
-  inline bool has_boundary() const;
-  inline void clear_boundary();
-  static const int kBoundaryFieldNumber = 1;
-  inline const ::std::string& boundary() const;
-  inline void set_boundary(const ::std::string& value);
-  inline void set_boundary(const char* value);
-  inline void set_boundary(const void* value, size_t size);
-  inline ::std::string* mutable_boundary();
-  inline ::std::string* release_boundary();
-  inline void set_allocated_boundary(::std::string* boundary);
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
 
-  // optional bytes plan = 2;
-  inline bool has_plan() const;
-  inline void clear_plan();
-  static const int kPlanFieldNumber = 2;
-  inline const ::std::string& plan() const;
-  inline void set_plan(const ::std::string& value);
-  inline void set_plan(const char* value);
-  inline void set_plan(const void* value, size_t size);
-  inline ::std::string* mutable_plan();
-  inline ::std::string* release_plan();
-  inline void set_allocated_plan(::std::string* plan);
-
-  // repeated string lands = 3;
-  inline int lands_size() const;
-  inline void clear_lands();
-  static const int kLandsFieldNumber = 3;
-  inline const ::std::string& lands(int index) const;
-  inline ::std::string* mutable_lands(int index);
-  inline void set_lands(int index, const ::std::string& value);
-  inline void set_lands(int index, const char* value);
-  inline void set_lands(int index, const char* value, size_t size);
-  inline ::std::string* add_lands();
-  inline void add_lands(const ::std::string& value);
-  inline void add_lands(const char* value);
-  inline void add_lands(const char* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& lands() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_lands();
-
-  // repeated .das.proto.UavRoute routes = 4;
+  // repeated .das.proto.UavRoute routes = 2;
   inline int routes_size() const;
   inline void clear_routes();
-  static const int kRoutesFieldNumber = 4;
+  static const int kRoutesFieldNumber = 2;
   inline const ::das::proto::UavRoute& routes(int index) const;
   inline ::das::proto::UavRoute* mutable_routes(int index);
   inline ::das::proto::UavRoute* add_routes();
@@ -8967,20 +8979,16 @@ class AckUavMission : public ::google::protobuf::Message {
 
   // @@protoc_insertion_point(class_scope:das.proto.AckUavMission)
  private:
-  inline void set_has_boundary();
-  inline void clear_has_boundary();
-  inline void set_has_plan();
-  inline void clear_has_plan();
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::std::string* boundary_;
-  ::std::string* plan_;
-  ::google::protobuf::RepeatedPtrField< ::std::string> lands_;
   ::google::protobuf::RepeatedPtrField< ::das::proto::UavRoute > routes_;
+  ::google::protobuf::uint32 seqno_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -21917,15 +21925,85 @@ inline void RequestUavMission::set_allocated_id(::std::string* id) {
   }
 }
 
-// optional uint64 beg = 4;
-inline bool RequestUavMission::has_beg() const {
+// optional string planid = 4;
+inline bool RequestUavMission::has_planid() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void RequestUavMission::set_has_beg() {
+inline void RequestUavMission::set_has_planid() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void RequestUavMission::clear_has_beg() {
+inline void RequestUavMission::clear_has_planid() {
   _has_bits_[0] &= ~0x00000008u;
+}
+inline void RequestUavMission::clear_planid() {
+  if (planid_ != &::google::protobuf::internal::kEmptyString) {
+    planid_->clear();
+  }
+  clear_has_planid();
+}
+inline const ::std::string& RequestUavMission::planid() const {
+  return *planid_;
+}
+inline void RequestUavMission::set_planid(const ::std::string& value) {
+  set_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    planid_ = new ::std::string;
+  }
+  planid_->assign(value);
+}
+inline void RequestUavMission::set_planid(const char* value) {
+  set_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    planid_ = new ::std::string;
+  }
+  planid_->assign(value);
+}
+inline void RequestUavMission::set_planid(const char* value, size_t size) {
+  set_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    planid_ = new ::std::string;
+  }
+  planid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestUavMission::mutable_planid() {
+  set_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    planid_ = new ::std::string;
+  }
+  return planid_;
+}
+inline ::std::string* RequestUavMission::release_planid() {
+  clear_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = planid_;
+    planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestUavMission::set_allocated_planid(::std::string* planid) {
+  if (planid_ != &::google::protobuf::internal::kEmptyString) {
+    delete planid_;
+  }
+  if (planid) {
+    set_has_planid();
+    planid_ = planid;
+  } else {
+    clear_has_planid();
+    planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional uint64 beg = 5;
+inline bool RequestUavMission::has_beg() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void RequestUavMission::set_has_beg() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void RequestUavMission::clear_has_beg() {
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void RequestUavMission::clear_beg() {
   beg_ = GOOGLE_ULONGLONG(0);
@@ -21939,15 +22017,15 @@ inline void RequestUavMission::set_beg(::google::protobuf::uint64 value) {
   beg_ = value;
 }
 
-// optional uint64 end = 5;
+// optional uint64 end = 6;
 inline bool RequestUavMission::has_end() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
+  return (_has_bits_[0] & 0x00000020u) != 0;
 }
 inline void RequestUavMission::set_has_end() {
-  _has_bits_[0] |= 0x00000010u;
+  _has_bits_[0] |= 0x00000020u;
 }
 inline void RequestUavMission::clear_has_end() {
-  _has_bits_[0] &= ~0x00000010u;
+  _has_bits_[0] &= ~0x00000020u;
 }
 inline void RequestUavMission::clear_end() {
   end_ = GOOGLE_ULONGLONG(0);
@@ -21965,7 +22043,7 @@ inline void RequestUavMission::set_end(::google::protobuf::uint64 value) {
 
 // UavRoute
 
-// optional uint64 opTm = 4;
+// optional uint64 opTm = 1;
 inline bool UavRoute::has_optm() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
@@ -21987,7 +22065,147 @@ inline void UavRoute::set_optm(::google::protobuf::uint64 value) {
   optm_ = value;
 }
 
-// repeated bytes missions = 1;
+// optional string land = 2;
+inline bool UavRoute::has_land() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void UavRoute::set_has_land() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void UavRoute::clear_has_land() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void UavRoute::clear_land() {
+  if (land_ != &::google::protobuf::internal::kEmptyString) {
+    land_->clear();
+  }
+  clear_has_land();
+}
+inline const ::std::string& UavRoute::land() const {
+  return *land_;
+}
+inline void UavRoute::set_land(const ::std::string& value) {
+  set_has_land();
+  if (land_ == &::google::protobuf::internal::kEmptyString) {
+    land_ = new ::std::string;
+  }
+  land_->assign(value);
+}
+inline void UavRoute::set_land(const char* value) {
+  set_has_land();
+  if (land_ == &::google::protobuf::internal::kEmptyString) {
+    land_ = new ::std::string;
+  }
+  land_->assign(value);
+}
+inline void UavRoute::set_land(const char* value, size_t size) {
+  set_has_land();
+  if (land_ == &::google::protobuf::internal::kEmptyString) {
+    land_ = new ::std::string;
+  }
+  land_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* UavRoute::mutable_land() {
+  set_has_land();
+  if (land_ == &::google::protobuf::internal::kEmptyString) {
+    land_ = new ::std::string;
+  }
+  return land_;
+}
+inline ::std::string* UavRoute::release_land() {
+  clear_has_land();
+  if (land_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = land_;
+    land_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void UavRoute::set_allocated_land(::std::string* land) {
+  if (land_ != &::google::protobuf::internal::kEmptyString) {
+    delete land_;
+  }
+  if (land) {
+    set_has_land();
+    land_ = land;
+  } else {
+    clear_has_land();
+    land_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string plan = 3;
+inline bool UavRoute::has_plan() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void UavRoute::set_has_plan() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void UavRoute::clear_has_plan() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void UavRoute::clear_plan() {
+  if (plan_ != &::google::protobuf::internal::kEmptyString) {
+    plan_->clear();
+  }
+  clear_has_plan();
+}
+inline const ::std::string& UavRoute::plan() const {
+  return *plan_;
+}
+inline void UavRoute::set_plan(const ::std::string& value) {
+  set_has_plan();
+  if (plan_ == &::google::protobuf::internal::kEmptyString) {
+    plan_ = new ::std::string;
+  }
+  plan_->assign(value);
+}
+inline void UavRoute::set_plan(const char* value) {
+  set_has_plan();
+  if (plan_ == &::google::protobuf::internal::kEmptyString) {
+    plan_ = new ::std::string;
+  }
+  plan_->assign(value);
+}
+inline void UavRoute::set_plan(const char* value, size_t size) {
+  set_has_plan();
+  if (plan_ == &::google::protobuf::internal::kEmptyString) {
+    plan_ = new ::std::string;
+  }
+  plan_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* UavRoute::mutable_plan() {
+  set_has_plan();
+  if (plan_ == &::google::protobuf::internal::kEmptyString) {
+    plan_ = new ::std::string;
+  }
+  return plan_;
+}
+inline ::std::string* UavRoute::release_plan() {
+  clear_has_plan();
+  if (plan_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = plan_;
+    plan_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void UavRoute::set_allocated_plan(::std::string* plan) {
+  if (plan_ != &::google::protobuf::internal::kEmptyString) {
+    delete plan_;
+  }
+  if (plan) {
+    set_has_plan();
+    plan_ = plan;
+  } else {
+    clear_has_plan();
+    plan_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// repeated bytes missions = 4;
 inline int UavRoute::missions_size() const {
   return missions_.size();
 }
@@ -22035,191 +22253,29 @@ UavRoute::mutable_missions() {
 
 // AckUavMission
 
-// optional bytes boundary = 1;
-inline bool AckUavMission::has_boundary() const {
+// required uint32 seqno = 1;
+inline bool AckUavMission::has_seqno() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void AckUavMission::set_has_boundary() {
+inline void AckUavMission::set_has_seqno() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void AckUavMission::clear_has_boundary() {
+inline void AckUavMission::clear_has_seqno() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void AckUavMission::clear_boundary() {
-  if (boundary_ != &::google::protobuf::internal::kEmptyString) {
-    boundary_->clear();
-  }
-  clear_has_boundary();
+inline void AckUavMission::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
 }
-inline const ::std::string& AckUavMission::boundary() const {
-  return *boundary_;
+inline ::google::protobuf::uint32 AckUavMission::seqno() const {
+  return seqno_;
 }
-inline void AckUavMission::set_boundary(const ::std::string& value) {
-  set_has_boundary();
-  if (boundary_ == &::google::protobuf::internal::kEmptyString) {
-    boundary_ = new ::std::string;
-  }
-  boundary_->assign(value);
-}
-inline void AckUavMission::set_boundary(const char* value) {
-  set_has_boundary();
-  if (boundary_ == &::google::protobuf::internal::kEmptyString) {
-    boundary_ = new ::std::string;
-  }
-  boundary_->assign(value);
-}
-inline void AckUavMission::set_boundary(const void* value, size_t size) {
-  set_has_boundary();
-  if (boundary_ == &::google::protobuf::internal::kEmptyString) {
-    boundary_ = new ::std::string;
-  }
-  boundary_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckUavMission::mutable_boundary() {
-  set_has_boundary();
-  if (boundary_ == &::google::protobuf::internal::kEmptyString) {
-    boundary_ = new ::std::string;
-  }
-  return boundary_;
-}
-inline ::std::string* AckUavMission::release_boundary() {
-  clear_has_boundary();
-  if (boundary_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = boundary_;
-    boundary_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckUavMission::set_allocated_boundary(::std::string* boundary) {
-  if (boundary_ != &::google::protobuf::internal::kEmptyString) {
-    delete boundary_;
-  }
-  if (boundary) {
-    set_has_boundary();
-    boundary_ = boundary;
-  } else {
-    clear_has_boundary();
-    boundary_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
+inline void AckUavMission::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
 }
 
-// optional bytes plan = 2;
-inline bool AckUavMission::has_plan() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void AckUavMission::set_has_plan() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void AckUavMission::clear_has_plan() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void AckUavMission::clear_plan() {
-  if (plan_ != &::google::protobuf::internal::kEmptyString) {
-    plan_->clear();
-  }
-  clear_has_plan();
-}
-inline const ::std::string& AckUavMission::plan() const {
-  return *plan_;
-}
-inline void AckUavMission::set_plan(const ::std::string& value) {
-  set_has_plan();
-  if (plan_ == &::google::protobuf::internal::kEmptyString) {
-    plan_ = new ::std::string;
-  }
-  plan_->assign(value);
-}
-inline void AckUavMission::set_plan(const char* value) {
-  set_has_plan();
-  if (plan_ == &::google::protobuf::internal::kEmptyString) {
-    plan_ = new ::std::string;
-  }
-  plan_->assign(value);
-}
-inline void AckUavMission::set_plan(const void* value, size_t size) {
-  set_has_plan();
-  if (plan_ == &::google::protobuf::internal::kEmptyString) {
-    plan_ = new ::std::string;
-  }
-  plan_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckUavMission::mutable_plan() {
-  set_has_plan();
-  if (plan_ == &::google::protobuf::internal::kEmptyString) {
-    plan_ = new ::std::string;
-  }
-  return plan_;
-}
-inline ::std::string* AckUavMission::release_plan() {
-  clear_has_plan();
-  if (plan_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = plan_;
-    plan_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckUavMission::set_allocated_plan(::std::string* plan) {
-  if (plan_ != &::google::protobuf::internal::kEmptyString) {
-    delete plan_;
-  }
-  if (plan) {
-    set_has_plan();
-    plan_ = plan;
-  } else {
-    clear_has_plan();
-    plan_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// repeated string lands = 3;
-inline int AckUavMission::lands_size() const {
-  return lands_.size();
-}
-inline void AckUavMission::clear_lands() {
-  lands_.Clear();
-}
-inline const ::std::string& AckUavMission::lands(int index) const {
-  return lands_.Get(index);
-}
-inline ::std::string* AckUavMission::mutable_lands(int index) {
-  return lands_.Mutable(index);
-}
-inline void AckUavMission::set_lands(int index, const ::std::string& value) {
-  lands_.Mutable(index)->assign(value);
-}
-inline void AckUavMission::set_lands(int index, const char* value) {
-  lands_.Mutable(index)->assign(value);
-}
-inline void AckUavMission::set_lands(int index, const char* value, size_t size) {
-  lands_.Mutable(index)->assign(
-    reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckUavMission::add_lands() {
-  return lands_.Add();
-}
-inline void AckUavMission::add_lands(const ::std::string& value) {
-  lands_.Add()->assign(value);
-}
-inline void AckUavMission::add_lands(const char* value) {
-  lands_.Add()->assign(value);
-}
-inline void AckUavMission::add_lands(const char* value, size_t size) {
-  lands_.Add()->assign(reinterpret_cast<const char*>(value), size);
-}
-inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
-AckUavMission::lands() const {
-  return lands_;
-}
-inline ::google::protobuf::RepeatedPtrField< ::std::string>*
-AckUavMission::mutable_lands() {
-  return &lands_;
-}
-
-// repeated .das.proto.UavRoute routes = 4;
+// repeated .das.proto.UavRoute routes = 2;
 inline int AckUavMission::routes_size() const {
   return routes_.size();
 }

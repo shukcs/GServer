@@ -1224,7 +1224,7 @@ string Utility::Lower(const std::string &str)
 {
     string ret = str;
     int count = ret.length();
-    char *p = &ret.at(0);
+    char *p = count>0 ? &ret.at(0):NULL;
     for (int i = 0; i < count; ++i)
     {
         if ('A' <= p[i] && p[i] <= 'Z')

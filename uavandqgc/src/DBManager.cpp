@@ -103,16 +103,12 @@ void ObjectDB::_initSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx)
     for (FiledVal *fd : sql.Fields(ExecutItem::Write))
     {
         string name = fd->GetFieldName();
-        if (idx > 0)
-            name = Utility::l2string(idx) + "." + name;
-        _initFieldByVarient(*fd, msg.GetWrite(name));
+        _initFieldByVarient(*fd, msg.GetWrite(name, idx));
     }
     for (FiledVal *fd : sql.Fields(ExecutItem::Condition))
     {
         string name = fd->GetFieldName();
-        if (idx > 0)
-            name = Utility::l2string(idx) + "." + name;
-        _initFieldByVarient(*fd, msg.GetCondition(name));
+        _initFieldByVarient(*fd, msg.GetCondition(name, idx, fd->GetJudge()));
     }
 }
 

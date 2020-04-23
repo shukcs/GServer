@@ -43,7 +43,7 @@ public:
 public:
     static int UAVType();
     static void InitialUAV(const DBMessage &msg, ObjectUav &uav);
-    static bool transToMissionItems(const Variant &v, das::proto::UavRoute &rt);
+    static bool transToMissionItems(const std::string &v, das::proto::UavRoute &rt);
     static bool transFormMissionItems(Variant &v, const das::proto::OperationRoute &ms);
 protected:
     virtual int GetObjectType()const;

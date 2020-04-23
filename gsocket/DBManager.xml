@@ -74,12 +74,12 @@
 					<item name="pswd" ref="GSInfo" type="Write" />
 					<item name="user" ref="GSInfo" type="Condition" />
 				</SQL>
-				<SQL name="insertGSFrienfs" table="GSFrienfs" type="Replace" >
+				<SQL name="insertGSFriends" table="GSFrienfs" type="Replace" >
 					<item name="id" type="Write" />
 					<item name="usr1" type="Write" />
 					<item name="usr2" type="Write" />
 				</SQL>
-				<SQL name="deleteGSFrienfs" table="GSFrienfs" type="Delete" >
+				<SQL name="deleteGSFriends" table="GSFrienfs" type="Delete" >
 					<item name="id" type="Condition" />
 				</SQL>
 				<SQL name="queryGSFriends" table="GSFrienfs" type="Select" condition="or" >
@@ -142,7 +142,8 @@
 					<item name="mobileno"  ref="OwnerInfo" type="Read"/>
 					<item name="phoneno" ref="OwnerInfo" type="Read" />
 					<item name="weixin" ref="OwnerInfo" type="Read" />
-					<item name="gsuser" ref="LandInfo" type="Condition" condition="=" />
+					<item name="gsuser" type="Condition" condition="=" />
+					<item name="id" type="Condition" />
 					<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
 				</SQL>
 				<SQL name="deleteLand" table="LandInfo;OwnerInfo" type="Delete" >
@@ -215,6 +216,26 @@
 					<item name="end" ref="MissionInfo" type="Write" />
 					<item name="route" ref="MissionInfo" type="Write" />
 				</SQL>
+				<SQL name="queryMissionLands" table="MissionInfo" type="Select" group="planID" >
+					<item name="landId" ref="MissionInfo" type="Read" />
+					<item name="planID" ref="MissionInfo" type="Read" />
+					<item name="uavID"  type="Condition" />
+					<item name="userID"  type="Condition" />
+					<item name="finishTime" ref="MissionInfo" type="Condition" condition=">" />
+					<item name="finishTime" ref="MissionInfo" type="Condition" condition="<" />
+				</SQL>
+				<SQL name="queryMission" table="MissionInfo" type="Select" >
+					<item name="landId" ref="MissionInfo" type="Read" />
+					<item name="planID" ref="MissionInfo" type="Read" />
+					<item name="uavID" ref="MissionInfo" type="Read" />
+					<item name="route" ref="MissionInfo" type="Read" />
+					<item name="finishTime" ref="MissionInfo" type="Read" />
+					<item name="uavID" type="Condition" />
+					<item name="landId" type="Condition" />
+					<item name="planID" type="Condition" />
+					<item name="finishTime" ref="MissionInfo" type="Condition" condition=">" />
+					<item name="finishTime" ref="MissionInfo" type="Condition" condition="<" />
+				</SQL>
 			</SQLs>
 			<!--Triggers>
 				<Trigger name="trigger_bef" table="LandInfo" event="Insert" before="false" refsql="updatePos" />
@@ -284,5 +305,5 @@
 				</SQL>
 			</SQLs>
 		</ObjectDB>
-	<DBManager>
+	</DBManager>
 </document>
