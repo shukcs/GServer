@@ -1306,7 +1306,7 @@ void ObjectGS::_prcsReqMissons(das::proto::RequestUavMission &msg)
         if (!msgDb)
             return;
         msgDb->SetSeqNomb(msg.seqno());
-        msgDb->SetSql("queryMissionLands");
+        msgDb->SetSql("queryMissionLands", true);
         msgDb->SetCondition("uavID", msg.uav());
         if (!GetAuth(ObjectGS::Type_UavManager))
             msgDb->SetCondition("userID", m_id);
@@ -1321,7 +1321,7 @@ void ObjectGS::_prcsReqMissons(das::proto::RequestUavMission &msg)
         if (!msgDb)
             return;
         msgDb->SetSeqNomb(msg.seqno());
-        msgDb->SetSql("queryMission");
+        msgDb->SetSql("queryMission", true);
         msgDb->SetCondition("uavID", msg.uav());
         if (!GetAuth(ObjectGS::Type_UavManager))
             msgDb->SetCondition("userID", m_id);
