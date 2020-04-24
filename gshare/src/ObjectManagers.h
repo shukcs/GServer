@@ -73,7 +73,6 @@ public:
     void ProcessReceive(ISocket *sock, void const *buf, int len);
     void Subcribe(IObject *o, const std::string &sender, int tpMsg);
     void Unsubcribe(IObject *o, const std::string &sender, int tpMsg);
-    void SetLog(ILog *log);
 protected:
     bool PrcsRcvBuff();
     void PrcsObjectsDestroy();
@@ -98,7 +97,6 @@ private:
     IMutex                              *m_mtxObj;
     IMutex                              *m_mtxMsg;
     Thread                              *m_thread;
-    ILog                                *m_log;
     MessageSubcribes                    m_subcribes;
     RemoveManagerQueue                  m_mgrsRemove;
     SubcribeQueue                       m_subcribeMsgs;

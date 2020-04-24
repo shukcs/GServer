@@ -6,14 +6,18 @@
 #if defined _WIN32 || defined _WIN64
 #include <conio.h>
 #endif //defined _WIN32 || defined _WIN64
+#include "ILog.h"
 
 #define DefaultPort 8198
 static ISocketManager *sSockMgr = NULL;
 void OnBindFinish(ISocket *sock, bool binded)
 {
     if(sock)
-        GSocket::Log(binded ? 0 : errno, "Listen", 0, "bind %s:%d %s",
-            sock->GetHost().c_str(), sock->GetPort(), binded ? "success" : "fail");
+    {
+        char buff[1024];
+        sprintf(buff, "bind %s:%d %s", sock->GetHost().c_str(), sock->GetPort(), binded ? "success" : "fail");
+        GSocket::GetLog().Log(buff, "Listen", 0, errno);
+    }
 
     if (!binded && sSockMgr)
         sSockMgr->Exit();
@@ -27,7 +31,7 @@ int main(int argc, char *argv[])
     GLibrary lib("uavandqgc", GLibrary::CurrentPath());
     sSockMgr = GSocketManager::CreateManager(1);
     GSocket *s = new GSocket(NULL);
-    int port = argc > 1 ? Utility::str2int(argv[1]) : DefaultPort;
+    int port = argc > 1 ? (int)Utility::str2int(argv[1]) : DefaultPort;
     if (port <1000)
         port = DefaultPort;
     if (s)

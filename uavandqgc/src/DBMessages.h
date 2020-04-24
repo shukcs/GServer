@@ -25,7 +25,8 @@ public:
     enum OBjectFlag
     {
         DB_GS,
-        DB_Uav
+        DB_Uav,
+        DB_LOG,
     };
 public:
     DBMessage(ObjectGS *sender, MessageType ack=IMessage::Unknown, OBjectFlag rcv = DB_GS);
@@ -33,6 +34,7 @@ public:
     DBMessage(GSManager *sender, MessageType ack=IMessage::Unknown, OBjectFlag rcv = DB_GS);
     DBMessage(UavManager *sender, MessageType ack= IMessage::Unknown, OBjectFlag rcv = DB_Uav);
     DBMessage(ObjectDB *senderv, int tpMsg, int tpRcv, const std::string &idRc);
+    DBMessage(IObjectManager *mgr);
 
     void *GetContent() const;
     int GetContentLength() const;

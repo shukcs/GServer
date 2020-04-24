@@ -21,8 +21,8 @@ typedef std::map<std::string, IObject*> ThreadObjects;
 class BussinessThread : public Thread
 {
 public:
-    BussinessThread(int id, IObjectManager *mgr) :Thread(true)
-    , m_mgr(mgr), m_id(id), m_szBuff(0), m_buff(NULL)
+    BussinessThread(IObjectManager *mgr) :Thread(true)
+    , m_mgr(mgr), m_szBuff(0), m_buff(NULL)
     {
     }
     ~BussinessThread() 
@@ -103,7 +103,6 @@ private:
     friend class IObject;
     friend class IObjectManager;
     IObjectManager  *m_mgr;
-    int             m_id;
     int             m_szBuff;
     char            *m_buff;
     ThreadObjects   m_objects;
@@ -365,6 +364,11 @@ bool IObjectManager::PrcsPublicMsg(const IMessage &)
     return false;
 }
 
+void IObjectManager::ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb)
+{
+    ObjectManagers::GetLog().Log(dscb, obj, evT, err);
+}
+
 void IObjectManager::ProcessBussiness(BussinessThread *s)
 {
     if (!m_lsThread.empty() && s==m_lsThread.front())
@@ -419,8 +423,7 @@ void IObjectManager::Log(int err, const std::string &obj, int evT, const char *f
     va_start(ap, fmt);
     vsnprintf(slask, 1023, fmt, ap);
     va_end(ap);
-    ILog *log = m_log ? m_log : &ObjectManagers::GetLog();
-    log->Log(slask, obj, evT, err);
+    ToCurrntLog(err, obj, evT, slask);
 }
 
 void IObjectManager::ProcessMessage(IMessage *msg)
@@ -505,10 +508,9 @@ void IObjectManager::PushManagerMessage(IMessage *msg)
 
 bool IObjectManager::SendMsg(IMessage *msg)
 {
-    if (!msg || m_lsThread.empty())
-        return false;
-
-    return m_lsThread.front()->m_lsMsgSend.Push(msg);
+    if (auto t = CurrentThread())
+        return t->m_lsMsgSend.Push(msg);
+    return false;
 }
 
 void IObjectManager::InitThread(uint16_t nThread, uint16_t bufSz)
@@ -521,13 +523,24 @@ void IObjectManager::InitThread(uint16_t nThread, uint16_t bufSz)
 
     for (int i=0; i<nThread; ++i)
     {
-        BussinessThread *t = new BussinessThread(i, this);
+        BussinessThread *t = new BussinessThread(this);
         if(t)
         {
             t->InitialBuff(bufSz);
             m_lsThread.push_back(t);
         }
     }
+}
+
+BussinessThread *IObjectManager::CurrentThread() const
+{
+    uint32_t id = Utility::ThreadID();
+    for (auto itr : m_lsThread)
+    {
+        if (itr->GetThreadId() == id)
+            return itr;
+    }
+    return NULL;
 }
 
 BussinessThread *IObjectManager::GetPropertyThread() const

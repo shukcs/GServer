@@ -6,13 +6,11 @@
 #include "Utility.h"
 #include "VGMysql.h"
 #include "DBExecItem.h"
+#include "DBMessages.h"
 
 using namespace das::proto;
 using namespace google::protobuf;
 using namespace std;
-#ifdef SOCKETS_NAMESPACE
-using namespace SOCKETS_NAMESPACE;
-#endif
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,20 +48,17 @@ void ObjectAbsPB::OnConnected(bool bConnected)
     {
         if (!m_p)
             m_p = new ProtoMsg;
-
+        if (UnConnected == m_stInit)
+            m_stInit = Initialed;
         return;
     }
 
     ClearRead();
     IObjectManager *mgr = GetManager();
-    if (mgr)
+    if (mgr && m_sock)
     {
-        mgr->Log(0, GetObjectID(), 0, "disconnect");
-        if (m_sock)
-        {
-            m_sock->Close();
-            m_sock = NULL;
-        }
+        m_sock->Close();
+        m_sock = NULL;
     }
 }
 
@@ -113,4 +108,30 @@ int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int s
     int crc = Utility::Crc32(buf + 4, len - 4);
     Utility::toBigendian(crc, buf + len);
     return len + 4;
+}
+////////////////////////////////////////////////////////////////////////////////
+//AbsPBManager
+////////////////////////////////////////////////////////////////////////////////
+AbsPBManager::AbsPBManager():m_p(new ProtoMsg)
+{
+}
+
+AbsPBManager::~AbsPBManager()
+{
+    delete m_p;
+}
+
+void AbsPBManager::ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb)
+{
+    if (auto msg = new DBMessage(this))
+    {
+        msg->SetSql("insertLog");
+
+        msg->SetWrite("event", evT);
+        msg->SetWrite("error", err);
+        msg->SetWrite("object", obj);
+        msg->SetWrite("evntdesc", dscb);
+        if (!SendMsg(msg))
+            delete msg;
+    }
 }

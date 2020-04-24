@@ -21,14 +21,13 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 //GSManager
 ////////////////////////////////////////////////////////////////////////////////
-GSManager::GSManager() : IObjectManager()
-, m_p(new ProtoMsg), m_bInit(false)
+GSManager::GSManager() : AbsPBManager()
+, m_bInit(false)
 {
 }
 
 GSManager::~GSManager()
 {
-    delete m_p;
 }
 
 int GSManager::AddDatabaseUser(const string &user, const string &pswd, ObjectGS *gs, int seq, int auth)

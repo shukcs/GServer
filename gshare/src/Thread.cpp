@@ -15,8 +15,8 @@
 using namespace SOCKETS_NAMESPACE;
 #endif
 
-Thread::Thread(bool run, unsigned ms): m_thread(0)
-, m_running(false), m_msSleep(ms)
+Thread::Thread(bool run, unsigned ms): m_threadId(0)
+,m_thread(0), m_running(false), m_msSleep(ms)
 , m_bDeleteOnExit(true)
 {
     SetRunning(run);
@@ -40,6 +40,9 @@ Thread::~Thread()
 threadfunc_t STDPREFIX Thread::StartThread(threadparam_t zz)
 {
     Thread *p = (Thread *)zz;
+    if (!p)
+        return NULL;
+    p->m_threadId = Utility::ThreadID();
     while (p && p->IsRunning())
     {
         if (!p->RunLoop())
@@ -63,12 +66,11 @@ pthread_t Thread::GetThread() const
 {
     return m_thread;
 }
-#if defined _WIN32 || defined _WIN64
+
 unsigned Thread::GetThreadId()const
 {
-    return m_dwThreadId;
+    return m_threadId;
 }
-#endif
 
 bool Thread::IsRunning()const
 {
@@ -85,7 +87,7 @@ void Thread::SetRunning(bool x)
     {
 #if defined _WIN32 || defined _WIN64
         //m_thread = ::CreateThread(NULL, 0, StartThread, this, 0, &m_dwThreadId);
-        m_thread = (HANDLE)_beginthreadex(NULL, 0, &StartThread, this, 0, &m_dwThreadId);
+        m_thread = (HANDLE)_beginthreadex(NULL, 0, &StartThread, this, 0, (uint32_t*)&m_threadId);
 #else
         pthread_attr_init(&m_attr);
         pthread_attr_setdetachstate(&m_attr, PTHREAD_CREATE_DETACHED);

@@ -17,7 +17,6 @@
     <ClInclude Include="src\FWAssist.h" />
     <ClInclude Include="src\FWItem.h" />
     <ClInclude Include="src\GSManager.h" />
-    <ClInclude Include="src\LogDB.h" />
     <ClInclude Include="src\Messages.h" />
     <ClInclude Include="src\ObjectAbsPB.h" />
     <ClInclude Include="src\ObjectGS.h" />
@@ -32,7 +31,6 @@
     <ClCompile Include="src\FWAssist.cpp" />
     <ClCompile Include="src\FWItem.cpp" />
     <ClCompile Include="src\GSManager.cpp" />
-    <ClCompile Include="src\LogDB.cpp" />
     <ClCompile Include="src\Messages.cpp" />
     <ClCompile Include="src\ObjectAbsPB.cpp" />
     <ClCompile Include="src\ObjectGS.cpp" />

@@ -68,11 +68,11 @@
 				<SQL name="queryGSInfo" table="GSInfo" type="Select" >
 					<item name="pswd" ref="GSInfo" type="Read" />
 					<item name="auth" ref="GSInfo" type="Read" />
-					<item name="user" ref="GSInfo" type="Condition" />
+					<item name="user" type="Condition" />
 				</SQL>
 				<SQL name="changePswd" table="GSInfo" type="Update" >
 					<item name="pswd" ref="GSInfo" type="Write" />
-					<item name="user" ref="GSInfo" type="Condition" />
+					<item name="user" type="Condition" />
 				</SQL>
 				<SQL name="insertGSFriends" table="GSFrienfs" type="Replace" >
 					<item name="id" type="Write" />
@@ -302,6 +302,27 @@
 					<item name="timePos" ref="UavInfo" type="Write" />
 					<item name="simID" ref="UavInfo" type="Write" />
 					<item name="id" type="Condition" />
+				</SQL>
+			</SQLs>
+		</ObjectDB>
+		<ObjectDB name="DBLog" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
+			<Tables>
+				<table name="eventLog">
+					<field name="id" type="BIGINT" constraint="primary key;auto_increment"/>
+					<field name="logTm" type="BIGINT" />		
+					<field name="event" type="INT" constraint="DEFAULT '0'" />
+					<field name="error" type="INT" constraint="DEFAULT '0'" />
+					<field name="object" type="char(32)" constraint="DEFAULT ''" />
+					<field name="evntdesc" type="VARCHAR(1024)" />
+				</table>
+			</Tables>
+			<SQLs>
+				<SQL name="insertLog" table="eventLog" type="Insert" >
+					<item name="logTm" param="unix_timestamp()" type="Write" />
+					<item name="event" ref="eventLog" type="Write" />
+					<item name="error" ref="eventLog" type="Write" />
+					<item name="object" type="Write" />
+					<item name="evntdesc" type="Write" />
 				</SQL>
 			</SQLs>
 		</ObjectDB>

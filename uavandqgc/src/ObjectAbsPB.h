@@ -12,7 +12,7 @@ namespace google {
 class ExecutItem;
 class VGMySql;
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE;
 #endif
 
 class ProtoMsg;
@@ -35,8 +35,15 @@ protected:
     ProtoMsg        *m_p;
 };
 
-#ifdef SOCKETS_NAMESPACE
-}
-#endif
+class AbsPBManager : public IObjectManager
+{
+public:
+    AbsPBManager();
+    virtual ~AbsPBManager();
+public:
+    virtual void ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb);
+protected:
+    ProtoMsg    *m_p;
+};
 #endif // __OBJECT_ABS_PB_H__
 

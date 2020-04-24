@@ -12,6 +12,7 @@ namespace SOCKETS_NAMESPACE {
 class GSocketHandle;
 class IObject;
 class SocketAddress;
+class ILog;
 
 class GSocket : public ISocket
 {
@@ -31,7 +32,7 @@ handle:是创建他的线程，如果handle不为空，GSocket调用Close才能安全删除
     std::string GetHost()const;
     void Close();
 public:
-    SHARED_DECL static void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
+     static SHARED_DECL ILog &GetLog();
 protected:
     //事务处理调用函数
     IObject *GetOwnObject()const;

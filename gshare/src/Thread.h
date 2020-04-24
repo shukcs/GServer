@@ -32,10 +32,10 @@ public:
 	virtual ~Thread();
 #ifdef _WIN32
     HANDLE GetThread()const;
-    unsigned GetThreadId()const;
 #else
     pthread_t GetThread()const;
 #endif
+    unsigned GetThreadId()const;
 	bool IsRunning()const;  //thread is running
 	void SetRunning(bool x=true);//x:true,start thread; false, stop thread;
 
@@ -51,11 +51,11 @@ private:
 private:
 #ifdef _WIN32
     HANDLE m_thread;
-    unsigned m_dwThreadId;
 #else
     pthread_t m_thread;
     pthread_attr_t m_attr;
 #endif
+    unsigned m_threadId;
 	bool m_running;
 	unsigned m_msSleep;
     bool m_bDeleteOnExit;

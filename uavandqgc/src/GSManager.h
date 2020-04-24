@@ -1,7 +1,7 @@
 #ifndef  __GS_MANAGER_H__
 #define __GS_MANAGER_H__
 
-#include "ObjectBase.h"
+#include "ObjectAbsPB.h"
 
 namespace das {
     namespace proto {
@@ -19,12 +19,12 @@ namespace google {
 class TiXmlDocument;
 
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE;
 #endif
 
 class ProtoMsg;
 class ObjectGS;
-class GSManager : public IObjectManager
+class GSManager : public AbsPBManager
 {
 public:
     GSManager();
@@ -44,13 +44,8 @@ protected:
     void LoadConfig();
     bool InitManager();
 private:
-    ProtoMsg        *m_p;
     bool            m_bInit;
 };
-
-#ifdef SOCKETS_NAMESPACE
-}
-#endif
 
 #endif // __OBJECT_UAV_H__
 

@@ -92,6 +92,11 @@ void GSocket::Close()
     }
 }
 
+ILog &GSocket::GetLog()
+{
+    return ObjectManagers::GetLog();
+}
+
 std::string GSocket::GetHost() const
 {
     return m_address ? m_address->Convert(false) : "";
@@ -253,14 +258,4 @@ bool GSocket::ResizeBuff(int sz)
 bool GSocket::IsNoWriteData() const
 {
     return m_buffWrite && m_buffWrite->Count() == 0;
-}
-
-void GSocket::Log(int err, const std::string &obj, int evT, const char *fmt, ...)
-{
-    char slask[1024];
-    va_list ap;
-    va_start(ap, fmt);
-    vsnprintf(slask, 1023, fmt, ap);
-    va_end(ap);
-    ObjectManagers::GetLog().Log(slask, obj, evT, err);
 }

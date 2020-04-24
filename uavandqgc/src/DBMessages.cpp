@@ -22,6 +22,8 @@ static const char *rcvId(DBMessage::OBjectFlag f)
         return "DBGS";
     case DBMessage::DB_Uav:
         return "DBUav";
+    case DBMessage::DB_LOG:
+        return "DBLog";
     default:
         break;
     }
@@ -57,6 +59,11 @@ DBMessage::DBMessage(UavManager *sender, MessageType ack, OBjectFlag rcv)
 DBMessage::DBMessage(ObjectDB *sender, int tpMsg, int tpRcv, const std::string &idRcv)
 : IMessage(new MessageData(sender, tpMsg), idRcv, tpRcv), m_seq(0), m_ackTp(Unknown)
 , m_bQueryList(false), m_idxRefSql(0)
+{
+}
+
+DBMessage::DBMessage(IObjectManager *mgr)
+: IMessage(new MessageData(mgr, DBExec), rcvId(DB_LOG), IObject::DBMySql)
 {
 }
 

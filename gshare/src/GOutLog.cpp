@@ -44,7 +44,3 @@ void GOutLog::Log(const std::string &dsc, const std::string &obj, int evT, int e
     else
         printf("%s%s: %s!\n", dt, obj.c_str(), dsc.c_str());
 }
-
-void GOutLog::ProcessLog()
-{
-}

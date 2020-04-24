@@ -238,7 +238,12 @@ int ObjectUav::ProcessReceive(void *buf, int len)
 
 void ObjectUav::CheckTimer(uint64_t ms)
 {
-    if (m_sock)
+    if (!m_sock && Initialed == m_stInit)
+    {
+        m_stInit = UnConnected;
+        GetManager()->Log(0, GetObjectID(), 0, "disconnect");
+    }
+    else if (m_sock)
     { 
         if (m_mission && !m_bSys && (uint32_t)ms-m_lastORNotify > 500)
             _notifyUavUOR(*m_mission);

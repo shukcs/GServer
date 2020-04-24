@@ -839,6 +839,12 @@ void ObjectGS::InitObject()
 
 void ObjectGS::CheckTimer(uint64_t ms)
 {
+    if (!m_sock && Initialed== m_stInit)
+    {
+        m_stInit = UnConnected;
+        GetManager()->Log(0, GetObjectID(), 0, "disconnect");
+    }
+
     ObjectAbsPB::CheckTimer(ms);
     if (!m_protosSend.empty() && m_sock && m_sock->IsNoWriteData())
     {
@@ -1193,7 +1199,7 @@ void ObjectGS::_prcsDeletePlan(das::proto::DeleteOperationDescription *msg)
         ackDP->set_result(1);
         send(ackDP);
     }
-    GetManager()->Log(0, GetObjectID(), 0, "Delete mission plan %s!", id.c_str());
+    GetManager()->Log(0, m_id, 0, "Delete mission plan %s!", id.c_str());
 }
 
 void ObjectGS::_prcsPostMission(PostOperationRoute *msg)

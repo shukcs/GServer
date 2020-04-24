@@ -1,7 +1,7 @@
 #ifndef  __UAV_MANAGER_H__
 #define __UAV_MANAGER_H__
 
-#include "ObjectBase.h"
+#include "ObjectAbsPB.h"
 
 namespace google {
     namespace protobuf {
@@ -31,7 +31,7 @@ class ObjectGS;
 class ObjectUav;
 class DBMessage;
 
-class UavManager : public IObjectManager
+class UavManager : public AbsPBManager
 {
 public:
     UavManager();
@@ -60,7 +60,6 @@ private:
     void queryUavInfo(ObjectGS *gs, int seq, const std::list<std::string> &uavs, bool bAdd);
     void saveBind(const std::string &uav, bool bBind, ObjectGS *gs);
 private:
-    ProtoMsg    *m_p;
     uint32_t    m_lastId;
     bool        m_bInit;
 };

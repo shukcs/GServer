@@ -40,6 +40,7 @@ public:
         Initialing,
         Initialed,
         InitialFail,
+        UnConnected,
     };
 public:
     SHARED_DECL const std::string &GetObjectID()const;
@@ -119,8 +120,8 @@ public:
     SHARED_DECL IObject *GetObjectByID(const std::string &id)const;
     SHARED_DECL bool Receive(ISocket *s, int len, const char *buf);
     SHARED_DECL void SetLog(ILog *);
-    SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
     SHARED_DECL bool SendMsg(IMessage *msg);
+    SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
 
     void PushManagerMessage(IMessage *);
     void PushReleaseMsg(IMessage *);
@@ -134,8 +135,10 @@ protected:
     SHARED_DECL IObjectManager();
 
     SHARED_DECL virtual bool PrcsPublicMsg(const IMessage &msg);
+    SHARED_DECL virtual void ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb);
     SHARED_DECL void InitThread(uint16_t nT = 1, uint16_t bufSz = 1024);
     virtual bool InitManager() = 0;
+    BussinessThread *CurrentThread()const;
 protected:
     BussinessThread *GetPropertyThread()const;
 protected:

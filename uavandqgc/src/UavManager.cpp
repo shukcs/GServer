@@ -23,14 +23,13 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 //UavManager
 ////////////////////////////////////////////////////////////////////////////////
-UavManager::UavManager() : IObjectManager()
-, m_p(new ProtoMsg), m_lastId(0), m_bInit(false)
+UavManager::UavManager() : AbsPBManager()
+, m_lastId(0), m_bInit(false)
 {
 }
 
 UavManager::~UavManager()
 {
-    delete m_p;
 }
 
 bool UavManager::CanFlight(double, double, double)
@@ -174,7 +173,7 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
             return ret;
         }
 
-        Log(0, uia.uavid(), 0, "[%s]%s", s->GetHost().c_str(), "login fail");
+        Log(0, uavid, 0, "[%s]%s", s->GetHost().c_str(), "login fail");
         AckUavIdentityAuthentication ack;
         ack.set_seqno(uia.seqno());
         ack.set_result(res);
