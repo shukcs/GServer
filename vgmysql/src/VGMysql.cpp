@@ -193,7 +193,7 @@ bool VGMySql::ConnectMySql( const char *host, int port, const char *user, const 
     }
 
     if(!m_bValid)
-        printf("mysql_real_connect() failed %s\n", mysql_error(m_mysql));
+        printf("mysql_real_connect() failed, %s\n", mysql_error(m_mysql));
 
     return m_bValid;
 }
