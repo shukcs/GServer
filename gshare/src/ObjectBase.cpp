@@ -286,10 +286,11 @@ bool IObject::Receive(const void *buf, int len)
 
 void IObject::CheckTimer(uint64_t ms)
 {
-    if (ms - m_tmLastInfo > 3600000)
-        Release();
-    else if (m_sock && ms - m_tmLastInfo > 30000)//³¬Ê±¹Ø±Õ
-        m_sock->Close();
+    if (!m_sock && Initialed == m_stInit)
+    {
+        m_stInit = UnConnected;
+        GetManager()->Log(0, GetObjectID(), 0, "disconnect");
+    }
 }
 
 void *IObject::getThreadBuff()const

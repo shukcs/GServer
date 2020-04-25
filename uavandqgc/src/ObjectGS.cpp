@@ -839,12 +839,6 @@ void ObjectGS::InitObject()
 
 void ObjectGS::CheckTimer(uint64_t ms)
 {
-    if (!m_sock && Initialed== m_stInit)
-    {
-        m_stInit = UnConnected;
-        GetManager()->Log(0, GetObjectID(), 0, "disconnect");
-    }
-
     ObjectAbsPB::CheckTimer(ms);
     if (!m_protosSend.empty() && m_sock && m_sock->IsNoWriteData())
     {
@@ -852,6 +846,11 @@ void ObjectGS::CheckTimer(uint64_t ms)
         m_protosSend.pop_front();
         send(msg, true);
     }
+
+    if (ms - m_tmLastInfo > 3600000)
+        Release();
+    else if (m_sock && ms - m_tmLastInfo > 30000)//³¬Ê±¹Ø±Õ
+        m_sock->Close();
 }
 
 void ObjectGS::WaitSend(google::protobuf::Message *msg)
