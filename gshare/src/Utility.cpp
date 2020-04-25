@@ -406,9 +406,11 @@ int Utility::fromBigendian(const void *buff)
     if (IsBigEndian())
     {
         const char *src = (char *)buff;
-        for (size_t i = 0; i < sizeof(value); ++i)
+        char *tmp = (char *)&value;
+        size_t sz = sizeof(value);
+        for (size_t i = 0; i < sz; ++i)
         {
-            ((char *)&value)[i] = src[sizeof(value) - i - 1];
+            tmp[i] = src[sz - 1 - i];
         }
     }
     else
