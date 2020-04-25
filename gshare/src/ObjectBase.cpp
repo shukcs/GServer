@@ -173,22 +173,25 @@ bool IObject::PrcsBussiness(uint64_t ms)
         Release();
         return ret;
     }
-    if (Initialed != m_stInit)
+    else if (Uninitial == m_stInit)
     {
         InitObject();
         return ret;
     }
-    if (m_buff && m_buff->Count()>8 && m_thread)
+    if (Initialed == m_stInit)
     {
-        void *buff = getThreadBuff();
-        int len = m_buff->CopyData(buff, getThreadBuffLen());
-        if (len > 0)
+        if (m_buff && m_buff->Count() > 8 && m_thread)
         {
-            len = ProcessReceive(buff, len);
+            void *buff = getThreadBuff();
+            int len = m_buff->CopyData(buff, getThreadBuffLen());
             if (len > 0)
             {
-                m_buff->Clear(len);
-                ret = true;
+                len = ProcessReceive(buff, len);
+                if (len > 0)
+                {
+                    m_buff->Clear(len);
+                    ret = true;
+                }
             }
         }
     }
