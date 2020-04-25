@@ -15,6 +15,7 @@
 #include <cxxabi.h>
 #include <execinfo.h>
 #include <dlfcn.h>
+#include <execinfo.h>  
 #endif
 
 #include <map>
@@ -38,6 +39,7 @@ using namespace std::chrono;
 using namespace SOCKETS_NAMESPACE;
 #endif
 
+#define MAX_STACK_FRAMES   128
 // defines for the random number generator
 #define TWIST_IA        397
 #define TWIST_IB       (TWIST_LEN - TWIST_IA)
@@ -1372,7 +1374,7 @@ bool Utility::ChangeDirectory(const string &to_dir)
 
 void Utility::Sleep(int ms)
 {
-#ifdef _WIN32
+#if defined _WIN32 || defined _WIN64
 	::Sleep(ms);
 #else
 	struct timeval tv;
@@ -1380,5 +1382,46 @@ void Utility::Sleep(int ms)
 	tv.tv_usec = (ms % 1000) * 1000;
 	select(0, NULL, NULL, NULL, &tv);
 #endif
+}
+
+void Utility::Dump(const std::string &file, int sig)
+{
+    FILE *fd = fopen(file.c_str(), "wb");
+    if (!fd)
+        return;
+
+#if !(defined _WIN32 || defined _WIN64)
+    int pid = getpid();
+    void *arrayB[MAX_STACK_FRAMES];
+    char **strings = NULL;
+    char buffer[512] = { 0 };
+    int count = readlink("/proc/self/exe", buffer, sizeof(buffer));
+    if (count > 0)
+        buffer[count] = '\0';
+
+    size_t size = backtrace(arrayB, MAX_STACK_FRAMES);
+    strings = (char**)backtrace_symbols(arrayB, size);
+    for (size_t i = 0; i < size; ++i)
+    {
+        char szLine[512] = { 0};
+        int len = sprintf(szLine, "%s\n", strings[i]);
+        fwrite(szLine, 1, len, fd);
+
+        char *str1 = strchr(szLine, '[');
+        char *str2 = strchr(szLine, ']');
+        if (str1 == NULL || str2 == NULL)
+            continue;
+
+        char addrline[32] = { 0 };
+        memcpy(addrline, str1 + 1, str2 - str1);
+        snprintf(szLine, sizeof(szLine), "addr2line -e /proc/%d/exe %s ", pid, addrline);
+        FILE *file = popen(szLine, "r");
+        if (NULL != fgets(szLine, 256, file))
+            fprintf(fd, "%s\n", szLine);
+    }
+    free(strings);
+    signal(sig, SIG_DFL);
+#endif
+    fclose(fd);
 }
 

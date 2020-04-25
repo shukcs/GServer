@@ -6,7 +6,6 @@
 #if defined _WIN32 || defined _WIN64
 #include <conio.h>
 #else
-#include <execinfo.h>  
 #include <signal.h>  
 #endif //defined _WIN32 || defined _WIN64
 #include "ILog.h"
@@ -14,30 +13,10 @@
 #define DefaultPort 8198
 static ISocketManager *sSockMgr = NULL;
 
-#if !defined _WIN32 && !defined _WIN64
-void dump(int signo)
+static void dump(int signo)
 {
-    void *buffer[30] = { 0 };
-    size_t size;
-    char **strings = NULL;
-    size_t i = 0;
-
-    size = backtrace(buffer, 30);
-    strings = backtrace_symbols(buffer, size);
-    if (strings == NULL)
-        exit(EXIT_FAILURE);
-
-    FILE *f = fopen("dump.txt", "wb+");
-    fprintf(f, "Obtained %zd stack frames.nm\n", size);
-    for (i = 0; i < size; i++)
-    {
-        fprintf(f, "%s\n", strings[i]);
-    }
-    free(strings);
-    fclose(f);
-    exit(0);
+    Utility::Dump("dump.txt", signo);
 }
-#endif //!defined _WIN32 && !defined _WIN64
 
 void OnBindFinish(ISocket *sock, bool binded)
 {
@@ -58,6 +37,7 @@ int main(int argc, char *argv[])
     _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
 #else
     signal(SIGSEGV, dump);
+    signal(SIGABRT, dump);
 #endif //defined _WIN32 || defined _WIN64
     GLibrary lib("uavandqgc", GLibrary::CurrentPath());
     sSockMgr = GSocketManager::CreateManager(1);

@@ -389,28 +389,22 @@ void ObjectUav::processBind(RequestBindUav *msg, IObject *obj)
     string gs = sender ? sender->GetObjectID() : string();
     if (gs.length() == 0)
         return;
-    string &gsOld = m_lastBinder;
 
-    bool bForceUnbind = sender && sender->GetAuth(ObjectGS::Type_UavManager);
-    if (Initialed != m_stInit)
+    bool bForce = sender && sender->GetAuth(ObjectGS::Type_UavManager);
+    if (Initialed > m_stInit)
         res = -2;
-    else if (bBind && !bForceUnbind)
-        res = (!m_bBind || m_lastBinder.empty() || gs == m_lastBinder) ? 1 : -3;
-    else if (!bBind)
-        res = (bForceUnbind || gs == gsOld || gsOld.empty()) ? 1 : -3;
+    else if (bForce)
+        res = 1;
+    else 
+        res = (gs==m_lastBinder || m_bBind==false) ? 1 : -3;
 
-    if (res == 1)
+    if (res == 1 && (bBind != m_bBind && gs!=m_lastBinder))
     {
-        if (gsOld != gs && !bForceUnbind)
-            gsOld = gs;
-
-        if (bBind != m_bBind)
-        {
-            m_bBind = bBind;
-            saveBind(bBind, gs, bForceUnbind);
-        }
+        m_bBind = bBind&&!bForce;
+        m_lastBinder = gs;
+        saveBind(bBind, gs, bForce);
     }
-    if (sender && bForceUnbind)
+    if (sender && bForce)
     {
         if (bBind)
             sender->Subcribe(GetObjectID(), IMessage::PushUavSndInfo);
@@ -590,11 +584,14 @@ void ObjectUav::saveBind(bool bBind, const string &gs, bool bForce)
     {
         msg->SetSql("updateBinded");
         msg->SetWrite("binder", gs);
-        msg->SetWrite("binded", bBind);
         msg->SetWrite("timeBind", Utility::msTimeTick());
+        msg->SetWrite("binded", bForce ? false : bBind);
         msg->SetCondition("id", m_id);
-        msg->SetCondition("UavInfo.binded", false);
-        msg->SetCondition("UavInfo.binder", bForce ? gs : m_lastBinder);
+        if (!bForce)
+        {
+            msg->SetCondition("UavInfo.binded", false);
+            msg->SetCondition("UavInfo.binder", bForce ? gs : m_lastBinder);
+        }
 
         SendMsg(msg);
         GetManager()->Log(0, gs, 0, "%s %s", bBind ? "bind" : "unbind", m_id.c_str());

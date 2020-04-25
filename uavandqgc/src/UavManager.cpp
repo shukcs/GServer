@@ -322,12 +322,17 @@ void UavManager::saveBind(const std::string &uav, bool bBind, ObjectGS *gs)
     {
         msg->SetSql("updateBinded");
         msg->AddSql("queryUavInfo");
-        msg->SetWrite("binded", bBind, 1);
         msg->SetWrite("binder", gs->GetObjectID(), 1);
         msg->SetWrite("timeBind", Utility::msTimeTick(), 1);
         msg->SetCondition("id", uav, 1);
-        msg->SetCondition("UavInfo.binded", false, 1);
-        msg->SetCondition("UavInfo.binder", gs->GetObjectID(), 1);
+        bool force = gs->GetAuth(ObjectGS::Type_UavManager);
+        msg->SetWrite("binded", force ? false : bBind, 1);
+        if (!false)
+        {
+            msg->SetCondition("UavInfo.binded", false, 1);
+            msg->SetCondition("UavInfo.binder", gs->GetObjectID(), 1);
+        }
+
         msg->SetCondition("id", uav, 2);
         SendMsg(msg);
         Log(0, gs->GetObjectID(), 0, "%s %s", bBind ? "bind" : "unbind", uav.c_str());

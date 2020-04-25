@@ -49,13 +49,13 @@ protected:
 private:
     static threadfunc_t STDPREFIX StartThread(threadparam_t);
 private:
+    unsigned m_threadId;
 #ifdef _WIN32
     HANDLE m_thread;
 #else
     pthread_t m_thread;
     pthread_attr_t m_attr;
 #endif
-    unsigned m_threadId;
 	bool m_running;
 	unsigned m_msSleep;
     bool m_bDeleteOnExit;

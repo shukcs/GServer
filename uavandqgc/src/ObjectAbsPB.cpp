@@ -52,7 +52,6 @@ void ObjectAbsPB::OnConnected(bool bConnected)
             m_stInit = Initialed;
         return;
     }
-
     ClearRead();
     IObjectManager *mgr = GetManager();
     if (mgr && m_sock)

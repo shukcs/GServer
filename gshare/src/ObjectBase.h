@@ -38,8 +38,8 @@ public:
     {
         Uninitial,
         Initialing,
-        Initialed,
         InitialFail,
+        Initialed,
         UnConnected,
     };
 public:
