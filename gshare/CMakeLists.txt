@@ -49,7 +49,7 @@ set(SRC_LIST
 	src/Varient.h
 )
 
-add_library(${PACKAGE_NAME} SHARED ${SRC_LIST})
+add_library(${PACKAGE_NAME} STATIC ${SRC_LIST})
 
 target_link_libraries(${PACKAGE_NAME} dl)
 target_link_libraries(${PACKAGE_NAME} pthread)

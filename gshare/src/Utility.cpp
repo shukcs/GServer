@@ -1395,14 +1395,8 @@ void Utility::Dump(const std::string &file, int sig)
 #if !(defined _WIN32 || defined _WIN64)
     int pid = getpid();
     void *arrayB[MAX_STACK_FRAMES];
-    char **strings = NULL;
-    char buffer[512] = { 0 };
-    int count = readlink("/proc/self/exe", buffer, sizeof(buffer));
-    if (count > 0)
-        buffer[count] = '\0';
-
     size_t size = backtrace(arrayB, MAX_STACK_FRAMES);
-    strings = (char**)backtrace_symbols(arrayB, size);
+    char **strings = (char**)backtrace_symbols(arrayB, size);
     for (size_t i = 0; i < size; ++i)
     {
         char szLine[512] = { 0};
@@ -1426,4 +1420,3 @@ void Utility::Dump(const std::string &file, int sig)
 #endif
     fclose(fd);
 }
-
