@@ -78,18 +78,12 @@ void ObjectGS::_prcsLogin(RequestGSIdentityAuthentication *msg)
 {
     if (msg && m_p)
     {
-        bool suc = m_pswd == msg->password();
-        if (m_sock)
-        {
-            GetManager()->Log(0, m_id, 0, "[%s:%d]%s", m_sock->GetHost().c_str(), m_sock->GetPort(), suc ? "logined" : "login fail");
-            if (!suc)
-                m_sock->Close();
-        }
-
+        bool bSuc = m_pswd == msg->password();
+        OnLogined(bSuc);
         if (auto ack = new AckGSIdentityAuthentication)
         {
             ack->set_seqno(msg->seqno());
-            ack->set_result(suc ? 1 : -1);
+            ack->set_result(bSuc ? 1 : -1);
             ack->set_auth(m_auth);
             send(ack);
         }

@@ -40,7 +40,8 @@ public:
         Initialing,
         InitialFail,
         Initialed,
-        UnConnected,
+        Logined,
+        DisConnected,
     };
 public:
     SHARED_DECL const std::string &GetObjectID()const;
@@ -80,6 +81,7 @@ public:
         return false;
     }
 protected:
+    SHARED_DECL void OnLogined(bool sec);
     SHARED_DECL virtual void CheckTimer(uint64_t ms);
 
     SHARED_DECL void *getThreadBuff()const;

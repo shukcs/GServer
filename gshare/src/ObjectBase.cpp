@@ -178,20 +178,17 @@ bool IObject::PrcsBussiness(uint64_t ms)
         InitObject();
         return ret;
     }
-    if (Initialed == m_stInit)
+    else if (Initialed <= m_stInit && m_buff && m_buff->Count() > 8 && m_thread)
     {
-        if (m_buff && m_buff->Count() > 8 && m_thread)
+        void *buff = getThreadBuff();
+        int len = m_buff->CopyData(buff, getThreadBuffLen());
+        if (len > 0)
         {
-            void *buff = getThreadBuff();
-            int len = m_buff->CopyData(buff, getThreadBuffLen());
+            len = ProcessReceive(buff, len);
             if (len > 0)
             {
-                len = ProcessReceive(buff, len);
-                if (len > 0)
-                {
-                    m_buff->Clear(len);
-                    ret = true;
-                }
+                m_buff->Clear(len);
+                ret = true;
             }
         }
     }
@@ -284,11 +281,21 @@ bool IObject::Receive(const void *buf, int len)
     return ret;
 }
 
-void IObject::CheckTimer(uint64_t ms)
+void IObject::OnLogined(bool suc)
 {
-    if (!m_sock && Initialed == m_stInit)
+    if (m_sock)
+        GetManager()->Log(0, m_id, 0, "[%s:%d]%s", m_sock->GetHost().c_str(), m_sock->GetPort(), suc ? "logined" : "login fail");
+    if (!suc)
+        m_sock->Close();
+    else if (m_stInit >= IObject::Initialed)
+        m_stInit = Logined;
+}
+
+void IObject::CheckTimer(uint64_t)
+{
+    if (!m_sock && Logined == m_stInit)
     {
-        m_stInit = UnConnected;
+        m_stInit = DisConnected;
         GetManager()->Log(0, GetObjectID(), 0, "disconnect");
     }
 }

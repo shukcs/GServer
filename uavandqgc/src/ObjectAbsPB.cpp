@@ -48,8 +48,6 @@ void ObjectAbsPB::OnConnected(bool bConnected)
     {
         if (!m_p)
             m_p = new ProtoMsg;
-        if (UnConnected == m_stInit)
-            m_stInit = Initialed;
         return;
     }
     ClearRead();

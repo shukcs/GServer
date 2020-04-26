@@ -99,7 +99,7 @@ void ObjectUav::RespondLogin(int seq, int res)
             ack->set_result(res);
             send(ack);
         }
-        GetManager()->Log(0, m_id, 0, "[%s:%d]%s", m_sock->GetHost().c_str(), m_sock->GetPort(), res==1 ? "logined" : "login fail");
+        OnLogined(true);
     }
 }
 
