@@ -42,7 +42,7 @@ public:
     static uint32_t toIntID(const std::string &uavid);
 protected:
     int GetObjectType()const;
-    IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
+    IObject *PrcsProtoBuff(ISocket *s);
     bool PrcsPublicMsg(const IMessage &msg);
     void LoadConfig();
     bool InitManager();

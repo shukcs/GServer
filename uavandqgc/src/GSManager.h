@@ -35,7 +35,7 @@ public:
     static std::string CatString(const std::string &s1, const std::string &s2);
 protected:
     int GetObjectType()const;
-    IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
+    IObject *PrcsProtoBuff(ISocket *s);
 
     bool PrcsPublicMsg(const IMessage &msg);
 

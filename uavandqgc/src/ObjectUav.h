@@ -48,7 +48,7 @@ public:
 protected:
     virtual int GetObjectType()const;
     virtual void ProcessMessage(IMessage *msg);
-    virtual int ProcessReceive(void *buf, int len);
+    void PrcsProtoBuff();
 
     void CheckTimer(uint64_t ms);
     void OnConnected(bool bConnected);

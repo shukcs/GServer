@@ -206,55 +206,48 @@ void ObjectGS::ProcessMessage(IMessage *msg)
     }
 }
 
-int ObjectGS::ProcessReceive(void *buf, int len)
+void ObjectGS::PrcsProtoBuff()
 {
-    int pos = 0;
-    int l = len;
-    while (m_p && m_p->Parse((char*)buf + pos, l))
-    {
-        pos += l;
-        l = len - pos;
-        string strMsg = m_p->GetMsgName();
+    if (!m_p)
+        return;
 
-        if (strMsg == d_p_ClassName(RequestGSIdentityAuthentication))
-            _prcsLogin((RequestGSIdentityAuthentication*)m_p->GetProtoMessage());
-        else if (strMsg == d_p_ClassName(RequestNewGS))
-            _prcsReqNewGs((RequestNewGS*)m_p->GetProtoMessage());
-        else if (strMsg == d_p_ClassName(PostHeartBeat))
-            _prcsHeartBeat((PostHeartBeat *)m_p->GetProtoMessage());
-        else if (strMsg == d_p_ClassName(PostProgram))
-            _prcsProgram((PostProgram *)m_p->GetProtoMessage());
-        else if (strMsg == d_p_ClassName(RequestBindUav))
-            _prcsReqBind((RequestBindUav *)m_p->DeatachProto());
-        else if (strMsg == d_p_ClassName(PostControl2Uav))
-            _prcsControl2Uav((PostControl2Uav*)m_p->DeatachProto());
-        else if (strMsg == d_p_ClassName(RequestIdentityAllocation))
-            _prcsUavIDAllication((RequestIdentityAllocation *)m_p->DeatachProto());
-        else if (strMsg == d_p_ClassName(RequestUavStatus))
-            _prcsReqUavs((RequestUavStatus *)m_p->DeatachProto());
-        else if (strMsg == d_p_ClassName(PostParcelDescription))
-            _prcsPostLand((PostParcelDescription *)m_p->GetProtoMessage());
-        else if (strMsg == d_p_ClassName(RequestParcelDescriptions))
-            _prcsReqLand((RequestParcelDescriptions *)m_p->GetProtoMessage());
-        else if (strMsg == d_p_ClassName(DeleteParcelDescription))
-            _prcsDeleteLand((DeleteParcelDescription *)m_p->GetProtoMessage());
-        else if (strMsg == d_p_ClassName(PostOperationDescription))
-            _prcsPostPlan((PostOperationDescription *)m_p->GetProtoMessage());
-        else if (strMsg == d_p_ClassName(RequestOperationDescriptions))
-            _prcsReqPlan((RequestOperationDescriptions *)m_p->GetProtoMessage());
-        else if (strMsg == d_p_ClassName(DeleteOperationDescription))
-            _prcsDeletePlan(( DeleteOperationDescription*)m_p->GetProtoMessage());
-        else if (strMsg == d_p_ClassName(PostOperationRoute))
-            _prcsPostMission((PostOperationRoute*)m_p->DeatachProto());
-        else if (strMsg == d_p_ClassName(GroundStationsMessage))
-            _prcsGsMessage((GroundStationsMessage*)m_p->DeatachProto());
-        else if (strMsg == d_p_ClassName(RequestFriends))
-            _prcsReqFriends((RequestFriends*)m_p->GetProtoMessage());
-        else if (strMsg == d_p_ClassName(RequestUavMission))
-            _prcsReqMissons(*(RequestUavMission*)m_p->GetProtoMessage());
-    }
-    pos += l;
-    return pos;
+    string strMsg = m_p->GetMsgName();
+    if (strMsg == d_p_ClassName(RequestGSIdentityAuthentication))
+        _prcsLogin((RequestGSIdentityAuthentication*)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(RequestNewGS))
+        _prcsReqNewGs((RequestNewGS*)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(PostHeartBeat))
+        _prcsHeartBeat((PostHeartBeat *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(PostProgram))
+        _prcsProgram((PostProgram *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(RequestBindUav))
+        _prcsReqBind((RequestBindUav *)m_p->DeatachProto());
+    else if (strMsg == d_p_ClassName(PostControl2Uav))
+        _prcsControl2Uav((PostControl2Uav*)m_p->DeatachProto());
+    else if (strMsg == d_p_ClassName(RequestIdentityAllocation))
+        _prcsUavIDAllication((RequestIdentityAllocation *)m_p->DeatachProto());
+    else if (strMsg == d_p_ClassName(RequestUavStatus))
+        _prcsReqUavs((RequestUavStatus *)m_p->DeatachProto());
+    else if (strMsg == d_p_ClassName(PostParcelDescription))
+        _prcsPostLand((PostParcelDescription *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(RequestParcelDescriptions))
+        _prcsReqLand((RequestParcelDescriptions *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(DeleteParcelDescription))
+        _prcsDeleteLand((DeleteParcelDescription *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(PostOperationDescription))
+        _prcsPostPlan((PostOperationDescription *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(RequestOperationDescriptions))
+        _prcsReqPlan((RequestOperationDescriptions *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(DeleteOperationDescription))
+        _prcsDeletePlan((DeleteOperationDescription*)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(PostOperationRoute))
+        _prcsPostMission((PostOperationRoute*)m_p->DeatachProto());
+    else if (strMsg == d_p_ClassName(GroundStationsMessage))
+        _prcsGsMessage((GroundStationsMessage*)m_p->DeatachProto());
+    else if (strMsg == d_p_ClassName(RequestFriends))
+        _prcsReqFriends((RequestFriends*)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(RequestUavMission))
+        _prcsReqMissons(*(RequestUavMission*)m_p->GetProtoMessage());
 }
 
 void ObjectGS::process2GsMsg(const Message *msg)

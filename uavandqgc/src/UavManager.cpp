@@ -53,24 +53,18 @@ int UavManager::GetObjectType() const
     return IObject::Plant;
 }
 
-IObject *UavManager::PrcsNotObjectReceive(ISocket *s, const char *buf, int len)
+IObject *UavManager::PrcsProtoBuff(ISocket *s)
 {
-    int pos = 0;
-    int l = len;
-    IObject *o = NULL;
-    while (m_p->Parse(buf+pos, l))
+    if (!s || !m_p)
+        return NULL;
+
+    if (m_p->GetMsgName() == d_p_ClassName(RequestUavIdentityAuthentication))
     {
-        pos += l;
-        l = len - pos;
-        if (m_p->GetMsgName() == d_p_ClassName(RequestUavIdentityAuthentication))
-        {
-            RequestUavIdentityAuthentication *rua = (RequestUavIdentityAuthentication *)m_p->GetProtoMessage();
-            o = _checkLogin(s, *rua);
-            break;
-        }
+        RequestUavIdentityAuthentication *rua = (RequestUavIdentityAuthentication *)m_p->GetProtoMessage();
+        return _checkLogin(s, *rua);
     }
 
-    return o;
+    return NULL;
 }
 
 bool UavManager::PrcsPublicMsg(const IMessage &msg)

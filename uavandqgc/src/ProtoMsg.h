@@ -29,7 +29,7 @@ public:
     google::protobuf::Message *DeatachProto(bool clear=true);
     bool Parse(const char *buff, int &len);
 protected:
-    void _parse(const std::string &name, const char *buff, int len);
+    bool _parse(const std::string &name, const char *buff, int len);
     void _clear();
 private:
     google::protobuf::Message   *m_msg;

@@ -26,9 +26,11 @@ public:
 public:
     static void SendProtoBuffTo(ISocket *s, const google::protobuf::Message &ms);
 protected:
+    int ProcessReceive(void *buf, int len);
     void OnConnected(bool bConnected);
     void send(google::protobuf::Message *msg, bool bRm=false);
     virtual void WaitSend(google::protobuf::Message *msg);
+    virtual void PrcsProtoBuff() = 0;
     static int serialize(const google::protobuf::Message &ms, char*buf, int sz);
 protected:
     bool            m_bConnect;
@@ -42,6 +44,9 @@ public:
     virtual ~AbsPBManager();
 public:
     virtual void ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb);
+protected:
+    IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
+    virtual IObject *PrcsProtoBuff(ISocket *s) = 0;
 protected:
     ProtoMsg    *m_p;
 };

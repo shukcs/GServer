@@ -61,7 +61,7 @@ protected:
     void OnConnected(bool bConnected);
     int GetObjectType()const;
     void ProcessMessage(IMessage *msg);
-    int ProcessReceive(void *buf, int len);
+    void PrcsProtoBuff();
 
     void process2GsMsg(const google::protobuf::Message *msg);
     void processGs2Gs(const google::protobuf::Message &msg, int tp);

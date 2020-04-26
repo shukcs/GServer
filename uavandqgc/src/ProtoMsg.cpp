@@ -8,6 +8,11 @@
 using namespace SOCKETS_NAMESPACE;
 #endif
 
+enum MyEnum
+{
+    Max_PBSize = 0x4000,
+};
+
 using namespace das::proto;
 using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,47 +50,59 @@ google::protobuf::Message *ProtoMsg::DeatachProto(bool clear)
 bool ProtoMsg::Parse(const char *buff, int &len)
 {
     int pos = 0;
-    int n = Utility::FindString(buff, len, PROTOFLAG);
-
+    int n = 0;
     _clear();
-    while (n >= 0)
+    while (pos+17<len && (n = Utility::FindString(buff+pos, len-pos, PROTOFLAG)) >= 0)
     {
-        const char *src = buff+pos;
-        if (n >= 8)
+        n -= 8;
+        if (n >= 0)
         {
-            n -= 8;
-            int szMsg = Utility::fromBigendian(src +n);
+            int szMsg = Utility::fromBigendian(buff + pos);
+            pos += n;
+            if (szMsg > Max_PBSize)
+            {
+                pos += 18;
+                continue;
+            }
+
             if (szMsg+4 <= len-n)
             {
-                uint32_t crc = Utility::Crc32(src+n+4, szMsg-4);       
-                if (crc != (uint32_t)Utility::fromBigendian(src+n+szMsg))
+                uint32_t crc = Utility::Crc32(buff+pos+4, szMsg-4);
+                if (crc != (uint32_t)Utility::fromBigendian(buff+pos+szMsg))
                 {
-                    pos += n+18;
-                    n = Utility::FindString(buff+pos, len, PROTOFLAG);
+                    pos += 18;
                     continue;
                 }
 
-                size_t nameLen = Utility::fromBigendian(src+n+4);
-                int tmp = n + 8 + nameLen;
-                m_name = src + n + 8;
-                _parse(m_name, src+tmp, szMsg-8-nameLen);
-                len = n+szMsg+4;
-                return true;
+                size_t nameLen = Utility::fromBigendian(buff + pos +4);
+                m_name = buff + pos + 8;
+                pos += szMsg + 4;
+                if (_parse(m_name, buff+pos-szMsg+4+nameLen, szMsg-8-nameLen))
+                    break;
+
+                m_name.clear();
+                continue;
             }
-            len = n;
             break;
         }
-        pos = n + 18;
-        n = Utility::FindString(buff+pos, len-pos, PROTOFLAG);
+        else
+        {
+            pos += n + 18;
+        }
     }
-    pos = len > 17 ? 17 : len;
-    len = len - pos;
-    return false;
+ 
+    if (n < 0)
+        len = len > 17 ? len-17 : 0;
+    else if (pos > 0 || n >= 0)
+        len = pos;
+
+    return !m_name.empty();
 }
 
-void ProtoMsg::_parse(const std::string &name, const char *buff, int len)
+bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
 {
-    delete DeatachProto(false);
+    if (!buff || len < 0)
+        return false;
 
     if (name == d_p_ClassName(PostHeartBeat))
         m_msg = new PostHeartBeat;                          //心跳
@@ -149,7 +166,9 @@ void ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new AckGroundStationsMessage;               //好友消息服务器回执
 
     if (m_msg)
-        m_msg->ParseFromArray(buff, len);
+        return m_msg->ParseFromArray(buff, len);
+
+    return false;
 }
 
 void ProtoMsg::_clear()

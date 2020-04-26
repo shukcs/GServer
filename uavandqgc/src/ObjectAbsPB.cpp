@@ -41,6 +41,20 @@ void ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
         s->Send(sz + 4, buf);
 }
 
+int ObjectAbsPB::ProcessReceive(void *buf, int len)
+{
+    int pos = 0;
+    int l = len;
+    while (m_p && l > 18 && m_p->Parse((char*)buf + pos, l))
+    {
+        pos += l;
+        l = len - pos;
+        PrcsProtoBuff();
+    }
+    pos += l;
+    return pos;
+}
+
 void ObjectAbsPB::OnConnected(bool bConnected)
 {
     m_bConnect = bConnected;
@@ -116,6 +130,20 @@ AbsPBManager::AbsPBManager():m_p(new ProtoMsg)
 AbsPBManager::~AbsPBManager()
 {
     delete m_p;
+}
+
+IObject * AbsPBManager::PrcsNotObjectReceive(ISocket *s, const char *buf, int len)
+{
+    int pos = 0;
+    int l = len;
+    IObject *o = NULL;
+    while (m_p->Parse(buf + pos, l))
+    {
+        pos += l;
+        l = len - pos;
+        o = PrcsProtoBuff(s);
+    }
+    return o;
 }
 
 void AbsPBManager::ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb)

@@ -66,31 +66,19 @@ int GSManager::GetObjectType() const
     return IObject::GroundStation;
 }
 
-IObject *GSManager::PrcsNotObjectReceive(ISocket *s, const char *buf, int len)
+IObject *GSManager::PrcsProtoBuff(ISocket *s)
 {
-    int pos = 0;
-    int l = len;
-    IObject *o = NULL;
-    while (m_p && m_p->Parse(buf + pos, l))
-    {
-        pos += l;
-        l = len - pos;
-        const string &name = m_p->GetMsgName();
-        Message *pb = m_p->GetProtoMessage();
-        if (name == d_p_ClassName(RequestGSIdentityAuthentication))
-        {
-            o = prcsPBLogin(s, (const RequestGSIdentityAuthentication *)pb);
-            if (o)
-                break;
-        }
-        else if(name == d_p_ClassName(RequestNewGS))
-        {
-            o = prcsPBNewGs(s, (const RequestNewGS *)pb);
-            if (o)
-               break;
-        }
-    }
-    return o;
+    if (!m_p)
+        return NULL;
+
+    const string &name = m_p->GetMsgName();
+    Message *pb = m_p->GetProtoMessage();
+    if (name == d_p_ClassName(RequestGSIdentityAuthentication))
+        return prcsPBLogin(s, (const RequestGSIdentityAuthentication *)pb);
+    else if (name == d_p_ClassName(RequestNewGS))
+        return prcsPBNewGs(s, (const RequestNewGS *)pb);
+
+    return NULL;
 }
 
 bool GSManager::PrcsPublicMsg(const IMessage &ms)

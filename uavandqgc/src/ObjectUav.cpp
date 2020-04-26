@@ -211,29 +211,22 @@ void ObjectUav::ProcessMessage(IMessage *msg)
         processBaseInfo(*(DBMessage *)msg);
 }
 
-int ObjectUav::ProcessReceive(void *buf, int len)
+void ObjectUav::PrcsProtoBuff()
 {
-    int pos = 0;
-    int l = len;
-    while (m_p && m_p->Parse((char*)buf + pos, l))
-    {
-        const string &name = m_p->GetMsgName();
-        if (name == d_p_ClassName(RequestUavIdentityAuthentication))
-            RespondLogin(((RequestUavIdentityAuthentication*)m_p->GetProtoMessage())->seqno(), 1);
-        else if (name == d_p_ClassName(PostOperationInformation))
-            prcsRcvPostOperationInfo((PostOperationInformation *)m_p->DeatachProto());
-        else if (name == d_p_ClassName(PostStatus2GroundStation))
-            prcsRcvPost2Gs((PostStatus2GroundStation *)m_p->GetProtoMessage());
-        else if (name == d_p_ClassName(RequestRouteMissions))
-            prcsRcvReqMissions((RequestRouteMissions *)m_p->GetProtoMessage());
-        else if (name == d_p_ClassName(RequestPositionAuthentication))
-            prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
+    if (!m_p)
+        return;
 
-        pos += l;
-        l = len - pos;
-    }
-    pos += l;
-    return pos;
+    const string &name = m_p->GetMsgName();
+    if (name == d_p_ClassName(RequestUavIdentityAuthentication))
+        RespondLogin(((RequestUavIdentityAuthentication*)m_p->GetProtoMessage())->seqno(), 1);
+    else if (name == d_p_ClassName(PostOperationInformation))
+        prcsRcvPostOperationInfo((PostOperationInformation *)m_p->DeatachProto());
+    else if (name == d_p_ClassName(PostStatus2GroundStation))
+        prcsRcvPost2Gs((PostStatus2GroundStation *)m_p->GetProtoMessage());
+    else if (name == d_p_ClassName(RequestRouteMissions))
+        prcsRcvReqMissions((RequestRouteMissions *)m_p->GetProtoMessage());
+    else if (name == d_p_ClassName(RequestPositionAuthentication))
+        prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
 }
 
 void ObjectUav::CheckTimer(uint64_t ms)
