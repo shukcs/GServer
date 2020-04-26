@@ -1,6 +1,6 @@
 package(protobuf)
-SET(CMAKE_C_FLAGS "-fPIC -O0 -Wall")  #c  
-SET(CMAKE_CXX_FLAGS "-fPIC -O2 -Wall")  #c++
+SET(CMAKE_C_FLAGS "-fPIC -O0 -Wall -g")  #c  
+SET(CMAKE_CXX_FLAGS "-fPIC -O2 -Wall -g")  #c++
 
 INCLUDE_DIRECTORIES(
 	.

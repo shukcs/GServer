@@ -178,17 +178,20 @@ bool IObject::PrcsBussiness(uint64_t ms)
         InitObject();
         return ret;
     }
-    else if (Initialed <= m_stInit && m_buff && m_buff->Count() > 8 && m_thread)
+    else if (Initialed <= m_stInit && m_sock)
     {
-        void *buff = getThreadBuff();
-        int len = m_buff->CopyData(buff, getThreadBuffLen());
-        if (len > 0)
+        if (m_buff && m_buff->Count() > 8 && m_thread)
         {
-            len = ProcessReceive(buff, len);
+            void *buff = getThreadBuff();
+            int len = m_buff->CopyData(buff, getThreadBuffLen());
             if (len > 0)
             {
-                m_buff->Clear(len);
-                ret = true;
+                len = ProcessReceive(buff, len);
+                if (len > 0)
+                {
+                    m_buff->Clear(len);
+                    ret = true;
+                }
             }
         }
     }
