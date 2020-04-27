@@ -147,7 +147,7 @@
 					<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
 				</SQL>
 				<SQL name="deleteLand" table="LandInfo;OwnerInfo" type="Delete" >
-					<item name="id" ref="LandInfo" type="Condition" />
+					<item name="LandInfo.id" type="Condition" />
 					<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
 					<item name="LandInfo.gsuser" type="Condition" />
 				</SQL>

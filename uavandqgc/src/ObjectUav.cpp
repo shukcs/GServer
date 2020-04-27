@@ -7,7 +7,6 @@
 #include "VGMysql.h"
 #include "Utility.h"
 #include "socketBase.h"
-#include "IMutex.h"
 #include "UavManager.h"
 #include "ObjectGS.h"
 

@@ -4,7 +4,6 @@
 #include "ProtoMsg.h"
 #include "Messages.h"
 #include "Utility.h"
-#include "IMutex.h"
 #include "IMessage.h"
 #include "DBMessages.h"
 #include "GSManager.h"
@@ -1046,10 +1045,10 @@ void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
     msgDb->SetSql("deleteLand");
     msgDb->AddSql("deletePlan");
     msgDb->SetCondition("LandInfo.id", id, 1);
-    msgDb->SetCondition("LandInfo.gsuser", m_id, 1);
+    if (!GetAuth(ObjectGS::Type_ALL))
+        msgDb->SetCondition("LandInfo.gsuser", m_id, 1);
     msgDb->SetCondition("landId", id, 2);
     SendMsg(msgDb);
-    GetManager()->Log(0, GetObjectID(), 0, "Delete land %s!", id.c_str());
 
     if (auto ackDD = new AckDeleteParcelDescription)
     {
@@ -1057,6 +1056,7 @@ void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
         ackDD->set_result(1);
         send(ackDD);
     }
+    GetManager()->Log(0, GetObjectID(), 0, "Delete land %s!", id.c_str());
 }
 
 void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)

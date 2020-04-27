@@ -2,7 +2,6 @@
 #include "ObjectManagers.h"
 #include "VGMysql.h"
 #include "DBExecItem.h"
-#include "IMutex.h"
 #include "DBMessages.h"
 #include "tinyxml.h"
 #include "Utility.h"

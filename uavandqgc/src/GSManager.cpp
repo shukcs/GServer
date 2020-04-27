@@ -5,7 +5,6 @@
 #include "Messages.h"
 #include "DBMessages.h"
 #include "Utility.h"
-#include "IMutex.h"
 #include "tinyxml.h"
 #include "ObjectGS.h"
 #include "ObjectManagers.h"
