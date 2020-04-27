@@ -389,7 +389,7 @@ void ObjectUav::processBind(RequestBindUav *msg, IObject *obj)
     else 
         res = (gs==m_lastBinder || m_bBind==false) ? 1 : -3;
 
-    if (res == 1 && (bBind != m_bBind && gs!=m_lastBinder))
+    if (res == 1 && (bBind != m_bBind || gs!=m_lastBinder))
     {
         m_bBind = bBind&&!bForce;
         m_lastBinder = gs;
