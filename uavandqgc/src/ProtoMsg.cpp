@@ -65,7 +65,7 @@ bool ProtoMsg::Parse(const char *buff, int &len)
                 continue;
             }
 
-            if (szMsg+4 <= len-n)
+            if (szMsg+4 <= len-pos)
             {
                 uint32_t crc = Utility::Crc32(buff+pos+4, szMsg-4);
                 if (crc != (uint32_t)Utility::fromBigendian(buff+pos+szMsg))
@@ -75,7 +75,7 @@ bool ProtoMsg::Parse(const char *buff, int &len)
                 }
 
                 size_t nameLen = Utility::fromBigendian(buff + pos +4);
-                m_name = buff + pos + 8;
+                m_name = string(buff + pos + 8, nameLen-1);
                 pos += szMsg + 4;
                 if (_parse(m_name, buff+pos-szMsg+4+nameLen, szMsg-8-nameLen))
                     break;
