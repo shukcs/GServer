@@ -37,7 +37,7 @@ protected:
     //事务处理调用函数
     IObject *GetOwnObject()const;
     void SetObject(IObject *o);
-    int Send(int len, void *buff);
+    int Send(int len, const void *buff);
 
     //无限制调用函数
     SocketStat GetSocketStat()const;
@@ -79,7 +79,7 @@ protected:
     bool            m_bAccept;
     SocketStat      m_stat;
     SocketAddress   *m_address;
-    LoopQueBuff     *m_buffWrite;
+    LoopQueBuff     *m_buffSocket;
 };
 
 #ifdef SOCKETS_NAMESPACE

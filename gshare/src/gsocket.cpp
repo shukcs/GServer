@@ -17,14 +17,14 @@ using namespace SOCKETS_NAMESPACE
 GSocket::GSocket(ISocketManager *handle): m_manager(handle)
 ,m_mgrPrcs(NULL), m_object(NULL), m_fd(-1), m_bListen(false)
 , m_bAccept(false), m_stat(UnConnected), m_address(NULL)
-, m_buffWrite(new LoopQueBuff)
+, m_buffSocket(new LoopQueBuff)
 {
 }
 
 GSocket::~GSocket()
 {
     delete m_address;
-    delete m_buffWrite;
+    delete m_buffSocket;
 }
 
 IObject *GSocket::GetOwnObject() const
@@ -56,20 +56,20 @@ bool GSocket::ConnectTo(const std::string &hostRemote, int port)
         m_address = new Ipv4Address(hostRemote, port);
         m_stat = Connecting;
         m_bListen = false;
-        m_buffWrite->ReSize(2048);
+        m_buffSocket->ReSize(2048);
         return true;
     }
     return false;
 }
 
-int GSocket::Send(int len, void *buff)
+int GSocket::Send(int len, const void *buff)
 {
     if (len < 1 || !IsConnect())
         return 0;
 
     int ret = len;
     if(buff)
-        ret = m_buffWrite->Push(buff, len) ? len : 0;
+        ret = m_buffSocket->Push(buff, len) ? len : 0;
 
     if (ret>0 && m_mgrPrcs)
         m_mgrPrcs->AddWaitPrcsSocket(this);
@@ -155,8 +155,8 @@ bool GSocket::IsReconnectable() const
 
 bool GSocket::IsWriteEnabled() const
 {
-    if (m_buffWrite)
-        return m_buffWrite->BuffSize() > m_buffWrite->Count();
+    if (m_buffSocket)
+        return m_buffSocket->BuffSize() > m_buffSocket->Count();
 
     return false;
 }
@@ -167,12 +167,12 @@ void GSocket::EnableWrite(bool)
 
 void GSocket::OnWrite(int len)
 {
-    if (len > 0 && m_buffWrite)
+    if (len > 0 && m_buffSocket)
     {
-        int nTmp = m_buffWrite->Count();
+        int nTmp = m_buffSocket->Count();
         if (nTmp>0)
         {
-            m_buffWrite->Clear(len);
+            m_buffSocket->Clear(len);
             len -= nTmp;
         }
     }
@@ -205,8 +205,8 @@ void GSocket::OnClose()
 void GSocket::OnConnect(bool b)
 {
     m_stat = b ? Connected : Closed;
-    if (!b && m_buffWrite)
-        m_buffWrite->Clear();
+    if (!b && m_buffSocket)
+        m_buffSocket->Clear();
 
     if (m_object)
         m_object->OnConnected(b);
@@ -219,20 +219,20 @@ void GSocket::OnBind(bool binded)
 
 int GSocket::CopySend(char *buf, int sz) const
 {
-    if (buf && m_buffWrite && sz> 0 && m_buffWrite->Count()>0)
-        return m_buffWrite->CopyData(buf, sz);
+    if (buf && m_buffSocket && sz> 0 && m_buffSocket->Count()>0)
+        return m_buffSocket->CopyData(buf, sz);
     return 0;
 }
 
 int GSocket::GetSendLength() const
 {
-    return m_buffWrite ? m_buffWrite->Count() : 0;
+    return m_buffSocket ? m_buffSocket->Count() : 0;
 }
 
 bool GSocket::ResetSendBuff(uint16_t sz)
 {
-    if (m_buffWrite)
-        return m_buffWrite->ReSize(sz);
+    if (m_buffSocket)
+        return m_buffSocket->ReSize(sz);
 
     return false;
 }
@@ -249,13 +249,13 @@ void GSocket::SetPrcsManager(ISocketManager *h)
 
 bool GSocket::ResizeBuff(int sz)
 {
-    if (m_buffWrite)
-        return m_buffWrite->ReSize(sz);
+    if (m_buffSocket)
+        return m_buffSocket->ReSize(sz);
 
     return false;
 }
 
 bool GSocket::IsNoWriteData() const
 {
-    return m_buffWrite && m_buffWrite->Count() == 0;
+    return m_buffSocket && m_buffSocket->Count() == 0;
 }
