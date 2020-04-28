@@ -54,14 +54,13 @@ bool ProtoMsg::Parse(const char *buff, int &len)
     _clear();
     while (pos+17<len && (n = Utility::FindString(buff+pos, len-pos, PROTOFLAG)) >= 0)
     {
-        n -= 8;
-        if (n >= 0)
+        if (n >= 8)
         {
-            int szMsg = Utility::fromBigendian(buff + pos);
-            pos += n;
+            pos += n-8;
+            int szMsg = Utility::fromBigendian(buff+pos);
             if (szMsg > Max_PBSize)
             {
-                pos += 18;
+                pos += 10;
                 continue;
             }
 
@@ -70,7 +69,7 @@ bool ProtoMsg::Parse(const char *buff, int &len)
                 uint32_t crc = Utility::Crc32(buff+pos+4, szMsg-4);
                 if (crc != (uint32_t)Utility::fromBigendian(buff+pos+szMsg))
                 {
-                    pos += 18;
+                    pos += 10;
                     continue;
                 }
 
@@ -87,13 +86,13 @@ bool ProtoMsg::Parse(const char *buff, int &len)
         }
         else
         {
-            pos += n + 18;
+            pos += n + 10;
         }
     }
  
-    if (n < 0)
+    if (n < 8)
         len = len > 17 ? len-17 : 0;
-    else if (pos > 0 || n >= 0)
+    else if (pos > 0 || n >= 8)
         len = pos;
 
     return !m_name.empty();
