@@ -578,7 +578,7 @@ BussinessThread *IObjectManager::GetThread(int id) const
 {
     for (auto itr : m_lsThread)
     {
-        if (itr->GetThreadId() == id)
+        if (itr->GetThreadId() == (uint32_t)id)
             return itr;
     }
     return NULL;
@@ -673,7 +673,7 @@ BussinessThread *IObjectManager::GetPropertyThread() const
             continue;
 
         int tmp = t->m_links.size() + t->m_linksAdd.ElementCount();
-        if (minLink = -1 || tmp < minLink)
+        if (minLink == -1 || tmp < minLink)
         {
             minLink = tmp;
             ret = t;
