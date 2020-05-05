@@ -121,6 +121,11 @@ bool UavManager::InitManager()
     return m_bInit;
 }
 
+bool UavManager::IsHasReuest(const char *buf, int len) const
+{
+    return Utility::FindString(buf, len, d_p_ClassName(RequestUavIdentityAuthentication)) >= 8;
+}
+
 void UavManager::_getLastId()
 {
     if (DBMessage *msg = new DBMessage(this, IMessage::UavsMaxIDRslt))
@@ -170,11 +175,14 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
         AckUavIdentityAuthentication ack;
         ack.set_seqno(uia.seqno());
         ack.set_result(res);
+        s->ClearBuff();
         ObjectAbsPB::SendProtoBuffTo(s, ack);
     }
     else
     {
-        return new ObjectUav(uavid, sim);
+        s->ClearBuff();
+        ObjectUav *ret = new ObjectUav(uavid, sim);
+        return ret;
     }
 
     return NULL;

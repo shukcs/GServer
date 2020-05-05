@@ -66,8 +66,8 @@ bool GSocketManager::s_bRun = true;
 ////////////////////////////////////////////////////////////////////////////
 //GSocketManager
 ////////////////////////////////////////////////////////////////////////////
-GSocketManager::GSocketManager(int nThread, int maxSock) : m_mtx(new Mutex)
-, m_openMax(maxSock), m_thread(NULL)
+GSocketManager::GSocketManager(int nThread, int maxSock) : m_openMax(maxSock)
+,m_mtx(new Mutex) , m_thread(NULL)
 {
     InitEpoll();
     InitThread(nThread);
@@ -527,7 +527,7 @@ void GSocketManager::_send(ISocket *sock)
         int res = sizeof(m_buff);
         if (res > len)
             res = len;
-        res = sock->CopySend(m_buff, sizeof(m_buff));
+        res = sock->CopyData(m_buff, sizeof(m_buff));
 #if defined _WIN32 ||  defined _WIN64
         res = send(fd, m_buff, res, 0);
 #else

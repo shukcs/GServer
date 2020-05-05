@@ -22,7 +22,7 @@ public:
 GSocket(handle)
 handle:是创建他的线程，如果handle不为空，GSocket调用Close才能安全删除
 ************************************************************************/
-    SHARED_DECL GSocket(ISocketManager *handle);
+    SHARED_DECL GSocket(ISocketManager *parent);
     SHARED_DECL ~GSocket();
 
     //无限制调用函数
@@ -35,14 +35,14 @@ public:
      static SHARED_DECL ILog &GetLog();
 protected:
     //事务处理调用函数
-    IObject *GetOwnObject()const;
-    void SetObject(IObject *o);
-    int Send(int len, const void *buff);
+    ILink *GetOwnObject()const;
+    void SetObject(ILink *o);
+    int Send(int len, const void *buff); 
+    void ClearBuff()const;
 
     //无限制调用函数
     SocketStat GetSocketStat()const;
     bool IsListenSocket()const;
-    std::string GetObjectID()const;
     bool IsConnect()const;
 
     //GSockM
@@ -50,7 +50,7 @@ protected:
     void SetAddress(SocketAddress *);
     int GetHandle()const;
     void SetHandle(int fd);
-    ISocketManager *GetManager()const;
+    ISocketManager *GetParent()const;
     bool IsReconnectable()const;
     bool IsWriteEnabled()const;
     void EnableWrite(bool);
@@ -61,19 +61,20 @@ protected:
     void OnConnect(bool);
 
     void OnBind(bool);
-    int CopySend(char *buf, int sz)const;
+    int CopyData(char *buf, int sz)const;
     int GetSendLength()const;
     bool ResetSendBuff(uint16_t sz);
     bool IsAccetSock()const;
 
     void SetPrcsManager(ISocketManager *h);
+    ISocketManager *GetPrcsManager()const;
     bool ResizeBuff(int sz);
     bool IsNoWriteData()const;
 protected:
     friend class GSocketManager;
-    ISocketManager  *m_manager;
+    ISocketManager  *m_parent;
     ISocketManager  *m_mgrPrcs;
-    IObject         *m_object;
+    ILink   *m_object;
     int             m_fd;
     bool            m_bListen;
     bool            m_bAccept;

@@ -47,7 +47,7 @@ public:
         Type_ALL = Type_Common | Type_UavManager | Type_Admin,
     };
 public:
-    ObjectGS(const std::string &id);
+    ObjectGS(std::string &id);
     ~ObjectGS();
 
     void SetPswd(const std::string &pswd);
@@ -55,6 +55,7 @@ public:
     const std::string &GetPswd()const;
     void SetAuth(int);
     bool GetAuth(GSAuthorizeType auth = Type_Common)const;
+    void SetSeq(int seq);
 public:
     static int GSType();
 protected:
@@ -105,7 +106,6 @@ private:
     void _prcsReqMissons(das::proto::RequestUavMission &msg);
 private:
     void _checkGS(const std::string &user, int ack);
-    void _sendNow(google::protobuf::Message *msg, bool b);
     void initFriend();
     void addDBFriend(const std::string &user1, const std::string &user2);
     int _addDatabaseUser(const std::string &user, const std::string &pswd, int seq);
@@ -118,8 +118,8 @@ private:
     bool            m_bInitFriends;
     int             m_countLand;
     int             m_countPlan;
+    int             m_seq;
     std::list<std::string> m_friends;
-    std::list<google::protobuf::Message*> m_protosSend;
 };
 
 #ifdef SOCKETS_NAMESPACE

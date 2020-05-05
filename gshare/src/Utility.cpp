@@ -96,6 +96,11 @@ int Utility::FindString(const char *src, int len, const char *cnt, int cntLen)
     return -1;
 }
 
+int Utility::FindString(const char *src, int len, const std::string &str)
+{
+    return FindString(src, len, str.c_str(), str.size());
+}
+
 StringList Utility::SplitString(const string &str, const string &sp, bool bSkipEmpty/*=false*/)
 {
     StringList strLsRet;

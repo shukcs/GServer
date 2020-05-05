@@ -46,6 +46,7 @@ protected:
     bool PrcsPublicMsg(const IMessage &msg);
     void LoadConfig();
     bool InitManager();
+    bool IsHasReuest(const char *buf, int len)const;
 private:
     void _getLastId();
 

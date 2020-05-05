@@ -42,13 +42,12 @@ using namespace ::google::protobuf;
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
 #endif
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
-////////////////////////////////////////////////////////////////////////////////
-ObjectUav::ObjectUav(const std::string &id, const std::string &sim): ObjectAbsPB(id)
-, m_strSim(sim), m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0)
-, m_tmLastBind(0), m_tmLastPos(0),m_tmValidLast(-1)
-, m_mission(NULL), m_nCurMsItem(-1), m_bSys(false)
+///////////////////////////////////////////////////////////////////////////////////////////////////
+ObjectUav::ObjectUav(const string &id, const string &sim) : ObjectAbsPB(id)
+, m_strSim(sim), m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0), m_tmLastBind(0)
+, m_tmLastPos(0),m_tmValidLast(-1), m_mission(NULL), m_nCurMsItem(-1), m_bSys(false)
 {
     SetBuffSize(1024 * 2);
 }
@@ -88,7 +87,7 @@ int ObjectUav::GetObjectType() const
     return UAVType();
 }
 
-void ObjectUav::RespondLogin(int seq, int res)
+void ObjectUav::_respondLogin(int seq, int res)
 {
     if(m_p && m_sock)
     {
@@ -217,15 +216,15 @@ void ObjectUav::PrcsProtoBuff()
 
     const string &name = m_p->GetMsgName();
     if (name == d_p_ClassName(RequestUavIdentityAuthentication))
-        RespondLogin(((RequestUavIdentityAuthentication*)m_p->GetProtoMessage())->seqno(), 1);
+        _respondLogin(((RequestUavIdentityAuthentication*)m_p->GetProtoMessage())->seqno(), 1);
     else if (name == d_p_ClassName(PostOperationInformation))
-        prcsRcvPostOperationInfo((PostOperationInformation *)m_p->DeatachProto());
+        _prcsRcvPostOperationInfo((PostOperationInformation *)m_p->DeatachProto());
     else if (name == d_p_ClassName(PostStatus2GroundStation))
-        prcsRcvPost2Gs((PostStatus2GroundStation *)m_p->GetProtoMessage());
+        _prcsRcvPost2Gs((PostStatus2GroundStation *)m_p->GetProtoMessage());
     else if (name == d_p_ClassName(RequestRouteMissions))
-        prcsRcvReqMissions((RequestRouteMissions *)m_p->GetProtoMessage());
+        _prcsRcvReqMissions((RequestRouteMissions *)m_p->GetProtoMessage());
     else if (name == d_p_ClassName(RequestPositionAuthentication))
-        prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
+        _prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
 }
 
 void ObjectUav::CheckTimer(uint64_t ms)
@@ -269,7 +268,7 @@ void ObjectUav::InitObject()
     }
 }
 
-void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
+void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg)
 {
     if (!msg)
         return;
@@ -298,7 +297,7 @@ void ObjectUav::prcsRcvPostOperationInfo(PostOperationInformation *msg)
     }
 }
 
-void ObjectUav::prcsRcvPost2Gs(PostStatus2GroundStation *msg)
+void ObjectUav::_prcsRcvPost2Gs(PostStatus2GroundStation *msg)
 {
     if (!msg || !m_bBind || m_lastBinder.length() < 1)
         return;
@@ -310,7 +309,7 @@ void ObjectUav::prcsRcvPost2Gs(PostStatus2GroundStation *msg)
     }
 }
 
-void ObjectUav::prcsRcvReqMissions(RequestRouteMissions *msg)
+void ObjectUav::_prcsRcvReqMissions(RequestRouteMissions *msg)
 {
     if (!msg)
         return;
@@ -354,7 +353,7 @@ void ObjectUav::prcsRcvReqMissions(RequestRouteMissions *msg)
     }
 }
 
-void ObjectUav::prcsPosAuth(RequestPositionAuthentication *msg)
+void ObjectUav::_prcsPosAuth(RequestPositionAuthentication *msg)
 {
     if (!msg || !msg->has_pos() || Utility::Upper(msg->devid())!=GetObjectID())
         return;
@@ -414,7 +413,7 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
     if (m_lastBinder == msg->userid() && m_bBind)
     {
         auto ms = new PostControl2Uav(*msg);
-        send(ms);
+        send(ms, true);
         res = 1;
     }
     
@@ -461,6 +460,13 @@ void ObjectUav::processBaseInfo(const DBMessage &rslt)
     if (suc)
         InitialUAV(rslt, *this);
     m_stInit = suc ? Initialed : InitialFail;
+    if (auto ack = new AckUavIdentityAuthentication)
+    {
+        ack->set_seqno(1);
+        ack->set_result(suc ? 1 : 0);
+        send(ack);
+    }
+    OnLogined(true);
 }
 
 bool ObjectUav::_isBind(const std::string &gs) const

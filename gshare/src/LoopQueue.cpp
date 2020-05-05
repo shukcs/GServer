@@ -275,6 +275,7 @@ void *LoopQueueAbs::PushOne(const void *data)
                 m_dataPush = m_dataPush->AddNode(getElementSize());
             }
         }
+        m_count++;
         return m_dataPush->GetBuff();
     }
 
@@ -310,6 +311,7 @@ void LoopQueueAbs::PopFinish()
             m_popLast->SetNextNode(tmp);
             m_popLast = tmp;
         }
+        m_count--;
     }
 }
 

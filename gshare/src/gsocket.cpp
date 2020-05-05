@@ -14,10 +14,10 @@
 using namespace SOCKETS_NAMESPACE
 #endif
 
-GSocket::GSocket(ISocketManager *handle): m_manager(handle)
+GSocket::GSocket(ISocketManager *parent): m_parent(parent)
 ,m_mgrPrcs(NULL), m_object(NULL), m_fd(-1), m_bListen(false)
 , m_bAccept(false), m_stat(UnConnected), m_address(NULL)
-, m_buffSocket(new LoopQueBuff)
+, m_buffSocket(new LoopQueBuff(1024))
 {
 }
 
@@ -27,12 +27,12 @@ GSocket::~GSocket()
     delete m_buffSocket;
 }
 
-IObject *GSocket::GetOwnObject() const
+ILink *GSocket::GetOwnObject() const
 {
     return m_object;
 }
 
-void GSocket::SetObject(IObject *o)
+void GSocket::SetObject(ILink *o)
 {
     m_object = o;
 }
@@ -77,6 +77,12 @@ int GSocket::Send(int len, const void *buff)
     return ret;
 }
 
+void GSocket::ClearBuff() const
+{
+    if (m_buffSocket)
+        m_buffSocket->Clear();
+}
+
 bool GSocket::IsListenSocket() const
 {
     return m_bListen;
@@ -105,11 +111,6 @@ std::string GSocket::GetHost() const
 uint16_t GSocket::GetPort() const
 {
     return m_address ? m_address->GetPort() : 0;
-}
-
-std::string GSocket::GetObjectID() const
-{
-    return m_object ? m_object->GetObjectID() : std::string();
 }
 
 bool GSocket::IsConnect() const
@@ -143,9 +144,9 @@ void GSocket::SetHandle(int fd)
     m_fd = fd;
 }
 
-ISocketManager *GSocket::GetManager() const
+ISocketManager *GSocket::GetParent() const
 {
-    return m_manager;
+    return m_parent;
 }
 
 bool GSocket::IsReconnectable() const
@@ -184,9 +185,12 @@ void GSocket::OnRead(void *buf, int len)
         return;
 
     if (m_object)
+    {
         m_object->Receive(buf, len);
-    else
-        ObjectManagers::Instance().ProcessReceive(this, buf, len);
+        return;
+    }
+    m_buffSocket->Push(buf, len, true);
+    ObjectManagers::Instance().ProcessReceive(this, buf, len);
 }
 
 void GSocket::OnClose()
@@ -194,11 +198,9 @@ void GSocket::OnClose()
     m_stat = ISocket::Closed;
     if (m_object)
         m_object->OnSockClose(this);
-    else
-        ObjectManagers::Instance().OnSocketClose(this);
 
-    if (m_manager)
-        m_manager->ReleaseSocket(this);
+    if (m_parent)
+        m_parent->ReleaseSocket(this);
     m_object = NULL;
 }
 
@@ -217,7 +219,7 @@ void GSocket::OnBind(bool binded)
     m_stat = binded ? Binded : Closed;
 }
 
-int GSocket::CopySend(char *buf, int sz) const
+int GSocket::CopyData(char *buf, int sz) const
 {
     if (buf && m_buffSocket && sz> 0 && m_buffSocket->Count()>0)
         return m_buffSocket->CopyData(buf, sz);
@@ -245,6 +247,11 @@ bool GSocket::IsAccetSock() const
 void GSocket::SetPrcsManager(ISocketManager *h)
 {
     m_mgrPrcs = h;
+}
+
+ISocketManager *GSocket::GetPrcsManager() const
+{
+    return m_mgrPrcs;
 }
 
 bool GSocket::ResizeBuff(int sz)

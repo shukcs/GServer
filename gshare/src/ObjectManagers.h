@@ -52,12 +52,6 @@ protected:
 
 class ObjectManagers
 {
-    typedef std::pair<int, std::string> ObjectDsc;
-    typedef LoopQueue<IObject *> ObjectQueue;
-    typedef std::list<ObjectDsc> SubcribeList;
-    typedef std::map<int, SubcribeList> SubcribeMap;
-    typedef std::map<std::string, SubcribeMap> MessageSubcribes;
-    typedef LoopQueue<SubcribeStruct *> SubcribeQueue;
     typedef std::map<ISocket*, LoopQueBuff*> MapBuffRecieve;
     typedef LoopQueue<int> RemoveManagerQueue;
 public:
@@ -68,38 +62,21 @@ public:
     void RemoveManager(int type);
     IObjectManager *GetManagerByType(int tp)const;
 
-    void Destroy(IObject *o);
-    void OnSocketClose(ISocket *sock);
     void ProcessReceive(ISocket *sock, void const *buf, int len);
-    void Subcribe(IObject *o, const std::string &sender, int tpMsg);
-    void Unsubcribe(IObject *o, const std::string &sender, int tpMsg);
 protected:
-    bool PrcsRcvBuff();
-    void PrcsObjectsDestroy();
-    void PrcsSubcribes();
     void PrcsMessages();
-protected:
-    SubcribeList &getMessageSubcribes(IMessage *msg);
 private:
     ObjectManagers();
     ~ObjectManagers();
 
-    void _removeBuff(ISocket *sock);
-    SubcribeList &_getSubcribes(const std::string &sender, int tpMsg);
     void _prcsSendMessages(IObjectManager *mgr);
     void _prcsReleaseMessages(IObjectManager *mgr);
 private:
     friend class ManagerThread;
     std::map<int, IObjectManager*>      m_managersMap;
-	MapBuffRecieve						m_socksRcv;
-    ObjectQueue                         m_objectsDestroy;//Ïú»Ù¶ÓÁÐ
-    IMutex                              *m_mtxSock;
-    IMutex                              *m_mtxObj;
-    IMutex                              *m_mtxMsg;
+    IMutex                              *m_mtx;
     Thread                              *m_thread;
-    MessageSubcribes                    m_subcribes;
     RemoveManagerQueue                  m_mgrsRemove;
-    SubcribeQueue                       m_subcribeMsgs;
     char                                m_buff[1024];
 };
 

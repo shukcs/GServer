@@ -26,11 +26,7 @@ protected:
     bool RunLoop()
     {
         ObjectManagers &ms = ObjectManagers::Instance();
-        ms.PrcsObjectsDestroy();
-        ms.PrcsSubcribes();
         ms.PrcsMessages();
-        if(ms.PrcsRcvBuff())
-            return true;
 
         return false;
     }
@@ -84,8 +80,7 @@ void ManagerAbstractItem::Unregister()
 ////////////////////////////////////////////////////////////
 //ObjectManagers
 ////////////////////////////////////////////////////////////
-ObjectManagers::ObjectManagers():m_mtxSock(new Mutex)
-, m_mtxObj(new Mutex), m_mtxMsg(new Mutex)
+ObjectManagers::ObjectManagers():m_mtx(new Mutex)
 , m_thread(new ManagerThread)
 {
     if (m_thread)
@@ -94,9 +89,7 @@ ObjectManagers::ObjectManagers():m_mtxSock(new Mutex)
 
 ObjectManagers::~ObjectManagers()
 {
-    delete m_mtxSock;
-    delete m_mtxObj;
-    delete m_mtxMsg;
+    delete m_mtx;
 }
 
 ObjectManagers &ObjectManagers::Instance()
@@ -127,9 +120,9 @@ void ObjectManagers::AddManager(IObjectManager *m)
 
 void ObjectManagers::RemoveManager(int type)
 {
-    m_mtxObj->Lock();
+    m_mtx->Lock();
     m_mgrsRemove.Push(type);
-    m_mtxObj->Unlock();
+    m_mtx->Unlock();
 }
 
 IObjectManager *ObjectManagers::GetManagerByType(int tp) const
@@ -146,141 +139,17 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
     if (!sock)
         return;
 
-    Lock l(m_mtxSock);
-    if (IObject *obj = sock->GetOwnObject())
+    if (ILink *link = sock->GetOwnObject())
     {
-        obj->Receive(buf, len);
+        link->Receive(buf, len);
         return;
     }
 
-    map<ISocket *, LoopQueBuff*>::iterator itr = m_socksRcv.find(sock);
-    LoopQueBuff *bb = NULL;
-    if (itr == m_socksRcv.end())
+    len = sock->CopyData(m_buff, sizeof(m_buff));
+    for (const pair<int, IObjectManager*> &m : m_managersMap)
     {
-        bb = new LoopQueBuff(2048);
-        if (bb)
-            m_socksRcv[sock] = bb;
-    }
-    else
-    {
-        bb = itr->second;
-    }
-    bb->Push(buf, len, true);
-}
-
-void ObjectManagers::Subcribe(IObject *o, const std::string &sender, int tpMsg)
-{
-    if (!o || o->GetObjectID().empty() || sender.empty() || tpMsg < 0)
-        return;
-    if (SubcribeStruct *sub = new SubcribeStruct(*o, sender, tpMsg, true))
-    {
-        m_mtxMsg->Lock();
-        m_subcribeMsgs.Push(sub);
-        m_mtxMsg->Unlock();
-    }
-}
-
-void ObjectManagers::Unsubcribe(IObject *o, const std::string &sender, int tpMsg)
-{
-    if (!o || o->GetObjectID().empty() || sender.empty() || tpMsg < 0)
-        return;
-
-    if (SubcribeStruct *sub = new SubcribeStruct(*o, sender, tpMsg, false))
-    {
-        m_mtxMsg->Lock();
-        m_subcribeMsgs.Push(sub);
-        m_mtxMsg->Unlock();
-    }
-}
-
-void ObjectManagers::Destroy(IObject *o)
-{
-    if (!o)
-        return;
-
-    m_mtxObj->Lock();
-    m_objectsDestroy.Push(o);
-    m_mtxObj->Unlock();
-}
-
-void ObjectManagers::OnSocketClose(ISocket *sock)
-{
-    m_mtxSock->Lock();
-    _removeBuff(sock);
-    m_mtxSock->Unlock();
-}
-
-bool ObjectManagers::PrcsRcvBuff()
-{
-    bool ret = false;
-    m_mtxSock->Lock();
-    MapBuffRecieve::iterator itr = m_socksRcv.begin();
-    while (itr != m_socksRcv.end())
-    {
-        LoopQueBuff *buff = itr->second;
-        ISocket *s = itr->first;
-        bool bPrcs = false;
-        if (buff && buff->Count() > 10)
-        {
-            int copied = buff->CopyData(m_buff, sizeof(m_buff));
-            for (const pair<int, IObjectManager*> &mgr : m_managersMap)
-            {
-                if (mgr.second->Receive(itr->first, copied, m_buff))
-                {
-                    itr++; 
-                    bPrcs = true;
-                    _removeBuff(s);
-                    ret = true;
-                    break;
-                }
-            }
-        }
-        if(!bPrcs)
-            itr++;
-    }
-    m_mtxSock->Unlock();
-    return ret;
-}
-
-void ObjectManagers::PrcsObjectsDestroy()
-{
-    while (!m_objectsDestroy.IsEmpty())
-    {
-        delete m_objectsDestroy.Pop();
-    }
-}
-
-void ObjectManagers::PrcsSubcribes()
-{
-    while (!m_subcribeMsgs.IsEmpty())
-    {
-        SubcribeStruct *sub = m_subcribeMsgs.Pop();
-        ObjectDsc dsc(sub->m_subcribeType, sub->m_subcribeId);
-        if (sub->m_bSubcribe)
-        {
-            SubcribeList &ls = m_subcribes[sub->m_sender][sub->m_msgType];
-            if (!IObject::IsContainsInList(ls, dsc))
-                ls.push_back(dsc);
-        }
-        else
-        {
-            MessageSubcribes::iterator itr = m_subcribes.find(sub->m_sender);
-            if (itr != m_subcribes.end())
-            {
-                SubcribeMap::iterator it = itr->second.find(sub->m_msgType);
-                if (it != itr->second.end())
-                {
-                    it->second.remove(dsc);
-                    if (it->second.empty())
-                    {
-                        itr->second.erase(it);
-                        if (itr->second.empty())
-                            m_subcribes.erase(itr);
-                    }
-                }
-            }
-        }
-        delete sub;
+        if (m.second->ParseRequest(sock, m_buff, len))
+            break;
     }
 }
 
@@ -302,37 +171,6 @@ void ObjectManagers::PrcsMessages()
     }
 }
 
-ObjectManagers::SubcribeList &ObjectManagers::getMessageSubcribes(IMessage *msg)
-{
-    return _getSubcribes(msg ? msg->GetSenderID() : string(), msg ? msg->GetMessgeType() : -1);
-}
-
-void ObjectManagers::_removeBuff(ISocket *sock)
-{
-    map<ISocket *, LoopQueBuff*>::iterator itr = m_socksRcv.find(sock);
-    if (itr != m_socksRcv.end())
-    {
-        delete itr->second;
-        m_socksRcv.erase(itr);
-    }
-}
-
-ObjectManagers::SubcribeList &ObjectManagers::_getSubcribes(const string &sender, int tpMsg)
-{
-    static SubcribeList sEpty;
-    if(!sender.empty() || tpMsg>=0)
-    {
-        MessageSubcribes::iterator itr = m_subcribes.find(sender);
-        if (itr != m_subcribes.end())
-        {
-            SubcribeMap::iterator it = itr->second.find(tpMsg);
-            if (it != itr->second.end())
-                return it->second;
-        }
-    }
-    return sEpty;
-}
-
 void ObjectManagers::_prcsSendMessages(IObjectManager *mgr)
 {
     int n = 0;
@@ -343,11 +181,7 @@ void ObjectManagers::_prcsSendMessages(IObjectManager *mgr)
             IMessage *msg = que->Pop();
             if (!msg)
                 continue;
-            for (const ObjectDsc &s : getMessageSubcribes(msg))
-            {
-                if (IObjectManager *mgr = GetManagerByType(s.first))
-                    mgr->PushManagerMessage(msg->Clone(s.second, s.first));
-            }
+
             if (IObjectManager *mgr = GetManagerByType(msg->GetReceiverType()))
                 mgr->PushManagerMessage(msg);
             else
@@ -358,18 +192,11 @@ void ObjectManagers::_prcsSendMessages(IObjectManager *mgr)
 
 void ObjectManagers::_prcsReleaseMessages(IObjectManager *mgr)
 {
-    int n = 0;
-    while (MessageQue *que = mgr->GetReleaseQue(n++))
+    if (!mgr)
+        return;
+    while (IMessage *msg = mgr->PopRecycleMessage())
     {
-        while (!que->IsEmpty())
-        {
-            IMessage *msg = que->Pop();
-            if (!msg)
-                continue;
-            if (msg->IsClone())
-                delete msg;
-            else if (IObjectManager *m = GetManagerByType(msg->GetSenderType()))
-                m->PushReleaseMsg(msg);
-        }
+        if (IObjectManager *m = GetManagerByType(msg->GetSenderType()))
+            m->PushReleaseMsg(msg);
     }
 }

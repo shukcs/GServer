@@ -108,21 +108,25 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
     ObjectGS *o = (ObjectGS*)GetObjectByID(usr);
     if (o && !o->m_pswd.empty())
     {
-        if (!o->IsConnect() && o->m_pswd==pswd)
-            return o;
-
+        bool bLogin = !o->IsConnect() && o->m_pswd == pswd;
         AckGSIdentityAuthentication ack;
         ack.set_seqno(rgi->seqno());
-        ack.set_result(0);
+        ack.set_result(bLogin ?1 : 0);
         ack.set_auth(0);
+        s->ClearBuff();
         ObjectAbsPB::SendProtoBuffTo(s, ack);
+        if (!bLogin)
+            o = NULL;
     }
     else if(o==NULL)
     {
-        return new ObjectGS(usr);
+        o = new ObjectGS(usr);
+        s->ClearBuff();
+        o->SetSeq(rgi->seqno());
+        o->SetPswd(pswd);
     }
 
-    return NULL;
+    return o;
 }
 
 IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
@@ -137,11 +141,13 @@ IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
         AckNewGS ack;
         ack.set_seqno(msg->seqno());
         ack.set_result(0);
+        s->ClearBuff();
         ObjectAbsPB::SendProtoBuffTo(s, ack);
     }
     if (!o)
     {
         o = new ObjectGS(userId);
+        s->ClearBuff();
         if (o)
             o->SetCheck(GSOrUavMessage::GenCheckString());
         return o;
@@ -176,6 +182,12 @@ bool GSManager::InitManager()
     }
 
     return m_bInit;
+}
+
+bool GSManager::IsHasReuest(const char *buf, int len) const
+{
+    return Utility::FindString(buf, len, d_p_ClassName(RequestGSIdentityAuthentication)) >= 8
+        || Utility::FindString(buf, len, d_p_ClassName(RequestNewGS)) >= 8;
 }
 
 DECLARE_MANAGER_ITEM(GSManager)

@@ -14,9 +14,8 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
-ObjectAbsPB::ObjectAbsPB(const std::string &id)
-: IObject(NULL, id), m_bConnect(false)
-, m_p(NULL)
+ObjectAbsPB::ObjectAbsPB(const std::string &id): IObject(id)
+, ILink(), m_p(NULL)
 {
 }
 
@@ -27,7 +26,7 @@ ObjectAbsPB::~ObjectAbsPB()
 
 bool ObjectAbsPB::IsConnect() const
 {
-    return m_bConnect;
+    return m_bLogined;
 }
 
 void ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
@@ -57,44 +56,36 @@ int ObjectAbsPB::ProcessReceive(void *buf, int len)
 
 void ObjectAbsPB::OnConnected(bool bConnected)
 {
-    m_bConnect = bConnected;
     if (bConnected)
     {
         if (!m_p)
             m_p = new ProtoMsg;
         return;
     }
-    ClearRead();
-    if (m_sock)
-    {
-        m_sock->Close();
-        m_sock = NULL;
-    }
+    ClearRecv();
+    m_sock = NULL;
 }
 
-void ObjectAbsPB::send(google::protobuf::Message *msg, bool bRm)
+void ObjectAbsPB::send(google::protobuf::Message *msg, bool bWait)
 {
-    if (m_sock)
+    if (!bWait)
     {
-        char *buf = (char *)getThreadBuff();
-        int sendSz = serialize(*msg, buf, getThreadBuffLen());
-        if (sendSz > 0)
-        {
-            if (sendSz == m_sock->Send(sendSz, buf))
-                bRm = true;
-
-            if (!bRm)
-                WaitSend(msg);
-        }
+        char *buf = GetThreadBuff();
+        int sendSz = serialize(*msg, buf, GetThreadBuffLength());
+        if (sendSz == Send(buf, sendSz))
+            delete msg;
+        else
+            bWait = true;
     }
 
-    if (bRm)
-        delete msg;
+    if (bWait)
+        WaitSend(msg);
 }
 
 void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
 {
-    delete msg;
+    if(msg)
+        m_protosSend.push_back(msg);
 }
 
 int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int sz)
@@ -119,6 +110,16 @@ int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int s
     Utility::toBigendian(crc, buf + len);
     return len + 4;
 }
+
+IObject *ObjectAbsPB::GetParObject()
+{
+    return this;
+}
+
+ILink *ObjectAbsPB::GetHandle()
+{
+    return this;
+}
 ////////////////////////////////////////////////////////////////////////////////
 //AbsPBManager
 ////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +132,7 @@ AbsPBManager::~AbsPBManager()
     delete m_p;
 }
 
-IObject * AbsPBManager::PrcsNotObjectReceive(ISocket *s, const char *buf, int len)
+IObject *AbsPBManager::PrcsNotObjectReceive(ISocket *s, const char *buf, int len)
 {
     int pos = 0;
     int l = len;

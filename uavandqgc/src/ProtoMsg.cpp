@@ -60,7 +60,7 @@ bool ProtoMsg::Parse(const char *buff, int &len)
             int szMsg = Utility::fromBigendian(buff+pos);
             if (szMsg > Max_PBSize)
             {
-                pos += 10;
+                pos += 18;
                 continue;
             }
 
@@ -69,14 +69,15 @@ bool ProtoMsg::Parse(const char *buff, int &len)
                 uint32_t crc = Utility::Crc32(buff+pos+4, szMsg-4);
                 if (crc != (uint32_t)Utility::fromBigendian(buff+pos+szMsg))
                 {
-                    pos += 10;
+                    pos += 18;
                     continue;
                 }
 
-                size_t nameLen = Utility::fromBigendian(buff + pos +4);
-                m_name = string(buff + pos + 8, nameLen-1);
+                size_t nameLen = Utility::fromBigendian(buff + pos + 4);
+                m_name = string(buff + pos + 8, nameLen - 1);
+                int tmp = pos + 8 + nameLen;
                 pos += szMsg + 4;
-                if (_parse(m_name, buff+pos-szMsg+4+nameLen, szMsg-8-nameLen))
+                if (_parse(m_name, buff+tmp, szMsg-8-nameLen))
                     break;
 
                 m_name.clear();

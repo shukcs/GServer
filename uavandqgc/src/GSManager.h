@@ -43,6 +43,7 @@ protected:
     IObject *prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg);
     void LoadConfig();
     bool InitManager();
+    bool IsHasReuest(const char *buf, int len)const;
 private:
     bool            m_bInit;
 };

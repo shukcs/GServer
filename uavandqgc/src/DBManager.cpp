@@ -13,7 +13,7 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectDB
 ////////////////////////////////////////////////////////////////////////////////
-ObjectDB::ObjectDB(const std::string &id):IObject(NULL, id), MysqlDB()
+ObjectDB::ObjectDB(const std::string &id):IObject(id), MysqlDB()
 , m_sqlEngine(new VGMySql)
 {
 }
@@ -63,6 +63,9 @@ void ObjectDB::InitObject()
 
 void ObjectDB::ProcessMessage(IMessage *msg)
 {
+    if (m_stInit == Uninitial)
+        InitObject();
+
     DBMessage *db = dynamic_cast<DBMessage *>(msg);
     if (!db)
         return;

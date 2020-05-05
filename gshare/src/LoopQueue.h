@@ -51,6 +51,7 @@ protected:
     DataNode    *m_dataPush;
     DataNode    *m_dataPops;
     DataNode    *m_popLast;
+    int         m_count;
 };
 
 template <class EC>
@@ -108,6 +109,10 @@ public:
             nd = nextNode(nd);
         }
         return false;
+    }
+    int ElementCount()const
+    {
+        return m_count;
     }
 protected:
     static void defaultConstruction(EC *te, const EC &d)

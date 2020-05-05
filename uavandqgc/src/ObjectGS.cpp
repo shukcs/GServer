@@ -22,7 +22,7 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
-ObjectGS::ObjectGS(const std::string &id): ObjectAbsPB(id)
+ObjectGS::ObjectGS(std::string &id): ObjectAbsPB(id)
 , m_auth(1), m_bInitFriends(false), m_countLand(0)
 , m_countPlan(0)
 {
@@ -61,6 +61,11 @@ void ObjectGS::SetAuth(int a)
 bool ObjectGS::GetAuth(GSAuthorizeType auth) const
 {
     return (auth & m_auth) == auth;
+}
+
+void ObjectGS::SetSeq(int seq)
+{
+    m_seq = seq;
 }
 
 int ObjectGS::GSType()
@@ -257,7 +262,7 @@ void ObjectGS::process2GsMsg(const Message *msg)
     if (Message *ms = msg->New())
     {
         ms->CopyFrom(*msg);
-        send(ms);
+        send(ms, true);
     }
 }
 
@@ -300,14 +305,14 @@ void ObjectGS::processBind(const DBMessage &msg)
     { 
         if(UavStatus *s = new UavStatus)
         {
-            ObjectUav uav(msg.GetRead("id").ToString());
+            ObjectUav uav(NULL, msg.GetRead("id").ToString());
             ObjectUav::InitialUAV(msg, uav);
             uav.TransUavStatus(*s);
             if (proto)
                 proto->set_allocated_status(s);
         }
     }
-    send(proto);
+    send(proto, true);
 }
 
 void ObjectGS::processUavsInfo(const DBMessage &msg)
@@ -389,14 +394,24 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
             ++simItr;
         }
     }
-    send(ack);
+    send(ack, true);
 }
 
 void ObjectGS::processGSInfo(const DBMessage &msg)
 {
     m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : InitialFail;
-    m_pswd = msg.GetRead("pswd").ToString();
+    string pswd = msg.GetRead("pswd").ToString();
     m_auth = msg.GetRead("auth").ToInt32();
+    bool bLogin = pswd == m_pswd;
+    OnLogined(bLogin);
+    if (auto ack = new AckGSIdentityAuthentication)
+    {
+        ack->set_seqno(1);
+        ack->set_result(bLogin ? 1 : -1);
+        ack->set_auth(m_auth);
+        send(ack, true);
+    }
+    m_pswd = pswd;
     if (Initialed == m_stInit)
     {
         initFriend();
@@ -427,7 +442,7 @@ void ObjectGS::processCheckGS(const DBMessage &msg)
             ack->set_check(m_check);
         }
         ack->set_result(bExist ? 0 : 1);
-        send(ack);
+        send(ack, true);
         if (bExist)
             m_stInit = IObject::InitialFail;
     }
@@ -444,7 +459,7 @@ void ObjectGS::processPostLandRslt(const DBMessage &msg)
         appd->set_psiid(Utility::bigint2string(nLand));
         appd->set_pcid(Utility::bigint2string(nCon));
         appd->set_pdid(Utility::bigint2string(nLand));
-        send(appd);
+        send(appd, true);
     }
     if (nLand > 0)
         GetManager()->Log(0, GetObjectID(), 0, "Upload land %d!", nLand);
@@ -506,20 +521,19 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
     auto itrlons = lons.begin();
     auto itrids = ids.begin();
     auto itrboundary = boundary.begin();
-    auto ptr = ack;
     for (; itrids != ids.end(); ++itrids)
     {
-        if (ptr->ByteSize() > 3072)
+        if (ack->ByteSize() > 3072)
         {
-            _sendNow(ptr, ptr == ack);
-            ptr = new AckRequestParcelDescriptions;
-            if (!ptr)
+            send(ack, true);
+            ack = new AckRequestParcelDescriptions;
+            if (!ack)
                 break;
-            ptr->set_seqno(msg.GetSeqNomb());
-            ptr->set_result(1);
+            ack->set_seqno(msg.GetSeqNomb());
+            ack->set_result(1);
         }
 
-        ParcelDescription *pd = ptr->add_pds();
+        ParcelDescription *pd = ack->add_pds();
         if (itrNamesPc != namesPc.end())
         {
             ParcelContracter *pc = new ParcelContracter();
@@ -590,7 +604,9 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
             ++itrboundary;
         }
     }
-    _sendNow(ptr, ptr == ack);
+    
+    if (m_protosSend.size()>0 && m_protosSend.back()!=ack)
+        send(ack, true);
 }
 
 void ObjectGS::processGSInsert(const DBMessage &msg)
@@ -600,7 +616,7 @@ void ObjectGS::processGSInsert(const DBMessage &msg)
     {
         ack->set_seqno(msg.GetSeqNomb());
         ack->set_result(bSuc ? 1 : -1);
-        send(ack);
+        send(ack, true);
     }
     m_check.clear();
     if (!bSuc)
@@ -630,7 +646,7 @@ void ObjectGS::processMissionLand(const DBMessage &msg)
         }
         ++landsItr;
     }
-    send(sd);
+    send(sd, true);
 }
 
 void ObjectGS::processMissions(const DBMessage &msg)
@@ -662,7 +678,7 @@ void ObjectGS::processMissions(const DBMessage &msg)
         }
         ++landsItr;
     }
-    send(sd);
+    send(sd, true);
 }
 
 void ObjectGS::processPostPlanRslt(const DBMessage &msg)
@@ -675,7 +691,7 @@ void ObjectGS::processPostPlanRslt(const DBMessage &msg)
         ack->set_result(vRslt.ToBool() ? 1 : 0);
         if (vRslt.ToBool())
             ack->set_odid(Utility::bigint2string(id));
-        send(ack);
+        send(ack, true);
     }
 
     GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %ld!", id);
@@ -737,20 +753,18 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
     auto prizesItr = prizes.begin();
     auto ridgeItr = ridgeSzs.begin();
     auto planParamsItr = planParams.begin();
-    auto ptr = ack;
     for (auto idItr = ids.begin(); idItr != ids.end(); ++idItr)
     {
-        if (ptr->ByteSize() >= 3072)
+        if (ack->ByteSize() >= 4096)
         {
-            _sendNow(ptr, ptr==ack);
-
-            ptr = new AckRequestOperationDescriptions;
-            if (!ptr)
+            send(ack, true);
+            ack = new AckRequestOperationDescriptions;
+            if (!ack)
                 break;
-            ptr->set_seqno(msg.GetSeqNomb());
-            ptr->set_result(suc ? 1 : 0);
+            ack->set_seqno(msg.GetSeqNomb());
+            ack->set_result(suc ? 1 : 0);
         }
-        auto od = ptr->add_ods();
+        auto od = ack->add_ods();
         od->set_odid(Utility::bigint2string(*idItr));
         if (landIdsItr != landIds.end())
         {
@@ -800,7 +814,8 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
             ++planParamsItr;
         }
     }
-    _sendNow(ptr, ptr==ack);
+    if (m_protosSend.size()>0 && ack!=m_protosSend.back())
+        send(ack, true);
 }
 
 void ObjectGS::InitObject()
@@ -830,7 +845,7 @@ void ObjectGS::CheckTimer(uint64_t ms)
     {
         Message *msg = m_protosSend.front();
         m_protosSend.pop_front();
-        send(msg, true);
+        send(msg);
     }
 
     if (ms - m_tmLastInfo > 3600000)
@@ -1336,10 +1351,4 @@ void ObjectGS::_checkGS(const string &user, int ack)
     msgDb->SetSql("checkGS");
     msgDb->SetCondition("user", user);
     SendMsg(msgDb);
-}
-
-void ObjectGS::_sendNow(google::protobuf::Message *msg, bool b)
-{
-    if (msg)
-        b ? send(msg) : WaitSend(msg);
 }

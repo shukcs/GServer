@@ -1,6 +1,7 @@
 #include "IMessage.h"
 #include "ObjectBase.h"
 #include "ObjectManagers.h"
+#include "Utility.h"
 
 using namespace std;
 #ifdef SOCKETS_NAMESPACE
@@ -10,8 +11,9 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////////////
 //MessageData
 ////////////////////////////////////////////////////////////////////////////////////////
-MessageData::MessageData(IObject *sender, int tpMs)
-    : m_countRef(1), m_tpMsg(tpMs), m_tpSender(IObject::UnKnow)
+MessageData::MessageData(IObject *sender, int16_t tpMs)
+    : m_countRef(1), m_threadID(Utility::ThreadID())
+    , m_tpMsg(tpMs), m_tpSender(IObject::UnKnow)
 {
     if (sender)
     {
@@ -20,8 +22,9 @@ MessageData::MessageData(IObject *sender, int tpMs)
     }
 }
 
-MessageData::MessageData(IObjectManager *sender, int tpMs)
-: m_countRef(1), m_tpMsg(tpMs), m_tpSender(IObject::UnKnow)
+MessageData::MessageData(IObjectManager *sender, int16_t tpMs)
+: m_countRef(1), m_threadID(Utility::ThreadID())
+, m_tpMsg(tpMs), m_tpSender(IObject::UnKnow)
 {
     if (sender)
         m_tpSender = sender->GetObjectType();
@@ -124,4 +127,9 @@ IMessage *IMessage::Clone(const std::string &, int) const
 int IMessage::IsClone() const
 {
     return m_clone;
+}
+
+int IMessage::CreateThreadID() const
+{
+    return m_data ? m_data->m_threadID : -1;
 }

@@ -14,8 +14,8 @@ class IObjectManager;
 class MessageData
 {
 public:
-    SHARED_DECL MessageData(IObject *sender, int tpMs);
-    SHARED_DECL MessageData(IObjectManager *sender, int tpMs);
+    SHARED_DECL MessageData(IObject *sender, int16_t tpMs);
+    SHARED_DECL MessageData(IObjectManager *sender, int16_t tpMs);
     SHARED_DECL virtual ~MessageData();
 private:
     void AddRef();
@@ -24,8 +24,9 @@ private:
 private:
     friend class IMessage;
     int         m_countRef;
-    int         m_tpMsg;
-    int         m_tpSender;
+    int         m_threadID;
+    int16_t     m_tpMsg;
+    int16_t     m_tpSender;
     std::string m_idSnd;
 };
 
@@ -119,6 +120,7 @@ public:
     SHARED_DECL int CountDataRef()const;
     SHARED_DECL virtual IMessage *Clone(const std::string &idRcv, int tpRcv)const;
     int IsClone()const;
+    int CreateThreadID()const;
 protected:
     MessageData *m_data;
     int         m_tpRcv;

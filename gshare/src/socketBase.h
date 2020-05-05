@@ -8,7 +8,7 @@ namespace SOCKETS_NAMESPACE {
 #endif
 
 class IMutex;
-class IObject;
+class ILink;
 class ISocketManager;
 class SocketAddress;
 class ILog;
@@ -31,7 +31,7 @@ public:
     //ISocketManager调用函数
     virtual SocketAddress *GetAddress()const = 0;
     virtual void SetAddress(SocketAddress *) = 0;
-    virtual ISocketManager *GetManager()const = 0;
+    virtual ISocketManager *GetParent()const = 0;
     virtual int GetHandle()const = 0;
     virtual void SetHandle(int fd) = 0;
     virtual bool IsWriteEnabled()const = 0;
@@ -42,15 +42,17 @@ public:
     virtual void OnClose() = 0;
     virtual void OnConnect(bool=true) = 0;
     virtual void OnBind(bool=true) = 0;
-    virtual int CopySend(char *buff, int sz)const = 0;
+    virtual int CopyData(char *buff, int sz)const = 0;
     virtual int GetSendLength()const = 0;
+    virtual void ClearBuff()const = 0;
     virtual bool IsAccetSock()const = 0;
     virtual bool ResetSendBuff(uint16_t sz)=0;
     virtual void SetPrcsManager(ISocketManager *) = 0;
+    virtual ISocketManager *GetPrcsManager()const = 0;
 
     //事务处理调用函数
-    virtual IObject *GetOwnObject()const = 0;
-    virtual void SetObject(IObject *o) = 0;
+    virtual ILink *GetOwnObject()const = 0;
+    virtual void SetObject(ILink *o) = 0;
     virtual bool Bind(int port, const std::string &hostLocal="") = 0;
     virtual bool ConnectTo(const std::string &hostRemote, int port) = 0;
     virtual int Send(int len, const void *buff=NULL) = 0;
@@ -63,7 +65,6 @@ public:
     virtual void Close() = 0;
     virtual std::string GetHost()const = 0;
     virtual uint16_t GetPort()const = 0;
-    virtual std::string GetObjectID()const = 0;
 };
 
 class ISocketManager

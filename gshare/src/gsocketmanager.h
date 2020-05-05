@@ -13,8 +13,12 @@ namespace SOCKETS_NAMESPACE {
 class IMutex;
 class Thread;
 class ILog;
-class GSocketManager : public ISocketManager {
+class ILink;
+
+class GSocketManager : public ISocketManager
+{
     typedef LoopQueue<ISocket *> SocketQue;
+    typedef LoopQueue<ILink *> SocketHandleQue;
     typedef LoopQueue<int> SocketPrcsQue;
     typedef std::map<ISocket *, FuncOnBinded> SocketBindedCallbacks;
 public:
@@ -64,13 +68,18 @@ private:
     bool _isCloseEvent(uint32_t e)const;
 #endif
 private:
+    int                         m_openMax;
+    IMutex                      *m_mtx;
+    Thread                      *m_thread;
     std::map<int, ISocket*>     m_sockets;
     SocketPrcsQue               m_socketsPrcs;      //等待处理队列
     SocketQue                   m_socketsRemove;    //等待销毁队列
     SocketQue                   m_socketsAdd;       //等待监控队列
+    SocketHandleQue             m_handlesRelease;   //等待监控队列
     std::list<GSocketManager*>  m_othManagers;
-    IMutex                      *m_mtx;
-    int                         m_openMax;
+    char                        m_buff[1024];
+    static bool                 s_bRun;
+    SocketBindedCallbacks       m_bindedCBs;
 #if defined _WIN32 || defined _WIN64 //Windows与epoll对应的是IOCP，但不好做成epoll一样操作
     void _checkMaxSock();
     SOCKET                      m_maxsock;
@@ -78,10 +87,6 @@ private:
 #else
     int                         m_ep_fd;
 #endif
-    Thread                      *m_thread;
-    char                        m_buff[1024];
-    static bool                 s_bRun;
-    SocketBindedCallbacks       m_bindedCBs;
 };
 
 #ifdef SOCKETS_NAMESPACE

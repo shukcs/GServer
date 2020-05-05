@@ -36,7 +36,6 @@ public:
     ~ObjectUav();
 
     void TransUavStatus(das::proto::UavStatus &us, bool bAuth = false)const;
-    void RespondLogin(int seq, int res);
     bool IsValid()const;
     void SetValideTime(int64_t tmV);
     void SetSimId(const std::string &sim);
@@ -53,13 +52,14 @@ protected:
     void CheckTimer(uint64_t ms);
     void OnConnected(bool bConnected);
     void InitObject();
+    void _respondLogin(int seq, int res);
 protected:
     static IMessage *AckControl2Uav(const das::proto::PostControl2Uav &msg, int res, ObjectUav *obj = NULL);
 private:
-    void prcsRcvPostOperationInfo(das::proto::PostOperationInformation *msg);
-    void prcsRcvPost2Gs(das::proto::PostStatus2GroundStation *msg);
-    void prcsRcvReqMissions(das::proto::RequestRouteMissions *msg);
-    void prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
+    void _prcsRcvPostOperationInfo(das::proto::PostOperationInformation *msg);
+    void _prcsRcvPost2Gs(das::proto::PostStatus2GroundStation *msg);
+    void _prcsRcvReqMissions(das::proto::RequestRouteMissions *msg);
+    void _prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
 
     void processBind(das::proto::RequestBindUav *msg, IObject *sender);
     void processControl2Uav(das::proto::PostControl2Uav *msg);

@@ -16,7 +16,7 @@ using namespace SOCKETS_NAMESPACE;
 #endif
 
 class ProtoMsg;
-class ObjectAbsPB : public IObject
+class ObjectAbsPB : public IObject, public ILink
 {
 public:
     ObjectAbsPB(const std::string &id);
@@ -28,13 +28,15 @@ public:
 protected:
     int ProcessReceive(void *buf, int len);
     void OnConnected(bool bConnected);
-    void send(google::protobuf::Message *msg, bool bRm=false);
+    void send(google::protobuf::Message *msg, bool bWait=false);
     virtual void WaitSend(google::protobuf::Message *msg);
     virtual void PrcsProtoBuff() = 0;
     static int serialize(const google::protobuf::Message &ms, char*buf, int sz);
+    IObject *GetParObject();
+    ILink *GetHandle();
 protected:
-    bool            m_bConnect;
-    ProtoMsg        *m_p;
+    ProtoMsg                              *m_p;
+    std::list<google::protobuf::Message*> m_protosSend;
 };
 
 class AbsPBManager : public IObjectManager
