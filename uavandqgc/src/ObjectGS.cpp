@@ -406,7 +406,7 @@ void ObjectGS::processGSInfo(const DBMessage &msg)
     OnLogined(bLogin);
     if (auto ack = new AckGSIdentityAuthentication)
     {
-        ack->set_seqno(1);
+        ack->set_seqno(m_seq);
         ack->set_result(bLogin ? 1 : -1);
         ack->set_auth(m_auth);
         send(ack, true);
