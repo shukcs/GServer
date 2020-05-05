@@ -34,6 +34,7 @@ protected:
     static int serialize(const google::protobuf::Message &ms, char*buf, int sz);
     IObject *GetParObject();
     ILink *GetHandle();
+    void CheckTimer(uint64_t ms);
 protected:
     ProtoMsg                              *m_p;
     std::list<google::protobuf::Message*> m_protosSend;

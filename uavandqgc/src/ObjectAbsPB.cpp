@@ -120,6 +120,17 @@ ILink *ObjectAbsPB::GetHandle()
 {
     return this;
 }
+
+void ObjectAbsPB::CheckTimer(uint64_t ms)
+{
+    ILink::CheckTimer(ms);
+    if (!m_protosSend.empty() && m_sock && m_sock->IsNoWriteData())
+    {
+        Message *msg = m_protosSend.front();
+        m_protosSend.pop_front();
+        send(msg);
+    }
+}
 ////////////////////////////////////////////////////////////////////////////////
 //AbsPBManager
 ////////////////////////////////////////////////////////////////////////////////

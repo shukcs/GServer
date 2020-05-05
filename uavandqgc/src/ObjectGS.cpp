@@ -841,13 +841,6 @@ void ObjectGS::InitObject()
 void ObjectGS::CheckTimer(uint64_t ms)
 {
     ObjectAbsPB::CheckTimer(ms);
-    if (!m_protosSend.empty() && m_sock && m_sock->IsNoWriteData())
-    {
-        Message *msg = m_protosSend.front();
-        m_protosSend.pop_front();
-        send(msg);
-    }
-
     if (ms - m_tmLastInfo > 3600000)
         Release();
     else if (m_sock && ms - m_tmLastInfo > 30000)//³¬Ê±¹Ø±Õ

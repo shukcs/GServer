@@ -516,7 +516,6 @@ bool IObjectManager::AddObject(IObject *obj)
     if (!obj || Exist(obj))
         return false;
 
-    BussinessThread *t = GetPropertyThread();
     m_objects[obj->GetObjectID()] = obj;
 
     return true;
