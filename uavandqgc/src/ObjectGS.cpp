@@ -305,7 +305,7 @@ void ObjectGS::processBind(const DBMessage &msg)
     { 
         if(UavStatus *s = new UavStatus)
         {
-            ObjectUav uav(NULL, msg.GetRead("id").ToString());
+            ObjectUav uav(msg.GetRead("id").ToString());
             ObjectUav::InitialUAV(msg, uav);
             uav.TransUavStatus(*s);
             if (proto)
