@@ -63,16 +63,11 @@ protected:
         for (; itr != m_links.end(); ++itr)
         {
             ILink *l = itr->second;
-            if (l->IsChanged())
-            {
-                int len = l->CopyData(m_buff, m_szBuff);
-                len = l->ProcessReceive(m_buff, len);
-                l->ClearRecv(len);
+            if (l->PrcsBussiness(ms, *this))
                 ret = true;
-            }
-            l->PrcsBussiness(ms);
-            if (!l->GetSocket())
+            if (l->IsRealse())
             {
+                m_lsMsgSend.Push(new ObjectEvent(itr->first, m_mgr->GetObjectType(), ObjectEvent::E_Release));
                 auto tmp = itr++;
                 m_links.erase(tmp);
                 if (itr==m_links.end())
@@ -87,8 +82,9 @@ protected:
         {
             ILink *l = m_linksAdd.Pop();
             IObject *o = l ? l->GetParObject() : NULL;
-            if (o && !o->GetObjectID().empty())
-                m_links[o->GetObjectID()] = l;
+            auto id = o ? o->GetObjectID() : string();
+            if (!id.empty() && m_links.find(id)==m_links.end())
+                m_links[id] = l;
         }
     }
 private:
@@ -125,7 +121,7 @@ public:
 ///////////////////////////////////////////////////////////////////////////////////////
 ILink::ILink() : m_tmLastInfo(Utility::msTimeTick())
 , m_sock(NULL), m_recv(NULL), m_bLogined(false)
-, m_bChanged(false)
+, m_bChanged(false), m_bRelease(false)
 {
 }
 
@@ -183,8 +179,14 @@ bool ILink::ChangeLogind(bool b)
 void ILink::CheckTimer(uint64_t ms)
 {
     IObject *o = GetParObject();
-    if (o && ChangeLogind(false))
-        o->GetManager()->Log(0, o->GetObjectID(), 0, "disconnect");
+    if (o)
+    {
+        if (IObject::Uninitial == o->m_stInit)
+            o->InitObject();
+
+        if (ChangeLogind(false))
+            o->GetManager()->Log(0, o->GetObjectID(), 0, "disconnect");
+    }
 }
 
 int ILink::Send(const char *buf, int len)
@@ -229,7 +231,7 @@ bool ILink::Receive(const void *buf, int len)
 
 bool ILink::IsChanged() const
 {
-    return m_recv && m_bChanged;
+    return m_sock && m_recv && m_bChanged;
 }
 
 int ILink::CopyData(void *data, int len) const
@@ -244,18 +246,33 @@ void ILink::ClearRecv(int n)
         m_recv->Clear(n < 0 ? m_recv->Count() : n);
 }
 
-void ILink::PrcsBussiness(uint64_t ms)
+bool ILink::PrcsBussiness(uint64_t ms, BussinessThread &t)
 {
     CheckTimer(ms);
-    if (IObject *o = GetParObject())
-        o->CheckStat();
+    if (IsChanged())
+    {
+        int len = CopyData(t.m_buff, t.m_szBuff);
+        len = ProcessReceive(t.m_buff, len);
+        ClearRecv(len);
+        return true;
+    }
+    return false;
 }
 
+void ILink::Release()
+{
+    m_bRelease = true;
+}
+
+bool ILink::IsRealse()
+{
+    return m_bRelease;
+}
 /////////////////////////////////////////////////////////////////////////////////////////
 //IObject
 /////////////////////////////////////////////////////////////////////////////////////////
 IObject::IObject(const string &id):m_id(id)
-, m_bRelease(false), m_stInit(Uninitial)
+, m_stInit(Uninitial)
 {
 }
 
@@ -318,27 +335,9 @@ ILink *IObject::GetHandle()
     return NULL;
 }
 
-void IObject::Release()
-{
-    m_bRelease = true;
-}
-
-bool IObject::IsRealse()
-{
-    return m_bRelease;
-}
-
 IObjectManager *IObject::GetManager() const
 {
     return GetManagerByType(GetObjectType());
-}
-
-void IObject::CheckStat()
-{
-    if (InitialFail == m_stInit)
-        Release();
-    else if (Uninitial == m_stInit)
-        InitObject();
 }
 
 IObjectManager *IObject::GetManagerByType(int tp)
@@ -422,9 +421,29 @@ void IObjectManager::ProcessMessage()
     while (!m_messages.IsEmpty())
     {
         IMessage *msg = m_messages.Pop();
-        if (msg && msg->IsValid())
+        if (!msg)
+            continue;
+
+        if (msg->GetMessgeType() == ObjectEvent::E_Release)
         {
-            if (IObject *obj = GetObjectByID(msg->GetReceiverID()))
+            auto itr = m_objects.find(msg->GetReceiverID());
+            if (itr != m_objects.end())
+            { 
+                auto o = itr->second;
+                m_objects.erase(itr);
+                delete o;
+            }
+        }
+        else if (msg->IsValid())
+        {
+            const StringList &sbs = getMessageSubcribes(msg);
+            for (const string id : sbs)
+            {
+                if (IObject *obj = GetObjectByID(id))
+                    obj->ProcessMessage(msg);
+            }
+            const string &rcv = msg->GetReceiverID();
+            if (IObject *obj = GetObjectByID(rcv))
             {
                 obj->ProcessMessage(msg);
                 continue;
@@ -436,8 +455,8 @@ void IObjectManager::ProcessMessage()
                     o.second->ProcessMessage(msg);
                 }
             }
-            m_lsMsgRecycle.Push(msg);
         }
+        m_lsMsgRecycle.Push(msg);
     }
 }
 
@@ -616,7 +635,7 @@ void IObjectManager::PrcsSubcribes()
     }
 }
 
-StringList &IObjectManager::getMessageSubcribes(IMessage *msg)
+const StringList &IObjectManager::getMessageSubcribes(IMessage *msg)
 {
     static StringList sEpty;
     int tpMsg = msg ? msg->GetMessgeType() : -1;

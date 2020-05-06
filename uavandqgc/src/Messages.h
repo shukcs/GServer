@@ -44,7 +44,6 @@ public:
     Uav2GSMessage(IObjectManager *sender, const std::string &idRcv);
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);
-    IMessage *Clone(const std::string &idRcv, int tpRcv)const;
 private:
 };
 

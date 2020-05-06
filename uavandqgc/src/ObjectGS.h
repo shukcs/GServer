@@ -84,7 +84,6 @@ protected:
     void processMissions(const DBMessage &msg);
     void InitObject();
     void CheckTimer(uint64_t ms);
-    void WaitSend(google::protobuf::Message *msg);
 private:
     void _prcsLogin(das::proto::RequestGSIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);

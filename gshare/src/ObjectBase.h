@@ -41,9 +41,11 @@ public:
     SHARED_DECL virtual void CheckTimer(uint64_t ms);
     SHARED_DECL int Send(const char *buf, int len);
     SHARED_DECL void ClearRecv(int n = -1);
-    void PrcsBussiness(uint64_t ms);
-    virtual int ProcessReceive(void *buf, int len) = 0;
+    SHARED_DECL void Release();
+    SHARED_DECL bool IsRealse();
 public:
+    bool PrcsBussiness(uint64_t ms, BussinessThread &t);
+    virtual int ProcessReceive(void *buf, int len) = 0;
     ISocket *GetSocket()const;
     bool Receive(const void *buf, int len);
     bool IsChanged()const;
@@ -56,6 +58,7 @@ protected:
     LoopQueBuff             *m_recv;
     bool                    m_bLogined;
     bool                    m_bChanged;
+    bool                    m_bRelease;
 };
 
 class IObject
@@ -79,8 +82,6 @@ public:
 public:
     SHARED_DECL const std::string &GetObjectID()const;
     SHARED_DECL void SetObjectID(const std::string &id);
-    SHARED_DECL void Release();
-    SHARED_DECL bool IsRealse();
     SHARED_DECL IObjectManager *GetManager()const;
     SHARED_DECL void Subcribe(const std::string &sender, int msg);
     SHARED_DECL void Unsubcribe(const std::string &sender, int msg);
@@ -90,7 +91,6 @@ public:
     virtual void InitObject() = 0;
 public:
     virtual void ProcessMessage(IMessage *msg) = 0;
-    void CheckStat();
 public:
     SHARED_DECL static IObjectManager *GetManagerByType(int);
     template<typename T, typename Contianer = std::list<T> >
@@ -121,8 +121,8 @@ IObject(sock, id)；sock:socket;id:连接实体标识
 protected:
     friend class ObjectManagers;
     friend class IObjectManager;
+    friend class ILink;
     std::string             m_id;
-    bool                    m_bRelease;
     ObjectStat              m_stInit;
 };
 
@@ -165,7 +165,7 @@ protected:
     SHARED_DECL void InitThread(uint16_t nT = 1, uint16_t bufSz = 1024);
     SHARED_DECL virtual bool IsHasReuest(const char *buf, int len)const;
     virtual bool InitManager() = 0;
-    StringList &getMessageSubcribes(IMessage *msg);
+    const StringList &getMessageSubcribes(IMessage *msg);
     void PrcsSubcribes();
 protected:
     BussinessThread *GetPropertyThread()const;

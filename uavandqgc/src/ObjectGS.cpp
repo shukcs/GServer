@@ -847,12 +847,6 @@ void ObjectGS::CheckTimer(uint64_t ms)
         m_sock->Close();
 }
 
-void ObjectGS::WaitSend(google::protobuf::Message *msg)
-{
-    if (msg)
-        m_protosSend.push_back(msg);
-}
-
 void ObjectGS::SetCheck(const std::string &str)
 {
     m_check = str;

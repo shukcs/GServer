@@ -8,6 +8,7 @@
 namespace SOCKETS_NAMESPACE {
 #endif
 
+class ILink;
 class IObject;
 class IObjectManager;
 
@@ -18,12 +19,9 @@ public:
     SHARED_DECL MessageData(IObjectManager *sender, int16_t tpMs);
     SHARED_DECL virtual ~MessageData();
 private:
-    void AddRef();
-    bool Release();
     bool IsValid() const;
 private:
     friend class IMessage;
-    int         m_countRef;
     int         m_threadID;
     int16_t     m_tpMsg;
     int16_t     m_tpSender;
@@ -102,7 +100,6 @@ public:
     };
 public:
     SHARED_DECL IMessage(MessageData *data, const std::string &rcv, int tpRcv);
-    SHARED_DECL IMessage(const IMessage &oth);
     SHARED_DECL virtual ~IMessage();
 
     virtual void *GetContent()const = 0;
@@ -117,15 +114,27 @@ public:
     SHARED_DECL IObject *GetSender()const;
 
     SHARED_DECL bool IsValid()const;
-    SHARED_DECL int CountDataRef()const;
-    SHARED_DECL virtual IMessage *Clone(const std::string &idRcv, int tpRcv)const;
-    int IsClone()const;
     int CreateThreadID()const;
 protected:
     MessageData *m_data;
     int         m_tpRcv;
     std::string m_idRcv;
-    bool        m_clone;
+};
+
+class ObjectEvent : public IMessage
+{
+public:
+    enum EventType {
+        E_Release = User + 0x2000,
+    };
+public:
+    ObjectEvent(const std::string &rcv, int rcvTp, EventType e=E_Release);
+
+protected:
+    void *GetContent()const;
+    int GetContentLength()const;
+private:
+    EventType m_tp;
 };
 
 #ifdef SOCKETS_NAMESPACE

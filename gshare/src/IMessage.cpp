@@ -12,8 +12,8 @@ using namespace SOCKETS_NAMESPACE;
 //MessageData
 ////////////////////////////////////////////////////////////////////////////////////////
 MessageData::MessageData(IObject *sender, int16_t tpMs)
-    : m_countRef(1), m_threadID(Utility::ThreadID())
-    , m_tpMsg(tpMs), m_tpSender(IObject::UnKnow)
+: m_threadID(Utility::ThreadID()), m_tpMsg(tpMs)
+, m_tpSender(IObject::UnKnow)
 {
     if (sender)
     {
@@ -23,8 +23,8 @@ MessageData::MessageData(IObject *sender, int16_t tpMs)
 }
 
 MessageData::MessageData(IObjectManager *sender, int16_t tpMs)
-: m_countRef(1), m_threadID(Utility::ThreadID())
-, m_tpMsg(tpMs), m_tpSender(IObject::UnKnow)
+: m_threadID(Utility::ThreadID()), m_tpMsg(tpMs)
+, m_tpSender(IObject::UnKnow)
 {
     if (sender)
         m_tpSender = sender->GetObjectType();
@@ -34,39 +34,21 @@ MessageData::~MessageData()
 {
 }
 
-void MessageData::AddRef()
-{
-    m_countRef++;
-}
-
-bool MessageData::Release()
-{
-    return --m_countRef < 1;
-}
-
 bool MessageData::IsValid() const
 {
-    return m_tpSender > IObject::UnKnow && m_countRef > 0;
+    return m_tpSender > IObject::UnKnow;
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 //IMessage
 ////////////////////////////////////////////////////////////////////////////////////////
 IMessage::IMessage(MessageData *data, const std::string &rcv, int tpRc)
-: m_data(data), m_tpRcv(tpRc), m_idRcv(rcv), m_clone(false)
+: m_data(data), m_tpRcv(tpRc), m_idRcv(rcv)
 {
-}
-
-IMessage::IMessage(const IMessage &oth) : m_data(oth.m_data)
-, m_tpRcv(IObject::UnKnow), m_clone(true)
-{
-    if (m_data)
-        m_data->AddRef();
 }
 
 IMessage::~IMessage()
 {
-    if (m_data && m_data->Release())
-        delete m_data;
+    delete m_data;
 }
 
 int IMessage::GetReceiverType() const
@@ -114,22 +96,25 @@ bool IMessage::IsValid() const
     return m_data && m_data->IsValid() && m_tpRcv > IObject::UnKnow;
 }
 
-int IMessage::CountDataRef() const
+int IMessage::CreateThreadID() const
 {
-    return m_data ? m_data->m_countRef : 0;
+    return m_data ? m_data->m_threadID : -1;
 }
 
-IMessage *IMessage::Clone(const std::string &, int) const
+/////////////////////////////////////////////////////////////////////////////////
+//
+//////////////////////////////////////////////////////////////////////////////////
+ObjectEvent::ObjectEvent(const string &rcv, int rcvTp, EventType e)
+:IMessage(new MessageData((IObject*)NULL, (int)e), rcv, rcvTp)
+{
+}
+
+void *ObjectEvent::GetContent() const
 {
     return NULL;
 }
 
-int IMessage::IsClone() const
+int ObjectEvent::GetContentLength() const
 {
-    return m_clone;
-}
-
-int IMessage::CreateThreadID() const
-{
-    return m_data ? m_data->m_threadID : -1;
+    return 0;
 }

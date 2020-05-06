@@ -197,17 +197,6 @@ IMessage::MessageType Uav2GSMessage::getMessageType(const Message &msg)
 
     return ret;
 }
-
-IMessage *Uav2GSMessage::Clone(const string &idRcv, int tpRcv) const
-{
-    if (Uav2GSMessage *ret = new Uav2GSMessage(*this))
-    {
-        ret->m_idRcv = idRcv;
-        ret->m_tpRcv = tpRcv;
-        return ret;
-    }
-    return NULL;
-}
 /////////////////////////////////////////////////////////////////////////////
 //GS2UavMessage
 /////////////////////////////////////////////////////////////////////////////

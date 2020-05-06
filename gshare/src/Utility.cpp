@@ -383,7 +383,7 @@ bool Utility::IsBigEndian(void)
     return sFlag.cData == sFlag.nFlag;
 }
 
-void Utility::toBigendian(int value, void *buff)
+void Utility::toBigendian(int32_t value, void *buff)
 {
     if (!buff)
         return;
@@ -402,12 +402,12 @@ void Utility::toBigendian(int value, void *buff)
     }
 }
 
-int Utility::fromBigendian(const void *buff)
+int32_t Utility::fromBigendian(const void *buff)
 {
     if (!buff)
         return -1;
 
-    int value;
+    int32_t value;
     if (IsBigEndian())
     {
         const char *src = (char *)buff;

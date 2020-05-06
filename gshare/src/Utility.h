@@ -26,8 +26,8 @@ namespace Utility
     SHARED_DECL std::string rfc1738_encode(const std::string& src);
     SHARED_DECL std::string rfc1738_decode(const std::string& src);
     SHARED_DECL bool IsBigEndian(void);
-    SHARED_DECL void toBigendian(int s, void *buff);
-    SHARED_DECL int fromBigendian(const void *buff);
+    SHARED_DECL void toBigendian(int32_t s, void *buff);
+    SHARED_DECL int32_t fromBigendian(const void *buff);
     SHARED_DECL int64_t usTimeTick();
     SHARED_DECL int64_t msTimeTick();
     SHARED_DECL long secTimeCount();
