@@ -403,6 +403,9 @@ void ObjectGS::processGSInfo(const DBMessage &msg)
     string pswd = msg.GetRead("pswd").ToString();
     m_auth = msg.GetRead("auth").ToInt32();
     bool bLogin = pswd == m_pswd;
+    if (!bLogin)
+        Release();
+
     OnLogined(bLogin);
     if (auto ack = new AckGSIdentityAuthentication)
     {

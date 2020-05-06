@@ -457,16 +457,19 @@ void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)
 void ObjectUav::processBaseInfo(const DBMessage &rslt)
 {
     bool suc = rslt.GetRead(EXECRSLT).ToBool();
+    m_stInit = suc ? Initialed : InitialFail;
     if (suc)
         InitialUAV(rslt, *this);
-    m_stInit = suc ? Initialed : InitialFail;
+    else
+        Release();
+
+    OnLogined(suc);
     if (auto ack = new AckUavIdentityAuthentication)
     {
         ack->set_seqno(1);
         ack->set_result(suc ? 1 : 0);
         send(ack);
     }
-    OnLogined(true);
 }
 
 bool ObjectUav::_isBind(const std::string &gs) const

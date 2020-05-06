@@ -87,6 +87,7 @@ public:
     SHARED_DECL void Unsubcribe(const std::string &sender, int msg);
     SHARED_DECL bool SendMsg(IMessage *msg);
     SHARED_DECL virtual ILink *GetHandle();
+    SHARED_DECL virtual bool IsInitaled()const;
     virtual int GetObjectType()const = 0;
     virtual void InitObject() = 0;
 public:

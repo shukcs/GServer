@@ -335,6 +335,11 @@ ILink *IObject::GetHandle()
     return NULL;
 }
 
+bool IObject::IsInitaled() const
+{
+    return m_stInit == Initialed;
+}
+
 IObjectManager *IObject::GetManager() const
 {
     return GetManagerByType(GetObjectType());
