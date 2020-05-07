@@ -37,7 +37,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma warning(disable:4514)
 #endif
 
-#include <stdio.h>
 #include <string>
 
 #ifdef SOCKETS_NAMESPACE
@@ -50,7 +49,6 @@ namespace SOCKETS_NAMESPACE {
 	\ingroup util */
 namespace Base64
 {
-	void encode(FILE *, std::string& , bool add_crlf = true);
 	std::string encode(const unsigned char *, size_t);
     size_t decode(const std::string&, unsigned char *, size_t);
 

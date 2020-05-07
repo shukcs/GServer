@@ -228,7 +228,7 @@ void LoopQueBuff::remainLast(uint32_t remain)
 //LoopQueueAbs
 ////////////////////////////////////////////////////////////////////////////
 LoopQueueAbs::LoopQueueAbs() : m_dataRoot(new DataNode(0)), m_dataPush(NULL)
-, m_dataPops(NULL), m_popLast(NULL)
+, m_dataPops(NULL), m_popLast(NULL), m_count(0)
 {
 }
 

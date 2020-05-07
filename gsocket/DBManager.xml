@@ -142,7 +142,7 @@
 					<item name="mobileno"  ref="OwnerInfo" type="Read"/>
 					<item name="phoneno" ref="OwnerInfo" type="Read" />
 					<item name="weixin" ref="OwnerInfo" type="Read" />
-					<item name="gsuser" type="Condition" condition="=" />
+					<item name="LandInfo.gsuser" condition="=" type="Condition" />
 					<item name="id" type="Condition" />
 					<item name="LandInfo.ownerID" param="OwnerInfo.id" type="Condition" />
 				</SQL>

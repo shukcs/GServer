@@ -47,7 +47,7 @@ bool MessageData::IsValid() const
 ////////////////////////////////////////////////////////////////////////////////////////
 //IMessage
 ////////////////////////////////////////////////////////////////////////////////////////
-IMessage::IMessage(MessageData *data, const std::string &rcv, int tpRc)
+IMessage::IMessage(MessageData *data, const std::string &rcv, int32_t tpRc)
 : m_data(data), m_tpRcv(tpRc), m_idRcv(rcv)
 {
 }
@@ -57,7 +57,7 @@ IMessage::~IMessage()
     delete m_data;
 }
 
-int IMessage::GetReceiverType() const
+int32_t IMessage::GetReceiverType() const
 {
     return m_tpRcv;
 }
@@ -78,7 +78,7 @@ const std::string &IMessage::GetReceiverID() const
     return m_idRcv;
 }
 
-int IMessage::GetSenderType() const
+int32_t IMessage::GetSenderType() const
 {
     return  m_data->m_tpSender;
 }
@@ -101,7 +101,7 @@ int IMessage::CreateThreadID() const
 /////////////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////////////
-ObjectEvent::ObjectEvent(const string &rcv, int rcvTp, EventType e)
+ObjectEvent::ObjectEvent(const string &rcv, int32_t rcvTp, EventType e)
 :IMessage(new MessageData((IObject*)NULL, (int)e), rcv, rcvTp)
 {
 }

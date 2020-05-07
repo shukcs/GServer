@@ -47,44 +47,6 @@ static const uint8_t rstr[] = {
     41,   42,   43,   44,   45,   46,   47,   48,   49,   50,   51,   0xff, 0xff, 0xff, 0xff, 0xff
 };
 
-void Base64::encode(FILE *fil, std::string& output, bool add_crlf)
-{
-	size_t remain;
-	size_t i = 0;
-	size_t o = 0;
-	char input[4];
-
-	output = "";
-	remain = fread(input,1,3,fil);
-	while (remain > 0)
-	{
-		if (add_crlf && o && o % 76 == 0)
-			output += "\n";
-		switch (remain)
-		{
-		case 1:
-			output += bstr[ ((input[i] >> 2) & 0x3f) ];
-			output += bstr[ ((input[i] << 4) & 0x30) ];
-			output += "==";
-			break;
-		case 2:
-			output += bstr[ ((input[i] >> 2) & 0x3f) ];
-			output += bstr[ ((input[i] << 4) & 0x30) + ((input[i + 1] >> 4) & 0x0f) ];
-			output += bstr[ ((input[i + 1] << 2) & 0x3c) ];
-			output += "=";
-			break;
-		default:
-			output += bstr[ ((input[i] >> 2) & 0x3f) ];
-			output += bstr[ ((input[i] << 4) & 0x30) + ((input[i + 1] >> 4) & 0x0f) ];
-			output += bstr[ ((input[i + 1] << 2) & 0x3c) + ((input[i + 2] >> 6) & 0x03) ];
-			output += bstr[ (input[i + 2] & 0x3f) ];
-		}
-		o += 4;
-		//
-		remain = fread(input,1,3,fil);
-	}
-}
-
 std::string Base64::encode(const unsigned char *cnt, size_t l)
 {
     size_t len = encode_length(l);

@@ -42,7 +42,7 @@ public:
     void *CurrentBuff(DataNode *nd=NULL)const;
     void PopFinish();
 protected:
-    virtual int getElementSize()const = 0;
+    virtual int32_t getElementSize()const = 0;
     bool empty()const;
     DataNode *recyclePop();
     DataNode *nextNode(DataNode *nd)const;
@@ -51,7 +51,7 @@ protected:
     DataNode    *m_dataPush;
     DataNode    *m_dataPops;
     DataNode    *m_popLast;
-    int         m_count;
+    int32_t     m_count;
 };
 
 template <class EC>
@@ -125,7 +125,7 @@ protected:
         if (t && TypeInfo<EC>::isComplex)
             t->~EC();
     }
-    int getElementSize()const
+    int32_t getElementSize()const
     {
         return sizeof(EC);
     }

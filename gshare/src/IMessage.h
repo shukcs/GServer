@@ -100,24 +100,24 @@ public:
         User,
     };
 public:
-    SHARED_DECL IMessage(MessageData *data, const std::string &rcv, int tpRcv);
+    SHARED_DECL IMessage(MessageData *data, const std::string &rcv, int32_t tpRcv);
     SHARED_DECL virtual ~IMessage();
 
     virtual void *GetContent()const = 0;
     virtual int GetContentLength()const = 0;
 
-    SHARED_DECL int GetReceiverType()const;
+    SHARED_DECL int32_t GetReceiverType()const;
     SHARED_DECL void SetMessgeType(int tp);
     SHARED_DECL int GetMessgeType()const;
     SHARED_DECL const std::string &GetReceiverID()const;
-    SHARED_DECL int GetSenderType()const;
+    SHARED_DECL int32_t GetSenderType()const;
     SHARED_DECL const std::string &GetSenderID()const;
 
     SHARED_DECL bool IsValid()const;
     int CreateThreadID()const;
 protected:
     MessageData *m_data;
-    int         m_tpRcv;
+    int32_t     m_tpRcv;
     std::string m_idRcv;
 };
 
@@ -128,7 +128,7 @@ public:
         E_Release = User + 0x2000,
     };
 public:
-    ObjectEvent(const std::string &rcv, int rcvTp, EventType e=E_Release);
+    ObjectEvent(const std::string &rcv, int32_t rcvTp, EventType e=E_Release);
 
 protected:
     void *GetContent()const;
