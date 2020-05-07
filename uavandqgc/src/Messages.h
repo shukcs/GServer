@@ -52,9 +52,12 @@ class GS2UavMessage : public GSOrUavMessage
 public:
     GS2UavMessage(ObjectGS *sender, const std::string &idRcv);
     GS2UavMessage(IObjectManager *sender, const std::string &idRcv);
+
+    int GetAuth()const;
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);
 private:
+    int m_auth;
 };
 
 class Gs2GsMessage : public GSOrUavMessage

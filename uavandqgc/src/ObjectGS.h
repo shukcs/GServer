@@ -54,6 +54,7 @@ public:
     void SetCheck(const std::string &str);
     const std::string &GetPswd()const;
     void SetAuth(int);
+    int Authorize()const;
     bool GetAuth(GSAuthorizeType auth = Type_Common)const;
     void SetSeq(int seq);
 public:

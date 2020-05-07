@@ -3,6 +3,7 @@
 
 #include "IMessage.h"
 #include "Varient.h"
+#include <string>
 #include <map>
 
 #define INCREASEField "$increase"
@@ -32,7 +33,8 @@ public:
     DBMessage(ObjectGS *sender, MessageType ack=IMessage::Unknown, OBjectFlag rcv = DB_GS);
     DBMessage(ObjectUav *sender, MessageType ack=IMessage::Unknown, OBjectFlag rcv = DB_Uav);
     DBMessage(GSManager *sender, MessageType ack=IMessage::Unknown, OBjectFlag rcv = DB_GS);
-    DBMessage(UavManager *sender, MessageType ack= IMessage::Unknown, OBjectFlag rcv = DB_Uav);
+    DBMessage(UavManager *sender, MessageType ack=IMessage::Unknown, OBjectFlag rcv = DB_Uav);
+    DBMessage(const std::string &sender, int tpSend, MessageType ack=IMessage::Unknown, OBjectFlag rcv=DB_Uav);
     DBMessage(ObjectDB *senderv, int tpMsg, int tpRcv, const std::string &idRc);
     DBMessage(IObjectManager *mgr);
 

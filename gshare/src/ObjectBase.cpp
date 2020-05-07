@@ -312,16 +312,6 @@ int IObject::GetThreadBuffLength() const
     return 0;
 }
 
-void IObject::Subcribe(const std::string &sender, int msg)
-{
-    GetManager()->Subcribe(this, sender, msg);
-}
-
-void IObject::Unsubcribe(const std::string &sender, int msg)
-{
-    GetManager()->Unsubcribe(this, sender, msg);
-}
-
 bool IObject::SendMsg(IMessage *msg)
 {
     if (IObjectManager *mgr = GetManager())
@@ -607,6 +597,11 @@ BussinessThread *IObjectManager::GetThread(int id) const
     return NULL;
 }
 
+IObjectManager *IObjectManager::MangerOfType(int type)
+{
+    return ObjectManagers::Instance().GetManagerByType(type);
+}
+
 void IObjectManager::PrcsSubcribes()
 {
     while (!m_subcribeQue.IsEmpty())
@@ -658,11 +653,12 @@ const StringList &IObjectManager::getMessageSubcribes(IMessage *msg)
     return sEpty;
 }
 
-void IObjectManager::Subcribe(IObject *o, const std::string &sender, int tpMsg)
+void IObjectManager::Subcribe(const string &dsub, const std::string &sender, int tpMsg)
 {
-    if (!o || o->GetObjectID().empty() || sender.empty() || tpMsg < 0)
+    if (dsub.empty() || sender.empty() || tpMsg < 0)
         return;
-    if (SubcribeStruct *sub = new SubcribeStruct(o->GetObjectID(), sender, tpMsg, true))
+
+    if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, tpMsg, true))
     {
         m_mtx->Lock();
         m_subcribeQue.Push(sub);
@@ -670,12 +666,40 @@ void IObjectManager::Subcribe(IObject *o, const std::string &sender, int tpMsg)
     }
 }
 
-void IObjectManager::Unsubcribe(IObject *o, const std::string &sender, int tpMsg)
+void IObjectManager::Subcribe(const IMessage &msg, const string &dsub)
 {
-    if (!o || o->GetObjectID().empty() || sender.empty() || tpMsg < 0)
+    const std::string &sender = msg.GetSenderID();
+    if (dsub.empty() || sender.empty())
         return;
 
-    if (SubcribeStruct *sub = new SubcribeStruct(o->GetObjectID(), sender, tpMsg, false))
+    if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, msg.GetMessgeType(), true))
+    {
+        m_mtx->Lock();
+        m_subcribeQue.Push(sub);
+        m_mtx->Unlock();
+    }
+}
+
+void IObjectManager::Unsubcribe(const string &dsub, const std::string &sender, int tpMsg)
+{
+    if (dsub.empty() || sender.empty() || tpMsg < 0)
+        return;
+
+    if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, tpMsg, false))
+    {
+        m_mtx->Lock();
+        m_subcribeQue.Push(sub);
+        m_mtx->Unlock();
+    }
+}
+
+void IObjectManager::Unsubcribe(const IMessage &msg, const string &dsub)
+{
+    const std::string &sender = msg.GetSenderID();
+    if (dsub.empty() || sender.empty())
+        return;
+
+    if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, msg.GetMessgeType(), false))
     {
         m_mtx->Lock();
         m_subcribeQue.Push(sub);

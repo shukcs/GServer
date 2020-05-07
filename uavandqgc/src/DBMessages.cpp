@@ -67,6 +67,12 @@ DBMessage::DBMessage(IObjectManager *mgr)
 {
 }
 
+DBMessage::DBMessage(const string &sender, int tpSend, MessageType ack, OBjectFlag rcv)
+    : IMessage(new MessageData(sender, tpSend, DBExec), rcvId(rcv), IObject::DBMySql)
+    , m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
+{
+}
+
 void *DBMessage::GetContent() const
 {
     return NULL;

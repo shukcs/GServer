@@ -29,6 +29,7 @@ namespace SOCKETS_NAMESPACE {
 class DBMessage;
 class ObjectGS;
 class Variant;
+class GS2UavMessage;
 class ObjectUav : public ObjectAbsPB
 {
 public:
@@ -61,7 +62,7 @@ private:
     void _prcsRcvReqMissions(das::proto::RequestRouteMissions *msg);
     void _prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
 
-    void processBind(das::proto::RequestBindUav *msg, IObject *sender);
+    void processBind(das::proto::RequestBindUav *rbu, const GS2UavMessage &msg);
     void processControl2Uav(das::proto::PostControl2Uav *msg);
     void processPostOr(das::proto::PostOperationRoute *msg, const std::string &gs);
     void processBaseInfo(const DBMessage &msg);

@@ -72,10 +72,10 @@ bool UavManager::PrcsPublicMsg(const IMessage &msg)
     switch (msg.GetMessgeType())
     {
     case IMessage::BindUav:
-        _checkBindUav(*(RequestBindUav *)proto, (ObjectGS*)msg.GetSender());
+        checkBindUav(*(RequestBindUav *)proto, *(GS2UavMessage *)&msg);
         return true;
     case IMessage::QueryUav:
-        _checkUavInfo(*(RequestUavStatus *)proto, (ObjectGS*)msg.GetSender());
+        checkUavInfo(*(RequestUavStatus *)proto, *(GS2UavMessage*)&msg);
         return true;
     case IMessage::ControlUav:
         SendMsg(ObjectUav::AckControl2Uav(*(PostControl2Uav*)proto, -1));
@@ -187,20 +187,22 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
     return NULL;
 }
 
-void UavManager::_checkBindUav(const RequestBindUav &rbu, ObjectGS *gs)
+void UavManager::checkBindUav(const RequestBindUav &rbu, const GS2UavMessage &gs)
 {
-    bool bBind = gs->GetAuth(ObjectGS::Type_UavManager);
-    if (gs || bBind)
-        saveBind(rbu.uavid(), rbu.opid()==1&&!bBind, gs);
+    const string &id = gs.GetSenderID();
+    bool bForce = gs.GetAuth()&ObjectGS::Type_UavManager;
+    if (!id.empty())
+        saveBind(rbu.uavid(), rbu.opid()==1, gs.GetSenderID(), bForce);
 }
 
-void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
+void UavManager::checkUavInfo(const RequestUavStatus &uia, const GS2UavMessage &gs)
 {
     AckRequestUavStatus as;
     as.set_seqno(uia.seqno());
 
     StringList strLs;
-    bool bMgr = gs && gs->GetAuth(ObjectGS::Type_UavManager);
+    bool bMgr = gs.GetAuth()&ObjectGS::Type_UavManager;
+    const string &id = gs.GetSenderID();
     for (int i = 0; i < uia.uavid_size(); ++i)
     {
         const string &tmp = uia.uavid(i);
@@ -218,11 +220,11 @@ void UavManager::_checkUavInfo(const RequestUavStatus &uia, ObjectGS *gs)
         }
     }
     if (strLs.size() > 0)
-        queryUavInfo(gs, uia.seqno(), strLs, bMgr);
+        queryUavInfo(id, uia.seqno(), strLs, bMgr);
 
-    if (gs)
+    if (!id.empty())
     {
-        Uav2GSMessage *ms = new Uav2GSMessage(this, gs->GetObjectID());
+        Uav2GSMessage *ms = new Uav2GSMessage(this, id);
         ms->SetPBContent(as);
         SendMsg(ms);
     }
@@ -281,12 +283,12 @@ void UavManager::addUavId(int seq, const std::string &uav)
     }
 }
 
-void UavManager::queryUavInfo(ObjectGS *gs, int seq, const std::list<std::string> &uavs, bool bAdd)
+void UavManager::queryUavInfo(const string &gs, int seq, const std::list<std::string> &uavs, bool bAdd)
 {
-    if (!gs)
+    if (gs.empty())
         return;
 
-    if (DBMessage *msg = new DBMessage(gs, IMessage::UavsQueryRslt, DBMessage::DB_Uav))
+    if (DBMessage *msg = new DBMessage(gs,IObject::GroundStation, IMessage::UavsQueryRslt, DBMessage::DB_Uav))
     {
         msg->SetSeqNomb(seq);
         int idx = 0;
@@ -313,29 +315,28 @@ void UavManager::queryUavInfo(ObjectGS *gs, int seq, const std::list<std::string
     }
 }
 
-void UavManager::saveBind(const std::string &uav, bool bBind, ObjectGS *gs)
+void UavManager::saveBind(const std::string &uav, bool bBind, const string &gs, bool bForce)
 {
-    if (!gs)
+    if (gs.empty())
         return;
 
-    if (DBMessage *msg = new DBMessage(gs, IMessage::UavBindRslt, DBMessage::DB_Uav))
+    if (DBMessage *msg = new DBMessage(gs, IObject::GroundStation, IMessage::UavBindRslt, DBMessage::DB_Uav))
     {
-        bool force = gs->GetAuth(ObjectGS::Type_UavManager);
         msg->SetSql("updateBinded");
         msg->AddSql("queryUavInfo");
-        msg->SetWrite("binder", gs->GetObjectID(), 1);
+        msg->SetWrite("binder", gs, 1);
         msg->SetWrite("timeBind", Utility::msTimeTick(), 1);
-        msg->SetWrite("binded", force ? false : bBind, 1);
+        msg->SetWrite("binded", bForce ? false : bBind, 1);
         msg->SetCondition("id", uav, 1);
-        if (!force)
+        if (!bForce)
         {
             msg->SetCondition("UavInfo.binded", false, 1);
-            msg->SetCondition("UavInfo.binder", gs->GetObjectID(), 1);
+            msg->SetCondition("UavInfo.binder", gs, 1);
         }
 
         msg->SetCondition("id", uav, 2);
         SendMsg(msg);
-        Log(0, gs->GetObjectID(), 0, "%s %s", bBind ? "bind" : "unbind", uav.c_str());
+        Log(0, gs, 0, "%s %s", bBind ? "bind" : "unbind", uav.c_str());
     }
 }
 

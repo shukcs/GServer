@@ -200,7 +200,7 @@ IMessage *ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectU
 void ObjectUav::ProcessMessage(IMessage *msg)
 {
     if (msg->GetMessgeType() == IMessage::BindUav)
-        processBind((RequestBindUav*)msg->GetContent(), msg->GetSender());
+        processBind((RequestBindUav*)msg->GetContent(), *(GS2UavMessage*)msg);
     else if (msg->GetMessgeType() == IMessage::ControlUav)
         processControl2Uav((PostControl2Uav*)msg->GetContent());
     else if (msg->GetMessgeType() == IMessage::PostOR)
@@ -370,16 +370,15 @@ void ObjectUav::_prcsPosAuth(RequestPositionAuthentication *msg)
     }
 }
 
-void ObjectUav::processBind(RequestBindUav *msg, IObject *obj)
+void ObjectUav::processBind(RequestBindUav *msg, const GS2UavMessage &g2u)
 {
-    ObjectGS *sender = (ObjectGS*)obj;
     bool bBind = msg->opid() == 1;
     int res = -1;
-    string gs = sender ? sender->GetObjectID() : string();
+    string gs = g2u.GetSenderID();
     if (gs.length() == 0)
         return;
 
-    bool bForce = sender && sender->GetAuth(ObjectGS::Type_UavManager);
+    bool bForce = (g2u.GetAuth() & ObjectGS::Type_UavManager)!=0;
     if (Initialed > m_stInit)
         res = -2;
     else if (bForce)
@@ -393,12 +392,17 @@ void ObjectUav::processBind(RequestBindUav *msg, IObject *obj)
         m_lastBinder = gs;
         saveBind(bBind, gs, bForce);
     }
-    if (sender && bForce)
+
+    if (bForce)
     {
-        if (bBind)
-            sender->Subcribe(GetObjectID(), IMessage::PushUavSndInfo);
-        else
-            sender->Unsubcribe(GetObjectID(), IMessage::PushUavSndInfo);
+        IObjectManager *mgr = IObjectManager::MangerOfType(g2u.GetSenderType());
+        if(mgr)
+        {
+            if (bBind)
+                mgr->Subcribe(gs, m_id, IMessage::PushUavSndInfo);
+            else
+                mgr->Unsubcribe(gs, m_id, IMessage::PushUavSndInfo);
+        }
     }
 
     sendBindAck(msg->seqno(), res, bBind, gs);

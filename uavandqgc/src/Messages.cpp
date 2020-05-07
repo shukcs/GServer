@@ -201,13 +201,20 @@ IMessage::MessageType Uav2GSMessage::getMessageType(const Message &msg)
 //GS2UavMessage
 /////////////////////////////////////////////////////////////////////////////
 GS2UavMessage::GS2UavMessage(ObjectGS *sender, const std::string &idRcv)
-    :GSOrUavMessage(sender, idRcv, IObject::Plant)
+    :GSOrUavMessage(sender, idRcv, IObject::Plant), m_auth(0)
 {
+    if (sender)
+        m_auth = sender->Authorize();
 }
 
 GS2UavMessage::GS2UavMessage(IObjectManager *sender, const std::string &idRcv)
-    : GSOrUavMessage(sender, idRcv, IObject::Plant)
+    : GSOrUavMessage(sender, idRcv, IObject::Plant), m_auth(0)
 {
+}
+
+int GS2UavMessage::GetAuth() const
+{
+    return m_auth;
 }
 
 IMessage::MessageType GS2UavMessage::getMessageType(const google::protobuf::Message &msg)

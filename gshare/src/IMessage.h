@@ -17,6 +17,7 @@ class MessageData
 public:
     SHARED_DECL MessageData(IObject *sender, int16_t tpMs);
     SHARED_DECL MessageData(IObjectManager *sender, int16_t tpMs);
+    SHARED_DECL MessageData(const std::string &sender, int tpSnd, int16_t tpMs);
     SHARED_DECL virtual ~MessageData();
 private:
     bool IsValid() const;
@@ -111,7 +112,6 @@ public:
     SHARED_DECL const std::string &GetReceiverID()const;
     SHARED_DECL int GetSenderType()const;
     SHARED_DECL const std::string &GetSenderID()const;
-    SHARED_DECL IObject *GetSender()const;
 
     SHARED_DECL bool IsValid()const;
     int CreateThreadID()const;

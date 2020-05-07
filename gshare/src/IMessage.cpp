@@ -30,6 +30,12 @@ MessageData::MessageData(IObjectManager *sender, int16_t tpMs)
         m_tpSender = sender->GetObjectType();
 }
 
+MessageData::MessageData(const string &sender, int tpSnd, int16_t tpMs)
+    : m_threadID(Utility::ThreadID()), m_tpMsg(tpMs)
+    , m_tpSender(tpSnd), m_idSnd(sender)
+{
+}
+
 MessageData::~MessageData()
 {
 }
@@ -80,15 +86,6 @@ int IMessage::GetSenderType() const
 const std::string &IMessage::GetSenderID() const
 {
     return m_data->m_idSnd;
-}
-
-IObject *IMessage::GetSender() const
-{
-    if (!m_data || m_data->m_idSnd.empty())
-        return NULL;
-
-    IObjectManager *om = ObjectManagers::Instance().GetManagerByType(GetSenderType());
-    return om->GetObjectByID(m_data->m_idSnd);
 }
 
 bool IMessage::IsValid() const

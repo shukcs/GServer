@@ -30,6 +30,7 @@ class ProtoMsg;
 class ObjectGS;
 class ObjectUav;
 class DBMessage;
+class GS2UavMessage;
 
 class UavManager : public AbsPBManager
 {
@@ -49,17 +50,17 @@ protected:
     bool IsHasReuest(const char *buf, int len)const;
 private:
     void _getLastId();
+    IObject *_checkLogin(ISocket *s, const das::proto::RequestUavIdentityAuthentication &uia);
 
     void sendBindAck(const ObjectUav &uav, int ack, int res, bool bind, const std::string &gs);
-    IObject *_checkLogin(ISocket *s, const das::proto::RequestUavIdentityAuthentication &uia);
-    void _checkBindUav(const das::proto::RequestBindUav &rbu, ObjectGS *gs);
-    void _checkUavInfo(const das::proto::RequestUavStatus &uia, ObjectGS *gs);
+    void checkBindUav(const das::proto::RequestBindUav &rbu, const GS2UavMessage &gs);
+    void checkUavInfo(const das::proto::RequestUavStatus &uia, const GS2UavMessage &gs);
     void processAllocationUav(int seqno, const std::string &id);
     void processNotifyProgram(const das::proto::NotifyProgram &proto);
     void processMaxID(const DBMessage &msg);
     void addUavId(int seq, const std::string &uav);
-    void queryUavInfo(ObjectGS *gs, int seq, const std::list<std::string> &uavs, bool bAdd);
-    void saveBind(const std::string &uav, bool bBind, ObjectGS *gs);
+    void queryUavInfo(const std::string &gs, int seq, const std::list<std::string> &uavs, bool bAdd);
+    void saveBind(const std::string &uav, bool bBind, const std::string &gs, bool bForce);
 private:
     uint32_t    m_lastId;
     bool        m_bInit;

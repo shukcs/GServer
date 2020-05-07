@@ -83,11 +83,9 @@ public:
     SHARED_DECL const std::string &GetObjectID()const;
     SHARED_DECL void SetObjectID(const std::string &id);
     SHARED_DECL IObjectManager *GetManager()const;
-    SHARED_DECL void Subcribe(const std::string &sender, int msg);
-    SHARED_DECL void Unsubcribe(const std::string &sender, int msg);
     SHARED_DECL bool SendMsg(IMessage *msg);
     SHARED_DECL virtual ILink *GetHandle();
-    SHARED_DECL virtual bool IsInitaled()const;
+    SHARED_DECL bool IsInitaled()const;
     virtual int GetObjectType()const = 0;
     virtual void InitObject() = 0;
 public:
@@ -154,10 +152,14 @@ public:
     MessageQue *GetReleaseQue(int idThread)const;
     MessageQue *GetSendQue(int idThread)const;
     bool ParseRequest(ISocket *s, const char *buf, int len);
-    void Subcribe(IObject *o, const std::string &sender, int tpMsg);
-    void Unsubcribe(IObject *o, const std::string &sender, int tpMsg);
+    SHARED_DECL void Subcribe(const std::string &dsub, const std::string &sender, int tpMsg);
+    SHARED_DECL void Unsubcribe(const std::string &dsub, const std::string &sender, int tpMsg);
+    void Subcribe(const IMessage &msg, const std::string &dsub);
+    void Unsubcribe(const IMessage &msg, const std::string &dsub);
     bool Exist(IObject *obj)const;
-    BussinessThread *GetThread(int id=-1)const;
+    BussinessThread *GetThread(int id = -1)const;
+public:
+    SHARED_DECL static IObjectManager *MangerOfType(int type);
 protected:
     SHARED_DECL IObjectManager();
 

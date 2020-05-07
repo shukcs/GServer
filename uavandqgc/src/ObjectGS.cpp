@@ -58,6 +58,11 @@ void ObjectGS::SetAuth(int a)
     m_auth = a;
 }
 
+int ObjectGS::Authorize() const
+{
+    return m_auth;
+}
+
 bool ObjectGS::GetAuth(GSAuthorizeType auth) const
 {
     return (auth & m_auth) == auth;
