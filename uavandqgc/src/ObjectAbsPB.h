@@ -37,7 +37,7 @@ protected:
     void CheckTimer(uint64_t ms);
 protected:
     ProtoMsg                              *m_p;
-    std::list<google::protobuf::Message*> m_protosSend;
+    LoopQueue<google::protobuf::Message*> m_protosSend;
 };
 
 class AbsPBManager : public IObjectManager

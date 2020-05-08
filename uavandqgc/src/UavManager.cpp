@@ -170,7 +170,7 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
             ret->SetSimId(sim);
         }
 
-        ret->OnLogined(bLogin);
+        ret->OnLogined(bLogin, s);
         AckUavIdentityAuthentication ack;
         ack.set_seqno(uia.seqno());
         ack.set_result(bLogin ? 1 : 0);
@@ -190,7 +190,7 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
 void UavManager::checkBindUav(const RequestBindUav &rbu, const GS2UavMessage &gs)
 {
     const string &id = gs.GetSenderID();
-    bool bForce = gs.GetAuth()&ObjectGS::Type_UavManager;
+    bool bForce = 0!=(gs.GetAuth()&ObjectGS::Type_UavManager);
     if (!id.empty())
         saveBind(rbu.uavid(), rbu.opid()==1, gs.GetSenderID(), bForce);
 }
@@ -201,7 +201,7 @@ void UavManager::checkUavInfo(const RequestUavStatus &uia, const GS2UavMessage &
     as.set_seqno(uia.seqno());
 
     StringList strLs;
-    bool bMgr = gs.GetAuth()&ObjectGS::Type_UavManager;
+    bool bMgr = 0 != (gs.GetAuth()&ObjectGS::Type_UavManager);
     const string &id = gs.GetSenderID();
     for (int i = 0; i < uia.uavid_size(); ++i)
     {
@@ -317,7 +317,7 @@ void UavManager::queryUavInfo(const string &gs, int seq, const std::list<std::st
 
 void UavManager::saveBind(const std::string &uav, bool bBind, const string &gs, bool bForce)
 {
-    if (gs.empty())
+    if (gs.empty() || (bForce && bBind))
         return;
 
     if (DBMessage *msg = new DBMessage(gs, IObject::GroundStation, IMessage::UavBindRslt, DBMessage::DB_Uav))
@@ -326,7 +326,7 @@ void UavManager::saveBind(const std::string &uav, bool bBind, const string &gs, 
         msg->AddSql("queryUavInfo");
         msg->SetWrite("binder", gs, 1);
         msg->SetWrite("timeBind", Utility::msTimeTick(), 1);
-        msg->SetWrite("binded", bForce ? false : bBind, 1);
+        msg->SetWrite("binded", bBind, 1);
         msg->SetCondition("id", uav, 1);
         if (!bForce)
         {

@@ -145,14 +145,17 @@ void ILink::SetBuffSize(uint16_t sz)
         m_recv->ReSize(sz);
 }
 
-void ILink::OnLogined(bool suc)
+void ILink::OnLogined(bool suc, ISocket *s)
 {
     m_bLogined = suc;
     if (!suc && m_sock)
         m_sock->Close();
 
-    if (IObject *o = GetParObject())
-        o->GetManager()->Log(0, o->GetObjectID(), 0, "[%s:%d]%s", m_sock->GetHost().c_str(), m_sock->GetPort(), suc ? "logined" : "login fail");
+    IObject *o = GetParObject();
+    if (!s)
+        s = m_sock;
+    if (s && o)
+        o->GetManager()->Log(0, o->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), suc ? "logined" : "login fail");
 }
 
 void ILink::OnSockClose(ISocket *s)
@@ -388,6 +391,7 @@ bool IObjectManager::ProcessBussiness(BussinessThread *s)
     {
         InitManager();
         ret = ProcessLogins(s);
+        PrcsSubcribes();
         ProcessMessage();
     }
     return ret;

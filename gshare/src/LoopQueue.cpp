@@ -315,6 +315,11 @@ void LoopQueueAbs::PopFinish()
     }
 }
 
+void *LoopQueueAbs::LastBuff()const
+{
+    return m_dataPush ? m_dataPush->GetBuff() : NULL;
+}
+
 bool LoopQueueAbs::empty() const
 {
     return !m_dataRoot || m_dataPush == NULL || m_dataRoot->NextNode()==m_dataPush;

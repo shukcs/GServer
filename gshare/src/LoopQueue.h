@@ -41,6 +41,7 @@ public:
     void *PushOne(const void *data);
     void *CurrentBuff(DataNode *nd=NULL)const;
     void PopFinish();
+    void *LastBuff()const;
 protected:
     virtual int32_t getElementSize()const = 0;
     bool empty()const;
@@ -113,6 +114,10 @@ public:
     int ElementCount()const
     {
         return m_count;
+    }
+    const EC &Last()const
+    {
+        return *(EC *)LastBuff();
     }
 protected:
     static void defaultConstruction(EC *te, const EC &d)

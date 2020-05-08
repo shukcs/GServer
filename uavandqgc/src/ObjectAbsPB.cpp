@@ -85,7 +85,7 @@ void ObjectAbsPB::send(google::protobuf::Message *msg, bool bWait)
 void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
 {
     if(msg)
-        m_protosSend.push_back(msg);
+        m_protosSend.Push(msg);
 }
 
 int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int sz)
@@ -124,10 +124,9 @@ ILink *ObjectAbsPB::GetHandle()
 void ObjectAbsPB::CheckTimer(uint64_t ms)
 {
     ILink::CheckTimer(ms);
-    if (!m_protosSend.empty() && m_sock && m_sock->IsNoWriteData())
+    if (!m_protosSend.IsEmpty() && m_sock && m_sock->IsNoWriteData())
     {
-        Message *msg = m_protosSend.front();
-        m_protosSend.pop_front();
+        Message *msg = m_protosSend.Pop();
         send(msg);
     }
 }

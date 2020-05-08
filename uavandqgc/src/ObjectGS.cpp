@@ -613,7 +613,7 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
         }
     }
     
-    if (m_protosSend.size()>0 && m_protosSend.back()!=ack)
+    if (!m_protosSend.IsEmpty() && m_protosSend.Last()!=ack)
         send(ack, true);
 }
 
@@ -822,7 +822,7 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
             ++planParamsItr;
         }
     }
-    if (m_protosSend.size()>0 && ack!=m_protosSend.back())
+    if (!m_protosSend.IsEmpty() && ack!=m_protosSend.Last())
         send(ack, true);
 }
 
@@ -830,6 +830,12 @@ void ObjectGS::InitObject()
 {
     if (IObject::Uninitial == m_stInit)
     {
+        if (!m_check.empty())
+        {
+            m_stInit = IObject::Initialed;
+            return;
+        }
+
         DBMessage *msg = new DBMessage(this, IMessage::GSQueryRslt);
         if (!msg)
             return;
@@ -881,6 +887,16 @@ void ObjectGS::_prcsReqBind(das::proto::RequestBindUav *msg)
     {
         ms->AttachProto(msg);
         SendMsg(ms);
+    }
+    if (GetAuth(ObjectGS::Type_UavManager) && !msg->uavid().empty())
+    {
+        if (IObjectManager *mgr = GetManager())
+        {
+            if (msg->opid() == 1)
+                mgr->Subcribe(m_id, msg->uavid(), IMessage::PushUavSndInfo);
+            else
+                mgr->Unsubcribe(m_id, msg->uavid(), IMessage::PushUavSndInfo);
+        }
     }
 }
 

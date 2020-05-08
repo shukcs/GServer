@@ -35,7 +35,7 @@ public:
     SHARED_DECL virtual void SetSocket(ISocket *s);
 
     SHARED_DECL void SetBuffSize(uint16_t sz);
-    SHARED_DECL void OnLogined(bool suc);
+    SHARED_DECL void OnLogined(bool suc, ISocket *s=NULL);
     SHARED_DECL virtual void OnSockClose(ISocket *s);//这是可以重载的，可能有多个连接
     SHARED_DECL bool ChangeLogind(bool b);
     SHARED_DECL virtual void CheckTimer(uint64_t ms);
@@ -43,10 +43,10 @@ public:
     SHARED_DECL void ClearRecv(int n = -1);
     SHARED_DECL void Release();
     SHARED_DECL bool IsRealse();
+    SHARED_DECL ISocket *GetSocket()const;
 public:
     bool PrcsBussiness(uint64_t ms, BussinessThread &t);
     virtual int ProcessReceive(void *buf, int len) = 0;
-    ISocket *GetSocket()const;
     bool Receive(const void *buf, int len);
     bool IsChanged()const;
     int CopyData(void *data, int len)const;

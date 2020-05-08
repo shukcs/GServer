@@ -386,26 +386,17 @@ void ObjectUav::processBind(RequestBindUav *msg, const GS2UavMessage &g2u)
     else 
         res = (gs==m_lastBinder || m_bBind==false) ? 1 : -3;
 
-    if (res == 1 && (bBind != m_bBind || gs!=m_lastBinder))
+    if (res == 1 && (!bBind || !bForce))
     {
-        m_bBind = bBind&&!bForce;
         m_lastBinder = gs;
-        saveBind(bBind, gs, bForce);
-    }
-
-    if (bForce)
-    {
-        IObjectManager *mgr = IObjectManager::MangerOfType(g2u.GetSenderType());
-        if(mgr)
+        if (m_bBind!= bBind)
         {
-            if (bBind)
-                mgr->Subcribe(gs, m_id, IMessage::PushUavSndInfo);
-            else
-                mgr->Unsubcribe(gs, m_id, IMessage::PushUavSndInfo);
+            m_bBind = bBind;
+            saveBind(bBind, gs, bForce);
         }
     }
 
-    sendBindAck(msg->seqno(), res, bBind, gs);
+    sendBindAck(msg->seqno(), res, m_bBind, m_lastBinder);
 }
 
 void ObjectUav::processControl2Uav(PostControl2Uav *msg)
@@ -583,6 +574,9 @@ void ObjectUav::savePos()
 
 void ObjectUav::saveBind(bool bBind, const string &gs, bool bForce)
 {
+    if (bForce && bBind)
+        return;
+
     if (DBMessage *msg = new DBMessage(this))
     {
         msg->SetSql("updateBinded");

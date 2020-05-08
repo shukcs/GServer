@@ -106,15 +106,17 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
     string usr = Utility::Lower(rgi->userid());
     string pswd = rgi->password();
     ObjectGS *o = (ObjectGS*)GetObjectByID(usr);
-    if (o && !o->m_pswd.empty())
+    if (o && o->IsInitaled())
     {
         bool bLogin = !o->IsConnect() && o->m_pswd == pswd;
+        o->OnLogined(bLogin, s);
         AckGSIdentityAuthentication ack;
         ack.set_seqno(rgi->seqno());
-        ack.set_result(bLogin ?1 : 0);
+        ack.set_result(bLogin ? 1 : 0);
         ack.set_auth(0);
         s->ClearBuff();
         ObjectAbsPB::SendProtoBuffTo(s, ack);
+
         if (!bLogin)
             o = NULL;
     }
@@ -131,28 +133,30 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
 
 IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
 {
-    if(!msg || msg->userid().empty())
+    if(!s || !msg || msg->userid().empty())
         return NULL;
 
     string userId = Utility::Lower(msg->userid());
     ObjectGS *o = (ObjectGS *)GetObjectByID(userId);
-    if (o && o->IsConnect())
+    if (o && o->GetSocket())
     {
         AckNewGS ack;
         ack.set_seqno(msg->seqno());
         ack.set_result(0);
         s->ClearBuff();
         ObjectAbsPB::SendProtoBuffTo(s, ack);
+        return NULL;
     }
     if (!o)
-    {
         o = new ObjectGS(userId);
+
+    if (o)
+    {
         s->ClearBuff();
-        if (o)
-            o->SetCheck(GSOrUavMessage::GenCheckString());
-        return o;
+        o->SetCheck(GSOrUavMessage::GenCheckString());
+        o->_checkGS(userId, msg->seqno());
     }
-    return NULL;
+    return o;
 }
 
 void GSManager::LoadConfig()
