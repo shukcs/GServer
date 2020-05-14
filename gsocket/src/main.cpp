@@ -28,7 +28,8 @@ void OnBindFinish(ISocket *sock, bool binded)
         sprintf(buff, "bind %s:%d %s", sock->GetHost().c_str(), sock->GetPort(), binded ? "success" : "fail");
         GSocket::GetLog().Log(buff, "Listen", 0, errno);
     }
-    exit(0);
+    if (!binded)
+        exit(0);
 }
 
 int main(int argc, char *argv[])

@@ -271,7 +271,6 @@ ProcessData * ProcessManager::GetInitProcess()
     }
     if (auto d = new ProcessData)
     {
-        d->name;
         d->sock = -1;
         d->bufflen = 0;
         d->detected = false;
