@@ -43,7 +43,7 @@ void ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
 int ObjectAbsPB::ProcessReceive(void *buf, int len)
 {
     int pos = 0;
-    int l = len;
+    uint32_t l = len;
     while (m_p && l > 18 && m_p->Parse((char*)buf + pos, l))
     {
         pos += l;
@@ -144,8 +144,8 @@ AbsPBManager::~AbsPBManager()
 
 IObject *AbsPBManager::PrcsNotObjectReceive(ISocket *s, const char *buf, int len)
 {
-    int pos = 0;
-    int l = len;
+    uint32_t pos = 0;
+    uint32_t l = len;
     IObject *o = NULL;
     while (m_p->Parse(buf + pos, l))
     {
@@ -153,6 +153,7 @@ IObject *AbsPBManager::PrcsNotObjectReceive(ISocket *s, const char *buf, int len
         l = len - pos;
         o = PrcsProtoBuff(s);
     }
+
     return o;
 }
 

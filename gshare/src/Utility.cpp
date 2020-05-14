@@ -26,6 +26,7 @@
 #if !defined _WIN32 && !defined _WIN64
 #include <strings.h>
 #define strnicmp strncasecmp
+#define MAX_PATH 1024
 #endif
 
 union FlagEnddian
@@ -121,6 +122,17 @@ StringList Utility::SplitString(const string &str, const string &sp, bool bSkipE
         nPos = nTmp + nSizeSp;
     }
     return strLsRet;
+}
+
+void Utility::ReplacePart(std::string &str, char part, char rpc)
+{
+    int count = str.length();
+    char *ptr = &str.front();
+    for (int pos = 0; pos <= count; ++pos)
+    {
+        if (ptr[pos] == part)
+            ptr[pos] = rpc;
+    }
 }
 
 uint32_t Utility::Crc32(const char *src, int len)
@@ -383,7 +395,7 @@ bool Utility::IsBigEndian(void)
     return sFlag.cData == sFlag.nFlag;
 }
 
-void Utility::toBigendian(int32_t value, void *buff)
+void Utility::toBigendian(uint32_t value, void *buff)
 {
     if (!buff)
         return;
@@ -391,7 +403,7 @@ void Utility::toBigendian(int32_t value, void *buff)
     if (IsBigEndian())
     {
         char *abyte = (char *)buff;
-        for (size_t i = 0; i < sizeof(value); ++i)
+        for (uint32_t i = 0; i < sizeof(value); ++i)
         {
             abyte[sizeof(value) - i - 1] = ((char *)&value)[i];
         }
@@ -402,18 +414,18 @@ void Utility::toBigendian(int32_t value, void *buff)
     }
 }
 
-int32_t Utility::fromBigendian(const void *buff)
+uint32_t Utility::fromBigendian(const void *buff)
 {
     if (!buff)
         return -1;
 
-    int32_t value;
+    uint32_t value;
     if (IsBigEndian())
     {
         const char *src = (char *)buff;
         char *tmp = (char *)&value;
-        size_t sz = sizeof(value);
-        for (size_t i = 0; i < sz; ++i)
+        uint32_t sz = sizeof(value);
+        for (uint32_t i = 0; i < sz; ++i)
         {
             tmp[i] = src[sz - 1 - i];
         }
@@ -1033,38 +1045,6 @@ bool Utility::reverse(struct sockaddr *sa, socklen_t sa_len, string& hostname, s
 #endif // NO_GETADDRINFO
 }
 
-bool Utility::u2service(const string &name, int &service, int ai_flags)
-{
-#ifdef NO_GETADDRINFO
-	// %!
-	return false;
-#else
-	struct addrinfo hints;
-	service = 0;
-	memset(&hints, 0, sizeof(hints));
-	// AI_NUMERICHOST
-	// AI_CANONNAME
-	// AI_PASSIVE - server
-	// AI_ADDRCONFIG
-	// AI_V4MAPPED
-	// AI_ALL
-	// AI_NUMERICSERV
-	hints.ai_flags = ai_flags;
-	hints.ai_family = AF_UNSPEC;
-	hints.ai_socktype = 0;
-	hints.ai_protocol = 0;
-	struct addrinfo *res;
-	int n = getaddrinfo(NULL, name.c_str(), &hints, &res);
-	if (!n)
-	{
-		service = res -> ai_protocol;
-		freeaddrinfo(res);
-		return true;
-	}
-	return false;
-#endif // NO_GETADDRINFO
-}
-
 unsigned long Utility::ThreadID()
 {
 #ifdef _WIN32
@@ -1319,38 +1299,42 @@ int Utility::GzDecompress(const char *zdata, unsigned nz, char *data, unsigned n
     return d_stream.total_out;
 }
 
+string Utility::ModulePath()
+{
+    char strRet[MAX_PATH] = {0};
+#ifdef _WIN32
+    DWORD ret = ::GetModuleFileNameA(NULL, strRet, MAX_PATH - 1);
+#else
+    size_t ret = readlink("/proc/self/exe", strRet, MAX_PATH - 1);
+#endif
+    if (ret < 1)
+        string();
+
+    return strRet;
+}
+
 string Utility::ModuleDirectory()
 {
-    string strRet;
+    string strRet = ModulePath();
+    if (strRet.empty())
+        return strRet;
 #ifdef _WIN32
-    strRet.resize(MAX_PATH + 1);
-    if (strRet.size() < MAX_PATH + 1)
-        return string();
-
-    DWORD ret = ::GetModuleFileNameA(NULL, &strRet.front(), MAX_PATH);
-    if (ret)
-    {
-        int idx = strRet.find_last_of('\\');
-        if (idx < 1)
-            idx = strRet.find_last_of('/');
-
-        if (idx >= 0)
-            return strRet.substr(0, idx);
-    }
-#else
-    strRet.resize(1024);
-    if (strRet.size() < 1024)
-        return string();
-    size_t sz = readlink("/proc/self/exe", &strRet.at(0), 1023);
-    if (sz > 0)
-    {
-        int idx = strRet.find_last_of('/');
-
-        if (idx >= 0)
-            return strRet.substr(0, idx);
-    }
+    ReplacePart(strRet, '\\', '/');
 #endif
-    return string();
+    int idx = strRet.find_last_of('/');
+    return idx >= 0 ? strRet.substr(0, idx) : string();
+}
+
+string Utility::ModuleName()
+{
+    string strRet = ModulePath();
+    if (strRet.empty())
+        return strRet;
+#ifdef _WIN32
+    ReplacePart(strRet, '\\', '/');
+#endif
+    int idx = strRet.find_last_of('/');
+    return idx >= 0 ? strRet.substr(idx+1, strRet.length()-1) : string();
 }
 
 string Utility::CurrentDirectory()
@@ -1425,6 +1409,7 @@ void Utility::Dump(const std::string &file, int sig)
         FILE *file = popen(szLine, "r");
         if (NULL != fgets(szLine, 256, file))
             fprintf(fd, "%s\n", szLine);
+        pclose(file);
     }
     free(strings);
     signal(sig, SIG_DFL);

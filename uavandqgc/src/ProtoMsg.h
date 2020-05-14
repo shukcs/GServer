@@ -27,7 +27,7 @@ public:
     const std::string &GetMsgName()const;
     google::protobuf::Message *GetProtoMessage()const;
     google::protobuf::Message *DeatachProto(bool clear=true);
-    bool Parse(const char *buff, int &len);
+    bool Parse(const char *buff, uint32_t &len);
 protected:
     bool _parse(const std::string &name, const char *buff, int len);
     void _clear();

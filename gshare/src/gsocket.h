@@ -9,8 +9,7 @@ class LoopQueBuff;
 namespace SOCKETS_NAMESPACE {
 #endif
 
-class GSocketHandle;
-class IObject;
+class ILink;
 class SocketAddress;
 class ILog;
 
@@ -74,7 +73,7 @@ protected:
     friend class GSocketManager;
     ISocketManager  *m_parent;
     ISocketManager  *m_mgrPrcs;
-    ILink   *m_object;
+    ILink           *m_object;
     int             m_fd;
     bool            m_bListen;
     bool            m_bAccept;

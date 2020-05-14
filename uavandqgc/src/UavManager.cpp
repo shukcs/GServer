@@ -174,12 +174,10 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
         AckUavIdentityAuthentication ack;
         ack.set_seqno(uia.seqno());
         ack.set_result(bLogin ? 1 : 0);
-        s->ClearBuff();
         ObjectAbsPB::SendProtoBuffTo(s, ack);
     }
     else
     {
-        s->ClearBuff();
         ObjectUav *ret = new ObjectUav(uavid, sim);
         return ret;
     }

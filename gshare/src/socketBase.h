@@ -82,6 +82,7 @@ public:
     virtual void Exit() = 0;
     virtual void Release() = 0;
     virtual void SetBindedCB(ISocket *, FuncOnBinded) = 0;
+    virtual void CloseServer() = 0;
 
     virtual ~ISocketManager() {}
 };

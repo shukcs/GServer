@@ -54,6 +54,7 @@ maxSock:支持最大连接数
     void InitEpoll();
     void Release();
     void SetBindedCB(ISocket *s, FuncOnBinded cb);
+    void CloseServer();
 private:
     int _bind(ISocket *sock);
     int _connect(ISocket *sock);

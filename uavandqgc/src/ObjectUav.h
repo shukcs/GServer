@@ -43,8 +43,6 @@ public:
 public:
     static int UAVType();
     static void InitialUAV(const DBMessage &msg, ObjectUav &uav);
-    static bool transToMissionItems(const std::string &v, das::proto::UavRoute &rt);
-    static bool transFormMissionItems(Variant &v, const das::proto::OperationRoute &ms);
 protected:
     virtual int GetObjectType()const;
     virtual void ProcessMessage(IMessage *msg);
@@ -69,10 +67,12 @@ private:
 
     bool _isBind(const std::string &gs)const;
     bool _hasMission(const das::proto::RequestRouteMissions &req)const;
-    void _notifyUavUOR(const das::proto::OperationRoute &ort);
+    void _notifyUavUOR(const das::proto::OperationRoute &ort, bool bWait=false);
     int _checkPos(double lat, double lon, double alt);
     void _prcsGps(const das::proto::GpsInformation &gps, const std::string &mod);
 private:
+    bool _parsePostOr(const das::proto::OperationRoute &sor);
+    int32_t getCurRidgeByItem(int32_t curItem);
     void _missionFinish();
     void savePos();
     void saveBind(bool bBind, const std::string &gs, bool bForce=false);
@@ -88,10 +88,11 @@ private:
     int64_t                         m_tmLastPos;
     int64_t                         m_tmValidLast;
     das::proto::OperationRoute      *m_mission;
-    int                             m_nCurMsItem;
+    int                             m_nCurRidge;
     bool                            m_bSys;
     std::string                     m_lastBinder;
     std::string                     m_authCheck;
+    std::map<int32_t, int32_t>      m_ridges;   //µØÂ¢key:itemseq
 };
 
 #ifdef SOCKETS_NAMESPACE

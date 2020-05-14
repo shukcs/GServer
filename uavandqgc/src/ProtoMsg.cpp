@@ -47,17 +47,17 @@ google::protobuf::Message *ProtoMsg::DeatachProto(bool clear)
     return ret;
 }
 
-bool ProtoMsg::Parse(const char *buff, int &len)
+bool ProtoMsg::Parse(const char *buff, uint32_t &len)
 {
-    int pos = 0;
-    int n = 0;
+    uint32_t pos = 0;
+    uint32_t n = 0;
     _clear();
     while (pos+17<len && (n = Utility::FindString(buff+pos, len-pos, PROTOFLAG)) >= 0)
     {
         if (n >= 8)
         {
             pos += n-8;
-            int szMsg = Utility::fromBigendian(buff+pos);
+            uint32_t szMsg = Utility::fromBigendian(buff+pos);
             if (szMsg > Max_PBSize)
             {
                 pos += 18;
@@ -73,9 +73,9 @@ bool ProtoMsg::Parse(const char *buff, int &len)
                     continue;
                 }
 
-                size_t nameLen = Utility::fromBigendian(buff + pos + 4);
+                uint32_t nameLen = Utility::fromBigendian(buff + pos + 4);
                 m_name = string(buff + pos + 8, nameLen - 1);
-                int tmp = pos + 8 + nameLen;
+                uint32_t tmp = pos + 8 + nameLen;
                 pos += szMsg + 4;
                 if (_parse(m_name, buff+tmp, szMsg-8-nameLen))
                     break;

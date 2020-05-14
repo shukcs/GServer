@@ -35,7 +35,7 @@ bool GLibrary::Load(const string &nameLib, const string &path)
         last = *(--path.end());
 #if defined _WIN32 || defined _WIN64
     if (last != '\\' && last != '/')
-        file = path + "\\";
+        file = path + "/";
 
     file += nameLib + ".dll";
     m_module = LoadLibrary(file.c_str());

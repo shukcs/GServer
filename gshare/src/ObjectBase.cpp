@@ -47,15 +47,19 @@ public:
             m_links.erase(itr);
     }
 protected:
+    void ReleasePrcsdMsg()
+    {
+        while (!m_lsMsgRelease.IsEmpty())
+        {
+            delete m_lsMsgRelease.Pop();
+        }
+    }
     bool RunLoop()
     {
         if (!m_mgr)
             return false;
         bool ret = false;
-        while (!m_lsMsgRelease.IsEmpty())
-        {
-            delete m_lsMsgRelease.Pop();
-        }
+        ReleasePrcsdMsg();
         ProcessAddLinks();
         m_mgr->ProcessBussiness(this);
         uint64_t ms = Utility::msTimeTick();
@@ -468,7 +472,8 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
     {
         ISocket *s = m_loginSockets.Pop();
         int len = s->CopyData(t->m_buff, t->m_szBuff);
-
+        if (s)
+            s->ClearBuff();
         IObject *o = PrcsNotObjectReceive(s, t->m_buff, len);
         if (!o)
             continue;

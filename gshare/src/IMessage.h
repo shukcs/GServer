@@ -90,7 +90,6 @@ public:
         PlanQueryRslt,
         DeleteLandRslt,
         DeletePlanRslt,
-        QueryMissionLandRslt,
         QueryMissionsRslt,
 
         DBAckEnd,

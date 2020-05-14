@@ -47,7 +47,7 @@ using namespace SOCKETS_NAMESPACE;
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectUav::ObjectUav(const string &id, const string &sim) : ObjectAbsPB(id)
 , m_strSim(sim), m_bBind(false), m_lastORNotify(0), m_lat(200), m_lon(0), m_tmLastBind(0)
-, m_tmLastPos(0),m_tmValidLast(-1), m_mission(NULL), m_nCurMsItem(-1), m_bSys(false)
+, m_tmLastPos(0),m_tmValidLast(-1), m_mission(NULL), m_nCurRidge(-1), m_bSys(false)
 {
     SetBuffSize(1024 * 2);
 }
@@ -147,29 +147,6 @@ void ObjectUav::InitialUAV(const DBMessage &rslt, ObjectUav &uav)
     const Variant &authCheck = rslt.GetRead("authCheck");
     if (authCheck.GetType() == Variant::Type_string)
         uav.m_authCheck = authCheck.ToString();
-}
-
-bool ObjectUav::transToMissionItems(const std::string &v, UavRoute &rt)
-{
-    int sz = v.size();
-    if (sz > 0 && rt.ParseFromArray(v.c_str(), sz))  
-        return true;
-
-    return false;
-}
-
-bool ObjectUav::transFormMissionItems(Variant &v, const OperationRoute &ms)
-{
-    UavRoute rt;
-    for (int i = 0; i < ms.missions_size(); ++i)
-    {
-        rt.add_missions(ms.missions(i));
-    }
-    string buff;
-    buff.resize(rt.ByteSize());
-    rt.SerializeToArray(&buff.front(), buff.size());
-    v.SetBuff(buff.c_str(), buff.size());
-    return true;
 }
 
 IMessage *ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *obj)
@@ -279,7 +256,7 @@ void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg)
     {
         OperationInformation *oi = msg->mutable_oi(i);
         oi->set_uavid(GetObjectID());
-        if (oi->has_gps() || oi->has_status())
+        if (oi->has_gps() && oi->has_status())
             _prcsGps(oi->gps(), oi->status().operationmode());
     }
 
@@ -420,24 +397,13 @@ void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)
     if(!msg)
         return;
 
-    ReleasePointer(m_mission);
     const OperationRoute mission = msg->or_();
     int ret = 0;
-    if (_isBind(gs))
+    if (_isBind(gs) && _parsePostOr(mission))
     {
-        m_mission = new OperationRoute();
-        if (!m_mission)
-            return;
-
-        m_mission->CopyFrom(mission);
-        if (m_mission->createtime() == 0)
-            m_mission->set_createtime(Utility::msTimeTick());
-
-        m_bSys = false;
-        m_nCurMsItem = 0;
-        ret = 1;
         GetManager()->Log(0, mission.gsid(), 0, "Upload mission for %s!", GetObjectID().c_str());
-        _notifyUavUOR(*m_mission);
+        ret = 1;
+        _notifyUavUOR(*m_mission, true);
     }
     if (Uav2GSMessage *ms = new Uav2GSMessage(this, mission.gsid()))
     {
@@ -463,7 +429,7 @@ void ObjectUav::processBaseInfo(const DBMessage &rslt)
     {
         ack->set_seqno(1);
         ack->set_result(suc ? 1 : 0);
-        send(ack);
+        send(ack, true);
     }
 }
 
@@ -480,7 +446,7 @@ bool ObjectUav::_hasMission(const das::proto::RequestRouteMissions &req) const
     return (req.offset() + req.count()) <= (req.boundary() ? m_mission->boundarys_size() : m_mission->missions_size());
 }
 
-void ObjectUav::_notifyUavUOR(const OperationRoute &ort)
+void ObjectUav::_notifyUavUOR(const OperationRoute &ort, bool bWait)
 {
     static uint32_t sSeqno = 1;
     if (auto upload = new UploadOperationRoutes)
@@ -491,7 +457,7 @@ void ObjectUav::_notifyUavUOR(const OperationRoute &ort)
         upload->set_timestamp(ort.createtime());
         upload->set_countmission(ort.missions_size());
         upload->set_countboundary(ort.boundarys_size());
-        send(upload);
+        send(upload, bWait);
     }
     m_lastORNotify = (uint32_t)Utility::msTimeTick();
 }
@@ -511,8 +477,7 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
 {
     m_lat = gps.latitude() / 1e7;
     m_lon = gps.longitude() / 1e7;
-    int itemCount = m_mission ? m_mission->missions_size() : 0;
-    if (m_mission && m_bSys && (mod==MissionMod || mod==ReturnMod) && m_nCurMsItem>-1)
+    if (m_mission && m_bSys && mod==MissionMod && m_nCurRidge>-1)
     {
         GpsAdtionValue gpsAdt = { 0 };
         int count = (sizeof(GpsAdtionValue) + sizeof(float) - 1) / sizeof(float);
@@ -520,17 +485,58 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
         {
             gpsAdt.tmp[i] = gps.velocity(i);
         }
-        if (gpsAdt.curMs+1 == itemCount)
+        int cur = getCurRidgeByItem(gpsAdt.curMs);
+        if (cur > 0)
+            m_nCurRidge = cur;
+
+        if (m_mission->end() == cur)
             _missionFinish();
-        else
-            m_nCurMsItem = gpsAdt.curMs;
     }
+}
+
+bool ObjectUav::_parsePostOr(const OperationRoute &sor)
+{
+    int rdSz = sor.ridgebeg_size();
+    int beg = sor.beg();
+    if (rdSz-1 != sor.end()-beg)
+        return false;
+
+    _missionFinish();
+    ReleasePointer(m_mission);
+    m_mission = new OperationRoute();
+    if (!m_mission)
+        return false;
+
+    m_bSys = false;
+    m_nCurRidge = 0;
+    m_mission->CopyFrom(sor);
+    if (m_mission->createtime() == 0)
+        m_mission->set_createtime(Utility::msTimeTick());
+    m_ridges.clear();
+    for (int i = 0; i < sor.ridgebeg_size(); ++i)
+    {
+        m_ridges[sor.ridgebeg(i)] = beg + i;
+    }
+
+    return true;
+}
+
+int32_t ObjectUav::getCurRidgeByItem(int32_t curItem)
+{
+    if (m_ridges.size() < 0 || curItem >= m_mission->missions_size())
+        return -1;
+
+    for (const pair<int32_t, int32_t> &itr : m_ridges)
+    {
+        if (curItem <= itr.first)
+            return itr.second-1;
+    }
+    return m_mission->end();
 }
 
 void ObjectUav::_missionFinish()
 {
-    m_nCurMsItem = -1;
-    if (!m_mission)
+    if (!m_mission || m_nCurRidge<m_mission->beg())
         return;
 
     if (DBMessage *msg = new DBMessage(this, IMessage::Unknown, DBMessage::DB_GS))
@@ -538,6 +544,7 @@ void ObjectUav::_missionFinish()
         msg->SetSql("insertMissions");
         msg->SetWrite("userID", m_mission->gsid());
         msg->SetWrite("uavID", m_mission->uavid());
+        msg->SetWrite("createTime", m_mission->createtime());
         if (m_mission->has_rpid())
             msg->SetWrite("planID", m_mission->rpid());
         if (m_mission->has_landid())
@@ -549,11 +556,11 @@ void ObjectUav::_missionFinish()
             msg->SetWrite("begin", m_mission->beg());
         if (m_mission->has_end())
             msg->SetWrite("end", m_mission->end());
-        Variant v;
-        transFormMissionItems(v, *m_mission);
-        msg->SetWrite("route", v);
+        msg->SetWrite("curRidge", m_nCurRidge);
+        msg->SetWrite("vayage", m_mission->maxvoyage());
         SendMsg(msg);
     }
+    m_nCurRidge = -1;
 }
 
 void ObjectUav::savePos()

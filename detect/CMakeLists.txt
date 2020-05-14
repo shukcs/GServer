@@ -1,4 +1,4 @@
-﻿package(gsocket)
+﻿package(detect)
 SET(CMAKE_C_FLAGS "-fPIC -O0 -Wall -g")  #c  
 SET(CMAKE_CXX_FLAGS "-fPIC -O2 -Wall -g")  #c++
 
@@ -11,7 +11,7 @@ include_directories(
 
 set(SRC_LIST
 	src/main.cpp
-	src/protectsocket.cpp
+	src/processmanager.cpp
 )
 
 add_executable(${PACKAGE_NAME} ${SRC_LIST})

@@ -34,14 +34,8 @@ public:
     SHARED_DECL virtual ~ILink();
     SHARED_DECL virtual void SetSocket(ISocket *s);
 
-    SHARED_DECL void SetBuffSize(uint16_t sz);
-    SHARED_DECL void OnLogined(bool suc, ISocket *s=NULL);
-    SHARED_DECL virtual void OnSockClose(ISocket *s);//这是可以重载的，可能有多个连接
-    SHARED_DECL bool ChangeLogind(bool b);
+    SHARED_DECL virtual void OnSockClose(ISocket *s);//这是可以重载的
     SHARED_DECL virtual void CheckTimer(uint64_t ms);
-    SHARED_DECL int Send(const char *buf, int len);
-    SHARED_DECL void ClearRecv(int n = -1);
-    SHARED_DECL void Release();
     SHARED_DECL bool IsRealse();
     SHARED_DECL ISocket *GetSocket()const;
 public:
@@ -52,6 +46,13 @@ public:
     int CopyData(void *data, int len)const;
     virtual void OnConnected(bool bConnected) = 0;
     virtual IObject *GetParObject() = 0;
+protected:
+    SHARED_DECL void SetBuffSize(uint16_t sz);
+    SHARED_DECL bool ChangeLogind(bool b);
+    SHARED_DECL void OnLogined(bool suc, ISocket *s=NULL);
+    SHARED_DECL int Send(const char *buf, int len); //调用需在CheckTimer ProcessReceive中
+    SHARED_DECL void ClearRecv(int n = -1);
+    SHARED_DECL void Release();
 protected:
     int64_t                 m_tmLastInfo;
     ISocket                 *m_sock;
@@ -139,7 +140,6 @@ public:
     virtual int GetObjectType()const = 0;
     SHARED_DECL virtual void LoadConfig();
     SHARED_DECL bool AddObject(IObject *obj);
-    SHARED_DECL IObject *GetObjectByID(const std::string &id)const;
     SHARED_DECL bool SendMsg(IMessage *msg);
     SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
 
@@ -163,6 +163,7 @@ public:
 protected:
     SHARED_DECL IObjectManager();
 
+    SHARED_DECL IObject *GetObjectByID(const std::string &id)const;
     SHARED_DECL virtual bool PrcsPublicMsg(const IMessage &msg);
     SHARED_DECL virtual void ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb);
     SHARED_DECL void InitThread(uint16_t nT = 1, uint16_t bufSz = 1024);

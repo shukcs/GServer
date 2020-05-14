@@ -1,4 +1,4 @@
-package(gshare)
+﻿package(gshare)
 SET(CMAKE_C_FLAGS "-fPIC -O0 -Wall -g")  #c  
 SET(CMAKE_CXX_FLAGS "-fPIC -O2 -Wall -g -rdynamic")  #c++
 

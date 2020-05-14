@@ -13,7 +13,8 @@ namespace Utility
 {
     SHARED_DECL int FindString(const char *src, int len, const char *cnt, int cntLen = -1);
     SHARED_DECL int FindString(const char *src, int len, const std::string &str);
-    SHARED_DECL StringList SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty=true);
+    SHARED_DECL StringList SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty = true);
+    SHARED_DECL void ReplacePart(std::string &str, char part, char rpc);
     SHARED_DECL uint32_t Crc32(const char *src, int len);
     SHARED_DECL std::string base64(const char *str_in, int len);
     SHARED_DECL size_t base64d(const std::string &str_in, char *buf, size_t len);
@@ -26,8 +27,8 @@ namespace Utility
     SHARED_DECL std::string rfc1738_encode(const std::string& src);
     SHARED_DECL std::string rfc1738_decode(const std::string& src);
     SHARED_DECL bool IsBigEndian(void);
-    SHARED_DECL void toBigendian(int32_t s, void *buff);
-    SHARED_DECL int32_t fromBigendian(const void *buff);
+    SHARED_DECL void toBigendian(uint32_t s, void *buff);
+    SHARED_DECL uint32_t fromBigendian(const void *buff);
     SHARED_DECL int64_t usTimeTick();
     SHARED_DECL int64_t msTimeTick();
     SHARED_DECL long secTimeCount();
@@ -61,8 +62,6 @@ namespace Utility
 	/** Reverse lookup of address to hostname */
     SHARED_DECL bool reverse(struct sockaddr *sa, socklen_t sa_len, std::string&, int flags = 0);
     SHARED_DECL bool reverse(struct sockaddr *sa, socklen_t sa_len, std::string& hostname, std::string& service, int flags = 0);
-
-    SHARED_DECL bool u2service(const std::string& name, int& service, int ai_flags = 0);
 
 	/** Convert binary ip address to string: ipv4. */
     SHARED_DECL void l2ip(const ipaddr_t,std::string& );
@@ -110,13 +109,16 @@ namespace Utility
     SHARED_DECL unsigned long ThreadID();
     SHARED_DECL std::string ToString(double d);
     /** File system stuff */
+    SHARED_DECL std::string ModulePath();
     SHARED_DECL std::string ModuleDirectory();
+    SHARED_DECL std::string ModuleName();
     SHARED_DECL std::string CurrentDirectory();
     SHARED_DECL bool ChangeDirectory(const std::string &to_dir);
 
 	/** wait a specified number of ms */
     SHARED_DECL void Sleep(int ms);
     SHARED_DECL void Dump(const std::string &file, int sig);
+
 }
 
 #endif // _SOCKETS_Utility_H

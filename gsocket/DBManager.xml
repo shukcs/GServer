@@ -53,10 +53,13 @@
 					<field name="uavID" type="char(16)"/>
 					<field name="landId" type="BIGINT" constraint="DEFAULT 0"/>
 					<field name="planID" type="BIGINT" constraint="DEFAULT 0"/>
+					<field name="createTime" type="BIGINT"/>
 					<field name="finishTime" type="BIGINT"/>
 					<field name="begin" type="Int" />
 					<field name="end" type="Int" />
-					<field name="route" type="VARBINARY(4200)" />
+					<field name="acreage" type="float" />
+					<field name="continiuLat" type="Int" />
+					<field name="continiuLon" type="Int" />
 				</table>
 			</Tables>
 			<SQLs>
@@ -214,22 +217,21 @@
 					<item name="finishTime" ref="MissionInfo" type="Write" />
 					<item name="begin" ref="MissionInfo" type="Write" />
 					<item name="end" ref="MissionInfo" type="Write" />
-					<item name="route" ref="MissionInfo" type="Write" />
-				</SQL>
-				<SQL name="queryMissionLands" table="MissionInfo" type="Select" group="planID" >
-					<item name="landId" ref="MissionInfo" type="Read" />
-					<item name="planID" ref="MissionInfo" type="Read" />
-					<item name="uavID"  type="Condition" />
-					<item name="userID"  type="Condition" />
-					<item name="finishTime" ref="MissionInfo" type="Condition" condition=">" />
-					<item name="finishTime" ref="MissionInfo" type="Condition" condition="<" />
+					<item name="curRidge" ref="MissionInfo" type="Write" />
+					<item name="vayage" ref="MissionInfo" type="Write" />
 				</SQL>
 				<SQL name="queryMission" table="MissionInfo" type="Select" >
 					<item name="landId" ref="MissionInfo" type="Read" />
 					<item name="planID" ref="MissionInfo" type="Read" />
 					<item name="uavID" ref="MissionInfo" type="Read" />
-					<item name="route" ref="MissionInfo" type="Read" />
+					<item name="begin" ref="MissionInfo" type="Read" />
+					<item name="end" ref="MissionInfo" type="Read" />
+					<item name="curRidge" ref="MissionInfo" type="Read" />
+					<item name="createTime" ref="MissionInfo" type="Read" />
 					<item name="finishTime" ref="MissionInfo" type="Read" />
+					<item name="vayage" ref="MissionInfo" type="Read" />
+					<item name="userID" ref="MissionInfo" type="Read" />
+					<item name="userID" type="Condition" />
 					<item name="uavID" type="Condition" />
 					<item name="landId" type="Condition" />
 					<item name="planID" type="Condition" />

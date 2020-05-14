@@ -81,7 +81,6 @@ protected:
     void processFriends(const DBMessage &msg);
     void processQueryLands(const DBMessage &msg);
     void processGSInsert(const DBMessage &msg);
-    void processMissionLand(const DBMessage &msg);
     void processMissions(const DBMessage &msg);
     void InitObject();
     void CheckTimer(uint64_t ms);

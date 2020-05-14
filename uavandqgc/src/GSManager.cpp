@@ -114,7 +114,6 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
         ack.set_seqno(rgi->seqno());
         ack.set_result(bLogin ? 1 : 0);
         ack.set_auth(0);
-        s->ClearBuff();
         ObjectAbsPB::SendProtoBuffTo(s, ack);
 
         if (!bLogin)
@@ -123,7 +122,6 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
     else if(o==NULL)
     {
         o = new ObjectGS(usr);
-        s->ClearBuff();
         o->SetSeq(rgi->seqno());
         o->SetPswd(pswd);
     }
@@ -143,7 +141,6 @@ IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
         AckNewGS ack;
         ack.set_seqno(msg->seqno());
         ack.set_result(0);
-        s->ClearBuff();
         ObjectAbsPB::SendProtoBuffTo(s, ack);
         return NULL;
     }
@@ -152,7 +149,6 @@ IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
 
     if (o)
     {
-        s->ClearBuff();
         o->SetCheck(GSOrUavMessage::GenCheckString());
         o->_checkGS(userId, msg->seqno());
     }

@@ -17,35 +17,35 @@ class Ipv4Address : public SocketAddress
 public:
 	/** Create empty Ipv4 address structure.
 		\param port Port number */
-	Ipv4Address(port_t port = 0);
+    SHARED_DECL Ipv4Address(port_t port = 0);
 	/** Create Ipv4 address structure.
 		\param a Socket address in network byte order (as returned by Utility::u2ip)
 		\param port Port number in host byte order */
-	Ipv4Address(ipaddr_t a,port_t port);
+    SHARED_DECL Ipv4Address(ipaddr_t a,port_t port);
 	/** Create Ipv4 address structure.
 		\param a Socket address in network byte order
 		\param port Port number in host byte order */
-	Ipv4Address(struct in_addr& a,port_t port);
+    SHARED_DECL Ipv4Address(struct in_addr& a,port_t port);
 	/** Create Ipv4 address structure.
 		\param host Hostname to be resolved
 		\param port Port number in host byte order */
-	Ipv4Address(const std::string& host,port_t port);
-	Ipv4Address(struct sockaddr_in&);
-	~Ipv4Address();
+    SHARED_DECL Ipv4Address(const std::string& host,port_t port);
+    SHARED_DECL Ipv4Address(struct sockaddr_in&);
+    SHARED_DECL ~Ipv4Address();
 
 	// SocketAddress implementation
 
-	operator struct sockaddr *();
-	operator socklen_t();
-	bool operator==(SocketAddress&);
+    SHARED_DECL operator struct sockaddr *();
+    SHARED_DECL operator socklen_t();
+    SHARED_DECL bool operator==(SocketAddress&);
 
-	void SetPort(port_t port);
-	port_t GetPort();
+    SHARED_DECL void SetPort(port_t port);
+    SHARED_DECL port_t GetPort();
 
-	void SetAddress(struct sockaddr *sa);
+    SHARED_DECL void SetAddress(struct sockaddr *sa);
 	int GetFamily();
 
-	bool IsValid();
+    SHARED_DECL bool IsValid();
 
 	/** Convert address struct to text. */
 	std::string Convert(bool include_port = false);

@@ -350,6 +350,29 @@ void GSocketManager::SetBindedCB(ISocket *s, FuncOnBinded cb)
         m_bindedCBs[s] = cb;
 }
 
+void GSocketManager::CloseServer()
+{
+    for (const pair<int, ISocket*> &itr : m_sockets)
+    {
+        int h = itr.first;
+        closesocket(h);
+#if defined _WIN32 || defined _WIN64
+        if (FD_ISSET(h, &m_ep_fd))
+            FD_CLR(h, &m_ep_fd);
+        if (h >= (int)m_maxsock)
+            _checkMaxSock();
+#else
+        epoll_ctl(m_ep_fd, EPOLL_CTL_DEL, h, NULL);
+#endif
+    }
+    
+    m_sockets.clear();
+    for (GSocketManager* itr : m_othManagers)
+    {
+        itr->CloseServer();
+    }
+}
+
 bool GSocketManager::IsRun() const
 {
     return s_bRun;
