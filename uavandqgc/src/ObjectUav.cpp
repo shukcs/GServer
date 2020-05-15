@@ -95,7 +95,7 @@ void ObjectUav::_respondLogin(int seq, int res)
         {
             ack->set_seqno(seq);
             ack->set_result(res);
-            send(ack);
+            WaitSend(ack);
         }
         OnLogined(true);
     }
@@ -270,7 +270,7 @@ void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg)
     {
         ack->set_seqno(msg->seqno());
         ack->set_result(1);
-        send(ack);
+        WaitSend(ack);
     }
 }
 
@@ -311,7 +311,7 @@ void ObjectUav::_prcsRcvReqMissions(RequestRouteMissions *msg)
         }
     }
     m_bSys = true;
-    send(ack);
+    WaitSend(ack);
     if (!m_mission || !_isBind(m_lastBinder))
         return;
 
@@ -343,7 +343,7 @@ void ObjectUav::_prcsPosAuth(RequestPositionAuthentication *msg)
         ack->set_result(n);
         GetManager()->Log(0, GetObjectID(), 0, "Arm!");
         ack->set_devid(GetObjectID());
-        send(ack);
+        WaitSend(ack);
     }
 }
 
@@ -385,7 +385,7 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
     if (m_lastBinder == msg->userid() && m_bBind)
     {
         auto ms = new PostControl2Uav(*msg);
-        send(ms, true);
+        WaitSend(ms);
         res = 1;
     }
     
@@ -403,7 +403,7 @@ void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)
     {
         GetManager()->Log(0, mission.gsid(), 0, "Upload mission for %s!", GetObjectID().c_str());
         ret = 1;
-        _notifyUavUOR(*m_mission, true);
+        _notifyUavUOR(*m_mission);
     }
     if (Uav2GSMessage *ms = new Uav2GSMessage(this, mission.gsid()))
     {
@@ -429,7 +429,7 @@ void ObjectUav::processBaseInfo(const DBMessage &rslt)
     {
         ack->set_seqno(1);
         ack->set_result(suc ? 1 : 0);
-        send(ack, true);
+        WaitSend(ack);
     }
 }
 
@@ -446,7 +446,7 @@ bool ObjectUav::_hasMission(const das::proto::RequestRouteMissions &req) const
     return (req.offset() + req.count()) <= (req.boundary() ? m_mission->boundarys_size() : m_mission->missions_size());
 }
 
-void ObjectUav::_notifyUavUOR(const OperationRoute &ort, bool bWait)
+void ObjectUav::_notifyUavUOR(const OperationRoute &ort)
 {
     static uint32_t sSeqno = 1;
     if (auto upload = new UploadOperationRoutes)
@@ -457,7 +457,7 @@ void ObjectUav::_notifyUavUOR(const OperationRoute &ort, bool bWait)
         upload->set_timestamp(ort.createtime());
         upload->set_countmission(ort.missions_size());
         upload->set_countboundary(ort.boundarys_size());
-        send(upload, bWait);
+        WaitSend(upload);
     }
     m_lastORNotify = (uint32_t)Utility::msTimeTick();
 }

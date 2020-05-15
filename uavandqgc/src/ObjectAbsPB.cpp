@@ -7,6 +7,7 @@
 #include "VGMysql.h"
 #include "DBExecItem.h"
 #include "DBMessages.h"
+#include "Lock.h"
 
 using namespace das::proto;
 using namespace google::protobuf;
@@ -66,24 +67,17 @@ void ObjectAbsPB::OnConnected(bool bConnected)
     m_sock = NULL;
 }
 
-void ObjectAbsPB::send(google::protobuf::Message *msg, bool bWait)
+void ObjectAbsPB::send(google::protobuf::Message *msg)
 {
-    if (!bWait)
-    {
-        char *buf = GetThreadBuff();
-        int sendSz = serialize(*msg, buf, GetThreadBuffLength());
-        if (sendSz == Send(buf, sendSz))
-            delete msg;
-        else
-            bWait = true;
-    }
-
-    if (bWait)
-        WaitSend(msg);
+    char *buf = GetThreadBuff();
+    int sendSz = serialize(*msg, buf, GetThreadBuffLength());
+    if (sendSz == Send(buf, sendSz))
+        delete msg;
 }
 
 void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
 {
+    Lock l(m_mtx);
     if(msg)
         m_protosSend.Push(msg);
 }
@@ -124,7 +118,7 @@ ILink *ObjectAbsPB::GetLink()
 void ObjectAbsPB::CheckTimer(uint64_t ms)
 {
     ILink::CheckTimer(ms);
-    if (!m_protosSend.IsEmpty() && m_sock && m_sock->IsNoWriteData())
+    if (!m_protosSend.IsEmpty() && CanSend())
     {
         Message *msg = m_protosSend.Pop();
         send(msg);

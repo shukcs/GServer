@@ -28,7 +28,7 @@ public:
 protected:
     int ProcessReceive(void *buf, int len);
     void OnConnected(bool bConnected);
-    void send(google::protobuf::Message *msg, bool bWait=false);
+    void send(google::protobuf::Message *msg);
     void WaitSend(google::protobuf::Message *msg);
     virtual void PrcsProtoBuff() = 0;
     static int serialize(const google::protobuf::Message &ms, char*buf, int sz);

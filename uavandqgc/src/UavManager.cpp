@@ -167,9 +167,7 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
         if (bLogin)
             ret->SetSimId(sim);
 
-        if (!ret->IsConnect())
-            ret->OnLogined(bLogin, s);
-
+        ret->OnLogined(bLogin, s);
         AckUavIdentityAuthentication ack;
         ack.set_seqno(uia.seqno());
         ack.set_result(bLogin ? 1 : 0);

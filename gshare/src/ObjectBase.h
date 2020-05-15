@@ -47,18 +47,23 @@ public:
     virtual void OnConnected(bool bConnected) = 0;
     virtual IObject *GetParObject() = 0;
     void SetMutex(IMutex *m);
+    void SetThread(BussinessThread *t);
 protected:
     SHARED_DECL void SetBuffSize(uint16_t sz);
     SHARED_DECL bool ChangeLogind(bool b);
-    SHARED_DECL void OnLogined(bool suc, ISocket *s=NULL);
-    SHARED_DECL int Send(const char *buf, int len); //调用需在CheckTimer ProcessReceive中
+    SHARED_DECL void OnLogined(bool suc, ISocket *s = NULL);
+    SHARED_DECL bool CanSend()const;
+    SHARED_DECL int Send(const char *buf, int len); //调用需在CheckTimer中
     SHARED_DECL void ClearRecv(int n = -1);
     SHARED_DECL void Release();
+    SHARED_DECL char *GetThreadBuff()const;
+    SHARED_DECL int GetThreadBuffLength()const;
 protected:
     int64_t                 m_tmLastInfo;
     ISocket                 *m_sock;
     LoopQueBuff             *m_recv;
     IMutex                  *m_mtx;
+    BussinessThread         *m_thread;
     bool                    m_bLogined;
     bool                    m_bChanged;
     bool                    m_bRelease;
@@ -107,8 +112,6 @@ public:
     }
 protected:
     void PushReleaseMsg(IMessage *);
-    SHARED_DECL char *GetThreadBuff()const;
-    SHARED_DECL int GetThreadBuffLength()const;
 protected:
 /*******************************************************************************************
 这是个连接实体抽象类

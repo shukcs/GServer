@@ -67,7 +67,7 @@ private:
 
     bool _isBind(const std::string &gs)const;
     bool _hasMission(const das::proto::RequestRouteMissions &req)const;
-    void _notifyUavUOR(const das::proto::OperationRoute &ort, bool bWait=false);
+    void _notifyUavUOR(const das::proto::OperationRoute &ort);
     int _checkPos(double lat, double lon, double alt);
     void _prcsGps(const das::proto::GpsInformation &gps, const std::string &mod);
 private:

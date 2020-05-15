@@ -94,7 +94,7 @@ void ObjectGS::_prcsLogin(RequestGSIdentityAuthentication *msg)
             ack->set_seqno(msg->seqno());
             ack->set_result(bSuc ? 1 : -1);
             ack->set_auth(m_auth);
-            send(ack);
+            WaitSend(ack);
         }
     }
 }
@@ -104,7 +104,7 @@ void ObjectGS::_prcsHeartBeat(das::proto::PostHeartBeat *msg)
     if (auto ahb = new AckHeartBeat)
     {
         ahb->set_seqno(msg->seqno());
-        send(ahb);
+        WaitSend(ahb);
     }
 }
 
@@ -136,7 +136,7 @@ void ObjectGS::_prcsProgram(PostProgram *msg)
     {
         ack->set_seqno(msg->seqno());
         ack->set_result(res);
-        send(ack);
+        WaitSend(ack);
     }
 }
 
@@ -269,7 +269,7 @@ void ObjectGS::process2GsMsg(const Message *msg)
     if (Message *ms = msg->New())
     {
         ms->CopyFrom(*msg);
-        send(ms, true);
+        WaitSend(ms);
     }
 }
 
@@ -319,7 +319,7 @@ void ObjectGS::processBind(const DBMessage &msg)
                 proto->set_allocated_status(s);
         }
     }
-    send(proto, true);
+    WaitSend(proto);
 }
 
 void ObjectGS::processUavsInfo(const DBMessage &msg)
@@ -401,7 +401,7 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
             ++simItr;
         }
     }
-    send(ack, true);
+    WaitSend(ack);
 }
 
 void ObjectGS::processGSInfo(const DBMessage &msg)
@@ -419,7 +419,7 @@ void ObjectGS::processGSInfo(const DBMessage &msg)
         ack->set_seqno(m_seq);
         ack->set_result(bLogin ? 1 : -1);
         ack->set_auth(m_auth);
-        send(ack, true);
+        WaitSend(ack);
     }
     m_pswd = pswd;
     if (Initialed == m_stInit)
@@ -452,7 +452,7 @@ void ObjectGS::processCheckGS(const DBMessage &msg)
             ack->set_check(m_check);
         }
         ack->set_result(bExist ? 0 : 1);
-        send(ack, true);
+        WaitSend(ack);
         if (bExist)
             Release();
     }
@@ -469,7 +469,7 @@ void ObjectGS::processPostLandRslt(const DBMessage &msg)
         appd->set_psiid(Utility::bigint2string(nLand));
         appd->set_pcid(Utility::bigint2string(nCon));
         appd->set_pdid(Utility::bigint2string(nLand));
-        send(appd, true);
+        WaitSend(appd);
     }
     if (nLand > 0)
         GetManager()->Log(0, GetObjectID(), 0, "Upload land %d!", nLand);
@@ -535,7 +535,7 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
     {
         if (ack->ByteSize() > 3072)
         {
-            send(ack, true);
+            WaitSend(ack);
             ack = new AckRequestParcelDescriptions;
             if (!ack)
                 break;
@@ -612,7 +612,7 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
     }
     
     if (!m_protosSend.IsEmpty() && m_protosSend.Last()!=ack)
-        send(ack, true);
+        WaitSend(ack);
 }
 
 void ObjectGS::processGSInsert(const DBMessage &msg)
@@ -622,7 +622,7 @@ void ObjectGS::processGSInsert(const DBMessage &msg)
     {
         ack->set_seqno(msg.GetSeqNomb());
         ack->set_result(bSuc ? 1 : -1);
-        send(ack, true);
+        WaitSend(ack);
     }
     m_check.clear();
     if (!bSuc)
@@ -664,7 +664,7 @@ void ObjectGS::processMissions(const DBMessage &msg)
         }
         ++landsItr;
     }
-    send(sd, true);
+    WaitSend(sd);
 }
 
 void ObjectGS::processMissionsAcreage(const DBMessage &msg)
@@ -688,7 +688,7 @@ void ObjectGS::processPostPlanRslt(const DBMessage &msg)
         ack->set_result(vRslt.ToBool() ? 1 : 0);
         if (vRslt.ToBool())
             ack->set_odid(Utility::bigint2string(id));
-        send(ack, true);
+        WaitSend(ack);
     }
 
     GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %ld!", id);
@@ -754,7 +754,7 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
     {
         if (ack->ByteSize() >= 4096)
         {
-            send(ack, true);
+            WaitSend(ack);
             ack = new AckRequestOperationDescriptions;
             if (!ack)
                 break;
@@ -812,7 +812,7 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
         }
     }
     if (!m_protosSend.IsEmpty() && ack!=m_protosSend.Last())
-        send(ack, true);
+        WaitSend(ack);
 }
 
 void ObjectGS::InitObject()
@@ -911,7 +911,7 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
         { 
             appd->set_seqno(msg->seqno());
             appd->set_result(-1); //µØ¿éÌ«¶àÁË
-            send(appd);
+            WaitSend(appd);
         }
     }
 
@@ -1069,7 +1069,7 @@ void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
     {
         ackDD->set_seqno(msg->seqno());
         ackDD->set_result(1);
-        send(ackDD);
+        WaitSend(ackDD);
     }
     GetManager()->Log(0, GetObjectID(), 0, "Delete land %s!", id.c_str());
 }
@@ -1093,7 +1093,7 @@ void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
     {
         ack->set_seqno(msg->seqno());
         ack->set_result(0);
-        send(ack);
+        WaitSend(ack);
     }
 }
 
@@ -1108,7 +1108,7 @@ void ObjectGS::_prcsPostPlan(PostOperationDescription *msg)
         {
             ack->set_seqno(msg->seqno());
             ack->set_result(0);
-            send(ack);
+            WaitSend(ack);
         }
         return;
     }
@@ -1198,7 +1198,7 @@ void ObjectGS::_prcsDeletePlan(das::proto::DeleteOperationDescription *msg)
     {
         ackDP->set_seqno(msg->seqno());
         ackDP->set_result(1);
-        send(ackDP);
+        WaitSend(ackDP);
     }
     GetManager()->Log(0, m_id, 0, "Delete mission plan %s!", id.c_str());
 }
@@ -1244,7 +1244,7 @@ void ObjectGS::_prcsReqNewGs(RequestNewGS *msg)
                 ack->set_check(-3 == res ? m_check : "");
             }
             ack->set_result(res);
-            send(ack);
+            WaitSend(ack);
         }
     }
 }
@@ -1260,7 +1260,7 @@ void ObjectGS::_prcsGsMessage(GroundStationsMessage *msg)
         {
             ack->set_seqno(msg->seqno());
             ack->set_res(-1);
-            send(ack);
+            WaitSend(ack);
         }
         return;
     }
@@ -1300,7 +1300,7 @@ void ObjectGS::_prcsReqFriends(das::proto::RequestFriends *msg)
         {
             ack->add_friends(itr);
         }
-        send(ack);
+        WaitSend(ack);
     }
 }
 

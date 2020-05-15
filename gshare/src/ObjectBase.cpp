@@ -89,8 +89,8 @@ protected:
             auto id = o ? o->GetObjectID() : string();
             if (!id.empty() && m_links.find(id)==m_links.end())
             {
-                m_links[id] = l;
                 l->SetMutex(GetMutex());
+                m_links[id] = l;
             }
         }
     }
@@ -128,7 +128,7 @@ public:
 //SocketHandle
 ///////////////////////////////////////////////////////////////////////////////////////
 ILink::ILink() : m_tmLastInfo(Utility::msTimeTick()), m_sock(NULL)
-, m_recv(NULL),m_mtx(NULL), m_bLogined(false)
+, m_recv(NULL), m_mtx(NULL), m_thread(NULL), m_bLogined(false)
 , m_bChanged(false), m_bRelease(false)
 {
 }
@@ -155,15 +155,22 @@ void ILink::SetBuffSize(uint16_t sz)
 
 void ILink::OnLogined(bool suc, ISocket *s)
 {
-    m_bLogined = suc;
-    if (!suc && m_sock)
-        m_sock->Close();
-
-    IObject *o = GetParObject();
     if (!s)
         s = m_sock;
+
+    m_bLogined = suc;
+    if (!suc && s)
+        s->Close();
+
+    IObject *o = GetParObject();
     if (s && o)
         o->GetManager()->Log(0, o->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), suc ? "logined" : "login fail");
+}
+
+bool ILink::CanSend() const
+{
+    Lock l(m_mtx);
+    return m_sock && m_sock->IsNoWriteData();
 }
 
 void ILink::OnSockClose(ISocket *s)
@@ -258,6 +265,11 @@ void ILink::SetMutex(IMutex *m)
     m_mtx = m;
 }
 
+void ILink::SetThread(BussinessThread *t)
+{
+    m_thread = t;
+}
+
 void ILink::ClearRecv(int n)
 {
     m_bChanged = false;
@@ -267,15 +279,16 @@ void ILink::ClearRecv(int n)
 
 bool ILink::PrcsBussiness(uint64_t ms, BussinessThread &t)
 {
-    CheckTimer(ms);
+    bool ret = false;
     if (IsChanged())
     {
         int len = CopyData(t.m_buff, t.m_szBuff);
         len = ProcessReceive(t.m_buff, len);
         ClearRecv(len);
-        return true;
+        ret = true;
     }
-    return false;
+    CheckTimer(ms);
+    return ret;
 }
 
 void ILink::Release()
@@ -286,6 +299,22 @@ void ILink::Release()
 bool ILink::IsRealse()
 {
     return m_bRelease;
+}
+
+char *ILink::GetThreadBuff() const
+{
+    if (m_thread)
+        return m_thread->m_buff;
+
+    return NULL;
+}
+
+int ILink::GetThreadBuffLength() const
+{
+    if (m_thread)
+        return m_thread->m_szBuff;
+
+    return 0;
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 //IObject
@@ -313,22 +342,6 @@ void IObject::PushReleaseMsg(IMessage *msg)
 {
     if (IObjectManager *m = GetManager())
         m->PushReleaseMsg(msg);
-}
-
-char *IObject::GetThreadBuff() const
-{
-    if (IObjectManager *m = GetManager())
-        return m->GetThread(Utility::ThreadID())->m_buff;
-
-    return NULL;
-}
-
-int IObject::GetThreadBuffLength() const
-{
-    if (IObjectManager *m = GetManager())
-        return m->GetThread(Utility::ThreadID())->m_szBuff;
-
-    return 0;
 }
 
 bool IObject::SendMsg(IMessage *msg)
@@ -498,6 +511,7 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
         {
             BussinessThread *t = GetPropertyThread();
             h->SetSocket(s);
+            h->SetThread(t);
             t->m_linksAdd.Push(h);
         }
 
