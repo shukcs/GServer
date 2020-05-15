@@ -109,7 +109,9 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
     if (o && o->IsInitaled())
     {
         bool bLogin = !o->IsConnect() && o->m_pswd == pswd;
-        o->OnLogined(bLogin, s);
+        if (!o->IsConnect())
+            o->OnLogined(bLogin, s);
+
         AckGSIdentityAuthentication ack;
         ack.set_seqno(rgi->seqno());
         ack.set_result(bLogin ? 1 : 0);

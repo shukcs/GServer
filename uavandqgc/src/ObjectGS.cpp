@@ -206,6 +206,9 @@ void ObjectGS::ProcessMessage(IMessage *msg)
         case IMessage::QueryMissionsRslt:
             processMissions(*(DBMessage*)msg);
             break;
+        case IMessage::QueryMissionsAcreageRslt:
+            processMissionsAcreage(*(DBMessage*)msg);
+            break;
         default:
             break;
         }
@@ -254,6 +257,8 @@ void ObjectGS::PrcsProtoBuff()
         _prcsReqFriends((RequestFriends*)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(RequestUavMission))
         _prcsReqMissons(*(RequestUavMission*)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(RequestUavMissionAcreage))
+        _prcsReqMissonsAcreage(*(RequestUavMissionAcreage*)m_p->GetProtoMessage());
 }
 
 void ObjectGS::process2GsMsg(const Message *msg)
@@ -437,7 +442,7 @@ void ObjectGS::processGSInfo(const DBMessage &msg)
 
 void ObjectGS::processCheckGS(const DBMessage &msg)
 {
-    bool bExist = msg.GetRead("user").ToString() == m_id;
+    bool bExist = msg.GetRead("count(*)").ToInt32()>0;
     if (auto ack = new AckNewGS)
     {
         ack->set_seqno(msg.GetSeqNomb());
@@ -449,7 +454,7 @@ void ObjectGS::processCheckGS(const DBMessage &msg)
         ack->set_result(bExist ? 0 : 1);
         send(ack, true);
         if (bExist)
-            m_stInit = IObject::InitialFail;
+            Release();
     }
 }
 
@@ -660,6 +665,17 @@ void ObjectGS::processMissions(const DBMessage &msg)
         ++landsItr;
     }
     send(sd, true);
+}
+
+void ObjectGS::processMissionsAcreage(const DBMessage &msg)
+{
+    auto sd = new AckUavMissionAcreage;
+    auto acreage = msg.GetRead("sum(acreage)").ToDouble();
+    if (!sd)
+        return;
+
+    sd->set_seqno(msg.GetSeqNomb());
+    sd->set_acreage((float)acreage);
 }
 
 void ObjectGS::processPostPlanRslt(const DBMessage &msg)
@@ -1296,6 +1312,28 @@ void ObjectGS::_prcsReqMissons(das::proto::RequestUavMission &msg)
         return;
     msgDb->SetSeqNomb(msg.seqno());
     msgDb->SetSql("queryMission", true);
+    if (!GetAuth(ObjectGS::Type_UavManager))
+        msgDb->SetCondition("userID", m_id);
+    msgDb->SetCondition("uavID", msg.uav());
+    if (!GetAuth(ObjectGS::Type_UavManager))
+        msgDb->SetCondition("userID", m_id);
+    msgDb->SetCondition("landId", msg.uav());
+    if (msg.has_beg())
+        msgDb->SetCondition("finishTime:>", msg.beg());
+    if (msg.has_end())
+        msgDb->SetCondition("finishTime:<", msg.end());
+
+    SendMsg(msgDb);
+}
+
+void ObjectGS::_prcsReqMissonsAcreage(das::proto::RequestUavMissionAcreage &msg)
+{
+    DBMessage *msgDb = new DBMessage(this, IMessage::QueryMissionsAcreageRslt);
+
+    if (!msgDb)
+        return;
+    msgDb->SetSeqNomb(msg.seqno());
+    msgDb->SetSql("queryMissionAcreage");
     if (!GetAuth(ObjectGS::Type_UavManager))
         msgDb->SetCondition("userID", m_id);
     msgDb->SetCondition("uavID", msg.uav());

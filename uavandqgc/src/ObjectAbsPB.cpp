@@ -116,7 +116,7 @@ IObject *ObjectAbsPB::GetParObject()
     return this;
 }
 
-ILink *ObjectAbsPB::GetHandle()
+ILink *ObjectAbsPB::GetLink()
 {
     return this;
 }

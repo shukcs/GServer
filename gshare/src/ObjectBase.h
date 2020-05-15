@@ -34,7 +34,7 @@ public:
     SHARED_DECL virtual ~ILink();
     SHARED_DECL virtual void SetSocket(ISocket *s);
 
-    SHARED_DECL virtual void OnSockClose(ISocket *s);//这是可以重载的
+    SHARED_DECL void OnSockClose(ISocket *s);
     SHARED_DECL virtual void CheckTimer(uint64_t ms);
     SHARED_DECL bool IsRealse();
     SHARED_DECL ISocket *GetSocket()const;
@@ -46,6 +46,7 @@ public:
     int CopyData(void *data, int len)const;
     virtual void OnConnected(bool bConnected) = 0;
     virtual IObject *GetParObject() = 0;
+    void SetMutex(IMutex *m);
 protected:
     SHARED_DECL void SetBuffSize(uint16_t sz);
     SHARED_DECL bool ChangeLogind(bool b);
@@ -57,6 +58,7 @@ protected:
     int64_t                 m_tmLastInfo;
     ISocket                 *m_sock;
     LoopQueBuff             *m_recv;
+    IMutex                  *m_mtx;
     bool                    m_bLogined;
     bool                    m_bChanged;
     bool                    m_bRelease;
@@ -85,7 +87,7 @@ public:
     SHARED_DECL void SetObjectID(const std::string &id);
     SHARED_DECL IObjectManager *GetManager()const;
     SHARED_DECL bool SendMsg(IMessage *msg);
-    SHARED_DECL virtual ILink *GetHandle();
+    SHARED_DECL virtual ILink *GetLink();
     SHARED_DECL bool IsInitaled()const;
     virtual int GetObjectType()const = 0;
     virtual void InitObject() = 0;
@@ -129,12 +131,11 @@ protected:
 class IObjectManager
 {
 protected:
-    typedef LoopQueue<ISocket *> SocketQue;
     typedef std::map<std::string, IObject*> MapObjects;
     typedef std::list<std::string> StringList;
     typedef std::map<int, StringList> SubcribeList;
     typedef std::map<std::string, SubcribeList> MessageSubcribes;
-    typedef LoopQueue<SubcribeStruct *> SubcribeQueue;
+    typedef std::list<SubcribeStruct *> SubcribeQueue;
 public:
     SHARED_DECL virtual ~IObjectManager();
     virtual int GetObjectType()const = 0;
@@ -142,6 +143,8 @@ public:
     SHARED_DECL bool AddObject(IObject *obj);
     SHARED_DECL bool SendMsg(IMessage *msg);
     SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
+    SHARED_DECL void Subcribe(const std::string &dsub, const std::string &sender, int tpMsg);
+    SHARED_DECL void Unsubcribe(const std::string &dsub, const std::string &sender, int tpMsg);
 
     void PushManagerMessage(IMessage *);
     IMessage *PopRecycleMessage();
@@ -152,12 +155,9 @@ public:
     MessageQue *GetReleaseQue(int idThread)const;
     MessageQue *GetSendQue(int idThread)const;
     bool ParseRequest(ISocket *s, const char *buf, int len);
-    SHARED_DECL void Subcribe(const std::string &dsub, const std::string &sender, int tpMsg);
-    SHARED_DECL void Unsubcribe(const std::string &dsub, const std::string &sender, int tpMsg);
-    void Subcribe(const IMessage &msg, const std::string &dsub);
-    void Unsubcribe(const IMessage &msg, const std::string &dsub);
     bool Exist(IObject *obj)const;
     BussinessThread *GetThread(int id = -1)const;
+    void OnSocketClose(ISocket *s);
 public:
     SHARED_DECL static IObjectManager *MangerOfType(int type);
 protected:
@@ -168,6 +168,7 @@ protected:
     SHARED_DECL virtual void ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb);
     SHARED_DECL void InitThread(uint16_t nT = 1, uint16_t bufSz = 1024);
     SHARED_DECL virtual bool IsHasReuest(const char *buf, int len)const;
+    SHARED_DECL virtual bool IsReceiveData()const;
     virtual bool InitManager() = 0;
     const StringList &getMessageSubcribes(IMessage *msg);
     void PrcsSubcribes();
@@ -177,11 +178,11 @@ protected:
     virtual IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len) = 0;
 private:
     friend class ObjectManagers;
-    IMutex                          *m_mtx;
     ILog                            *m_log;
+    IMutex                          *m_mtx;
     std::list<BussinessThread*>     m_lsThread;
     MapObjects                      m_objects;
-    SocketQue                       m_loginSockets;
+    std::list<ISocket*>             m_loginSockets;
     MessageQue                      m_messages;         //接收消息队列
     MessageQue                      m_lsMsgRecycle;     //消息回收队列
     MessageSubcribes                m_subcribes;        //订阅消息

@@ -33,7 +33,7 @@ protected:
     virtual void PrcsProtoBuff() = 0;
     static int serialize(const google::protobuf::Message &ms, char*buf, int sz);
     IObject *GetParObject();
-    ILink *GetHandle();
+    ILink *GetLink();
     void CheckTimer(uint64_t ms);
 protected:
     ProtoMsg                              *m_p;

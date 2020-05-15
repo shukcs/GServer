@@ -63,6 +63,7 @@ public:
     IObjectManager *GetManagerByType(int tp)const;
 
     void ProcessReceive(ISocket *sock, void const *buf, int len);
+    void OnSocketClose(ISocket *s);
 protected:
     void PrcsMessages();
 private:
@@ -74,7 +75,6 @@ private:
 private:
     friend class ManagerThread;
     std::map<int, IObjectManager*>      m_managersMap;
-    IMutex                              *m_mtx;
     Thread                              *m_thread;
     RemoveManagerQueue                  m_mgrsRemove;
     char                                m_buff[1024];

@@ -109,6 +109,8 @@ class AckRequestRouteMissions;
 class RequestUavMission;
 class UavRoute;
 class AckUavMission;
+class RequestUavMissionAcreage;
+class AckUavMissionAcreage;
 class MissionSuspend;
 class PostMissionSuspend;
 class RequestMissionSuspend;
@@ -9096,6 +9098,245 @@ class AckUavMission : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static AckUavMission* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class RequestUavMissionAcreage : public ::google::protobuf::Message {
+ public:
+  RequestUavMissionAcreage();
+  virtual ~RequestUavMissionAcreage();
+
+  RequestUavMissionAcreage(const RequestUavMissionAcreage& from);
+
+  inline RequestUavMissionAcreage& operator=(const RequestUavMissionAcreage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RequestUavMissionAcreage& default_instance();
+
+  void Swap(RequestUavMissionAcreage* other);
+
+  // implements Message ----------------------------------------------
+
+  RequestUavMissionAcreage* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RequestUavMissionAcreage& from);
+  void MergeFrom(const RequestUavMissionAcreage& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string uav = 2;
+  inline bool has_uav() const;
+  inline void clear_uav();
+  static const int kUavFieldNumber = 2;
+  inline const ::std::string& uav() const;
+  inline void set_uav(const ::std::string& value);
+  inline void set_uav(const char* value);
+  inline void set_uav(const char* value, size_t size);
+  inline ::std::string* mutable_uav();
+  inline ::std::string* release_uav();
+  inline void set_allocated_uav(::std::string* uav);
+
+  // optional string id = 3;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 3;
+  inline const ::std::string& id() const;
+  inline void set_id(const ::std::string& value);
+  inline void set_id(const char* value);
+  inline void set_id(const char* value, size_t size);
+  inline ::std::string* mutable_id();
+  inline ::std::string* release_id();
+  inline void set_allocated_id(::std::string* id);
+
+  // optional string planid = 4;
+  inline bool has_planid() const;
+  inline void clear_planid();
+  static const int kPlanidFieldNumber = 4;
+  inline const ::std::string& planid() const;
+  inline void set_planid(const ::std::string& value);
+  inline void set_planid(const char* value);
+  inline void set_planid(const char* value, size_t size);
+  inline ::std::string* mutable_planid();
+  inline ::std::string* release_planid();
+  inline void set_allocated_planid(::std::string* planid);
+
+  // optional uint64 beg = 5;
+  inline bool has_beg() const;
+  inline void clear_beg();
+  static const int kBegFieldNumber = 5;
+  inline ::google::protobuf::uint64 beg() const;
+  inline void set_beg(::google::protobuf::uint64 value);
+
+  // optional uint64 end = 6;
+  inline bool has_end() const;
+  inline void clear_end();
+  static const int kEndFieldNumber = 6;
+  inline ::google::protobuf::uint64 end() const;
+  inline void set_end(::google::protobuf::uint64 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.RequestUavMissionAcreage)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uav();
+  inline void clear_has_uav();
+  inline void set_has_id();
+  inline void clear_has_id();
+  inline void set_has_planid();
+  inline void clear_has_planid();
+  inline void set_has_beg();
+  inline void clear_has_beg();
+  inline void set_has_end();
+  inline void clear_has_end();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uav_;
+  ::std::string* id_;
+  ::std::string* planid_;
+  ::google::protobuf::uint64 beg_;
+  ::google::protobuf::uint64 end_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static RequestUavMissionAcreage* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckUavMissionAcreage : public ::google::protobuf::Message {
+ public:
+  AckUavMissionAcreage();
+  virtual ~AckUavMissionAcreage();
+
+  AckUavMissionAcreage(const AckUavMissionAcreage& from);
+
+  inline AckUavMissionAcreage& operator=(const AckUavMissionAcreage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckUavMissionAcreage& default_instance();
+
+  void Swap(AckUavMissionAcreage* other);
+
+  // implements Message ----------------------------------------------
+
+  AckUavMissionAcreage* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckUavMissionAcreage& from);
+  void MergeFrom(const AckUavMissionAcreage& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required float acreage = 2;
+  inline bool has_acreage() const;
+  inline void clear_acreage();
+  static const int kAcreageFieldNumber = 2;
+  inline float acreage() const;
+  inline void set_acreage(float value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckUavMissionAcreage)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_acreage();
+  inline void clear_has_acreage();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  float acreage_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckUavMissionAcreage* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -23133,6 +23374,334 @@ AckUavMission::routes() const {
 inline ::google::protobuf::RepeatedPtrField< ::das::proto::UavRoute >*
 AckUavMission::mutable_routes() {
   return &routes_;
+}
+
+// -------------------------------------------------------------------
+
+// RequestUavMissionAcreage
+
+// required uint32 seqno = 1;
+inline bool RequestUavMissionAcreage::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void RequestUavMissionAcreage::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void RequestUavMissionAcreage::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void RequestUavMissionAcreage::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 RequestUavMissionAcreage::seqno() const {
+  return seqno_;
+}
+inline void RequestUavMissionAcreage::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string uav = 2;
+inline bool RequestUavMissionAcreage::has_uav() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void RequestUavMissionAcreage::set_has_uav() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void RequestUavMissionAcreage::clear_has_uav() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void RequestUavMissionAcreage::clear_uav() {
+  if (uav_ != &::google::protobuf::internal::kEmptyString) {
+    uav_->clear();
+  }
+  clear_has_uav();
+}
+inline const ::std::string& RequestUavMissionAcreage::uav() const {
+  return *uav_;
+}
+inline void RequestUavMissionAcreage::set_uav(const ::std::string& value) {
+  set_has_uav();
+  if (uav_ == &::google::protobuf::internal::kEmptyString) {
+    uav_ = new ::std::string;
+  }
+  uav_->assign(value);
+}
+inline void RequestUavMissionAcreage::set_uav(const char* value) {
+  set_has_uav();
+  if (uav_ == &::google::protobuf::internal::kEmptyString) {
+    uav_ = new ::std::string;
+  }
+  uav_->assign(value);
+}
+inline void RequestUavMissionAcreage::set_uav(const char* value, size_t size) {
+  set_has_uav();
+  if (uav_ == &::google::protobuf::internal::kEmptyString) {
+    uav_ = new ::std::string;
+  }
+  uav_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestUavMissionAcreage::mutable_uav() {
+  set_has_uav();
+  if (uav_ == &::google::protobuf::internal::kEmptyString) {
+    uav_ = new ::std::string;
+  }
+  return uav_;
+}
+inline ::std::string* RequestUavMissionAcreage::release_uav() {
+  clear_has_uav();
+  if (uav_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uav_;
+    uav_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestUavMissionAcreage::set_allocated_uav(::std::string* uav) {
+  if (uav_ != &::google::protobuf::internal::kEmptyString) {
+    delete uav_;
+  }
+  if (uav) {
+    set_has_uav();
+    uav_ = uav;
+  } else {
+    clear_has_uav();
+    uav_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string id = 3;
+inline bool RequestUavMissionAcreage::has_id() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void RequestUavMissionAcreage::set_has_id() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void RequestUavMissionAcreage::clear_has_id() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void RequestUavMissionAcreage::clear_id() {
+  if (id_ != &::google::protobuf::internal::kEmptyString) {
+    id_->clear();
+  }
+  clear_has_id();
+}
+inline const ::std::string& RequestUavMissionAcreage::id() const {
+  return *id_;
+}
+inline void RequestUavMissionAcreage::set_id(const ::std::string& value) {
+  set_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    id_ = new ::std::string;
+  }
+  id_->assign(value);
+}
+inline void RequestUavMissionAcreage::set_id(const char* value) {
+  set_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    id_ = new ::std::string;
+  }
+  id_->assign(value);
+}
+inline void RequestUavMissionAcreage::set_id(const char* value, size_t size) {
+  set_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    id_ = new ::std::string;
+  }
+  id_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestUavMissionAcreage::mutable_id() {
+  set_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    id_ = new ::std::string;
+  }
+  return id_;
+}
+inline ::std::string* RequestUavMissionAcreage::release_id() {
+  clear_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = id_;
+    id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestUavMissionAcreage::set_allocated_id(::std::string* id) {
+  if (id_ != &::google::protobuf::internal::kEmptyString) {
+    delete id_;
+  }
+  if (id) {
+    set_has_id();
+    id_ = id;
+  } else {
+    clear_has_id();
+    id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string planid = 4;
+inline bool RequestUavMissionAcreage::has_planid() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void RequestUavMissionAcreage::set_has_planid() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void RequestUavMissionAcreage::clear_has_planid() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void RequestUavMissionAcreage::clear_planid() {
+  if (planid_ != &::google::protobuf::internal::kEmptyString) {
+    planid_->clear();
+  }
+  clear_has_planid();
+}
+inline const ::std::string& RequestUavMissionAcreage::planid() const {
+  return *planid_;
+}
+inline void RequestUavMissionAcreage::set_planid(const ::std::string& value) {
+  set_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    planid_ = new ::std::string;
+  }
+  planid_->assign(value);
+}
+inline void RequestUavMissionAcreage::set_planid(const char* value) {
+  set_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    planid_ = new ::std::string;
+  }
+  planid_->assign(value);
+}
+inline void RequestUavMissionAcreage::set_planid(const char* value, size_t size) {
+  set_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    planid_ = new ::std::string;
+  }
+  planid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestUavMissionAcreage::mutable_planid() {
+  set_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    planid_ = new ::std::string;
+  }
+  return planid_;
+}
+inline ::std::string* RequestUavMissionAcreage::release_planid() {
+  clear_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = planid_;
+    planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestUavMissionAcreage::set_allocated_planid(::std::string* planid) {
+  if (planid_ != &::google::protobuf::internal::kEmptyString) {
+    delete planid_;
+  }
+  if (planid) {
+    set_has_planid();
+    planid_ = planid;
+  } else {
+    clear_has_planid();
+    planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional uint64 beg = 5;
+inline bool RequestUavMissionAcreage::has_beg() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void RequestUavMissionAcreage::set_has_beg() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void RequestUavMissionAcreage::clear_has_beg() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void RequestUavMissionAcreage::clear_beg() {
+  beg_ = GOOGLE_ULONGLONG(0);
+  clear_has_beg();
+}
+inline ::google::protobuf::uint64 RequestUavMissionAcreage::beg() const {
+  return beg_;
+}
+inline void RequestUavMissionAcreage::set_beg(::google::protobuf::uint64 value) {
+  set_has_beg();
+  beg_ = value;
+}
+
+// optional uint64 end = 6;
+inline bool RequestUavMissionAcreage::has_end() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void RequestUavMissionAcreage::set_has_end() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void RequestUavMissionAcreage::clear_has_end() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void RequestUavMissionAcreage::clear_end() {
+  end_ = GOOGLE_ULONGLONG(0);
+  clear_has_end();
+}
+inline ::google::protobuf::uint64 RequestUavMissionAcreage::end() const {
+  return end_;
+}
+inline void RequestUavMissionAcreage::set_end(::google::protobuf::uint64 value) {
+  set_has_end();
+  end_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// AckUavMissionAcreage
+
+// required uint32 seqno = 1;
+inline bool AckUavMissionAcreage::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckUavMissionAcreage::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckUavMissionAcreage::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckUavMissionAcreage::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckUavMissionAcreage::seqno() const {
+  return seqno_;
+}
+inline void AckUavMissionAcreage::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required float acreage = 2;
+inline bool AckUavMissionAcreage::has_acreage() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckUavMissionAcreage::set_has_acreage() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckUavMissionAcreage::clear_has_acreage() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckUavMissionAcreage::clear_acreage() {
+  acreage_ = 0;
+  clear_has_acreage();
+}
+inline float AckUavMissionAcreage::acreage() const {
+  return acreage_;
+}
+inline void AckUavMissionAcreage::set_acreage(float value) {
+  set_has_acreage();
+  acreage_ = value;
 }
 
 // -------------------------------------------------------------------

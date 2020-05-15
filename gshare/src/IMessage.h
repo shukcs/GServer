@@ -91,6 +91,7 @@ public:
         DeleteLandRslt,
         DeletePlanRslt,
         QueryMissionsRslt,
+        QueryMissionsAcreageRslt,
 
         DBAckEnd,
 

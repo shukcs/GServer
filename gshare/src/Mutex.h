@@ -21,6 +21,9 @@ public:
     SHARED_DECL virtual void Lock();
     SHARED_DECL virtual void Unlock();
 private:
+#ifdef _DEBUG 
+    int m_cout;
+#endif
 #ifdef _WIN32
     CRITICAL_SECTION        m_mutex;
 #else

@@ -22,8 +22,8 @@ typedef LoopQueue<ILink*> LinksQue;
 class BussinessThread : public Thread
 {
 public:
-    BussinessThread(IObjectManager *mgr) :Thread(true)
-    , m_mgr(mgr), m_szBuff(0), m_buff(NULL)
+    BussinessThread(IObjectManager *mgr) :Thread(true), m_mgr(mgr)
+        , m_szBuff(0), m_buff(NULL)
     {
     }
     ~BussinessThread() 
@@ -38,13 +38,6 @@ public:
             if(m_buff)
                 m_szBuff = sz;
         }
-    }
-
-    void RemoveObject(const std::string &id)
-    {
-        auto itr = m_links.find(id);
-        if (itr != m_links.end())
-            m_links.erase(itr);
     }
 protected:
     void ReleasePrcsdMsg()
@@ -123,8 +116,8 @@ public:
 ///////////////////////////////////////////////////////////////////////////////////////
 //SocketHandle
 ///////////////////////////////////////////////////////////////////////////////////////
-ILink::ILink() : m_tmLastInfo(Utility::msTimeTick())
-, m_sock(NULL), m_recv(NULL), m_bLogined(false)
+ILink::ILink() : m_tmLastInfo(Utility::msTimeTick()), m_sock(NULL)
+, m_recv(NULL),m_mtx(NULL), m_bLogined(false)
 , m_bChanged(false), m_bRelease(false)
 {
 }
@@ -133,7 +126,7 @@ ILink::~ILink()
 {
     if (m_sock)
     {
-        m_sock->SetObject(NULL);
+        m_sock->SetHandleLink(NULL);
         m_sock->Close();
     }
     delete m_recv;
@@ -164,9 +157,11 @@ void ILink::OnLogined(bool suc, ISocket *s)
 
 void ILink::OnSockClose(ISocket *s)
 {
-    if (m_sock == s)
+    if (m_sock == s && m_mtx)
     {
-        m_sock = NULL;
+        m_mtx->Lock();
+        SetSocket(NULL);
+        m_mtx->Unlock();
         OnConnected(false);
     }
 }
@@ -198,6 +193,7 @@ void ILink::CheckTimer(uint64_t ms)
 
 int ILink::Send(const char *buf, int len)
 {
+    Lock l(m_mtx);
     if (buf && len && m_sock)
         return m_sock->Send(len, buf);
 
@@ -206,15 +202,15 @@ int ILink::Send(const char *buf, int len)
 
 void ILink::SetSocket(ISocket *s)
 {
-    if (m_sock)
-        return;
-
-    m_sock = s;
-    if (s)
-        m_tmLastInfo = Utility::msTimeTick();
-    OnConnected(s != NULL);
-    if (s)
-        s->SetObject(this);
+    if (m_sock != s)
+    {
+        m_sock = s;
+        if (s)
+            m_tmLastInfo = Utility::msTimeTick();
+        OnConnected(s != NULL);
+        if (s)
+            s->SetHandleLink(this);
+    }
 }
 
 ISocket *ILink::GetSocket() const
@@ -244,6 +240,11 @@ bool ILink::IsChanged() const
 int ILink::CopyData(void *data, int len) const
 {
     return m_recv ? m_recv->CopyData(data, len):0;
+}
+
+void ILink::SetMutex(IMutex *m)
+{
+    m_mtx = m;
 }
 
 void ILink::ClearRecv(int n)
@@ -327,7 +328,7 @@ bool IObject::SendMsg(IMessage *msg)
     return false;
 }
 
-ILink *IObject::GetHandle()
+ILink *IObject::GetLink()
 {
     return NULL;
 }
@@ -349,8 +350,7 @@ IObjectManager *IObject::GetManagerByType(int tp)
 //////////////////////////////////////////////////////////////////
 //IObjectManager
 //////////////////////////////////////////////////////////////////
-IObjectManager::IObjectManager() :m_mtx(new Mutex)
-, m_log(NULL)
+IObjectManager::IObjectManager() : m_log(NULL), m_mtx(new Mutex)
 {
 }
 
@@ -362,7 +362,6 @@ IObjectManager::~IObjectManager()
     }
     Utility::Sleep(100);
     m_lsThread.clear();
-    delete m_mtx;
 }
 
 void IObjectManager::LoadConfig()
@@ -391,11 +390,13 @@ void IObjectManager::ToCurrntLog(int err, const std::string &obj, int evT, const
 bool IObjectManager::ProcessBussiness(BussinessThread *s)
 {
     bool ret = false;
-    if (m_lsThread.empty() || s==m_lsThread.front())
+    if (s && !m_lsThread.empty() && s==m_lsThread.front())
     {
         InitManager();
+        m_mtx->Lock();
         ret = ProcessLogins(s);
         PrcsSubcribes();
+        m_mtx->Unlock();
         ProcessMessage();
     }
     return ret;
@@ -465,13 +466,14 @@ void IObjectManager::ProcessMessage()
 
 bool IObjectManager::ProcessLogins(BussinessThread *t)
 {
-    if (!t || m_loginSockets.IsEmpty())
+    if (!t || m_loginSockets.empty())
         return false;
 
-    while (!m_loginSockets.IsEmpty())
+    while (!m_loginSockets.empty())
     {
-        ISocket *s = m_loginSockets.Pop();
+        ISocket *s = m_loginSockets.front();
         int len = s->CopyData(t->m_buff, t->m_szBuff);
+        m_loginSockets.pop_front();
         if (s)
             s->ClearBuff();
         IObject *o = PrcsNotObjectReceive(s, t->m_buff, len);
@@ -479,7 +481,7 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
             continue;
 
         AddObject(o);
-        if (ILink *h = o->GetHandle())
+        if (ILink *h = o->GetLink())
         {
             BussinessThread *t = GetPropertyThread();
             h->SetSocket(s);
@@ -519,10 +521,10 @@ MessageQue *IObjectManager::GetSendQue(int idThread)const
 
 bool IObjectManager::ParseRequest(ISocket *s, const char *buf, int len)
 {
-    if (s && IsHasReuest(buf, len))
+    if (m_mtx && s && IsHasReuest(buf, len))
     {
         m_mtx->Lock();
-        m_loginSockets.Push(s);
+        m_loginSockets.push_back(s);
         m_mtx->Unlock();
         return true;
     }
@@ -534,12 +536,19 @@ bool IObjectManager::IsHasReuest(const char *buf, int len)const
     return false;
 }
 
+bool IObjectManager::IsReceiveData() const
+{
+    return true;
+}
+
 bool IObjectManager::AddObject(IObject *obj)
 {
     if (!obj || Exist(obj))
         return false;
 
     m_objects[obj->GetObjectID()] = obj;
+    if (ILink *link = obj->GetLink())
+        link->SetMutex(m_mtx);
 
     return true;
 }
@@ -606,6 +615,19 @@ BussinessThread *IObjectManager::GetThread(int id) const
     return NULL;
 }
 
+void IObjectManager::OnSocketClose(ISocket *s)
+{
+    if (!IsReceiveData())
+        return;
+
+    if (m_mtx && s)
+    {
+        m_mtx->Lock();
+        m_loginSockets.remove(s);
+        m_mtx->Unlock();
+    }
+}
+
 IObjectManager *IObjectManager::MangerOfType(int type)
 {
     return ObjectManagers::Instance().GetManagerByType(type);
@@ -613,9 +635,10 @@ IObjectManager *IObjectManager::MangerOfType(int type)
 
 void IObjectManager::PrcsSubcribes()
 {
-    while (!m_subcribeQue.IsEmpty())
+    while (!m_subcribeQue.empty())
     {
-        SubcribeStruct *sub = m_subcribeQue.Pop();
+        SubcribeStruct *sub = m_subcribeQue.front();
+        m_subcribeQue.pop_front();
         if (sub->m_bSubcribe)
         {
             StringList &ls = m_subcribes[sub->m_sender][sub->m_msgType];
@@ -664,54 +687,26 @@ const StringList &IObjectManager::getMessageSubcribes(IMessage *msg)
 
 void IObjectManager::Subcribe(const string &dsub, const std::string &sender, int tpMsg)
 {
-    if (dsub.empty() || sender.empty() || tpMsg < 0)
+    if (!m_mtx || dsub.empty() || sender.empty() || tpMsg < 0)
         return;
 
     if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, tpMsg, true))
     {
         m_mtx->Lock();
-        m_subcribeQue.Push(sub);
-        m_mtx->Unlock();
-    }
-}
-
-void IObjectManager::Subcribe(const IMessage &msg, const string &dsub)
-{
-    const std::string &sender = msg.GetSenderID();
-    if (dsub.empty() || sender.empty())
-        return;
-
-    if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, msg.GetMessgeType(), true))
-    {
-        m_mtx->Lock();
-        m_subcribeQue.Push(sub);
+        m_subcribeQue.push_back(sub);
         m_mtx->Unlock();
     }
 }
 
 void IObjectManager::Unsubcribe(const string &dsub, const std::string &sender, int tpMsg)
 {
-    if (dsub.empty() || sender.empty() || tpMsg < 0)
+    if (!m_mtx || dsub.empty() || sender.empty() || tpMsg < 0)
         return;
 
     if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, tpMsg, false))
     {
         m_mtx->Lock();
-        m_subcribeQue.Push(sub);
-        m_mtx->Unlock();
-    }
-}
-
-void IObjectManager::Unsubcribe(const IMessage &msg, const string &dsub)
-{
-    const std::string &sender = msg.GetSenderID();
-    if (dsub.empty() || sender.empty())
-        return;
-
-    if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, msg.GetMessgeType(), false))
-    {
-        m_mtx->Lock();
-        m_subcribeQue.Push(sub);
+        m_subcribeQue.push_back(sub);
         m_mtx->Unlock();
     }
 }

@@ -31,12 +31,9 @@ public:
     static ObjectDB *ParseMySql(const TiXmlElement &e);
 protected:
     int GetObjectType()const;
-    void OnConnected(bool bConnected);
     void InitObject();
 
     void ProcessMessage(IMessage *msg);
-    int ProcessReceive(void *buf, int len);
-    void CheckTimer(uint64_t ms);
 private:
     void _initSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx);
     void _initRefField(ExecutItem &sql, const std::string &field, uint64_t idx);
@@ -59,6 +56,7 @@ protected:
     bool PrcsPublicMsg();
     IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
     void LoadConfig();
+    bool IsReceiveData()const;
 private:
 };
 

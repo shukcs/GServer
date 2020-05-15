@@ -39,10 +39,6 @@ int ObjectDB::GetObjectType() const
     return IObject::DBMySql;
 }
 
-void ObjectDB::OnConnected(bool)
-{
-}
-
 void ObjectDB::InitObject()
 {
     if (m_stInit != Uninitial)
@@ -89,15 +85,6 @@ void ObjectDB::ProcessMessage(IMessage *msg)
     }
     if (ack)
         SendMsg(ack);
-}
-
-int ObjectDB::ProcessReceive(void *, int len)
-{
-    return len;
-}
-
-void ObjectDB::CheckTimer(uint64_t)
-{
 }
 
 void ObjectDB::_initSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx)
@@ -279,5 +266,11 @@ void DBManager::LoadConfig()
         dbNode = dbNode->NextSibling("ObjectDB");
     }
 }
+
+bool DBManager::IsReceiveData() const
+{
+    return false;
+}
+
 
 DECLARE_MANAGER_ITEM(DBManager)

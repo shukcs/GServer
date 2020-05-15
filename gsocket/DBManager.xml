@@ -47,7 +47,7 @@
 					<field name="planParam" type="VARBINARY(64)" />
 					<foreign name="landId" foreign="id" ref="LandInfo" />
 					<foreign name="planuser" foreign="user" ref="GSInfo" />
-				</table>			
+				</table>
 				<table name="MissionInfo" keys="uavID,finishTime">
 					<field name="userID" type="char(24)"/>
 					<field name="uavID" type="char(16)"/>
@@ -59,6 +59,14 @@
 					<field name="end" type="Int" />
 					<field name="acreage" type="float" />
 					<field name="continiuLat" type="Int" />
+					<field name="continiuLon" type="Int" />
+				</table>
+				<table name="SuspendInfo" keys="user,uav,planID">
+					<field name="user" type="char(16)"/>
+					<field name="uav" type="char(24)"/>
+					<field name="planID" type="BIGINT" constraint="DEFAULT 0"/>
+					<field name="itemNo" type="Int"/>
+					<field name="continiuLat" type="Int"/>
 					<field name="continiuLon" type="Int" />
 				</table>
 			</Tables>
@@ -206,7 +214,7 @@
 					<item name="planuser" type="Condition" />
 				</SQL>
 				<SQL name="checkGS" table="GSInfo" type="Select" >
-					<item name="user" ref="GSInfo" type="Read" />
+					<item name="count(*)" sqlTp="int" type="Read" />
 					<item name="user" type="Condition" />
 				</SQL>
 				<SQL name="insertMissions" table="MissionInfo" type="Insert">
@@ -214,29 +222,63 @@
 					<item name="uavID"  type="Write" />
 					<item name="landId" type="Write" />
 					<item name="planID" type="Write" />
+					<item name="createTime" ref="MissionInfo" type="Write" />
 					<item name="finishTime" ref="MissionInfo" type="Write" />
 					<item name="begin" ref="MissionInfo" type="Write" />
 					<item name="end" ref="MissionInfo" type="Write" />
-					<item name="curRidge" ref="MissionInfo" type="Write" />
-					<item name="vayage" ref="MissionInfo" type="Write" />
+					<item name="acreage" ref="MissionInfo" type="Write" />
+					<item name="continiuLat" ref="MissionInfo" type="Write" />
+					<item name="continiuLon" ref="MissionInfo" type="Write" />
 				</SQL>
 				<SQL name="queryMission" table="MissionInfo" type="Select" >
+					<item name="userID" ref="MissionInfo" type="Read" />
 					<item name="landId" ref="MissionInfo" type="Read" />
 					<item name="planID" ref="MissionInfo" type="Read" />
 					<item name="uavID" ref="MissionInfo" type="Read" />
-					<item name="begin" ref="MissionInfo" type="Read" />
-					<item name="end" ref="MissionInfo" type="Read" />
-					<item name="curRidge" ref="MissionInfo" type="Read" />
 					<item name="createTime" ref="MissionInfo" type="Read" />
 					<item name="finishTime" ref="MissionInfo" type="Read" />
-					<item name="vayage" ref="MissionInfo" type="Read" />
-					<item name="userID" ref="MissionInfo" type="Read" />
+					<item name="begin" ref="MissionInfo" type="Read" />
+					<item name="end" ref="MissionInfo" type="Read" />
+					<item name="acreage" ref="MissionInfo" type="Read" />
+					<item name="continiuLat" ref="MissionInfo" type="Read" />
+					<item name="continiuLon" ref="MissionInfo" type="Read" />
 					<item name="userID" type="Condition" />
 					<item name="uavID" type="Condition" />
 					<item name="landId" type="Condition" />
 					<item name="planID" type="Condition" />
 					<item name="finishTime" ref="MissionInfo" type="Condition" condition=">" />
 					<item name="finishTime" ref="MissionInfo" type="Condition" condition="<" />
+				</SQL>
+				<SQL name="queryMissionAcreage" table="MissionInfo" type="Select" >
+					<item name="sum(acreage)" sqlTp="double" type="Read" />
+					<item name="userID" type="Condition" />
+					<item name="uavID" type="Condition" />
+					<item name="landId" type="Condition" />
+					<item name="planID" type="Condition" />
+					<item name="finishTime" ref="MissionInfo" type="Condition" condition=">" />
+					<item name="finishTime" ref="MissionInfo" type="Condition" condition="<" />
+				</SQL>
+				<SQL name="insertSuspend" table="SuspendInfo" type="Update">
+					<item name="user" type="Write" />
+					<item name="uav"  type="Write" />
+					<item name="planID" type="Write" />
+					<item name="itemNo" ref="MissionInfo" type="Write" />
+					<item name="continiuLat" ref="MissionInfo" type="Write" />
+					<item name="continiuLon" ref="MissionInfo" type="Write" />
+					<item name="user" type="Condition" />
+					<item name="uav" type="Condition" />
+					<item name="planID" type="Condition" />
+				</SQL>
+				<SQL name="querySuspend" table="SuspendInfo" type="Select" >
+					<item name="user" ref="SuspendInfo" type="Read" />
+					<item name="uav" ref="SuspendInfo" type="Read" />
+					<item name="planID" ref="SuspendInfo" type="Read" />
+					<item name="itemNo" ref="SuspendInfo" type="Read" />
+					<item name="continiuLat" ref="MissionInfo" type="Read" />
+					<item name="continiuLon" ref="MissionInfo" type="Read" />
+					<item name="user" type="Condition" />
+					<item name="uav" type="Condition" />
+					<item name="planID" type="Condition" />
 				</SQL>
 			</SQLs>
 			<!--Triggers>

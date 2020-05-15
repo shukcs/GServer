@@ -165,24 +165,23 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
     {
         bool bLogin = !ret->IsConnect() && ret->IsInitaled();
         if (bLogin)
-        {
-            ret->SetSocket(s);
             ret->SetSimId(sim);
-        }
 
-        ret->OnLogined(bLogin, s);
+        if (!ret->IsConnect())
+            ret->OnLogined(bLogin, s);
+
         AckUavIdentityAuthentication ack;
         ack.set_seqno(uia.seqno());
         ack.set_result(bLogin ? 1 : 0);
         ObjectAbsPB::SendProtoBuffTo(s, ack);
+        if (!bLogin)
+            ret = NULL;
     }
     else
     {
-        ObjectUav *ret = new ObjectUav(uavid, sim);
-        return ret;
+        ret = new ObjectUav(uavid, sim);
     }
-
-    return NULL;
+    return ret;
 }
 
 void UavManager::checkBindUav(const RequestBindUav &rbu, const GS2UavMessage &gs)

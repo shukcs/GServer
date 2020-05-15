@@ -80,8 +80,7 @@ void ManagerAbstractItem::Unregister()
 ////////////////////////////////////////////////////////////
 //ObjectManagers
 ////////////////////////////////////////////////////////////
-ObjectManagers::ObjectManagers():m_mtx(new Mutex)
-, m_thread(new ManagerThread)
+ObjectManagers::ObjectManagers(): m_thread(new ManagerThread)
 {
     if (m_thread)
         m_thread->SetRunning();
@@ -89,7 +88,6 @@ ObjectManagers::ObjectManagers():m_mtx(new Mutex)
 
 ObjectManagers::~ObjectManagers()
 {
-    delete m_mtx;
 }
 
 ObjectManagers &ObjectManagers::Instance()
@@ -120,9 +118,7 @@ void ObjectManagers::AddManager(IObjectManager *m)
 
 void ObjectManagers::RemoveManager(int type)
 {
-    m_mtx->Lock();
     m_mgrsRemove.Push(type);
-    m_mtx->Unlock();
 }
 
 IObjectManager *ObjectManagers::GetManagerByType(int tp) const
@@ -139,7 +135,7 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
     if (!sock)
         return;
 
-    if (ILink *link = sock->GetOwnObject())
+    if (ILink *link = sock->GetHandleLink())
     {
         link->Receive(buf, len);
         return;
@@ -150,6 +146,14 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
     {
         if (m.second->ParseRequest(sock, m_buff, len))
             break;
+    }
+}
+
+void ObjectManagers::OnSocketClose(ISocket *s)
+{
+    for (auto itr = m_managersMap.begin(); itr != m_managersMap.end(); ++itr)
+    {
+        itr->second->OnSocketClose(s);
     }
 }
 

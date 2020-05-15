@@ -164,6 +164,10 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new GroundStationsMessage;                  //好友消息
     else if (name == d_p_ClassName(AckGroundStationsMessage))
         m_msg = new AckGroundStationsMessage;               //好友消息服务器回执
+    else if (name == d_p_ClassName(PostMissionSuspend))
+        m_msg = new PostMissionSuspend;               //好友消息服务器回执
+    else if (name == d_p_ClassName(RequestUavMissionAcreage))
+        m_msg = new RequestUavMissionAcreage;               //好友消息服务器回执
 
     if (m_msg)
         return m_msg->ParseFromArray(buff, len);

@@ -51,8 +51,8 @@ public:
     virtual ISocketManager *GetPrcsManager()const = 0;
 
     //事务处理调用函数
-    virtual ILink *GetOwnObject()const = 0;
-    virtual void SetObject(ILink *o) = 0;
+    virtual ILink *GetHandleLink()const = 0;
+    virtual void SetHandleLink(ILink *o) = 0;
     virtual bool Bind(int port, const std::string &hostLocal="") = 0;
     virtual bool ConnectTo(const std::string &hostRemote, int port) = 0;
     virtual int Send(int len, const void *buff=NULL) = 0;

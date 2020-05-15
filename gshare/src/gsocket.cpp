@@ -27,12 +27,12 @@ GSocket::~GSocket()
     delete m_buffSocket;
 }
 
-ILink *GSocket::GetOwnObject() const
+ILink *GSocket::GetHandleLink() const
 {
     return m_object;
 }
 
-void GSocket::SetObject(ILink *o)
+void GSocket::SetHandleLink(ILink *o)
 {
     m_object = o;
 }
@@ -198,6 +198,8 @@ void GSocket::OnClose()
     m_stat = ISocket::Closed;
     if (m_object)
         m_object->OnSockClose(this);
+    else
+        ObjectManagers::Instance().OnSocketClose(this);
 
     if (m_parent)
         m_parent->ReleaseSocket(this);

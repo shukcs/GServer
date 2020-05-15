@@ -27,12 +27,12 @@ ProtectSocket::~ProtectSocket()
     delete m_buffSocket;
 }
 
-ILink *ProtectSocket::GetOwnObject() const
+ILink *ProtectSocket::GetHandleLink() const
 {
     return NULL;
 }
 
-void ProtectSocket::SetObject(ILink *)
+void ProtectSocket::SetHandleLink(ILink *)
 {
 }
 

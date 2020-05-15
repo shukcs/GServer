@@ -20,6 +20,7 @@ namespace das {
         class DeleteOperationDescription;
         class PostOperationRoute;
         class RequestUavMission;
+        class RequestUavMissionAcreage;
         class PostControl2Uav;
         class ParcelDescription;
         class ParcelContracter;
@@ -82,6 +83,7 @@ protected:
     void processQueryLands(const DBMessage &msg);
     void processGSInsert(const DBMessage &msg);
     void processMissions(const DBMessage &msg);
+    void processMissionsAcreage(const DBMessage &msg);
     void InitObject();
     void CheckTimer(uint64_t ms);
 private:
@@ -103,6 +105,7 @@ private:
     void _prcsGsMessage(das::proto::GroundStationsMessage *msg);
     void _prcsReqFriends(das::proto::RequestFriends *msg);
     void _prcsReqMissons(das::proto::RequestUavMission &msg);
+    void _prcsReqMissonsAcreage(das::proto::RequestUavMissionAcreage &msg);
 private:
     void _checkGS(const std::string &user, int ack);
     void initFriend();

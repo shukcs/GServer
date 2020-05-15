@@ -37,6 +37,9 @@ namespace SOCKETS_NAMESPACE {
 
 
 Mutex::Mutex()
+#ifdef _DEBUG 
+:m_cout(0)
+#endif
 {
 #ifdef _WIN32
     InitializeCriticalSection(&m_mutex);
@@ -63,11 +66,19 @@ void Mutex::Lock()
 #else
 	pthread_mutex_lock(&m_mutex);
 #endif
+#ifdef _DEBUG 
+    m_cout++;
+    if (m_cout > 1)
+        printf("lock count %d\n", m_cout);
+#endif
 }
 
 
 void Mutex::Unlock()
 {
+#ifdef _DEBUG 
+    m_cout--;
+#endif
 #ifdef _WIN32
 	::LeaveCriticalSection(&m_mutex);
 #else

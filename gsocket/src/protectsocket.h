@@ -27,8 +27,8 @@ public:
     void Close();
 protected:
     //事务处理调用函数
-    ILink *GetOwnObject()const;
-    void SetObject(ILink *o);
+    ILink *GetHandleLink()const;
+    void SetHandleLink(ILink *o);
     int Send(int len, const void *buff); 
     void ClearBuff()const;
 
