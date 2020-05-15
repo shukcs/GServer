@@ -23,11 +23,12 @@ class BussinessThread : public Thread
 {
 public:
     BussinessThread(IObjectManager *mgr) :Thread(true), m_mgr(mgr)
-        , m_szBuff(0), m_buff(NULL)
+    , m_mtx(NULL), m_szBuff(0), m_buff(NULL)
     {
     }
     ~BussinessThread() 
     {
+        delete m_mtx;
         delete m_buff;
     }
     void InitialBuff(uint16_t sz)
@@ -38,6 +39,12 @@ public:
             if(m_buff)
                 m_szBuff = sz;
         }
+    }
+    IMutex *GetMutex()
+    {
+        if (!m_mtx)
+            m_mtx = new Mutex();
+        return m_mtx;
     }
 protected:
     void ReleasePrcsdMsg()
@@ -81,7 +88,10 @@ protected:
             IObject *o = l ? l->GetParObject() : NULL;
             auto id = o ? o->GetObjectID() : string();
             if (!id.empty() && m_links.find(id)==m_links.end())
+            {
                 m_links[id] = l;
+                l->SetMutex(GetMutex());
+            }
         }
     }
 private:
@@ -89,6 +99,7 @@ private:
     friend class IObject;
     friend class IObjectManager;
     IObjectManager  *m_mgr;
+    IMutex          *m_mtx;
     int             m_szBuff;
     char            *m_buff;
     MapLinks        m_links;
@@ -350,7 +361,7 @@ IObjectManager *IObject::GetManagerByType(int tp)
 //////////////////////////////////////////////////////////////////
 //IObjectManager
 //////////////////////////////////////////////////////////////////
-IObjectManager::IObjectManager() : m_log(NULL), m_mtx(new Mutex)
+IObjectManager::IObjectManager() : m_log(NULL), m_mtx(NULL)
 {
 }
 
@@ -392,6 +403,8 @@ bool IObjectManager::ProcessBussiness(BussinessThread *s)
     bool ret = false;
     if (s && !m_lsThread.empty() && s==m_lsThread.front())
     {
+        if (!m_mtx)
+            m_mtx = s->GetMutex();
         InitManager();
         m_mtx->Lock();
         ret = ProcessLogins(s);
@@ -547,9 +560,6 @@ bool IObjectManager::AddObject(IObject *obj)
         return false;
 
     m_objects[obj->GetObjectID()] = obj;
-    if (ILink *link = obj->GetLink())
-        link->SetMutex(m_mtx);
-
     return true;
 }
 
