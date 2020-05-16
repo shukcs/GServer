@@ -507,8 +507,8 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
         IObject *o = PrcsNotObjectReceive(s, t->m_buff, len);
         if (!o)
         {
-            continue;
             s->Close();
+            continue;
         }
 
         AddObject(o);
