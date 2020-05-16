@@ -138,7 +138,7 @@ protected:
     typedef std::list<std::string> StringList;
     typedef std::map<int, StringList> SubcribeList;
     typedef std::map<std::string, SubcribeList> MessageSubcribes;
-    typedef std::list<SubcribeStruct *> SubcribeQueue;
+    typedef LoopQueue<SubcribeStruct *> SubcribeQueue;
 public:
     SHARED_DECL virtual ~IObjectManager();
     virtual int GetObjectType()const = 0;

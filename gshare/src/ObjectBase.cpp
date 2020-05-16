@@ -421,8 +421,8 @@ bool IObjectManager::ProcessBussiness(BussinessThread *s)
         InitManager();
         m_mtx->Lock();
         ret = ProcessLogins(s);
-        PrcsSubcribes();
         m_mtx->Unlock();
+        PrcsSubcribes();
         ProcessMessage();
     }
     return ret;
@@ -664,10 +664,9 @@ IObjectManager *IObjectManager::MangerOfType(int type)
 
 void IObjectManager::PrcsSubcribes()
 {
-    while (!m_subcribeQue.empty())
+    while (!m_subcribeQue.IsEmpty())
     {
-        SubcribeStruct *sub = m_subcribeQue.front();
-        m_subcribeQue.pop_front();
+        SubcribeStruct *sub = m_subcribeQue.Pop();
         if (sub->m_bSubcribe)
         {
             StringList &ls = m_subcribes[sub->m_sender][sub->m_msgType];
@@ -722,7 +721,7 @@ void IObjectManager::Subcribe(const string &dsub, const std::string &sender, int
     if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, tpMsg, true))
     {
         m_mtx->Lock();
-        m_subcribeQue.push_back(sub);
+        m_subcribeQue.Push(sub);
         m_mtx->Unlock();
     }
 }
@@ -735,7 +734,7 @@ void IObjectManager::Unsubcribe(const string &dsub, const std::string &sender, i
     if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, tpMsg, false))
     {
         m_mtx->Lock();
-        m_subcribeQue.push_back(sub);
+        m_subcribeQue.Push(sub);
         m_mtx->Unlock();
     }
 }
