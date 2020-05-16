@@ -180,7 +180,6 @@ void ILink::OnSockClose(ISocket *s)
         m_mtx->Lock();
         SetSocket(NULL);
         m_mtx->Unlock();
-        OnConnected(false);
     }
 }
 
@@ -223,11 +222,12 @@ void ILink::SetSocket(ISocket *s)
     if (m_sock != s)
     {
         m_sock = s;
-        if (s)
-            m_tmLastInfo = Utility::msTimeTick();
         OnConnected(s != NULL);
         if (s)
+        {
             s->SetHandleLink(this);
+            m_tmLastInfo = Utility::msTimeTick();
+        }
     }
 }
 
