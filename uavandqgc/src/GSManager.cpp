@@ -108,13 +108,16 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
     ObjectGS *o = (ObjectGS*)GetObjectByID(usr);
     if (o && o->IsInitaled())
     {
-        bool bLogin = !o->IsConnect() && o->m_pswd == pswd;  
-        o->OnLogined(bLogin, s);
+        bool bLogin = !o->IsConnect() && o->m_pswd == pswd;
+        if (bLogin)
+            o->OnLogined(bLogin, s);
+        else
+            Log(0, o->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
 
         AckGSIdentityAuthentication ack;
         ack.set_seqno(rgi->seqno());
         ack.set_result(bLogin ? 1 : 0);
-        ack.set_auth(0);
+        ack.set_auth(o->Authorize());
         ObjectAbsPB::SendProtoBuffTo(s, ack);
 
         if (!bLogin)

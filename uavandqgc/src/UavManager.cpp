@@ -165,15 +165,20 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
     {
         bool bLogin = !ret->IsConnect() && ret->IsInitaled();
         if (bLogin)
+        {
             ret->SetSimId(sim);
+            ret->OnLogined(bLogin, s);
+        }
+        else
+        {
+            Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
+            ret = NULL;
+        }
 
-        ret->OnLogined(bLogin, s);
         AckUavIdentityAuthentication ack;
         ack.set_seqno(uia.seqno());
         ack.set_result(bLogin ? 1 : 0);
         ObjectAbsPB::SendProtoBuffTo(s, ack);
-        if (!bLogin)
-            ret = NULL;
     }
     else
     {

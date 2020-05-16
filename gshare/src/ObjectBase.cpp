@@ -498,20 +498,25 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
     while (!m_loginSockets.empty())
     {
         ISocket *s = m_loginSockets.front();
-        int len = s->CopyData(t->m_buff, t->m_szBuff);
         m_loginSockets.pop_front();
-        if (s)
-            s->ClearBuff();
+        if (!s)
+            continue;
+
+        int len = s->CopyData(t->m_buff, t->m_szBuff);
+        s->ClearBuff();
         IObject *o = PrcsNotObjectReceive(s, t->m_buff, len);
         if (!o)
+        {
             continue;
+            s->Close();
+        }
 
         AddObject(o);
         if (ILink *h = o->GetLink())
         {
-            BussinessThread *t = GetPropertyThread();
+            BussinessThread *tmp = GetPropertyThread();
             h->SetSocket(s);
-            h->SetThread(t);
+            h->SetThread(tmp);
             t->m_linksAdd.Push(h);
         }
 
