@@ -11,7 +11,6 @@ include_directories(
 
 set(SRC_LIST
 	src/main.cpp
-	src/protectsocket.cpp
 )
 
 add_executable(${PACKAGE_NAME} ${SRC_LIST})

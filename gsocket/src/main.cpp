@@ -9,7 +9,6 @@
 #include <signal.h>  
 #endif //defined _WIN32 || defined _WIN64
 #include "ILog.h"
-#include "protectsocket.h"
 
 #define DefaultPort 8198
 static ISocketManager *sSockMgr = NULL;
@@ -25,7 +24,7 @@ void OnBindFinish(ISocket *sock, bool binded)
     if(sock)
     {
         char buff[256];
-        sprintf(buff, "bind %s:%d %s", sock->GetHost().c_str(), sock->GetPort(), binded ? "success" : "fail");
+        snprintf(buff, 256, "bind %s:%d %s", sock->GetHost().c_str(), sock->GetPort(), binded ? "success" : "fail");
         GSocket::GetLog().Log(buff, "Listen", 0, errno);
     }
     if (!binded)
@@ -43,17 +42,14 @@ int main(int argc, char *argv[])
     GLibrary lib("uavandqgc", GLibrary::CurrentPath());
     sSockMgr = GSocketManager::CreateManager(1);
     ISocket *sock = new GSocket(NULL);
-    ISocket *sockProtect = new ProtectSocket(NULL);
     int port = argc > 1 ? (int)Utility::str2int(argv[1]) : DefaultPort;
     if (port <1000)
         port = DefaultPort;
 
-    if (sock && sockProtect)
+    if (sock)
     {
         sock->Bind(port, "");
-        sockProtect->ConnectTo("127.0.0.1", 27059);
         sSockMgr->AddSocket(sock);
-        sSockMgr->AddSocket(sockProtect);
         sSockMgr->SetBindedCB(sock, &OnBindFinish);
     }
 
@@ -68,16 +64,6 @@ int main(int argc, char *argv[])
         }
 #endif //defined _WIN32 || defined _WIN64
         sSockMgr->Poll(50);
-        std::string f = Utility::ModuleName() + " " + Utility::l2string(port);
-        switch (sockProtect->GetSocketStat())
-        {
-        case ISocket::Connected:
-            sockProtect->Send(f.size(), f.c_str()); break;
-        case ISocket::Closed:
-            sockProtect->ConnectTo("127.0.0.1", 31057); break;
-        default:
-            break;
-        }
     }
     lib.Unload();
     delete sock;
