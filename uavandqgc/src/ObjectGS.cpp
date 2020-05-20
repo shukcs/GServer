@@ -10,9 +10,13 @@
 #include "FWAssist.h"
 #include "ObjectUav.h"
 
-#define WRITE_BUFFLEN 1024 * 8
-#define MAXLANDRECORDS 200
-#define MAXPLANRECORDS 200
+enum {
+    WRITE_BUFFLEN = 1024 * 8,
+    MaxSend = 3 * 1024,
+    MAXLANDRECORDS = 200,
+    MAXPLANRECORDS = 200,
+};
+
 using namespace das::proto;
 using namespace google::protobuf;
 using namespace std;
@@ -147,12 +151,12 @@ void ObjectGS::ProcessMessage(IMessage *msg)
     {
         switch (tp)
         {
-        case IMessage::BindUavRes:
-        case IMessage::QueryUavRes:
-        case IMessage::ControlUavRes:
-        case IMessage::SychMissionRes:
-        case IMessage::PostORRes:
-        case IMessage::UavAllocationRes:
+        case IMessage::BindUavRslt:
+        case IMessage::QueryUavRslt:
+        case IMessage::ControlUavRslt:
+        case IMessage::SychMissionRslt:
+        case IMessage::PostORRslt:
+        case IMessage::UavAllocationRslt:
         case IMessage::PushUavSndInfo:
         case IMessage::ControlGs:
             process2GsMsg(((GSOrUavMessage *)msg)->GetProtobuf());
@@ -160,6 +164,9 @@ void ObjectGS::ProcessMessage(IMessage *msg)
         case IMessage::Gs2GsMsg:
         case IMessage::Gs2GsAck:
             processGs2Gs(*(Message*)msg->GetContent(), tp);
+            break;
+        case IMessage::SuspendRslt:
+            processSuspend(*(DBMessage*)msg);
             break;
         case IMessage::UavsQueryRslt:
             processUavsInfo(*(DBMessage*)msg);
@@ -259,6 +266,8 @@ void ObjectGS::PrcsProtoBuff()
         _prcsReqMissons(*(RequestUavMission*)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(RequestUavMissionAcreage))
         _prcsReqMissonsAcreage(*(RequestUavMissionAcreage*)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(RequestMissionSuspend))
+        _prcsReqSuspend(*(RequestMissionSuspend*)m_p->GetProtoMessage());
 }
 
 void ObjectGS::process2GsMsg(const Message *msg)
@@ -404,6 +413,35 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
     WaitSend(ack);
 }
 
+void ObjectGS::processSuspend(const DBMessage &msg)
+{
+    bool bExist = msg.GetRead(EXECRSLT).ToBool();
+    auto ack = new AckMissionSuspend;
+    ack->set_seqno(msg.GetSeqNomb());
+    ack->set_result(bExist ? 1 : 0);
+    if (bExist)
+    {
+        auto sus = new MissionSuspend;
+        if (!sus)
+        {
+            delete ack;
+            return;
+        }
+        sus->set_planid(Utility::bigint2string(msg.GetRead("planID").ToInt64()));
+        sus->set_uav(msg.GetRead("uavID").ToString());
+        sus->set_user(msg.GetRead("userID").ToString());
+        sus->set_curridge(msg.GetRead("end").ToInt32());
+        int l = msg.GetRead("continiuLat").ToInt32();
+        if (-180e7 <= l && l < 180e7)
+        {
+            sus->set_continiulat(l);
+            sus->set_continiulon(msg.GetRead("continiuLon").ToInt32());
+        }
+        ack->set_allocated_suspend(sus);
+    }
+    WaitSend(ack);
+}
+
 void ObjectGS::processGSInfo(const DBMessage &msg)
 {
     m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : InitialFail;
@@ -533,7 +571,7 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
     auto itrboundary = boundary.begin();
     for (; itrids != ids.end(); ++itrids)
     {
-        if (ack->ByteSize() > 3072)
+        if (ack->ByteSize() > MaxSend)
         {
             WaitSend(ack);
             ack = new AckRequestParcelDescriptions;
@@ -611,7 +649,7 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
         }
     }
     
-    if (!m_protosSend.IsEmpty() && m_protosSend.Last()!=ack)
+    if (ack)
         WaitSend(ack);
 }
 
@@ -631,40 +669,81 @@ void ObjectGS::processGSInsert(const DBMessage &msg)
 
 void ObjectGS::processMissions(const DBMessage &msg)
 {
-    auto sd = new AckUavMission;
-    if (!sd)
+    auto ack = new AckUavMission;
+    if (!ack)
         return;
-    sd->set_seqno(msg.GetSeqNomb());
+
+    ack->set_seqno(msg.GetSeqNomb());
+    auto users = msg.GetRead("userID").ToStringList();
     auto lands = msg.GetRead("landId").GetVarList<int64_t>();
-    auto plans = msg.GetRead("planID").GetVarList<int64_t>();
     auto uavs = msg.GetRead("uavID").ToStringList();
-    auto ridges = msg.GetRead("curRidge").GetVarList<int32_t>();
+    auto ftms = msg.GetRead("finishTime").GetVarList<int64_t>();
     auto begins = msg.GetRead("begin").GetVarList<int32_t>();
     auto ends = msg.GetRead("end").GetVarList<int32_t>();
-    auto ftms = msg.GetRead("finishTime").GetVarList<int64_t>();
-    auto vayages = msg.GetRead("vayage").GetVarList<float>();
-    auto users = msg.GetRead("userID").ToStringList();
+    auto acreage = msg.GetRead("acreage").GetVarList<float>();
+    auto lats = msg.GetRead("continiuLat").GetVarList<int32_t>();
+    auto lons = msg.GetRead("continiuLon").GetVarList<int32_t>();
 
     auto landsItr = lands.begin();
     auto tmItr = ftms.begin();
-    auto rdItr = ridges.begin();
+    auto areaItr = acreage.begin();
+    auto itrBeg = begins.begin();
+    auto itrEnd = ends.begin();
+    auto itrUav = uavs.begin();
+    auto itrUser = users.begin();
+    auto itrLat = lats.begin();
+    auto itrLon = lons.begin();
     for (auto itr : msg.GetRead("planID").GetVarList<int64_t>())
     {
-        if (landsItr == lands.end() || tmItr== ftms.end() || rdItr == ridges.end())
+        if (   landsItr == lands.end()
+            || tmItr == ftms.end()
+            || areaItr == acreage.end()
+            || itrUav == uavs.end()
+            || itrBeg == begins.end()
+            || itrEnd == ends.end() 
+            || itrUser == users.end() )
         {
-            delete sd;
+            delete ack;
             return;
         }
 
-        if (UavRoute *rt = sd->add_routes())
+        if (ack->ByteSize() > MaxSend)
         {
+            WaitSend(ack);
+            ack = new AckUavMission;
+            if (!ack)
+                break;
+            ack->set_seqno(msg.GetSeqNomb());
+        }
+
+        if (UavRoute *rt = ack->add_routes())
+        {
+            rt->set_plan(Utility::bigint2string(itr));
             rt->set_optm(*tmItr);
             rt->set_land(Utility::bigint2string(*landsItr));
-            rt->set_plan(Utility::bigint2string(itr));
+            rt->set_acreage(*areaItr);
+            rt->set_uav(*itrUav);
+            rt->set_beg(*itrBeg);
+            rt->set_end(*itrEnd);
+            rt->set_user(*itrUser);
+            if (itrLat != lats.end() && itrLon != lons.end() && *itrLat > -1800000000 && *itrLat < 1800000000)
+            {
+                rt->set_continiulat(*itrLat);
+                rt->set_continiulon(*itrLon);
+                ++itrLat;
+                ++itrLon;
+            }
         }
+        ++tmItr;
         ++landsItr;
+        ++areaItr;
+        ++itrUav;
+        ++itrBeg;
+        ++itrEnd;
+        ++itrUser;
     }
-    WaitSend(sd);
+    if (ack)
+        WaitSend(ack);
 }
 
 void ObjectGS::processMissionsAcreage(const DBMessage &msg)
@@ -752,7 +831,7 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
     auto planParamsItr = planParams.begin();
     for (auto idItr = ids.begin(); idItr != ids.end(); ++idItr)
     {
-        if (ack->ByteSize() >= 4096)
+        if (ack->ByteSize() >= MaxSend)
         {
             WaitSend(ack);
             ack = new AckRequestOperationDescriptions;
@@ -877,15 +956,13 @@ void ObjectGS::_prcsReqBind(das::proto::RequestBindUav *msg)
         ms->AttachProto(msg);
         SendMsg(ms);
     }
+
     if (GetAuth(ObjectGS::Type_UavManager) && !msg->uavid().empty())
     {
-        if (IObjectManager *mgr = GetManager())
-        {
-            if (msg->opid() == 1)
-                mgr->Subcribe(m_id, msg->uavid(), IMessage::PushUavSndInfo);
-            else
-                mgr->Unsubcribe(m_id, msg->uavid(), IMessage::PushUavSndInfo);
-        }
+        if (msg->opid() == 1)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+            Subcribe(msg->uavid(), IMessage::PushUavSndInfo);
+        else
+            Unsubcribe(msg->uavid(), IMessage::PushUavSndInfo);
     }
 }
 
@@ -1315,9 +1392,10 @@ void ObjectGS::_prcsReqMissons(das::proto::RequestUavMission &msg)
     if (!GetAuth(ObjectGS::Type_UavManager))
         msgDb->SetCondition("userID", m_id);
     msgDb->SetCondition("uavID", msg.uav());
-    if (!GetAuth(ObjectGS::Type_UavManager))
-        msgDb->SetCondition("userID", m_id);
-    msgDb->SetCondition("landId", msg.uav());
+    if (msg.has_planid())
+        msgDb->SetCondition("planID", msg.planid());
+    if (msg.has_id())
+        msgDb->SetCondition("landId", msg.id());
     if (msg.has_beg())
         msgDb->SetCondition("finishTime:>", msg.beg());
     if (msg.has_end())
@@ -1329,9 +1407,9 @@ void ObjectGS::_prcsReqMissons(das::proto::RequestUavMission &msg)
 void ObjectGS::_prcsReqMissonsAcreage(das::proto::RequestUavMissionAcreage &msg)
 {
     DBMessage *msgDb = new DBMessage(this, IMessage::QueryMissionsAcreageRslt);
-
     if (!msgDb)
         return;
+
     msgDb->SetSeqNomb(msg.seqno());
     msgDb->SetSql("queryMissionAcreage");
     if (!GetAuth(ObjectGS::Type_UavManager))
@@ -1345,6 +1423,19 @@ void ObjectGS::_prcsReqMissonsAcreage(das::proto::RequestUavMissionAcreage &msg)
     if (msg.has_end())
         msgDb->SetCondition("finishTime:<", msg.end());
 
+    SendMsg(msgDb);
+}
+
+void ObjectGS::_prcsReqSuspend(das::proto::RequestMissionSuspend &msg)
+{
+    DBMessage *msgDb = new DBMessage(this, IMessage::SuspendRslt);
+    if (!msgDb)
+        return;
+
+    msgDb->SetSeqNomb(msg.seqno());
+    msgDb->SetSql("querySuspend");
+    msgDb->SetCondition("max.uavID", msg.uav());
+    msgDb->SetCondition("max.planID", msg.planid());
     SendMsg(msgDb);
 }
 

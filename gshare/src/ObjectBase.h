@@ -123,6 +123,9 @@ IObject(sock, id)；sock:socket;id:连接实体标识
 ********************************************************************************************/
     SHARED_DECL IObject(const std::string &id);
     SHARED_DECL virtual ~IObject();
+
+    SHARED_DECL void Subcribe(const std::string &sender, int tpMsg);
+    SHARED_DECL void Unsubcribe(const std::string &sender, int tpMsg);
 protected:
     friend class ObjectManagers;
     friend class IObjectManager;

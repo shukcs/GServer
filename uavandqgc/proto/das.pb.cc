@@ -249,15 +249,12 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* AckUavMissionAcreage_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   AckUavMissionAcreage_reflection_ = NULL;
-const ::google::protobuf::Descriptor* MissionSuspend_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  MissionSuspend_reflection_ = NULL;
-const ::google::protobuf::Descriptor* PostMissionSuspend_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  PostMissionSuspend_reflection_ = NULL;
 const ::google::protobuf::Descriptor* RequestMissionSuspend_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   RequestMissionSuspend_reflection_ = NULL;
+const ::google::protobuf::Descriptor* MissionSuspend_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  MissionSuspend_reflection_ = NULL;
 const ::google::protobuf::Descriptor* AckMissionSuspend_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   AckMissionSuspend_reflection_ = NULL;
@@ -1684,12 +1681,29 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckUavMissionAcreage));
-  MissionSuspend_descriptor_ = file->message_type(76);
+  RequestMissionSuspend_descriptor_ = file->message_type(76);
+  static const int RequestMissionSuspend_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, seqno_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, uav_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, planid_),
+  };
+  RequestMissionSuspend_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      RequestMissionSuspend_descriptor_,
+      RequestMissionSuspend::default_instance_,
+      RequestMissionSuspend_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(RequestMissionSuspend));
+  MissionSuspend_descriptor_ = file->message_type(77);
   static const int MissionSuspend_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MissionSuspend, uav_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MissionSuspend, user_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MissionSuspend, planid_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MissionSuspend, itemno_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MissionSuspend, curridge_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MissionSuspend, continiulat_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MissionSuspend, continiulon_),
   };
@@ -1704,44 +1718,11 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(MissionSuspend));
-  PostMissionSuspend_descriptor_ = file->message_type(77);
-  static const int PostMissionSuspend_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostMissionSuspend, seqno_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostMissionSuspend, curmsitem_),
-  };
-  PostMissionSuspend_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
-      PostMissionSuspend_descriptor_,
-      PostMissionSuspend::default_instance_,
-      PostMissionSuspend_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostMissionSuspend, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostMissionSuspend, _unknown_fields_),
-      -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(PostMissionSuspend));
-  RequestMissionSuspend_descriptor_ = file->message_type(78);
-  static const int RequestMissionSuspend_offsets_[4] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, seqno_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, uav_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, user_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, planid_),
-  };
-  RequestMissionSuspend_reflection_ =
-    new ::google::protobuf::internal::GeneratedMessageReflection(
-      RequestMissionSuspend_descriptor_,
-      RequestMissionSuspend::default_instance_,
-      RequestMissionSuspend_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, _unknown_fields_),
-      -1,
-      ::google::protobuf::DescriptorPool::generated_pool(),
-      ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(RequestMissionSuspend));
-  AckMissionSuspend_descriptor_ = file->message_type(79);
-  static const int AckMissionSuspend_offsets_[2] = {
+  AckMissionSuspend_descriptor_ = file->message_type(78);
+  static const int AckMissionSuspend_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckMissionSuspend, seqno_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckMissionSuspend, cpoint_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckMissionSuspend, result_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckMissionSuspend, suspend_),
   };
   AckMissionSuspend_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -1754,7 +1735,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckMissionSuspend));
-  UavStatus_descriptor_ = file->message_type(80);
+  UavStatus_descriptor_ = file->message_type(79);
   static const int UavStatus_offsets_[12] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavStatus, uavid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavStatus, result_),
@@ -1780,7 +1761,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UavStatus));
-  RequestUavStatus_descriptor_ = file->message_type(81);
+  RequestUavStatus_descriptor_ = file->message_type(80);
   static const int RequestUavStatus_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavStatus, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavStatus, uavid_),
@@ -1796,7 +1777,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestUavStatus));
-  AckRequestUavStatus_descriptor_ = file->message_type(82);
+  AckRequestUavStatus_descriptor_ = file->message_type(81);
   static const int AckRequestUavStatus_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavStatus, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavStatus, status_),
@@ -1812,7 +1793,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestUavStatus));
-  RequestBindUav_descriptor_ = file->message_type(83);
+  RequestBindUav_descriptor_ = file->message_type(82);
   static const int RequestBindUav_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestBindUav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestBindUav, opid_),
@@ -1831,7 +1812,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestBindUav));
-  AckRequestBindUav_descriptor_ = file->message_type(84);
+  AckRequestBindUav_descriptor_ = file->message_type(83);
   static const int AckRequestBindUav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestBindUav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestBindUav, opid_),
@@ -1849,7 +1830,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestBindUav));
-  UavProductInfo_descriptor_ = file->message_type(85);
+  UavProductInfo_descriptor_ = file->message_type(84);
   static const int UavProductInfo_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavProductInfo, uavid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavProductInfo, producttype_),
@@ -1869,7 +1850,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UavProductInfo));
-  RequestUavProductInfos_descriptor_ = file->message_type(86);
+  RequestUavProductInfos_descriptor_ = file->message_type(85);
   static const int RequestUavProductInfos_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavProductInfos, productid_),
@@ -1886,7 +1867,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestUavProductInfos));
-  AckRequestUavProductInfos_descriptor_ = file->message_type(87);
+  AckRequestUavProductInfos_descriptor_ = file->message_type(86);
   static const int AckRequestUavProductInfos_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavProductInfos, result_),
@@ -1903,7 +1884,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestUavProductInfos));
-  PostUavProductInfos_descriptor_ = file->message_type(88);
+  PostUavProductInfos_descriptor_ = file->message_type(87);
   static const int PostUavProductInfos_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostUavProductInfos, upi_),
@@ -1919,7 +1900,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostUavProductInfos));
-  AckPostUavProductInfos_descriptor_ = file->message_type(89);
+  AckPostUavProductInfos_descriptor_ = file->message_type(88);
   static const int AckPostUavProductInfos_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostUavProductInfos, result_),
@@ -1935,7 +1916,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostUavProductInfos));
-  PostControl2Uav_descriptor_ = file->message_type(90);
+  PostControl2Uav_descriptor_ = file->message_type(89);
   static const int PostControl2Uav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostControl2Uav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostControl2Uav, uavid_),
@@ -1953,7 +1934,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostControl2Uav));
-  AckPostControl2Uav_descriptor_ = file->message_type(91);
+  AckPostControl2Uav_descriptor_ = file->message_type(90);
   static const int AckPostControl2Uav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostControl2Uav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostControl2Uav, result_),
@@ -1971,7 +1952,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostControl2Uav));
-  PostStatus2GroundStation_descriptor_ = file->message_type(92);
+  PostStatus2GroundStation_descriptor_ = file->message_type(91);
   static const int PostStatus2GroundStation_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostStatus2GroundStation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostStatus2GroundStation, uavid_),
@@ -2155,11 +2136,9 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     AckUavMissionAcreage_descriptor_, &AckUavMissionAcreage::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    MissionSuspend_descriptor_, &MissionSuspend::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    PostMissionSuspend_descriptor_, &PostMissionSuspend::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     RequestMissionSuspend_descriptor_, &RequestMissionSuspend::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    MissionSuspend_descriptor_, &MissionSuspend::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     AckMissionSuspend_descriptor_, &AckMissionSuspend::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -2345,12 +2324,10 @@ void protobuf_ShutdownFile_das_2eproto() {
   delete RequestUavMissionAcreage_reflection_;
   delete AckUavMissionAcreage::default_instance_;
   delete AckUavMissionAcreage_reflection_;
-  delete MissionSuspend::default_instance_;
-  delete MissionSuspend_reflection_;
-  delete PostMissionSuspend::default_instance_;
-  delete PostMissionSuspend_reflection_;
   delete RequestMissionSuspend::default_instance_;
   delete RequestMissionSuspend_reflection_;
+  delete MissionSuspend::default_instance_;
+  delete MissionSuspend_reflection_;
   delete AckMissionSuspend::default_instance_;
   delete AckMissionSuspend_reflection_;
   delete UavStatus::default_instance_;
@@ -2575,53 +2552,51 @@ void protobuf_AddDesc_das_2eproto() {
     "\007acreage\030\013 \001(\002\"C\n\rAckUavMission\022\r\n\005seqno"
     "\030\001 \002(\r\022#\n\006routes\030\002 \003(\0132\023.das.proto.UavRo"
     "ute\"l\n\030RequestUavMissionAcreage\022\r\n\005seqno"
-    "\030\001 \002(\r\022\013\n\003uav\030\002 \002(\t\022\n\n\002id\030\003 \001(\t\022\016\n\006plani"
+    "\030\001 \002(\r\022\013\n\003uav\030\002 \001(\t\022\n\n\002id\030\003 \001(\t\022\016\n\006plani"
     "d\030\004 \001(\t\022\013\n\003beg\030\005 \001(\004\022\013\n\003end\030\006 \001(\004\"6\n\024Ack"
     "UavMissionAcreage\022\r\n\005seqno\030\001 \002(\r\022\017\n\007acre"
-    "age\030\002 \002(\002\"u\n\016MissionSuspend\022\013\n\003uav\030\001 \002(\t"
-    "\022\014\n\004user\030\002 \002(\t\022\016\n\006planId\030\003 \002(\t\022\016\n\006itemNo"
-    "\030\004 \002(\005\022\023\n\013continiuLat\030\005 \002(\005\022\023\n\013continiuL"
-    "on\030\006 \002(\005\"6\n\022PostMissionSuspend\022\r\n\005seqno\030"
-    "\001 \002(\r\022\021\n\tcurMsItem\030\002 \002(\005\"Q\n\025RequestMissi"
-    "onSuspend\022\r\n\005seqno\030\001 \002(\r\022\013\n\003uav\030\002 \002(\t\022\014\n"
-    "\004user\030\003 \002(\t\022\016\n\006planId\030\004 \002(\t\"M\n\021AckMissio"
-    "nSuspend\022\r\n\005seqno\030\001 \002(\r\022)\n\006cpoint\030\002 \002(\0132"
-    "\031.das.proto.MissionSuspend\"\350\001\n\tUavStatus"
-    "\022\r\n\005uavid\030\001 \002(\t\022\016\n\006result\030\002 \002(\005\022\016\n\006onlin"
-    "e\030\003 \001(\010\022\016\n\006landed\030\004 \001(\010\022\020\n\010deadline\030\005 \001("
-    "\004\022\016\n\006binded\030\006 \001(\010\022\016\n\006binder\030\007 \001(\t\022\014\n\004tim"
-    "e\030\010 \001(\004\022&\n\003pos\030\t \001(\0132\031.das.proto.GpsInfo"
-    "rmation\022\021\n\ttimestamp\030\n \001(\004\022\022\n\nauthString"
-    "\030\013 \001(\t\022\r\n\005simId\030\014 \001(\t\"0\n\020RequestUavStatu"
-    "s\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \003(\t\"J\n\023AckRe"
-    "questUavStatus\022\r\n\005seqno\030\001 \002(\r\022$\n\006status\030"
-    "\002 \003(\0132\024.das.proto.UavStatus\"`\n\016RequestBi"
-    "ndUav\022\r\n\005seqno\030\001 \002(\r\022\014\n\004opid\030\002 \002(\r\022\r\n\005ua"
-    "vid\030\003 \002(\t\022\016\n\006binder\030\004 \002(\t\022\022\n\nauthString\030"
-    "\005 \001(\t\"f\n\021AckRequestBindUav\022\r\n\005seqno\030\001 \002("
-    "\r\022\014\n\004opid\030\002 \002(\r\022\016\n\006result\030\003 \002(\005\022$\n\006statu"
-    "s\030\004 \001(\0132\024.das.proto.UavStatus\"v\n\016UavProd"
-    "uctInfo\022\r\n\005uavid\030\001 \001(\t\022\023\n\013producttype\030\002 "
-    "\001(\t\022\021\n\tproductid\030\003 \001(\t\022\017\n\007fwLight\030\004 \001(\t\022"
-    "\r\n\005fwFMU\030\005 \001(\t\022\r\n\005fwIMU\030\006 \001(\t\"I\n\026Request"
-    "UavProductInfos\022\r\n\005seqno\030\001 \002(\r\022\021\n\tproduc"
-    "tid\030\002 \003(\t\022\r\n\005uavid\030\003 \003(\t\"b\n\031AckRequestUa"
-    "vProductInfos\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002"
-    " \002(\005\022&\n\003upi\030\003 \003(\0132\031.das.proto.UavProduct"
-    "Info\"L\n\023PostUavProductInfos\022\r\n\005seqno\030\001 \002"
-    "(\r\022&\n\003upi\030\002 \003(\0132\031.das.proto.UavProductIn"
-    "fo\"7\n\026AckPostUavProductInfos\022\r\n\005seqno\030\001 "
-    "\002(\r\022\016\n\006result\030\002 \002(\005\"M\n\017PostControl2Uav\022\r"
-    "\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\016\n\006userid\030\003"
-    " \002(\t\022\014\n\004data\030\004 \003(\014\"R\n\022AckPostControl2Uav"
-    "\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005uavid"
-    "\030\003 \002(\t\022\016\n\006userid\030\004 \002(\t\"F\n\030PostStatus2Gro"
-    "undStation\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t"
-    "\022\014\n\004data\030\003 \003(\014*g\n\tGSMsgType\022\020\n\014DeleteFri"
-    "end\020\001\022\021\n\rRequestFriend\020\002\022\017\n\013AgreeFriend\020"
-    "\003\022\020\n\014RejectFriend\020\004\022\010\n\004Text\020\005\022\010\n\004Land\020\006*"
-    "1\n\020SurveryPrecision\022\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\002"
-    "\022\010\n\004HIGH\020\003", 9330);
+    "age\030\002 \002(\002\"C\n\025RequestMissionSuspend\022\r\n\005se"
+    "qno\030\001 \002(\r\022\013\n\003uav\030\002 \002(\t\022\016\n\006planID\030\003 \002(\t\"w"
+    "\n\016MissionSuspend\022\013\n\003uav\030\001 \002(\t\022\014\n\004user\030\002 "
+    "\002(\t\022\016\n\006planId\030\003 \002(\t\022\020\n\010curRidge\030\004 \002(\005\022\023\n"
+    "\013continiuLat\030\005 \001(\005\022\023\n\013continiuLon\030\006 \001(\005\""
+    "^\n\021AckMissionSuspend\022\r\n\005seqno\030\001 \002(\r\022\016\n\006r"
+    "esult\030\002 \002(\005\022*\n\007suspend\030\003 \001(\0132\031.das.proto"
+    ".MissionSuspend\"\350\001\n\tUavStatus\022\r\n\005uavid\030\001"
+    " \002(\t\022\016\n\006result\030\002 \002(\005\022\016\n\006online\030\003 \001(\010\022\016\n\006"
+    "landed\030\004 \001(\010\022\020\n\010deadline\030\005 \001(\004\022\016\n\006binded"
+    "\030\006 \001(\010\022\016\n\006binder\030\007 \001(\t\022\014\n\004time\030\010 \001(\004\022&\n\003"
+    "pos\030\t \001(\0132\031.das.proto.GpsInformation\022\021\n\t"
+    "timestamp\030\n \001(\004\022\022\n\nauthString\030\013 \001(\t\022\r\n\005s"
+    "imId\030\014 \001(\t\"0\n\020RequestUavStatus\022\r\n\005seqno\030"
+    "\001 \002(\r\022\r\n\005uavid\030\002 \003(\t\"J\n\023AckRequestUavSta"
+    "tus\022\r\n\005seqno\030\001 \002(\r\022$\n\006status\030\002 \003(\0132\024.das"
+    ".proto.UavStatus\"`\n\016RequestBindUav\022\r\n\005se"
+    "qno\030\001 \002(\r\022\014\n\004opid\030\002 \002(\r\022\r\n\005uavid\030\003 \002(\t\022\016"
+    "\n\006binder\030\004 \002(\t\022\022\n\nauthString\030\005 \001(\t\"f\n\021Ac"
+    "kRequestBindUav\022\r\n\005seqno\030\001 \002(\r\022\014\n\004opid\030\002"
+    " \002(\r\022\016\n\006result\030\003 \002(\005\022$\n\006status\030\004 \001(\0132\024.d"
+    "as.proto.UavStatus\"v\n\016UavProductInfo\022\r\n\005"
+    "uavid\030\001 \001(\t\022\023\n\013producttype\030\002 \001(\t\022\021\n\tprod"
+    "uctid\030\003 \001(\t\022\017\n\007fwLight\030\004 \001(\t\022\r\n\005fwFMU\030\005 "
+    "\001(\t\022\r\n\005fwIMU\030\006 \001(\t\"I\n\026RequestUavProductI"
+    "nfos\022\r\n\005seqno\030\001 \002(\r\022\021\n\tproductid\030\002 \003(\t\022\r"
+    "\n\005uavid\030\003 \003(\t\"b\n\031AckRequestUavProductInf"
+    "os\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022&\n\003upi"
+    "\030\003 \003(\0132\031.das.proto.UavProductInfo\"L\n\023Pos"
+    "tUavProductInfos\022\r\n\005seqno\030\001 \002(\r\022&\n\003upi\030\002"
+    " \003(\0132\031.das.proto.UavProductInfo\"7\n\026AckPo"
+    "stUavProductInfos\022\r\n\005seqno\030\001 \002(\r\022\016\n\006resu"
+    "lt\030\002 \002(\005\"M\n\017PostControl2Uav\022\r\n\005seqno\030\001 \002"
+    "(\r\022\r\n\005uavid\030\002 \002(\t\022\016\n\006userid\030\003 \002(\t\022\014\n\004dat"
+    "a\030\004 \003(\014\"R\n\022AckPostControl2Uav\022\r\n\005seqno\030\001"
+    " \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005uavid\030\003 \002(\t\022\016\n\006u"
+    "serid\030\004 \002(\t\"F\n\030PostStatus2GroundStation\022"
+    "\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\014\n\004data\030\003 "
+    "\003(\014*g\n\tGSMsgType\022\020\n\014DeleteFriend\020\001\022\021\n\rRe"
+    "questFriend\020\002\022\017\n\013AgreeFriend\020\003\022\020\n\014Reject"
+    "Friend\020\004\022\010\n\004Text\020\005\022\010\n\004Land\020\006*1\n\020SurveryP"
+    "recision\022\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\002\022\010\n\004HIGH\020\003", 9279);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "das.proto", &protobuf_RegisterTypes);
   PostHeartBeat::default_instance_ = new PostHeartBeat();
@@ -2700,9 +2675,8 @@ void protobuf_AddDesc_das_2eproto() {
   AckUavMission::default_instance_ = new AckUavMission();
   RequestUavMissionAcreage::default_instance_ = new RequestUavMissionAcreage();
   AckUavMissionAcreage::default_instance_ = new AckUavMissionAcreage();
-  MissionSuspend::default_instance_ = new MissionSuspend();
-  PostMissionSuspend::default_instance_ = new PostMissionSuspend();
   RequestMissionSuspend::default_instance_ = new RequestMissionSuspend();
+  MissionSuspend::default_instance_ = new MissionSuspend();
   AckMissionSuspend::default_instance_ = new AckMissionSuspend();
   UavStatus::default_instance_ = new UavStatus();
   RequestUavStatus::default_instance_ = new RequestUavStatus();
@@ -2793,9 +2767,8 @@ void protobuf_AddDesc_das_2eproto() {
   AckUavMission::default_instance_->InitAsDefaultInstance();
   RequestUavMissionAcreage::default_instance_->InitAsDefaultInstance();
   AckUavMissionAcreage::default_instance_->InitAsDefaultInstance();
-  MissionSuspend::default_instance_->InitAsDefaultInstance();
-  PostMissionSuspend::default_instance_->InitAsDefaultInstance();
   RequestMissionSuspend::default_instance_->InitAsDefaultInstance();
+  MissionSuspend::default_instance_->InitAsDefaultInstance();
   AckMissionSuspend::default_instance_->InitAsDefaultInstance();
   UavStatus::default_instance_->InitAsDefaultInstance();
   RequestUavStatus::default_instance_->InitAsDefaultInstance();
@@ -29242,7 +29215,7 @@ bool RequestUavMissionAcreage::MergePartialFromCodedStream(
         break;
       }
 
-      // required string uav = 2;
+      // optional string uav = 2;
       case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
@@ -29348,7 +29321,7 @@ void RequestUavMissionAcreage::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
   }
 
-  // required string uav = 2;
+  // optional string uav = 2;
   if (has_uav()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->uav().data(), this->uav().length(),
@@ -29398,7 +29371,7 @@ void RequestUavMissionAcreage::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
   }
 
-  // required string uav = 2;
+  // optional string uav = 2;
   if (has_uav()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->uav().data(), this->uav().length(),
@@ -29456,7 +29429,7 @@ int RequestUavMissionAcreage::ByteSize() const {
           this->seqno());
     }
 
-    // required string uav = 2;
+    // optional string uav = 2;
     if (has_uav()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
@@ -29553,7 +29526,7 @@ void RequestUavMissionAcreage::CopyFrom(const RequestUavMissionAcreage& from) {
 }
 
 bool RequestUavMissionAcreage::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
 
   return true;
 }
@@ -29831,10 +29804,333 @@ void AckUavMissionAcreage::Swap(AckUavMissionAcreage* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
+const int RequestMissionSuspend::kSeqnoFieldNumber;
+const int RequestMissionSuspend::kUavFieldNumber;
+const int RequestMissionSuspend::kPlanIDFieldNumber;
+#endif  // !_MSC_VER
+
+RequestMissionSuspend::RequestMissionSuspend()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void RequestMissionSuspend::InitAsDefaultInstance() {
+}
+
+RequestMissionSuspend::RequestMissionSuspend(const RequestMissionSuspend& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void RequestMissionSuspend::SharedCtor() {
+  _cached_size_ = 0;
+  seqno_ = 0u;
+  uav_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+RequestMissionSuspend::~RequestMissionSuspend() {
+  SharedDtor();
+}
+
+void RequestMissionSuspend::SharedDtor() {
+  if (uav_ != &::google::protobuf::internal::kEmptyString) {
+    delete uav_;
+  }
+  if (planid_ != &::google::protobuf::internal::kEmptyString) {
+    delete planid_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void RequestMissionSuspend::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* RequestMissionSuspend::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return RequestMissionSuspend_descriptor_;
+}
+
+const RequestMissionSuspend& RequestMissionSuspend::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
+  return *default_instance_;
+}
+
+RequestMissionSuspend* RequestMissionSuspend::default_instance_ = NULL;
+
+RequestMissionSuspend* RequestMissionSuspend::New() const {
+  return new RequestMissionSuspend;
+}
+
+void RequestMissionSuspend::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    seqno_ = 0u;
+    if (has_uav()) {
+      if (uav_ != &::google::protobuf::internal::kEmptyString) {
+        uav_->clear();
+      }
+    }
+    if (has_planid()) {
+      if (planid_ != &::google::protobuf::internal::kEmptyString) {
+        planid_->clear();
+      }
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool RequestMissionSuspend::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required uint32 seqno = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &seqno_)));
+          set_has_seqno();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_uav;
+        break;
+      }
+
+      // required string uav = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_uav:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_uav()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->uav().data(), this->uav().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_planID;
+        break;
+      }
+
+      // required string planID = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_planID:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_planid()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->planid().data(), this->planid().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void RequestMissionSuspend::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
+  }
+
+  // required string uav = 2;
+  if (has_uav()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->uav().data(), this->uav().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      2, this->uav(), output);
+  }
+
+  // required string planID = 3;
+  if (has_planid()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->planid().data(), this->planid().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      3, this->planid(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* RequestMissionSuspend::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
+  }
+
+  // required string uav = 2;
+  if (has_uav()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->uav().data(), this->uav().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->uav(), target);
+  }
+
+  // required string planID = 3;
+  if (has_planid()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->planid().data(), this->planid().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->planid(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int RequestMissionSuspend::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required uint32 seqno = 1;
+    if (has_seqno()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->seqno());
+    }
+
+    // required string uav = 2;
+    if (has_uav()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->uav());
+    }
+
+    // required string planID = 3;
+    if (has_planid()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->planid());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void RequestMissionSuspend::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const RequestMissionSuspend* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const RequestMissionSuspend*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void RequestMissionSuspend::MergeFrom(const RequestMissionSuspend& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_seqno()) {
+      set_seqno(from.seqno());
+    }
+    if (from.has_uav()) {
+      set_uav(from.uav());
+    }
+    if (from.has_planid()) {
+      set_planid(from.planid());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void RequestMissionSuspend::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void RequestMissionSuspend::CopyFrom(const RequestMissionSuspend& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool RequestMissionSuspend::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
+
+  return true;
+}
+
+void RequestMissionSuspend::Swap(RequestMissionSuspend* other) {
+  if (other != this) {
+    std::swap(seqno_, other->seqno_);
+    std::swap(uav_, other->uav_);
+    std::swap(planid_, other->planid_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata RequestMissionSuspend::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = RequestMissionSuspend_descriptor_;
+  metadata.reflection = RequestMissionSuspend_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
 const int MissionSuspend::kUavFieldNumber;
 const int MissionSuspend::kUserFieldNumber;
 const int MissionSuspend::kPlanIdFieldNumber;
-const int MissionSuspend::kItemNoFieldNumber;
+const int MissionSuspend::kCurRidgeFieldNumber;
 const int MissionSuspend::kContiniuLatFieldNumber;
 const int MissionSuspend::kContiniuLonFieldNumber;
 #endif  // !_MSC_VER
@@ -29858,7 +30154,7 @@ void MissionSuspend::SharedCtor() {
   uav_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   user_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  itemno_ = 0;
+  curridge_ = 0;
   continiulat_ = 0;
   continiulon_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -29920,7 +30216,7 @@ void MissionSuspend::Clear() {
         planid_->clear();
       }
     }
-    itemno_ = 0;
+    curridge_ = 0;
     continiulat_ = 0;
     continiulon_ = 0;
   }
@@ -29980,19 +30276,19 @@ bool MissionSuspend::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(32)) goto parse_itemNo;
+        if (input->ExpectTag(32)) goto parse_curRidge;
         break;
       }
 
-      // required int32 itemNo = 4;
+      // required int32 curRidge = 4;
       case 4: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_itemNo:
+         parse_curRidge:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &itemno_)));
-          set_has_itemno();
+                 input, &curridge_)));
+          set_has_curridge();
         } else {
           goto handle_uninterpreted;
         }
@@ -30000,7 +30296,7 @@ bool MissionSuspend::MergePartialFromCodedStream(
         break;
       }
 
-      // required int32 continiuLat = 5;
+      // optional int32 continiuLat = 5;
       case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -30016,7 +30312,7 @@ bool MissionSuspend::MergePartialFromCodedStream(
         break;
       }
 
-      // required int32 continiuLon = 6;
+      // optional int32 continiuLon = 6;
       case 6: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
@@ -30077,17 +30373,17 @@ void MissionSuspend::SerializeWithCachedSizes(
       3, this->planid(), output);
   }
 
-  // required int32 itemNo = 4;
-  if (has_itemno()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->itemno(), output);
+  // required int32 curRidge = 4;
+  if (has_curridge()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->curridge(), output);
   }
 
-  // required int32 continiuLat = 5;
+  // optional int32 continiuLat = 5;
   if (has_continiulat()) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->continiulat(), output);
   }
 
-  // required int32 continiuLon = 6;
+  // optional int32 continiuLon = 6;
   if (has_continiulon()) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(6, this->continiulon(), output);
   }
@@ -30130,17 +30426,17 @@ void MissionSuspend::SerializeWithCachedSizes(
         3, this->planid(), target);
   }
 
-  // required int32 itemNo = 4;
-  if (has_itemno()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->itemno(), target);
+  // required int32 curRidge = 4;
+  if (has_curridge()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->curridge(), target);
   }
 
-  // required int32 continiuLat = 5;
+  // optional int32 continiuLat = 5;
   if (has_continiulat()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->continiulat(), target);
   }
 
-  // required int32 continiuLon = 6;
+  // optional int32 continiuLon = 6;
   if (has_continiulon()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(6, this->continiulon(), target);
   }
@@ -30177,21 +30473,21 @@ int MissionSuspend::ByteSize() const {
           this->planid());
     }
 
-    // required int32 itemNo = 4;
-    if (has_itemno()) {
+    // required int32 curRidge = 4;
+    if (has_curridge()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->itemno());
+          this->curridge());
     }
 
-    // required int32 continiuLat = 5;
+    // optional int32 continiuLat = 5;
     if (has_continiulat()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->continiulat());
     }
 
-    // required int32 continiuLon = 6;
+    // optional int32 continiuLon = 6;
     if (has_continiulon()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
@@ -30234,8 +30530,8 @@ void MissionSuspend::MergeFrom(const MissionSuspend& from) {
     if (from.has_planid()) {
       set_planid(from.planid());
     }
-    if (from.has_itemno()) {
-      set_itemno(from.itemno());
+    if (from.has_curridge()) {
+      set_curridge(from.curridge());
     }
     if (from.has_continiulat()) {
       set_continiulat(from.continiulat());
@@ -30260,7 +30556,7 @@ void MissionSuspend::CopyFrom(const MissionSuspend& from) {
 }
 
 bool MissionSuspend::IsInitialized() const {
-  if ((_has_bits_[0] & 0x0000003f) != 0x0000003f) return false;
+  if ((_has_bits_[0] & 0x0000000f) != 0x0000000f) return false;
 
   return true;
 }
@@ -30270,7 +30566,7 @@ void MissionSuspend::Swap(MissionSuspend* other) {
     std::swap(uav_, other->uav_);
     std::swap(user_, other->user_);
     std::swap(planid_, other->planid_);
-    std::swap(itemno_, other->itemno_);
+    std::swap(curridge_, other->curridge_);
     std::swap(continiulat_, other->continiulat_);
     std::swap(continiulon_, other->continiulon_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
@@ -30291,637 +30587,9 @@ void MissionSuspend::Swap(MissionSuspend* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
-const int PostMissionSuspend::kSeqnoFieldNumber;
-const int PostMissionSuspend::kCurMsItemFieldNumber;
-#endif  // !_MSC_VER
-
-PostMissionSuspend::PostMissionSuspend()
-  : ::google::protobuf::Message() {
-  SharedCtor();
-}
-
-void PostMissionSuspend::InitAsDefaultInstance() {
-}
-
-PostMissionSuspend::PostMissionSuspend(const PostMissionSuspend& from)
-  : ::google::protobuf::Message() {
-  SharedCtor();
-  MergeFrom(from);
-}
-
-void PostMissionSuspend::SharedCtor() {
-  _cached_size_ = 0;
-  seqno_ = 0u;
-  curmsitem_ = 0;
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-PostMissionSuspend::~PostMissionSuspend() {
-  SharedDtor();
-}
-
-void PostMissionSuspend::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void PostMissionSuspend::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* PostMissionSuspend::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return PostMissionSuspend_descriptor_;
-}
-
-const PostMissionSuspend& PostMissionSuspend::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
-  return *default_instance_;
-}
-
-PostMissionSuspend* PostMissionSuspend::default_instance_ = NULL;
-
-PostMissionSuspend* PostMissionSuspend::New() const {
-  return new PostMissionSuspend;
-}
-
-void PostMissionSuspend::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    seqno_ = 0u;
-    curmsitem_ = 0;
-  }
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
-}
-
-bool PostMissionSuspend::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
-  ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required uint32 seqno = 1;
-      case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &seqno_)));
-          set_has_seqno();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(16)) goto parse_curMsItem;
-        break;
-      }
-
-      // required int32 curMsItem = 2;
-      case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_curMsItem:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &curmsitem_)));
-          set_has_curmsitem();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectAtEnd()) return true;
-        break;
-      }
-
-      default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-  return true;
-#undef DO_
-}
-
-void PostMissionSuspend::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // required uint32 seqno = 1;
-  if (has_seqno()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
-  }
-
-  // required int32 curMsItem = 2;
-  if (has_curmsitem()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->curmsitem(), output);
-  }
-
-  if (!unknown_fields().empty()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
-}
-
-::google::protobuf::uint8* PostMissionSuspend::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
-  // required uint32 seqno = 1;
-  if (has_seqno()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
-  }
-
-  // required int32 curMsItem = 2;
-  if (has_curmsitem()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->curmsitem(), target);
-  }
-
-  if (!unknown_fields().empty()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  return target;
-}
-
-int PostMissionSuspend::ByteSize() const {
-  int total_size = 0;
-
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required uint32 seqno = 1;
-    if (has_seqno()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->seqno());
-    }
-
-    // required int32 curMsItem = 2;
-    if (has_curmsitem()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->curmsitem());
-    }
-
-  }
-  if (!unknown_fields().empty()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void PostMissionSuspend::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const PostMissionSuspend* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const PostMissionSuspend*>(
-      &from);
-  if (source == NULL) {
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-    MergeFrom(*source);
-  }
-}
-
-void PostMissionSuspend::MergeFrom(const PostMissionSuspend& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_seqno()) {
-      set_seqno(from.seqno());
-    }
-    if (from.has_curmsitem()) {
-      set_curmsitem(from.curmsitem());
-    }
-  }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
-}
-
-void PostMissionSuspend::CopyFrom(const ::google::protobuf::Message& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void PostMissionSuspend::CopyFrom(const PostMissionSuspend& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool PostMissionSuspend::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
-
-  return true;
-}
-
-void PostMissionSuspend::Swap(PostMissionSuspend* other) {
-  if (other != this) {
-    std::swap(seqno_, other->seqno_);
-    std::swap(curmsitem_, other->curmsitem_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
-}
-
-::google::protobuf::Metadata PostMissionSuspend::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = PostMissionSuspend_descriptor_;
-  metadata.reflection = PostMissionSuspend_reflection_;
-  return metadata;
-}
-
-
-// ===================================================================
-
-#ifndef _MSC_VER
-const int RequestMissionSuspend::kSeqnoFieldNumber;
-const int RequestMissionSuspend::kUavFieldNumber;
-const int RequestMissionSuspend::kUserFieldNumber;
-const int RequestMissionSuspend::kPlanIdFieldNumber;
-#endif  // !_MSC_VER
-
-RequestMissionSuspend::RequestMissionSuspend()
-  : ::google::protobuf::Message() {
-  SharedCtor();
-}
-
-void RequestMissionSuspend::InitAsDefaultInstance() {
-}
-
-RequestMissionSuspend::RequestMissionSuspend(const RequestMissionSuspend& from)
-  : ::google::protobuf::Message() {
-  SharedCtor();
-  MergeFrom(from);
-}
-
-void RequestMissionSuspend::SharedCtor() {
-  _cached_size_ = 0;
-  seqno_ = 0u;
-  uav_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  user_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-RequestMissionSuspend::~RequestMissionSuspend() {
-  SharedDtor();
-}
-
-void RequestMissionSuspend::SharedDtor() {
-  if (uav_ != &::google::protobuf::internal::kEmptyString) {
-    delete uav_;
-  }
-  if (user_ != &::google::protobuf::internal::kEmptyString) {
-    delete user_;
-  }
-  if (planid_ != &::google::protobuf::internal::kEmptyString) {
-    delete planid_;
-  }
-  if (this != default_instance_) {
-  }
-}
-
-void RequestMissionSuspend::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* RequestMissionSuspend::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return RequestMissionSuspend_descriptor_;
-}
-
-const RequestMissionSuspend& RequestMissionSuspend::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
-  return *default_instance_;
-}
-
-RequestMissionSuspend* RequestMissionSuspend::default_instance_ = NULL;
-
-RequestMissionSuspend* RequestMissionSuspend::New() const {
-  return new RequestMissionSuspend;
-}
-
-void RequestMissionSuspend::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    seqno_ = 0u;
-    if (has_uav()) {
-      if (uav_ != &::google::protobuf::internal::kEmptyString) {
-        uav_->clear();
-      }
-    }
-    if (has_user()) {
-      if (user_ != &::google::protobuf::internal::kEmptyString) {
-        user_->clear();
-      }
-    }
-    if (has_planid()) {
-      if (planid_ != &::google::protobuf::internal::kEmptyString) {
-        planid_->clear();
-      }
-    }
-  }
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
-}
-
-bool RequestMissionSuspend::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
-  ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required uint32 seqno = 1;
-      case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &seqno_)));
-          set_has_seqno();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(18)) goto parse_uav;
-        break;
-      }
-
-      // required string uav = 2;
-      case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_uav:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_uav()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->uav().data(), this->uav().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(26)) goto parse_user;
-        break;
-      }
-
-      // required string user = 3;
-      case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_user:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_user()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->user().data(), this->user().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(34)) goto parse_planId;
-        break;
-      }
-
-      // required string planId = 4;
-      case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_planId:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_planid()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->planid().data(), this->planid().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectAtEnd()) return true;
-        break;
-      }
-
-      default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-  return true;
-#undef DO_
-}
-
-void RequestMissionSuspend::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // required uint32 seqno = 1;
-  if (has_seqno()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
-  }
-
-  // required string uav = 2;
-  if (has_uav()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->uav().data(), this->uav().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      2, this->uav(), output);
-  }
-
-  // required string user = 3;
-  if (has_user()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->user().data(), this->user().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      3, this->user(), output);
-  }
-
-  // required string planId = 4;
-  if (has_planid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->planid().data(), this->planid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      4, this->planid(), output);
-  }
-
-  if (!unknown_fields().empty()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
-}
-
-::google::protobuf::uint8* RequestMissionSuspend::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
-  // required uint32 seqno = 1;
-  if (has_seqno()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
-  }
-
-  // required string uav = 2;
-  if (has_uav()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->uav().data(), this->uav().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->uav(), target);
-  }
-
-  // required string user = 3;
-  if (has_user()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->user().data(), this->user().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        3, this->user(), target);
-  }
-
-  // required string planId = 4;
-  if (has_planid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->planid().data(), this->planid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        4, this->planid(), target);
-  }
-
-  if (!unknown_fields().empty()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  return target;
-}
-
-int RequestMissionSuspend::ByteSize() const {
-  int total_size = 0;
-
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required uint32 seqno = 1;
-    if (has_seqno()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->seqno());
-    }
-
-    // required string uav = 2;
-    if (has_uav()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->uav());
-    }
-
-    // required string user = 3;
-    if (has_user()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->user());
-    }
-
-    // required string planId = 4;
-    if (has_planid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->planid());
-    }
-
-  }
-  if (!unknown_fields().empty()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void RequestMissionSuspend::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const RequestMissionSuspend* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const RequestMissionSuspend*>(
-      &from);
-  if (source == NULL) {
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-    MergeFrom(*source);
-  }
-}
-
-void RequestMissionSuspend::MergeFrom(const RequestMissionSuspend& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_seqno()) {
-      set_seqno(from.seqno());
-    }
-    if (from.has_uav()) {
-      set_uav(from.uav());
-    }
-    if (from.has_user()) {
-      set_user(from.user());
-    }
-    if (from.has_planid()) {
-      set_planid(from.planid());
-    }
-  }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
-}
-
-void RequestMissionSuspend::CopyFrom(const ::google::protobuf::Message& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void RequestMissionSuspend::CopyFrom(const RequestMissionSuspend& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool RequestMissionSuspend::IsInitialized() const {
-  if ((_has_bits_[0] & 0x0000000f) != 0x0000000f) return false;
-
-  return true;
-}
-
-void RequestMissionSuspend::Swap(RequestMissionSuspend* other) {
-  if (other != this) {
-    std::swap(seqno_, other->seqno_);
-    std::swap(uav_, other->uav_);
-    std::swap(user_, other->user_);
-    std::swap(planid_, other->planid_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
-}
-
-::google::protobuf::Metadata RequestMissionSuspend::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = RequestMissionSuspend_descriptor_;
-  metadata.reflection = RequestMissionSuspend_reflection_;
-  return metadata;
-}
-
-
-// ===================================================================
-
-#ifndef _MSC_VER
 const int AckMissionSuspend::kSeqnoFieldNumber;
-const int AckMissionSuspend::kCpointFieldNumber;
+const int AckMissionSuspend::kResultFieldNumber;
+const int AckMissionSuspend::kSuspendFieldNumber;
 #endif  // !_MSC_VER
 
 AckMissionSuspend::AckMissionSuspend()
@@ -30930,7 +30598,7 @@ AckMissionSuspend::AckMissionSuspend()
 }
 
 void AckMissionSuspend::InitAsDefaultInstance() {
-  cpoint_ = const_cast< ::das::proto::MissionSuspend*>(&::das::proto::MissionSuspend::default_instance());
+  suspend_ = const_cast< ::das::proto::MissionSuspend*>(&::das::proto::MissionSuspend::default_instance());
 }
 
 AckMissionSuspend::AckMissionSuspend(const AckMissionSuspend& from)
@@ -30942,7 +30610,8 @@ AckMissionSuspend::AckMissionSuspend(const AckMissionSuspend& from)
 void AckMissionSuspend::SharedCtor() {
   _cached_size_ = 0;
   seqno_ = 0u;
-  cpoint_ = NULL;
+  result_ = 0;
+  suspend_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -30952,7 +30621,7 @@ AckMissionSuspend::~AckMissionSuspend() {
 
 void AckMissionSuspend::SharedDtor() {
   if (this != default_instance_) {
-    delete cpoint_;
+    delete suspend_;
   }
 }
 
@@ -30980,8 +30649,9 @@ AckMissionSuspend* AckMissionSuspend::New() const {
 void AckMissionSuspend::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     seqno_ = 0u;
-    if (has_cpoint()) {
-      if (cpoint_ != NULL) cpoint_->::das::proto::MissionSuspend::Clear();
+    result_ = 0;
+    if (has_suspend()) {
+      if (suspend_ != NULL) suspend_->::das::proto::MissionSuspend::Clear();
     }
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
@@ -31005,17 +30675,33 @@ bool AckMissionSuspend::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(18)) goto parse_cpoint;
+        if (input->ExpectTag(16)) goto parse_result;
         break;
       }
 
-      // required .das.proto.MissionSuspend cpoint = 2;
+      // required int32 result = 2;
       case 2: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_result:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &result_)));
+          set_has_result();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_suspend;
+        break;
+      }
+
+      // optional .das.proto.MissionSuspend suspend = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_cpoint:
+         parse_suspend:
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_cpoint()));
+               input, mutable_suspend()));
         } else {
           goto handle_uninterpreted;
         }
@@ -31046,10 +30732,15 @@ void AckMissionSuspend::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
   }
 
-  // required .das.proto.MissionSuspend cpoint = 2;
-  if (has_cpoint()) {
+  // required int32 result = 2;
+  if (has_result()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->result(), output);
+  }
+
+  // optional .das.proto.MissionSuspend suspend = 3;
+  if (has_suspend()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      2, this->cpoint(), output);
+      3, this->suspend(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -31065,11 +30756,16 @@ void AckMissionSuspend::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
   }
 
-  // required .das.proto.MissionSuspend cpoint = 2;
-  if (has_cpoint()) {
+  // required int32 result = 2;
+  if (has_result()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->result(), target);
+  }
+
+  // optional .das.proto.MissionSuspend suspend = 3;
+  if (has_suspend()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        2, this->cpoint(), target);
+        3, this->suspend(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -31090,11 +30786,18 @@ int AckMissionSuspend::ByteSize() const {
           this->seqno());
     }
 
-    // required .das.proto.MissionSuspend cpoint = 2;
-    if (has_cpoint()) {
+    // required int32 result = 2;
+    if (has_result()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->result());
+    }
+
+    // optional .das.proto.MissionSuspend suspend = 3;
+    if (has_suspend()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          this->cpoint());
+          this->suspend());
     }
 
   }
@@ -31127,8 +30830,11 @@ void AckMissionSuspend::MergeFrom(const AckMissionSuspend& from) {
     if (from.has_seqno()) {
       set_seqno(from.seqno());
     }
-    if (from.has_cpoint()) {
-      mutable_cpoint()->::das::proto::MissionSuspend::MergeFrom(from.cpoint());
+    if (from.has_result()) {
+      set_result(from.result());
+    }
+    if (from.has_suspend()) {
+      mutable_suspend()->::das::proto::MissionSuspend::MergeFrom(from.suspend());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -31149,8 +30855,8 @@ void AckMissionSuspend::CopyFrom(const AckMissionSuspend& from) {
 bool AckMissionSuspend::IsInitialized() const {
   if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
 
-  if (has_cpoint()) {
-    if (!this->cpoint().IsInitialized()) return false;
+  if (has_suspend()) {
+    if (!this->suspend().IsInitialized()) return false;
   }
   return true;
 }
@@ -31158,7 +30864,8 @@ bool AckMissionSuspend::IsInitialized() const {
 void AckMissionSuspend::Swap(AckMissionSuspend* other) {
   if (other != this) {
     std::swap(seqno_, other->seqno_);
-    std::swap(cpoint_, other->cpoint_);
+    std::swap(result_, other->result_);
+    std::swap(suspend_, other->suspend_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

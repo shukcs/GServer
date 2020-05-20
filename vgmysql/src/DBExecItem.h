@@ -29,8 +29,10 @@ public:
         NumbRightMask = 0xff00,//×îÓÒ+')'
     };
 public:
-    SHARED_SQL void SetParam(const string &param, FieldType tp=NoBuff);
+    SHARED_SQL void SetParam(const string &param, FieldType tp = NoBuff);
+    SHARED_SQL void SetParam(const string &exFild, const string &param, FieldType tp = NoBuff);
     SHARED_SQL void SetParam(const list<string> &param);
+    SHARED_SQL void SetParam(const string &exFild, const list<string> &param);
     SHARED_SQL unsigned GetMaxLen()const;
     SHARED_SQL unsigned GetValidLen()const;
     SHARED_SQL void *GetBuff()const;
@@ -38,6 +40,7 @@ public:
     SHARED_SQL void InitBuff(unsigned len, const void *buf = NULL);
     SHARED_SQL const string &GetFieldName()const;
     SHARED_SQL const string &GetJudge()const;
+    SHARED_SQL ExecutItem *ComplexSql()const;
 
     string ToConditionString(const string &str)const;
     int GetType()const;
@@ -87,6 +90,7 @@ private:
     bool            m_bEmpty;
     FieldType       m_tpField;
     char            *m_buff;
+    ExecutItem      *m_exParam;
     unsigned long   m_lenMax;
     unsigned long   m_len;
     string          m_name;
@@ -123,10 +127,10 @@ public:
     SHARED_SQL int CountRead()const;
     SHARED_SQL void ClearData();
     SHARED_SQL ExecutType GetType()const;
+    SHARED_SQL const std::string &GetName()const;
 
     string GetSqlString(MYSQL_BIND *paramBinds=NULL)const;
     MYSQL_BIND *GetParamBinds();
-    const std::string &GetName()const;
     const StringList &ExecutTables()const;
     void AddItem(FiledVal *item, int tp);
     void SetIncrement(FiledVal *item);

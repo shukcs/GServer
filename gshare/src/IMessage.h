@@ -52,14 +52,14 @@ public:
         NotifyFWUpdate,
         Gs2UavEnd,
 
-        BindUavRes,
-        ControlUavRes,
-        SychMissionRes,
-        PostORRes,
+        BindUavRslt,
+        ControlUavRslt,
+        SychMissionRslt,
+        PostORRslt,
         PushUavSndInfo,
         ControlGs,
-        QueryUavRes,
-        UavAllocationRes,
+        QueryUavRslt,
+        UavAllocationRslt,
 
         Uav2GsEnd,
         Gs2GsBeging = Uav2GsEnd,
@@ -92,6 +92,7 @@ public:
         DeletePlanRslt,
         QueryMissionsRslt,
         QueryMissionsAcreageRslt,
+        SuspendRslt,
 
         DBAckEnd,
 

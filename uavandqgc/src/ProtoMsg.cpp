@@ -144,8 +144,6 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new SyscOperationRoutes;                   //同步航线结果
     else if (name == d_p_ClassName(RequestRouteMissions))
         m_msg = new RequestRouteMissions;                  //飞机下载航线
-    else if (name == d_p_ClassName(RequestUavMission))
-        m_msg = new RequestUavMission;                     //飞机作业查询
     else if (name == d_p_ClassName(RequestUavStatus))
         m_msg = new RequestUavStatus;                      //查询飞机状态结果
     else if (name == d_p_ClassName(RequestBindUav))
@@ -164,10 +162,12 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new GroundStationsMessage;                  //好友消息
     else if (name == d_p_ClassName(AckGroundStationsMessage))
         m_msg = new AckGroundStationsMessage;               //好友消息服务器回执
-    else if (name == d_p_ClassName(PostMissionSuspend))
-        m_msg = new PostMissionSuspend;               //好友消息服务器回执
+    else if (name == d_p_ClassName(RequestMissionSuspend))
+        m_msg = new RequestMissionSuspend;                  //好友消息服务器回执
     else if (name == d_p_ClassName(RequestUavMissionAcreage))
-        m_msg = new RequestUavMissionAcreage;               //好友消息服务器回执
+        m_msg = new RequestUavMissionAcreage;               //查询作业面积
+    else if (name == d_p_ClassName(RequestUavMission))
+        m_msg = new RequestUavMission;                     //飞机作业查询
 
     if (m_msg)
         return m_msg->ParseFromArray(buff, len);

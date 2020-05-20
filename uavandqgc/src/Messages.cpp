@@ -179,21 +179,21 @@ IMessage::MessageType Uav2GSMessage::getMessageType(const Message &msg)
     MessageType ret = Unknown;
     const string &name = msg.GetDescriptor()->full_name();
     if (name == d_p_ClassName(AckRequestBindUav))
-        ret = BindUavRes;
+        ret = BindUavRslt;
     else if (name == d_p_ClassName(AckPostControl2Uav))
-        ret = ControlUavRes;
+        ret = ControlUavRslt;
     else if (name == d_p_ClassName(SyscOperationRoutes))
-        ret = SychMissionRes;
+        ret = SychMissionRslt;
     else if (name == d_p_ClassName(AckPostOperationRoute))
-        ret = PostORRes;
+        ret = PostORRslt;
     else if (name == d_p_ClassName(PostOperationInformation))
         ret = PushUavSndInfo;
     else if (name == d_p_ClassName(PostStatus2GroundStation))
         ret = ControlGs;
     else if (name == d_p_ClassName(AckRequestUavStatus))
-        ret = QueryUavRes;
+        ret = QueryUavRslt;
     else if (name == d_p_ClassName(AckIdentityAllocation))
-        ret = UavAllocationRes;
+        ret = UavAllocationRslt;
 
     return ret;
 }

@@ -328,6 +328,18 @@ IObject::~IObject()
 {
 }
 
+void IObject::Subcribe(const string &sender, int tpMsg)
+{
+    if (IObjectManager *mgr = GetManager())
+        mgr->Subcribe(m_id, sender, tpMsg);
+}
+
+void IObject::Unsubcribe(const string &sender, int tpMsg)
+{
+    if (IObjectManager *mgr = GetManager())
+        mgr->Unsubcribe(m_id, sender, tpMsg);
+}
+
 const string &IObject::GetObjectID() const
 {
     return m_id;

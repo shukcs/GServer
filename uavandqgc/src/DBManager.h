@@ -36,6 +36,7 @@ protected:
     void ProcessMessage(IMessage *msg);
 private:
     void _initSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx);
+    void _initCmpSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx);
     void _initRefField(ExecutItem &sql, const std::string &field, uint64_t idx);
     int64_t _executeSql(ExecutItem *sql, DBMessage *msg, int idx);
     static void _initFieldByVarient(FiledVal &fd, const Variant &v);

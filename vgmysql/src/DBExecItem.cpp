@@ -19,16 +19,16 @@ static const list<FiledVal*> lsFieldEmpty;
 ///////////////////////////////////////////////////////////////////////////////////////
 //FiledVal
 ///////////////////////////////////////////////////////////////////////////////////////
-FiledVal::FiledVal(int tp, const std::string &name, int len)
-: m_type(tp), m_bEmpty(true), m_tpField(NoBuff), m_buff(NULL)
-, m_lenMax(0), m_len(0), m_name(name), m_condition("=")
+FiledVal::FiledVal(int tp, const std::string &name, int len): m_type(tp)
+, m_bEmpty(true), m_tpField(NoBuff), m_buff(NULL), m_exParam(NULL)
+,m_lenMax(0), m_len(0), m_name(name), m_condition("=")
 {
     InitBuff(len);
     transType(tp);
 }
 
-FiledVal::FiledVal(VGTableField *fild, bool bOth)
-: m_type(-1), m_bEmpty(true), m_tpField(NoBuff), m_buff(NULL)
+FiledVal::FiledVal(VGTableField *fild, bool bOth): m_type(-1), m_bEmpty(true)
+, m_tpField(NoBuff), m_buff(NULL), m_exParam(NULL)
 , m_lenMax(0), m_len(0), m_condition("=")
 {
     if (fild)
@@ -85,6 +85,11 @@ const string & FiledVal::GetJudge() const
     return m_condition;
 }
 
+ExecutItem *FiledVal::ComplexSql() const
+{
+    return m_exParam;
+}
+
 void FiledVal::SetParam(const string &param, FieldType tp)
 {
     if(param.length() > 0 && (NoBuff==tp || StaticRef==tp || StaticParam==tp))
@@ -119,6 +124,24 @@ void FiledVal::SetParam(const list<string> &param)
     }
 }
 
+void FiledVal::SetParam(const string &exFild, const string &param, FieldType tp /*= NoBuff*/)
+{
+    if (!m_exParam)
+        return;
+
+    if (auto *f = m_exParam->GetConditionItem(exFild))
+        f->SetParam(param, tp);
+}
+
+void FiledVal::SetParam(const string &exFild, const list<string> &param)
+{
+    if (!m_exParam)
+        return;
+
+    if (auto *f = m_exParam->GetConditionItem(exFild))
+        f->SetParam(param);
+}
+
 const string & FiledVal::GetParam() const
 {
     return m_param;
@@ -145,7 +168,11 @@ void FiledVal::InitBuff(unsigned len, const void *buf)
 string FiledVal::ToConditionString(const string &str)const
 {
     string ret;
-    if (List & m_tpField)
+    if (m_exParam)
+    {
+        ret += m_name + m_condition + "(" + m_exParam->GetSqlString() + ")";
+    }
+    else if (List & m_tpField)
     {
         for (const string &itr : VGMySql::SplitString(m_param, ParamSpliter))
         {
@@ -202,12 +229,16 @@ bool FiledVal::IsStringParam() const
 
 bool FiledVal::IsEmpty() const
 {
-    return m_bEmpty;
+    return m_bEmpty && m_exParam==NULL;
 }
 
 void FiledVal::SetEmpty()
 {
-    if (0 == ((StaticParam | StaticRef)&m_tpField))
+    if (m_exParam)
+    {
+        m_exParam->ClearData();
+    }
+    else if (0 == ((StaticParam | StaticRef)&m_tpField))
     {
         m_param.clear();
         m_bEmpty = true;
@@ -263,7 +294,14 @@ int FiledVal::transToType(const char *pro)
 FiledVal *FiledVal::parseFiled(const MysqlDB &db, const TiXmlElement &e, bool oth)
 {
     const char *name = e.Attribute("name");
-    if (const char *tmp = e.Attribute("ref"))
+
+    if (const TiXmlNode *node = e.FirstChild("SQL"))
+    {
+        FiledVal *item = new FiledVal(NoBuff, name, 0);
+        item->m_exParam = ExecutItem::parse(node->ToElement(), db);
+        return item;
+    }
+    else if (const char *tmp = e.Attribute("ref"))
     {
         if (VGTable *tb = db.GetTableByName(tmp))
         {

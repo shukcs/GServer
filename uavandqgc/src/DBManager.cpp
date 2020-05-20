@@ -97,7 +97,24 @@ void ObjectDB::_initSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx)
     for (FiledVal *fd : sql.Fields(ExecutItem::Condition))
     {
         string name = fd->GetFieldName();
-        _initFieldByVarient(*fd, msg.GetCondition(name, idx, fd->GetJudge()));
+        if (auto tmp = fd->ComplexSql())
+            _initCmpSqlByMsg(*tmp, msg, idx);
+        else
+            _initFieldByVarient(*fd, msg.GetCondition(name, idx, fd->GetJudge()));
+    }
+}
+
+void ObjectDB::_initCmpSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx)
+{
+    for (FiledVal *fd : sql.Fields(ExecutItem::Write))
+    {
+        string name = sql.GetName() + "." + fd->GetFieldName();
+        _initFieldByVarient(*fd, msg.GetWrite(name, idx));
+    }
+    for (FiledVal *fd : sql.Fields(ExecutItem::Condition))
+    {
+        string name = sql.GetName()+ "." + fd->GetFieldName();
+        _initFieldByVarient(*fd,  msg.GetCondition(name, idx));
     }
 }
 

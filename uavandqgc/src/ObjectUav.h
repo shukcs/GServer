@@ -15,6 +15,8 @@ namespace das {
         class RequestUavStatus;
         class RequestRouteMissions;
         class UavStatus;
+        class MissionSuspend;
+        class RequestMissionSuspend;
         class RequestPositionAuthentication;
         class AckPositionAuthentication;
         class GpsInformation;
@@ -32,6 +34,11 @@ class Variant;
 class GS2UavMessage;
 class ObjectUav : public ObjectAbsPB
 {
+private:
+    typedef struct _RidgeDat{
+        int     idx;
+        double  length;
+    } RidgeDat;
 public:
     ObjectUav(const std::string &id, const std::string &sim="");
     ~ObjectUav();
@@ -73,10 +80,14 @@ private:
 private:
     bool _parsePostOr(const das::proto::OperationRoute &sor);
     int32_t getCurRidgeByItem(int32_t curItem);
-    void _missionFinish();
+    void _missionFinish(int lat, int lon);
     void savePos();
     void saveBind(bool bBind, const std::string &gs, bool bForce=false);
     void sendBindAck(int ack, int res, bool bind, const std::string &gs);
+    void mavLinkfilter(const das::proto::PostStatus2GroundStation &msg);
+    double genRidgeLength(int idx);
+    float calculateOpArea(int lat, int lon);
+    int GetOprRidge()const;
 private:
     friend class UavManager;
     std::string                     m_strSim;
@@ -89,10 +100,11 @@ private:
     int64_t                         m_tmValidLast;
     das::proto::OperationRoute      *m_mission;
     int                             m_nCurRidge;
+    int                             m_nCurItem;
     bool                            m_bSys;
     std::string                     m_lastBinder;
     std::string                     m_authCheck;
-    std::map<int32_t, int32_t>      m_ridges;   //µØÂ¢key:itemseq
+    std::map<int32_t, RidgeDat>     m_ridges;   //µØÂ¢key:itemseq
 };
 
 #ifdef SOCKETS_NAMESPACE

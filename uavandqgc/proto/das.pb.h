@@ -111,9 +111,8 @@ class UavRoute;
 class AckUavMission;
 class RequestUavMissionAcreage;
 class AckUavMissionAcreage;
-class MissionSuspend;
-class PostMissionSuspend;
 class RequestMissionSuspend;
+class MissionSuspend;
 class AckMissionSuspend;
 class UavStatus;
 class RequestUavStatus;
@@ -9162,7 +9161,7 @@ class RequestUavMissionAcreage : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 seqno() const;
   inline void set_seqno(::google::protobuf::uint32 value);
 
-  // required string uav = 2;
+  // optional string uav = 2;
   inline bool has_uav() const;
   inline void clear_uav();
   static const int kUavFieldNumber = 2;
@@ -9340,6 +9339,118 @@ class AckUavMissionAcreage : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class RequestMissionSuspend : public ::google::protobuf::Message {
+ public:
+  RequestMissionSuspend();
+  virtual ~RequestMissionSuspend();
+
+  RequestMissionSuspend(const RequestMissionSuspend& from);
+
+  inline RequestMissionSuspend& operator=(const RequestMissionSuspend& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RequestMissionSuspend& default_instance();
+
+  void Swap(RequestMissionSuspend* other);
+
+  // implements Message ----------------------------------------------
+
+  RequestMissionSuspend* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RequestMissionSuspend& from);
+  void MergeFrom(const RequestMissionSuspend& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string uav = 2;
+  inline bool has_uav() const;
+  inline void clear_uav();
+  static const int kUavFieldNumber = 2;
+  inline const ::std::string& uav() const;
+  inline void set_uav(const ::std::string& value);
+  inline void set_uav(const char* value);
+  inline void set_uav(const char* value, size_t size);
+  inline ::std::string* mutable_uav();
+  inline ::std::string* release_uav();
+  inline void set_allocated_uav(::std::string* uav);
+
+  // required string planID = 3;
+  inline bool has_planid() const;
+  inline void clear_planid();
+  static const int kPlanIDFieldNumber = 3;
+  inline const ::std::string& planid() const;
+  inline void set_planid(const ::std::string& value);
+  inline void set_planid(const char* value);
+  inline void set_planid(const char* value, size_t size);
+  inline ::std::string* mutable_planid();
+  inline ::std::string* release_planid();
+  inline void set_allocated_planid(::std::string* planid);
+
+  // @@protoc_insertion_point(class_scope:das.proto.RequestMissionSuspend)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uav();
+  inline void clear_has_uav();
+  inline void set_has_planid();
+  inline void clear_has_planid();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uav_;
+  ::std::string* planid_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static RequestMissionSuspend* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class MissionSuspend : public ::google::protobuf::Message {
  public:
   MissionSuspend();
@@ -9430,21 +9541,21 @@ class MissionSuspend : public ::google::protobuf::Message {
   inline ::std::string* release_planid();
   inline void set_allocated_planid(::std::string* planid);
 
-  // required int32 itemNo = 4;
-  inline bool has_itemno() const;
-  inline void clear_itemno();
-  static const int kItemNoFieldNumber = 4;
-  inline ::google::protobuf::int32 itemno() const;
-  inline void set_itemno(::google::protobuf::int32 value);
+  // required int32 curRidge = 4;
+  inline bool has_curridge() const;
+  inline void clear_curridge();
+  static const int kCurRidgeFieldNumber = 4;
+  inline ::google::protobuf::int32 curridge() const;
+  inline void set_curridge(::google::protobuf::int32 value);
 
-  // required int32 continiuLat = 5;
+  // optional int32 continiuLat = 5;
   inline bool has_continiulat() const;
   inline void clear_continiulat();
   static const int kContiniuLatFieldNumber = 5;
   inline ::google::protobuf::int32 continiulat() const;
   inline void set_continiulat(::google::protobuf::int32 value);
 
-  // required int32 continiuLon = 6;
+  // optional int32 continiuLon = 6;
   inline bool has_continiulon() const;
   inline void clear_continiulon();
   static const int kContiniuLonFieldNumber = 6;
@@ -9459,8 +9570,8 @@ class MissionSuspend : public ::google::protobuf::Message {
   inline void clear_has_user();
   inline void set_has_planid();
   inline void clear_has_planid();
-  inline void set_has_itemno();
-  inline void clear_has_itemno();
+  inline void set_has_curridge();
+  inline void clear_has_curridge();
   inline void set_has_continiulat();
   inline void clear_has_continiulat();
   inline void set_has_continiulon();
@@ -9471,7 +9582,7 @@ class MissionSuspend : public ::google::protobuf::Message {
   ::std::string* uav_;
   ::std::string* user_;
   ::std::string* planid_;
-  ::google::protobuf::int32 itemno_;
+  ::google::protobuf::int32 curridge_;
   ::google::protobuf::int32 continiulat_;
   ::google::protobuf::int32 continiulon_;
 
@@ -9484,225 +9595,6 @@ class MissionSuspend : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static MissionSuspend* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class PostMissionSuspend : public ::google::protobuf::Message {
- public:
-  PostMissionSuspend();
-  virtual ~PostMissionSuspend();
-
-  PostMissionSuspend(const PostMissionSuspend& from);
-
-  inline PostMissionSuspend& operator=(const PostMissionSuspend& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const PostMissionSuspend& default_instance();
-
-  void Swap(PostMissionSuspend* other);
-
-  // implements Message ----------------------------------------------
-
-  PostMissionSuspend* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const PostMissionSuspend& from);
-  void MergeFrom(const PostMissionSuspend& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required int32 curMsItem = 2;
-  inline bool has_curmsitem() const;
-  inline void clear_curmsitem();
-  static const int kCurMsItemFieldNumber = 2;
-  inline ::google::protobuf::int32 curmsitem() const;
-  inline void set_curmsitem(::google::protobuf::int32 value);
-
-  // @@protoc_insertion_point(class_scope:das.proto.PostMissionSuspend)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_curmsitem();
-  inline void clear_has_curmsitem();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 curmsitem_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static PostMissionSuspend* default_instance_;
-};
-// -------------------------------------------------------------------
-
-class RequestMissionSuspend : public ::google::protobuf::Message {
- public:
-  RequestMissionSuspend();
-  virtual ~RequestMissionSuspend();
-
-  RequestMissionSuspend(const RequestMissionSuspend& from);
-
-  inline RequestMissionSuspend& operator=(const RequestMissionSuspend& from) {
-    CopyFrom(from);
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _unknown_fields_;
-  }
-
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return &_unknown_fields_;
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor();
-  static const RequestMissionSuspend& default_instance();
-
-  void Swap(RequestMissionSuspend* other);
-
-  // implements Message ----------------------------------------------
-
-  RequestMissionSuspend* New() const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
-  void CopyFrom(const RequestMissionSuspend& from);
-  void MergeFrom(const RequestMissionSuspend& from);
-  void Clear();
-  bool IsInitialized() const;
-
-  int ByteSize() const;
-  bool MergePartialFromCodedStream(
-      ::google::protobuf::io::CodedInputStream* input);
-  void SerializeWithCachedSizes(
-      ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
-  int GetCachedSize() const { return _cached_size_; }
-  private:
-  void SharedCtor();
-  void SharedDtor();
-  void SetCachedSize(int size) const;
-  public:
-
-  ::google::protobuf::Metadata GetMetadata() const;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  // required uint32 seqno = 1;
-  inline bool has_seqno() const;
-  inline void clear_seqno();
-  static const int kSeqnoFieldNumber = 1;
-  inline ::google::protobuf::uint32 seqno() const;
-  inline void set_seqno(::google::protobuf::uint32 value);
-
-  // required string uav = 2;
-  inline bool has_uav() const;
-  inline void clear_uav();
-  static const int kUavFieldNumber = 2;
-  inline const ::std::string& uav() const;
-  inline void set_uav(const ::std::string& value);
-  inline void set_uav(const char* value);
-  inline void set_uav(const char* value, size_t size);
-  inline ::std::string* mutable_uav();
-  inline ::std::string* release_uav();
-  inline void set_allocated_uav(::std::string* uav);
-
-  // required string user = 3;
-  inline bool has_user() const;
-  inline void clear_user();
-  static const int kUserFieldNumber = 3;
-  inline const ::std::string& user() const;
-  inline void set_user(const ::std::string& value);
-  inline void set_user(const char* value);
-  inline void set_user(const char* value, size_t size);
-  inline ::std::string* mutable_user();
-  inline ::std::string* release_user();
-  inline void set_allocated_user(::std::string* user);
-
-  // required string planId = 4;
-  inline bool has_planid() const;
-  inline void clear_planid();
-  static const int kPlanIdFieldNumber = 4;
-  inline const ::std::string& planid() const;
-  inline void set_planid(const ::std::string& value);
-  inline void set_planid(const char* value);
-  inline void set_planid(const char* value, size_t size);
-  inline ::std::string* mutable_planid();
-  inline ::std::string* release_planid();
-  inline void set_allocated_planid(::std::string* planid);
-
-  // @@protoc_insertion_point(class_scope:das.proto.RequestMissionSuspend)
- private:
-  inline void set_has_seqno();
-  inline void clear_has_seqno();
-  inline void set_has_uav();
-  inline void clear_has_uav();
-  inline void set_has_user();
-  inline void clear_has_user();
-  inline void set_has_planid();
-  inline void clear_has_planid();
-
-  ::google::protobuf::UnknownFieldSet _unknown_fields_;
-
-  ::std::string* uav_;
-  ::std::string* user_;
-  ::std::string* planid_;
-  ::google::protobuf::uint32 seqno_;
-
-  mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
-
-  friend void  protobuf_AddDesc_das_2eproto();
-  friend void protobuf_AssignDesc_das_2eproto();
-  friend void protobuf_ShutdownFile_das_2eproto();
-
-  void InitAsDefaultInstance();
-  static RequestMissionSuspend* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -9767,29 +9659,39 @@ class AckMissionSuspend : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 seqno() const;
   inline void set_seqno(::google::protobuf::uint32 value);
 
-  // required .das.proto.MissionSuspend cpoint = 2;
-  inline bool has_cpoint() const;
-  inline void clear_cpoint();
-  static const int kCpointFieldNumber = 2;
-  inline const ::das::proto::MissionSuspend& cpoint() const;
-  inline ::das::proto::MissionSuspend* mutable_cpoint();
-  inline ::das::proto::MissionSuspend* release_cpoint();
-  inline void set_allocated_cpoint(::das::proto::MissionSuspend* cpoint);
+  // required int32 result = 2;
+  inline bool has_result() const;
+  inline void clear_result();
+  static const int kResultFieldNumber = 2;
+  inline ::google::protobuf::int32 result() const;
+  inline void set_result(::google::protobuf::int32 value);
+
+  // optional .das.proto.MissionSuspend suspend = 3;
+  inline bool has_suspend() const;
+  inline void clear_suspend();
+  static const int kSuspendFieldNumber = 3;
+  inline const ::das::proto::MissionSuspend& suspend() const;
+  inline ::das::proto::MissionSuspend* mutable_suspend();
+  inline ::das::proto::MissionSuspend* release_suspend();
+  inline void set_allocated_suspend(::das::proto::MissionSuspend* suspend);
 
   // @@protoc_insertion_point(class_scope:das.proto.AckMissionSuspend)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
-  inline void set_has_cpoint();
-  inline void clear_has_cpoint();
+  inline void set_has_result();
+  inline void clear_has_result();
+  inline void set_has_suspend();
+  inline void clear_has_suspend();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::das::proto::MissionSuspend* cpoint_;
   ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 result_;
+  ::das::proto::MissionSuspend* suspend_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -23402,7 +23304,7 @@ inline void RequestUavMissionAcreage::set_seqno(::google::protobuf::uint32 value
   seqno_ = value;
 }
 
-// required string uav = 2;
+// optional string uav = 2;
 inline bool RequestUavMissionAcreage::has_uav() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -23706,6 +23608,172 @@ inline void AckUavMissionAcreage::set_acreage(float value) {
 
 // -------------------------------------------------------------------
 
+// RequestMissionSuspend
+
+// required uint32 seqno = 1;
+inline bool RequestMissionSuspend::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void RequestMissionSuspend::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void RequestMissionSuspend::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void RequestMissionSuspend::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 RequestMissionSuspend::seqno() const {
+  return seqno_;
+}
+inline void RequestMissionSuspend::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string uav = 2;
+inline bool RequestMissionSuspend::has_uav() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void RequestMissionSuspend::set_has_uav() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void RequestMissionSuspend::clear_has_uav() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void RequestMissionSuspend::clear_uav() {
+  if (uav_ != &::google::protobuf::internal::kEmptyString) {
+    uav_->clear();
+  }
+  clear_has_uav();
+}
+inline const ::std::string& RequestMissionSuspend::uav() const {
+  return *uav_;
+}
+inline void RequestMissionSuspend::set_uav(const ::std::string& value) {
+  set_has_uav();
+  if (uav_ == &::google::protobuf::internal::kEmptyString) {
+    uav_ = new ::std::string;
+  }
+  uav_->assign(value);
+}
+inline void RequestMissionSuspend::set_uav(const char* value) {
+  set_has_uav();
+  if (uav_ == &::google::protobuf::internal::kEmptyString) {
+    uav_ = new ::std::string;
+  }
+  uav_->assign(value);
+}
+inline void RequestMissionSuspend::set_uav(const char* value, size_t size) {
+  set_has_uav();
+  if (uav_ == &::google::protobuf::internal::kEmptyString) {
+    uav_ = new ::std::string;
+  }
+  uav_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestMissionSuspend::mutable_uav() {
+  set_has_uav();
+  if (uav_ == &::google::protobuf::internal::kEmptyString) {
+    uav_ = new ::std::string;
+  }
+  return uav_;
+}
+inline ::std::string* RequestMissionSuspend::release_uav() {
+  clear_has_uav();
+  if (uav_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uav_;
+    uav_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestMissionSuspend::set_allocated_uav(::std::string* uav) {
+  if (uav_ != &::google::protobuf::internal::kEmptyString) {
+    delete uav_;
+  }
+  if (uav) {
+    set_has_uav();
+    uav_ = uav;
+  } else {
+    clear_has_uav();
+    uav_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string planID = 3;
+inline bool RequestMissionSuspend::has_planid() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void RequestMissionSuspend::set_has_planid() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void RequestMissionSuspend::clear_has_planid() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void RequestMissionSuspend::clear_planid() {
+  if (planid_ != &::google::protobuf::internal::kEmptyString) {
+    planid_->clear();
+  }
+  clear_has_planid();
+}
+inline const ::std::string& RequestMissionSuspend::planid() const {
+  return *planid_;
+}
+inline void RequestMissionSuspend::set_planid(const ::std::string& value) {
+  set_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    planid_ = new ::std::string;
+  }
+  planid_->assign(value);
+}
+inline void RequestMissionSuspend::set_planid(const char* value) {
+  set_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    planid_ = new ::std::string;
+  }
+  planid_->assign(value);
+}
+inline void RequestMissionSuspend::set_planid(const char* value, size_t size) {
+  set_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    planid_ = new ::std::string;
+  }
+  planid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestMissionSuspend::mutable_planid() {
+  set_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    planid_ = new ::std::string;
+  }
+  return planid_;
+}
+inline ::std::string* RequestMissionSuspend::release_planid() {
+  clear_has_planid();
+  if (planid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = planid_;
+    planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestMissionSuspend::set_allocated_planid(::std::string* planid) {
+  if (planid_ != &::google::protobuf::internal::kEmptyString) {
+    delete planid_;
+  }
+  if (planid) {
+    set_has_planid();
+    planid_ = planid;
+  } else {
+    clear_has_planid();
+    planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
 // MissionSuspend
 
 // required string uav = 1;
@@ -23918,29 +23986,29 @@ inline void MissionSuspend::set_allocated_planid(::std::string* planid) {
   }
 }
 
-// required int32 itemNo = 4;
-inline bool MissionSuspend::has_itemno() const {
+// required int32 curRidge = 4;
+inline bool MissionSuspend::has_curridge() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void MissionSuspend::set_has_itemno() {
+inline void MissionSuspend::set_has_curridge() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void MissionSuspend::clear_has_itemno() {
+inline void MissionSuspend::clear_has_curridge() {
   _has_bits_[0] &= ~0x00000008u;
 }
-inline void MissionSuspend::clear_itemno() {
-  itemno_ = 0;
-  clear_has_itemno();
+inline void MissionSuspend::clear_curridge() {
+  curridge_ = 0;
+  clear_has_curridge();
 }
-inline ::google::protobuf::int32 MissionSuspend::itemno() const {
-  return itemno_;
+inline ::google::protobuf::int32 MissionSuspend::curridge() const {
+  return curridge_;
 }
-inline void MissionSuspend::set_itemno(::google::protobuf::int32 value) {
-  set_has_itemno();
-  itemno_ = value;
+inline void MissionSuspend::set_curridge(::google::protobuf::int32 value) {
+  set_has_curridge();
+  curridge_ = value;
 }
 
-// required int32 continiuLat = 5;
+// optional int32 continiuLat = 5;
 inline bool MissionSuspend::has_continiulat() const {
   return (_has_bits_[0] & 0x00000010u) != 0;
 }
@@ -23962,7 +24030,7 @@ inline void MissionSuspend::set_continiulat(::google::protobuf::int32 value) {
   continiulat_ = value;
 }
 
-// required int32 continiuLon = 6;
+// optional int32 continiuLon = 6;
 inline bool MissionSuspend::has_continiulon() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
@@ -23982,290 +24050,6 @@ inline ::google::protobuf::int32 MissionSuspend::continiulon() const {
 inline void MissionSuspend::set_continiulon(::google::protobuf::int32 value) {
   set_has_continiulon();
   continiulon_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// PostMissionSuspend
-
-// required uint32 seqno = 1;
-inline bool PostMissionSuspend::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void PostMissionSuspend::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void PostMissionSuspend::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void PostMissionSuspend::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 PostMissionSuspend::seqno() const {
-  return seqno_;
-}
-inline void PostMissionSuspend::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required int32 curMsItem = 2;
-inline bool PostMissionSuspend::has_curmsitem() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void PostMissionSuspend::set_has_curmsitem() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void PostMissionSuspend::clear_has_curmsitem() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void PostMissionSuspend::clear_curmsitem() {
-  curmsitem_ = 0;
-  clear_has_curmsitem();
-}
-inline ::google::protobuf::int32 PostMissionSuspend::curmsitem() const {
-  return curmsitem_;
-}
-inline void PostMissionSuspend::set_curmsitem(::google::protobuf::int32 value) {
-  set_has_curmsitem();
-  curmsitem_ = value;
-}
-
-// -------------------------------------------------------------------
-
-// RequestMissionSuspend
-
-// required uint32 seqno = 1;
-inline bool RequestMissionSuspend::has_seqno() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-inline void RequestMissionSuspend::set_has_seqno() {
-  _has_bits_[0] |= 0x00000001u;
-}
-inline void RequestMissionSuspend::clear_has_seqno() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline void RequestMissionSuspend::clear_seqno() {
-  seqno_ = 0u;
-  clear_has_seqno();
-}
-inline ::google::protobuf::uint32 RequestMissionSuspend::seqno() const {
-  return seqno_;
-}
-inline void RequestMissionSuspend::set_seqno(::google::protobuf::uint32 value) {
-  set_has_seqno();
-  seqno_ = value;
-}
-
-// required string uav = 2;
-inline bool RequestMissionSuspend::has_uav() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-inline void RequestMissionSuspend::set_has_uav() {
-  _has_bits_[0] |= 0x00000002u;
-}
-inline void RequestMissionSuspend::clear_has_uav() {
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline void RequestMissionSuspend::clear_uav() {
-  if (uav_ != &::google::protobuf::internal::kEmptyString) {
-    uav_->clear();
-  }
-  clear_has_uav();
-}
-inline const ::std::string& RequestMissionSuspend::uav() const {
-  return *uav_;
-}
-inline void RequestMissionSuspend::set_uav(const ::std::string& value) {
-  set_has_uav();
-  if (uav_ == &::google::protobuf::internal::kEmptyString) {
-    uav_ = new ::std::string;
-  }
-  uav_->assign(value);
-}
-inline void RequestMissionSuspend::set_uav(const char* value) {
-  set_has_uav();
-  if (uav_ == &::google::protobuf::internal::kEmptyString) {
-    uav_ = new ::std::string;
-  }
-  uav_->assign(value);
-}
-inline void RequestMissionSuspend::set_uav(const char* value, size_t size) {
-  set_has_uav();
-  if (uav_ == &::google::protobuf::internal::kEmptyString) {
-    uav_ = new ::std::string;
-  }
-  uav_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestMissionSuspend::mutable_uav() {
-  set_has_uav();
-  if (uav_ == &::google::protobuf::internal::kEmptyString) {
-    uav_ = new ::std::string;
-  }
-  return uav_;
-}
-inline ::std::string* RequestMissionSuspend::release_uav() {
-  clear_has_uav();
-  if (uav_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = uav_;
-    uav_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestMissionSuspend::set_allocated_uav(::std::string* uav) {
-  if (uav_ != &::google::protobuf::internal::kEmptyString) {
-    delete uav_;
-  }
-  if (uav) {
-    set_has_uav();
-    uav_ = uav;
-  } else {
-    clear_has_uav();
-    uav_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required string user = 3;
-inline bool RequestMissionSuspend::has_user() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void RequestMissionSuspend::set_has_user() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void RequestMissionSuspend::clear_has_user() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void RequestMissionSuspend::clear_user() {
-  if (user_ != &::google::protobuf::internal::kEmptyString) {
-    user_->clear();
-  }
-  clear_has_user();
-}
-inline const ::std::string& RequestMissionSuspend::user() const {
-  return *user_;
-}
-inline void RequestMissionSuspend::set_user(const ::std::string& value) {
-  set_has_user();
-  if (user_ == &::google::protobuf::internal::kEmptyString) {
-    user_ = new ::std::string;
-  }
-  user_->assign(value);
-}
-inline void RequestMissionSuspend::set_user(const char* value) {
-  set_has_user();
-  if (user_ == &::google::protobuf::internal::kEmptyString) {
-    user_ = new ::std::string;
-  }
-  user_->assign(value);
-}
-inline void RequestMissionSuspend::set_user(const char* value, size_t size) {
-  set_has_user();
-  if (user_ == &::google::protobuf::internal::kEmptyString) {
-    user_ = new ::std::string;
-  }
-  user_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestMissionSuspend::mutable_user() {
-  set_has_user();
-  if (user_ == &::google::protobuf::internal::kEmptyString) {
-    user_ = new ::std::string;
-  }
-  return user_;
-}
-inline ::std::string* RequestMissionSuspend::release_user() {
-  clear_has_user();
-  if (user_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = user_;
-    user_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestMissionSuspend::set_allocated_user(::std::string* user) {
-  if (user_ != &::google::protobuf::internal::kEmptyString) {
-    delete user_;
-  }
-  if (user) {
-    set_has_user();
-    user_ = user;
-  } else {
-    clear_has_user();
-    user_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required string planId = 4;
-inline bool RequestMissionSuspend::has_planid() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void RequestMissionSuspend::set_has_planid() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void RequestMissionSuspend::clear_has_planid() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void RequestMissionSuspend::clear_planid() {
-  if (planid_ != &::google::protobuf::internal::kEmptyString) {
-    planid_->clear();
-  }
-  clear_has_planid();
-}
-inline const ::std::string& RequestMissionSuspend::planid() const {
-  return *planid_;
-}
-inline void RequestMissionSuspend::set_planid(const ::std::string& value) {
-  set_has_planid();
-  if (planid_ == &::google::protobuf::internal::kEmptyString) {
-    planid_ = new ::std::string;
-  }
-  planid_->assign(value);
-}
-inline void RequestMissionSuspend::set_planid(const char* value) {
-  set_has_planid();
-  if (planid_ == &::google::protobuf::internal::kEmptyString) {
-    planid_ = new ::std::string;
-  }
-  planid_->assign(value);
-}
-inline void RequestMissionSuspend::set_planid(const char* value, size_t size) {
-  set_has_planid();
-  if (planid_ == &::google::protobuf::internal::kEmptyString) {
-    planid_ = new ::std::string;
-  }
-  planid_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* RequestMissionSuspend::mutable_planid() {
-  set_has_planid();
-  if (planid_ == &::google::protobuf::internal::kEmptyString) {
-    planid_ = new ::std::string;
-  }
-  return planid_;
-}
-inline ::std::string* RequestMissionSuspend::release_planid() {
-  clear_has_planid();
-  if (planid_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = planid_;
-    planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void RequestMissionSuspend::set_allocated_planid(::std::string* planid) {
-  if (planid_ != &::google::protobuf::internal::kEmptyString) {
-    delete planid_;
-  }
-  if (planid) {
-    set_has_planid();
-    planid_ = planid;
-  } else {
-    clear_has_planid();
-    planid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
 }
 
 // -------------------------------------------------------------------
@@ -24294,41 +24078,63 @@ inline void AckMissionSuspend::set_seqno(::google::protobuf::uint32 value) {
   seqno_ = value;
 }
 
-// required .das.proto.MissionSuspend cpoint = 2;
-inline bool AckMissionSuspend::has_cpoint() const {
+// required int32 result = 2;
+inline bool AckMissionSuspend::has_result() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
-inline void AckMissionSuspend::set_has_cpoint() {
+inline void AckMissionSuspend::set_has_result() {
   _has_bits_[0] |= 0x00000002u;
 }
-inline void AckMissionSuspend::clear_has_cpoint() {
+inline void AckMissionSuspend::clear_has_result() {
   _has_bits_[0] &= ~0x00000002u;
 }
-inline void AckMissionSuspend::clear_cpoint() {
-  if (cpoint_ != NULL) cpoint_->::das::proto::MissionSuspend::Clear();
-  clear_has_cpoint();
+inline void AckMissionSuspend::clear_result() {
+  result_ = 0;
+  clear_has_result();
 }
-inline const ::das::proto::MissionSuspend& AckMissionSuspend::cpoint() const {
-  return cpoint_ != NULL ? *cpoint_ : *default_instance_->cpoint_;
+inline ::google::protobuf::int32 AckMissionSuspend::result() const {
+  return result_;
 }
-inline ::das::proto::MissionSuspend* AckMissionSuspend::mutable_cpoint() {
-  set_has_cpoint();
-  if (cpoint_ == NULL) cpoint_ = new ::das::proto::MissionSuspend;
-  return cpoint_;
+inline void AckMissionSuspend::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
 }
-inline ::das::proto::MissionSuspend* AckMissionSuspend::release_cpoint() {
-  clear_has_cpoint();
-  ::das::proto::MissionSuspend* temp = cpoint_;
-  cpoint_ = NULL;
+
+// optional .das.proto.MissionSuspend suspend = 3;
+inline bool AckMissionSuspend::has_suspend() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void AckMissionSuspend::set_has_suspend() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void AckMissionSuspend::clear_has_suspend() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void AckMissionSuspend::clear_suspend() {
+  if (suspend_ != NULL) suspend_->::das::proto::MissionSuspend::Clear();
+  clear_has_suspend();
+}
+inline const ::das::proto::MissionSuspend& AckMissionSuspend::suspend() const {
+  return suspend_ != NULL ? *suspend_ : *default_instance_->suspend_;
+}
+inline ::das::proto::MissionSuspend* AckMissionSuspend::mutable_suspend() {
+  set_has_suspend();
+  if (suspend_ == NULL) suspend_ = new ::das::proto::MissionSuspend;
+  return suspend_;
+}
+inline ::das::proto::MissionSuspend* AckMissionSuspend::release_suspend() {
+  clear_has_suspend();
+  ::das::proto::MissionSuspend* temp = suspend_;
+  suspend_ = NULL;
   return temp;
 }
-inline void AckMissionSuspend::set_allocated_cpoint(::das::proto::MissionSuspend* cpoint) {
-  delete cpoint_;
-  cpoint_ = cpoint;
-  if (cpoint) {
-    set_has_cpoint();
+inline void AckMissionSuspend::set_allocated_suspend(::das::proto::MissionSuspend* suspend) {
+  delete suspend_;
+  suspend_ = suspend;
+  if (suspend) {
+    set_has_suspend();
   } else {
-    clear_has_cpoint();
+    clear_has_suspend();
   }
 }
 

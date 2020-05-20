@@ -6,6 +6,7 @@ INCLUDE_DIRECTORIES(
 	.
 	./src
 	./proto
+	./mavLink
 	../protobuf
 	../gshare/src
 	../vgmysql/src
