@@ -56,12 +56,13 @@ using namespace SOCKETS_NAMESPACE;
 static double geoDistance(int lat1, int lon1, int lat2, int lon2)
 {
     double dif = lat1*M_PI / 180;
-    double x = (lat1 - lat2)*1e-7*M_PI*EARTH_RADIOS / 180;
-    double y = (lon1 - lon2)*1e-7*M_PI*EARTH_RADIOS / 180;
+    double x = double(lat1 - lat2)*1e-7*M_PI*EARTH_RADIOS / 180;
+    double y = double(lon1 - lon2)*1e-7*M_PI*EARTH_RADIOS / 180;
     y = y*sin(dif);
 
     return sqrt(x*x + y*y);
 }
+
 static bool getGeo(const string &buff, int &lat, int &lon)
 {
     if (buff.size() < MAVLINK_MSG_ID_MISSION_ITEM_INT_LEN)
@@ -81,7 +82,7 @@ static bool getGeo(const string &buff, int &lat, int &lon)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectUav::ObjectUav(const string &id, const string &sim) : ObjectAbsPB(id), m_strSim(sim), m_bBind(false)
 , m_lastORNotify(0), m_lat(200), m_lon(0), m_tmLastBind(0), m_tmLastPos(0), m_tmValidLast(-1)
-, m_mission(NULL), m_nCurRidge(-1), m_fliedBeg(0), m_bSys(false)
+, m_mission(NULL), m_nCurRidge(-1), m_bSys(false), m_fliedBeg(0)
 {
     SetBuffSize(1024 * 2);
 }
@@ -596,7 +597,7 @@ void ObjectUav::_missionFinish(int lat, int lon)
 
         if (GetOprRidge()>m_nCurRidge)
         {
-            int latT, lonT;
+            int latT=INVALIDLat, lonT = INVALIDLat;
             getGeo(m_mission->missions(m_nCurItem), latT, latT);
             oped = geoDistance(lat, lon, latT, lonT);
             msg->SetWrite("continiuLat", lat);
