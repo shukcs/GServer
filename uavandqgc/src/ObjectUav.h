@@ -86,7 +86,7 @@ private:
     void sendBindAck(int ack, int res, bool bind, const std::string &gs);
     void mavLinkfilter(const das::proto::PostStatus2GroundStation &msg);
     double genRidgeLength(int idx);
-    float calculateOpArea(int lat, int lon);
+    float calculateOpArea(double oped);
     int GetOprRidge()const;
 private:
     friend class UavManager;
@@ -102,6 +102,7 @@ private:
     int                             m_nCurRidge;
     int                             m_nCurItem;
     bool                            m_bSys;
+    float                           m_fliedBeg;
     std::string                     m_lastBinder;
     std::string                     m_authCheck;
     std::map<int32_t, RidgeDat>     m_ridges;   //µØÂ¢key:itemseq

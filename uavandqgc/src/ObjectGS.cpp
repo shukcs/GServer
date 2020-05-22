@@ -299,7 +299,7 @@ void ObjectGS::processGs2Gs(const Message &msg, int tp)
 
         if (gsmsg->type() == DeleteFriend)
             m_friends.remove(gsmsg->from());
-        else if (gsmsg->type() == AgreeFriend)
+        else if (gsmsg->type() == AgreeFriend && !IsContainsInList(m_friends, gsmsg->from()))
             m_friends.push_back(gsmsg->from());
     }
 
@@ -1341,7 +1341,6 @@ void ObjectGS::_prcsGsMessage(GroundStationsMessage *msg)
         }
         return;
     }
-
     if (msg->type() == AgreeFriend && !IsContainsInList(m_friends, msg->to()))
     {
         m_friends.push_back(msg->to());

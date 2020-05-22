@@ -27,7 +27,7 @@ enum
 #define ReturnMod       "Return"
 typedef union {
     float tmp[7];
-    PACKEDSTRUCT(struct {
+    MAVPACKED(struct {
         float velocity[3];
         uint16_t precision;     //航线精度
         uint16_t gndHeight;     //地面高度
@@ -81,7 +81,7 @@ static bool getGeo(const string &buff, int &lat, int &lon)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectUav::ObjectUav(const string &id, const string &sim) : ObjectAbsPB(id), m_strSim(sim), m_bBind(false)
 , m_lastORNotify(0), m_lat(200), m_lon(0), m_tmLastBind(0), m_tmLastPos(0), m_tmValidLast(-1)
-, m_mission(NULL), m_nCurRidge(-1), m_bSys(false)
+, m_mission(NULL), m_nCurRidge(-1), m_fliedBeg(0), m_bSys(false)
 {
     SetBuffSize(1024 * 2);
 }
@@ -537,6 +537,7 @@ bool ObjectUav::_parsePostOr(const OperationRoute &sor)
         return false;
 
     ReleasePointer(m_mission);
+    m_fliedBeg = 0;
     m_mission = new OperationRoute();
     if (!m_mission)
         return false;
@@ -577,6 +578,7 @@ void ObjectUav::_missionFinish(int lat, int lon)
     if (!m_mission || m_nCurRidge<m_mission->beg())
         return;
 
+    double oped = 0;
     if (DBMessage *msg = new DBMessage(this, IMessage::Unknown, DBMessage::DB_GS))
     {
         msg->SetSql("insertMissions");
@@ -594,22 +596,25 @@ void ObjectUav::_missionFinish(int lat, int lon)
 
         if (GetOprRidge()>m_nCurRidge)
         {
-            if (m_mission->has_end())
-                msg->SetWrite("end", m_nCurRidge);
-            msg->SetWrite("acreage", calculateOpArea(lat, lon));
+            int latT, lonT;
+            getGeo(m_mission->missions(m_nCurItem), latT, latT);
+            oped = geoDistance(lat, lon, latT, lonT);
             msg->SetWrite("continiuLat", lat);
             msg->SetWrite("continiuLon", lon);
         }
-        else
-        {
-            if (m_mission->has_end())
-                msg->SetWrite("end", m_mission->end());
-            msg->SetWrite("acreage", m_mission->acreage());
-        }
 
+        msg->SetWrite("end", m_nCurRidge);
+        msg->SetWrite("acreage", calculateOpArea(oped));
         SendMsg(msg);
     }
-    m_nCurRidge = -1;
+
+    m_fliedBeg = (float)oped;
+    if (++m_nCurRidge < m_mission->end())
+    {
+        m_nCurRidge = -1;
+        return;
+    }
+    m_mission->set_beg(m_nCurRidge);
 }
 
 void ObjectUav::savePos()
@@ -713,7 +718,7 @@ double ObjectUav::genRidgeLength(int idx)
     return 0;
 }
 
-float ObjectUav::calculateOpArea(int latS, int lonS)
+float ObjectUav::calculateOpArea(double opedCur)
 {
     if (!m_mission || m_nCurItem<1 || m_nCurItem>m_mission->missions_size())
         return 0;
@@ -721,8 +726,8 @@ float ObjectUav::calculateOpArea(int latS, int lonS)
     if (m_nCurRidge >= m_mission->end())
         return m_mission->acreage();
 
-    double allOp = 0;
-    double oped = 0;
+    double allOp = -m_fliedBeg;
+    double oped = -m_fliedBeg;
     int opR = GetOprRidge();
     for (const pair<int32_t, RidgeDat> &itr : m_ridges)
     {
@@ -731,11 +736,7 @@ float ObjectUav::calculateOpArea(int latS, int lonS)
         {
             oped += itr.second.length;
             if (itr.second.idx == opR)
-            {
-                int lat, lon;
-                getGeo(m_mission->missions(m_nCurItem), lat, lon);
-                oped -= geoDistance(lat, lon, latS, lonS);
-            }
+                oped -= opedCur;
         }
     }
     if (allOp < 0.0001)
