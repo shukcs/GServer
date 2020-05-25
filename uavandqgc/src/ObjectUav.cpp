@@ -618,7 +618,7 @@ void ObjectUav::_missionFinish(int lat, int lon)
     }
 
     m_fliedBeg = (float)remainCur;
-    if (++m_nCurRidge < m_mission->end())
+    if (++m_nCurRidge > m_mission->end())
     {
         m_nCurRidge = -1;
         return;
