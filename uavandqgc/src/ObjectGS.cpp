@@ -749,12 +749,13 @@ void ObjectGS::processMissions(const DBMessage &msg)
 void ObjectGS::processMissionsAcreage(const DBMessage &msg)
 {
     auto sd = new AckUavMissionAcreage;
-    auto acreage = msg.GetRead("sum(acreage)").ToDouble();
+    auto acreage = msg.GetRead("sum(acreage)").ToFloat();
     if (!sd)
         return;
 
     sd->set_seqno(msg.GetSeqNomb());
-    sd->set_acreage((float)acreage);
+    sd->set_acreage(acreage);
+    WaitSend(sd);
 }
 
 void ObjectGS::processPostPlanRslt(const DBMessage &msg)
@@ -1411,16 +1412,19 @@ void ObjectGS::_prcsReqMissonsAcreage(das::proto::RequestUavMissionAcreage &msg)
 
     msgDb->SetSeqNomb(msg.seqno());
     msgDb->SetSql("queryMissionAcreage");
+
     if (!GetAuth(ObjectGS::Type_UavManager))
         msgDb->SetCondition("userID", m_id);
-    msgDb->SetCondition("uavID", msg.uav());
+    if (msg.has_uav())
+        msgDb->SetCondition("uavID", msg.uav());
     if (!GetAuth(ObjectGS::Type_UavManager))
         msgDb->SetCondition("userID", m_id);
-    msgDb->SetCondition("landId", msg.uav());
+    if (msg.has_planid())
+        msgDb->SetCondition("planID", msg.planid());
     if (msg.has_beg())
-        msgDb->SetCondition("finishTime:>", msg.beg());
+        msgDb->SetCondition("finishTime:>", (int64_t)msg.beg());
     if (msg.has_end())
-        msgDb->SetCondition("finishTime:<", msg.end());
+        msgDb->SetCondition("finishTime:<", (int64_t)msg.end());
 
     SendMsg(msgDb);
 }

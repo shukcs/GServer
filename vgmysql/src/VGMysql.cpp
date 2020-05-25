@@ -14,8 +14,7 @@
 using namespace std;
 static const char *sCharSetFmt = "default character set %s collate %s_general_ci";
 
-VGMySql::VGMySql() : m_bValid(false)
-, m_binds(NULL) , m_stmt(NULL)
+VGMySql::VGMySql() : m_bValid(false), m_binds(NULL) , m_stmt(NULL)
 {
 	m_mysql = mysql_init(NULL);
 	if(!m_mysql)
@@ -266,32 +265,21 @@ bool VGMySql::_selectItem(ExecutItem *item)
         return false;
     }
     MYSQL_BIND *binds = item->TransformRead();
-    bool ret = false;
     if (mysql_stmt_bind_result(stmt, binds))
         fprintf(stderr, "mysql_stmt_bind_result() failed! %s\n", mysql_stmt_error(stmt));
     else if (mysql_stmt_store_result(stmt))
         fprintf(stderr, " mysql_stmt_store_result() failed %s\n", mysql_stmt_error(stmt));
-    else if (mysql_stmt_fetch(stmt))
-        fprintf(stderr, "no record fit SQL '%s'!\n", item->GetName().c_str());
     else
-        ret = true;
-
-    delete params;
-    if (!ret)
     {
-        delete binds;
-        if(stmt)
-        {
-            mysql_stmt_free_result(stmt);
-            mysql_stmt_close(stmt);
-        }
-        return false;
+        m_binds = binds;
+        m_stmt = stmt;
+        m_execItem = item;
+        if (!GetResult())
+            fprintf(stderr, "no record fit SQL '%s'!\n", item->GetName().c_str());
+        delete params;
     }
 
-    m_binds = binds;
-    m_stmt = stmt;
-    m_execItem = item;
-    return true;
+    return m_execItem != NULL;
 }
 
 MYSQL_STMT *VGMySql::_prepareMySql(const string &strFormat, MYSQL_BIND *binds, int nRead)
@@ -315,6 +303,9 @@ MYSQL_STMT *VGMySql::_prepareMySql(const string &strFormat, MYSQL_BIND *binds, i
         MYSQL_RES *preRes = mysql_stmt_result_metadata(stmt);
         if (!preRes || nRead != (int)mysql_num_fields(preRes))
             ret = false;
+
+        if (preRes)
+            mysql_free_result(preRes);
     }
     if (ret && mysql_stmt_execute(stmt))
     {

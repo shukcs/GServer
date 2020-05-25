@@ -28,13 +28,14 @@ public:
 protected:
     int ProcessReceive(void *buf, int len);
     void OnConnected(bool bConnected);
-    void send(google::protobuf::Message *msg);
     void WaitSend(google::protobuf::Message *msg);
     virtual void PrcsProtoBuff() = 0;
     static int serialize(const google::protobuf::Message &ms, char*buf, int sz);
     IObject *GetParObject();
     ILink *GetLink();
     void CheckTimer(uint64_t ms);
+private:
+    void send(google::protobuf::Message *msg);
 protected:
     ProtoMsg                              *m_p;
     LoopQueue<google::protobuf::Message*> m_protosSend;

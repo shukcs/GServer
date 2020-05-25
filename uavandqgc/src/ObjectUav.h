@@ -88,6 +88,7 @@ private:
     double genRidgeLength(int idx);
     float calculateOpArea(double oped);
     int GetOprRidge()const;
+    double GetOprLength()const;
 private:
     friend class UavManager;
     std::string                     m_strSim;

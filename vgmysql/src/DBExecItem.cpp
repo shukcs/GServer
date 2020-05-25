@@ -20,14 +20,14 @@ static const list<FiledVal*> lsFieldEmpty;
 //FiledVal
 ///////////////////////////////////////////////////////////////////////////////////////
 FiledVal::FiledVal(int tp, const std::string &name, int len): m_type(tp)
-, m_bEmpty(true), m_tpField(NoBuff), m_buff(NULL), m_exParam(NULL)
+, m_bEmpty(1), m_tpField(NoBuff), m_buff(NULL), m_exParam(NULL)
 ,m_lenMax(0), m_len(0), m_name(name), m_condition("=")
 {
     InitBuff(len);
     transType(tp);
 }
 
-FiledVal::FiledVal(VGTableField *fild, bool bOth): m_type(-1), m_bEmpty(true)
+FiledVal::FiledVal(VGTableField *fild, bool bOth): m_type(-1), m_bEmpty(1)
 , m_tpField(NoBuff), m_buff(NULL), m_exParam(NULL)
 , m_lenMax(0), m_len(0), m_condition("=")
 {
@@ -105,14 +105,14 @@ void FiledVal::SetParam(const string &param, FieldType tp)
         else
             m_param = param;
 
-        m_bEmpty = false;
+        m_bEmpty = 0;
         m_tpField = (FieldType)((m_tpField&~List)|tp);
     }
 }
 
 void FiledVal::SetParam(const list<string> &param)
 {
-    m_bEmpty = false;
+    m_bEmpty = 0;
     m_tpField = (FieldType)(m_tpField|List);
     m_param.clear();
     for (const string &itr : param)
@@ -162,7 +162,7 @@ void FiledVal::InitBuff(unsigned len, const void *buf)
         memcpy(m_buff, buf, len);
 
     m_tpField = (FieldType)(m_tpField&~List);
-    m_bEmpty = false;
+    m_bEmpty = 0;
 }
 
 string FiledVal::ToConditionString(const string &str)const
@@ -241,7 +241,7 @@ void FiledVal::SetEmpty()
     else if (0 == ((StaticParam | StaticRef)&m_tpField))
     {
         m_param.clear();
-        m_bEmpty = true;
+        m_bEmpty = 1;
     }
 
     m_len = 0;
@@ -366,9 +366,9 @@ string FiledVal::finallyString(const string &str, BraceFlag f)
 ///////////////////////////////////////////////////////////////////////////////////////
 //ExecutItem
 ///////////////////////////////////////////////////////////////////////////////////////
-ExecutItem::ExecutItem(ExecutType tp, const std::string &name)
-: m_type(tp), m_name(name), m_autoIncrement(NULL)
-, m_bHasForeignRefTable(false), m_bRef(false)
+ExecutItem::ExecutItem(ExecutType tp, const std::string &name): m_type(tp)
+, m_name(name), m_autoIncrement(NULL), m_bHasForeignRefTable(false)
+, m_bRef(false)
 {
 }
 
@@ -430,12 +430,17 @@ void ExecutItem::AddItem(FiledVal *item, int tp)
     if (!item)
         return;
 
-    if (tp == ExecutItem::Read)
-        m_itemsRead.push_back(item);
-    else if (tp == ExecutItem::Write)
-        m_itemsWrite.push_back(item);
-    else if (tp == ExecutItem::Condition)
-        _addCondition(item);
+    switch (tp)
+    {
+    case ExecutItem::Read:
+        m_itemsRead.push_back(item); break;
+    case ExecutItem::Write:
+        m_itemsWrite.push_back(item); break;
+    case ExecutItem::Condition:
+        _addCondition(item); break;
+    default:
+        break;
+    }
 }
 
 void ExecutItem::SetIncrement(FiledVal *item)
@@ -596,13 +601,11 @@ void ExecutItem::ClearData()
 MYSQL_BIND *ExecutItem::TransformRead()
 {
     unsigned sz = m_itemsRead.size();
-    if (sz < 0)
-        return NULL;
-
-    MYSQL_BIND *binds = new MYSQL_BIND[sz];
+    MYSQL_BIND *binds = sz > 0 ? new MYSQL_BIND[sz] : NULL;
     if (!binds)
         return NULL;
     memset(binds, 0, sz * sizeof(MYSQL_BIND));
+
     int pos = 0;
     for (FiledVal *item : m_itemsRead)
     {
@@ -637,6 +640,7 @@ void ExecutItem::transformBind(FiledVal *item, MYSQL_BIND &bind, bool bRead)
         {
             bind.length = (unsigned long *)&item->ReadLength();
             bind.buffer_length = item->GetMaxLen();
+            bind.is_null = (my_bool *)&item->m_bEmpty;
         }
     }
 }
@@ -704,7 +708,7 @@ void ExecutItem::_addCondition(FiledVal *item)
     string tmp = item ? item->GetFieldName() : string();
     for (FiledVal *itr : m_itemsCondition)
     {
-        if (itr == item || itr->GetFieldName() == tmp)
+        if (itr == item || (itr->GetFieldName()==tmp && item->GetJudge()==itr->GetJudge()))
             return;
     }
     m_itemsCondition.push_back(item);

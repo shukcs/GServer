@@ -58,7 +58,7 @@ static double geoDistance(int lat1, int lon1, int lat2, int lon2)
     double dif = lat1*M_PI / 180;
     double x = double(lat1 - lat2)*1e-7*M_PI*EARTH_RADIOS / 180;
     double y = double(lon1 - lon2)*1e-7*M_PI*EARTH_RADIOS / 180;
-    y = y*sin(dif);
+    y = y*cos(dif);
 
     return sqrt(x*x + y*y);
 }
@@ -71,10 +71,12 @@ static bool getGeo(const string &buff, int &lat, int &lon)
     msg.msgid = MAVLINK_MSG_ID_MISSION_ITEM_INT;
     msg.len = uint8_t(buff.size());
     memcpy(msg.payload64, buff.c_str(), msg.len);
-    mavlink_mission_item_int_t from = { 0 };
-    mavlink_msg_mission_item_int_decode(&msg, &from);
-    lat = from.x;
-    lon = from.y;
+    mavlink_mission_item_int_t item = { 0 };
+    mavlink_msg_mission_item_int_decode(&msg, &item);
+    if (item.command != MAV_CMD_NAV_WAYPOINT)
+        return false;
+    lat = item.x;
+    lon = item.y;
     return true;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -579,7 +581,7 @@ void ObjectUav::_missionFinish(int lat, int lon)
     if (!m_mission || m_nCurRidge<m_mission->beg())
         return;
 
-    double oped = 0;
+    double remainCur = 0;
     if (DBMessage *msg = new DBMessage(this, IMessage::Unknown, DBMessage::DB_GS))
     {
         msg->SetSql("insertMissions");
@@ -595,21 +597,27 @@ void ObjectUav::_missionFinish(int lat, int lon)
         if (m_mission->has_beg())
             msg->SetWrite("begin", m_mission->beg());
 
-        if (GetOprRidge()>m_nCurRidge)
+        int ridgeFlying = GetOprRidge();
+        if (ridgeFlying>m_nCurRidge)
         {
             int latT=INVALIDLat, lonT = INVALIDLat;
-            getGeo(m_mission->missions(m_nCurItem), latT, latT);
-            oped = geoDistance(lat, lon, latT, lonT);
+            if (getGeo(m_mission->missions(m_nCurItem), latT, latT))
+            {
+                remainCur = geoDistance(lat, lon, latT, lonT);
+                double opLn = GetOprLength();
+                if (remainCur > opLn)
+                    remainCur = opLn;
+            }
             msg->SetWrite("continiuLat", lat);
             msg->SetWrite("continiuLon", lon);
         }
 
         msg->SetWrite("end", m_nCurRidge);
-        msg->SetWrite("acreage", calculateOpArea(oped));
+        msg->SetWrite("acreage", calculateOpArea(remainCur));
         SendMsg(msg);
     }
 
-    m_fliedBeg = (float)oped;
+    m_fliedBeg = (float)remainCur;
     if (++m_nCurRidge < m_mission->end())
     {
         m_nCurRidge = -1;
@@ -719,7 +727,7 @@ double ObjectUav::genRidgeLength(int idx)
     return 0;
 }
 
-float ObjectUav::calculateOpArea(double opedCur)
+float ObjectUav::calculateOpArea(double remainCur)
 {
     if (!m_mission || m_nCurItem<1 || m_nCurItem>m_mission->missions_size())
         return 0;
@@ -737,7 +745,7 @@ float ObjectUav::calculateOpArea(double opedCur)
         {
             oped += itr.second.length;
             if (itr.second.idx == opR)
-                oped -= opedCur;
+                oped -= remainCur;
         }
     }
     if (allOp < 0.0001)
@@ -753,4 +761,13 @@ int ObjectUav::GetOprRidge() const
         return m_nCurRidge;
 
     return itr->second.idx;
+}
+
+double ObjectUav::GetOprLength() const
+{
+    auto itr = m_ridges.find(m_nCurItem);
+    if (itr == m_ridges.end())
+        return 0;
+
+    return itr->second.length;
 }

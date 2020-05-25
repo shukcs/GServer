@@ -60,7 +60,7 @@ public:
     T GetValue(bool *suc=NULL)const
     {
         T ret(0);
-        if (m_len < sizeof(T))
+        if (m_len < sizeof(T) || m_bEmpty)
         {
             if (suc)
                 *suc = false;
@@ -87,7 +87,7 @@ protected:
 private:
     friend class ExecutItem;
     int             m_type;
-    bool            m_bEmpty;
+    char            m_bEmpty;
     FieldType       m_tpField;
     char            *m_buff;
     ExecutItem      *m_exParam;
