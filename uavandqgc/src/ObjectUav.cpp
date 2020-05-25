@@ -582,6 +582,7 @@ void ObjectUav::_missionFinish(int lat, int lon)
         return;
 
     double remainCur = 0;
+    int ridgeFlying = GetOprRidge();
     if (DBMessage *msg = new DBMessage(this, IMessage::Unknown, DBMessage::DB_GS))
     {
         msg->SetSql("insertMissions");
@@ -597,7 +598,6 @@ void ObjectUav::_missionFinish(int lat, int lon)
         if (m_mission->has_beg())
             msg->SetWrite("begin", m_mission->beg());
 
-        int ridgeFlying = GetOprRidge();
         if (ridgeFlying>m_nCurRidge)
         {
             int latT=INVALIDLat, lonT = INVALIDLat;
@@ -618,12 +618,12 @@ void ObjectUav::_missionFinish(int lat, int lon)
     }
 
     m_fliedBeg = (float)remainCur;
-    if (++m_nCurRidge > m_mission->end())
+    if (m_nCurRidge+1 > m_mission->end())
     {
         m_nCurRidge = -1;
         return;
     }
-    m_mission->set_beg(m_nCurRidge);
+    m_mission->set_beg(ridgeFlying);
 }
 
 void ObjectUav::savePos()
@@ -735,13 +735,13 @@ float ObjectUav::calculateOpArea(double remainCur)
     if (m_nCurRidge >= m_mission->end())
         return m_mission->acreage();
 
-    double allOp = -m_fliedBeg;
+    double allOp = 0;
     double oped = -m_fliedBeg;
     int opR = GetOprRidge();
     for (const pair<int32_t, RidgeDat> &itr : m_ridges)
     {
         allOp += itr.second.length;
-        if (itr.second.idx <= opR)
+        if (itr.second.idx<=opR && itr.second.idx>=m_mission->beg())
         {
             oped += itr.second.length;
             if (itr.second.idx == opR)
