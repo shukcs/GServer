@@ -241,7 +241,7 @@
 					<item name="finishTime" ref="MissionInfo" type="Condition" condition="<" />
 				</SQL>
 				<SQL name="queryMissionAcreage" table="MissionInfo" type="Select" >
-					<item name="sum(acreage)" sqlTp="float" type="Read" />
+					<item name="sum(acreage)" sqlTp="double" type="Read" />
 					<item name="userID" type="Condition" />
 					<item name="uavID" type="Condition" />
 					<item name="landId" type="Condition" />

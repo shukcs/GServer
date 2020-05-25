@@ -749,7 +749,7 @@ void ObjectGS::processMissions(const DBMessage &msg)
 void ObjectGS::processMissionsAcreage(const DBMessage &msg)
 {
     auto sd = new AckUavMissionAcreage;
-    auto acreage = msg.GetRead("sum(acreage)").ToFloat();
+    auto acreage = msg.GetRead("sum(acreage)").ToDouble();
     if (!sd)
         return;
 
@@ -1417,8 +1417,8 @@ void ObjectGS::_prcsReqMissonsAcreage(das::proto::RequestUavMissionAcreage &msg)
         msgDb->SetCondition("userID", m_id);
     if (msg.has_uav())
         msgDb->SetCondition("uavID", msg.uav());
-    if (!GetAuth(ObjectGS::Type_UavManager))
-        msgDb->SetCondition("userID", m_id);
+    if (msg.has_id())
+        msgDb->SetCondition("landId", msg.id());
     if (msg.has_planid())
         msgDb->SetCondition("planID", msg.planid());
     if (msg.has_beg())
