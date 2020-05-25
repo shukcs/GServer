@@ -55,7 +55,7 @@ using namespace SOCKETS_NAMESPACE;
 #endif
 static double geoDistance(int lat1, int lon1, int lat2, int lon2)
 {
-    double dif = lat1*M_PI / 180;
+    double dif = lat1*1e-7*M_PI / 180;
     double x = double(lat1 - lat2)*1e-7*M_PI*EARTH_RADIOS / 180;
     double y = double(lon1 - lon2)*1e-7*M_PI*EARTH_RADIOS / 180;
     y = y*cos(dif);
