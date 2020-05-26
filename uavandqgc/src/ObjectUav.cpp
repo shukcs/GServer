@@ -515,7 +515,7 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
 {
     m_lat = gps.latitude() / 1e7;
     m_lon = gps.longitude() / 1e7;
-    if (m_mission && m_bSys && mod==MissionMod && m_nCurRidge>-1)
+    if (m_mission && m_bSys && mod==MissionMod && m_nCurRidge>=0)
     {
         GpsAdtionValue gpsAdt = { 0 };
         int count = (sizeof(GpsAdtionValue) + sizeof(float) - 1) / sizeof(float);
@@ -618,11 +618,10 @@ void ObjectUav::_missionFinish(int lat, int lon)
     }
 
     m_fliedBeg = (float)remainCur;
+    m_nCurRidge = 0;
     if (m_nCurRidge+1 > m_mission->end())
-    {
-        m_nCurRidge = -1;
         return;
-    }
+
     m_mission->set_beg(ridgeFlying);
 }
 

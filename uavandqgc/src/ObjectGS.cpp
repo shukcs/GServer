@@ -719,6 +719,7 @@ void ObjectGS::processMissions(const DBMessage &msg)
         if (UavRoute *rt = ack->add_routes())
         {
             rt->set_plan(Utility::bigint2string(itr));
+            rt->set_crttm(0);
             rt->set_optm(*tmItr);
             rt->set_land(Utility::bigint2string(*landsItr));
             rt->set_acreage(*areaItr);
