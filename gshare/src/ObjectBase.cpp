@@ -69,9 +69,10 @@ protected:
             ILink *l = itr->second;
             if (l->PrcsBussiness(ms, *this))
                 ret = true;
+
             if (l->IsRealse())
             {
-                m_lsMsgSend.Push(new ObjectEvent(itr->first, m_mgr->GetObjectType(), ObjectEvent::E_Release));
+                m_lsMsgSend.Push(new ObjectEvent(l->GetParObject(), itr->first, m_mgr->GetObjectType()));
                 auto tmp = itr++;
                 m_links.erase(tmp);
                 if (itr==m_links.end())

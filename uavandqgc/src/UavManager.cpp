@@ -101,7 +101,7 @@ void UavManager::LoadConfig()
     TiXmlDocument doc;
     doc.LoadFile("UavManager.xml");
     const TiXmlElement *rootElement = doc.RootElement();
-    const TiXmlNode *node = rootElement ? rootElement->FirstChild("UavManager") : NULL;
+    const TiXmlNode *node = rootElement ? rootElement->FirstChild("Manager") : NULL;
     const TiXmlElement *cfg = node ? node->ToElement() : NULL;
     if (cfg)
     {

@@ -264,23 +264,19 @@ void DBManager::LoadConfig()
     doc.LoadFile("DBManager.xml");
 
     const TiXmlElement *rootElement = doc.RootElement();
-    const TiXmlNode *node = rootElement ? rootElement->FirstChild("DBManager") : NULL;
+    const TiXmlNode *node = rootElement ? rootElement->FirstChild("Manager") : NULL;
     const TiXmlElement *cfg = node ? node->ToElement() : NULL;
     if (!cfg)
         return;
 
-    const char *tmp = cfg->Attribute("thread");
-    int n = tmp ? (int)Utility::str2int(tmp) : 1;
-    tmp = cfg->Attribute("buff");
-    InitThread(n, 0);
-
-    const TiXmlNode *dbNode = node ? node->FirstChild("ObjectDB") : NULL;
+    InitThread(1, 0);
+    const TiXmlNode *dbNode = node ? node->FirstChild("Object") : NULL;
     while (dbNode)
     {
         if (ObjectDB *db = ObjectDB::ParseMySql(*dbNode->ToElement()))
             AddObject(db);
 
-        dbNode = dbNode->NextSibling("ObjectDB");
+        dbNode = dbNode->NextSibling("Object");
     }
 }
 

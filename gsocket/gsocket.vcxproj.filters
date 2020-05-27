@@ -4,18 +4,10 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\protectsocket.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
       <UniqueIdentifier>{03a29352-f262-4d83-aeba-39bc829ea633}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\protectsocket.h">
-      <Filter>src</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

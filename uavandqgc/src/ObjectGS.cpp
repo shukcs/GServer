@@ -755,7 +755,7 @@ void ObjectGS::processMissionsAcreage(const DBMessage &msg)
         return;
 
     sd->set_seqno(msg.GetSeqNomb());
-    sd->set_acreage(acreage);
+    sd->set_acreage((float)acreage);
     WaitSend(sd);
 }
 

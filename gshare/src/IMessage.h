@@ -127,10 +127,11 @@ class ObjectEvent : public IMessage
 public:
     enum EventType {
         E_Release = User + 0x2000,
+        E_Login,
+        E_Logout,
     };
 public:
-    ObjectEvent(const std::string &rcv, int32_t rcvTp, EventType e=E_Release);
-
+    ObjectEvent(IObject *sender, const std::string &rcv, int32_t rcvTp, EventType e = E_Release);
 protected:
     void *GetContent()const;
     int GetContentLength()const;

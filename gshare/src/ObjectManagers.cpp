@@ -145,8 +145,10 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
     for (const pair<int, IObjectManager*> &m : m_managersMap)
     {
         if (m.second->ParseRequest(sock, m_buff, len))
-            break;
+            return;
     }
+    if (len > 64)
+        sock->Close();
 }
 
 void ObjectManagers::OnSocketClose(ISocket *s)

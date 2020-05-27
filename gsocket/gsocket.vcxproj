@@ -20,10 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\protectsocket.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\protectsocket.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{91DB494C-A0A2-41BE-92E9-675E53F8A8FA}</ProjectGuid>

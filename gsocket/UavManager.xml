@@ -1,4 +1,4 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <document>
-	<UavManager thread="2" />
+	<Manager thread="2" />
 </document>

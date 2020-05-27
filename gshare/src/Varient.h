@@ -56,7 +56,6 @@ public:
         isStatic = true,
         isRelocatable = std::is_enum<T>::value,
         isLarge = (sizeof(T) > sizeof(void*)),
-        isDummy = false, //### Qt6: remove
         sizeOf = sizeof(T)
     };
 };

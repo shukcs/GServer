@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
-	<DBManager>
-		<ObjectDB name="DBGS" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
+	<Manager>
+		<Object name="DBGS" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
 			<Tables>
 				<table name="GSInfo">
 					<field name="user" type="char(32)" constraint="primary key"/>
@@ -277,8 +277,8 @@
 					</SQL>
 				</Trigger>
 			</Triggers-->
-		</ObjectDB>
-		<ObjectDB name="DBUav" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
+		</Object>
+		<Object name="DBUav" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
 			<Tables>
 				<table name="UavInfo">
 					<field name="id" type="char(16)" constraint="primary key"/>
@@ -333,8 +333,8 @@
 					<item name="id" type="Condition" />
 				</SQL>
 			</SQLs>
-		</ObjectDB>
-		<ObjectDB name="DBLog" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
+		</Object>
+		<Object name="DBLog" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
 			<Tables>
 				<table name="eventLog">
 					<field name="id" type="BIGINT" constraint="primary key;auto_increment"/>
@@ -354,6 +354,6 @@
 					<item name="evntdesc" type="Write" />
 				</SQL>
 			</SQLs>
-		</ObjectDB>
-	</DBManager>
+		</Object>
+	</Manager>
 </document>

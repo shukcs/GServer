@@ -101,8 +101,8 @@ int IMessage::CreateThreadID() const
 /////////////////////////////////////////////////////////////////////////////////
 //
 //////////////////////////////////////////////////////////////////////////////////
-ObjectEvent::ObjectEvent(const string &rcv, int32_t rcvTp, EventType e)
-:IMessage(new MessageData((IObject*)NULL, (int)e), rcv, rcvTp)
+ObjectEvent::ObjectEvent(IObject *sender, const string &rcv, int32_t rcvTp, EventType e)
+:IMessage(new MessageData(sender, (int)e), rcv, rcvTp)
 {
 }
 
