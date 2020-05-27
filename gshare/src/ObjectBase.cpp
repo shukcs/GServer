@@ -223,9 +223,6 @@ void ILink::SetSocket(ISocket *s)
     if (m_sock != s)
     {
         m_sock = s;
-        if (m_sock)
-            ClearRecv();
-
         OnConnected(s != NULL);
         if (s)
         {
@@ -494,7 +491,7 @@ void IObjectManager::ProcessMessage()
                 obj->ProcessMessage(msg);
                 continue;
             }
-            if (!PrcsPublicMsg(*msg))
+            if (!PrcsPublicMsg(*msg) && rcv.empty())
             {
                 for (const pair<string, IObject*> &o : m_objects)
                 {
