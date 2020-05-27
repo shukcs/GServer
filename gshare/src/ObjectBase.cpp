@@ -223,6 +223,9 @@ void ILink::SetSocket(ISocket *s)
     if (m_sock != s)
     {
         m_sock = s;
+        if (m_sock)
+            ClearRecv();
+
         OnConnected(s != NULL);
         if (s)
         {

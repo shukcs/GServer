@@ -63,7 +63,7 @@ void ObjectAbsPB::OnConnected(bool bConnected)
             m_p = new ProtoMsg;
         return;
     }
-    ClearRecv();
+
     m_sock = NULL;
 }
 

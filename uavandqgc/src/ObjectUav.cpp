@@ -618,11 +618,9 @@ void ObjectUav::_missionFinish(int lat, int lon)
     }
 
     m_fliedBeg = (float)remainCur;
-    m_nCurRidge = 0;
-    if (m_nCurRidge+1 > m_mission->end())
-        return;
-
-    m_mission->set_beg(ridgeFlying);
+    m_nCurRidge = m_nCurRidge+1 > m_mission->end() ? -1: 0;
+    if (m_nCurRidge < m_mission->end())
+        m_mission->set_beg(ridgeFlying);
 }
 
 void ObjectUav::savePos()
