@@ -152,11 +152,11 @@ void ObjectGS::ProcessMessage(IMessage *msg)
         switch (tp)
         {
         case IMessage::BindUavRslt:
-        case IMessage::QueryUavRslt:
+        case IMessage::QueryDeviceRslt:
         case IMessage::ControlUavRslt:
         case IMessage::SychMissionRslt:
         case IMessage::PostORRslt:
-        case IMessage::UavAllocationRslt:
+        case IMessage::DeviceAllocationRslt:
         case IMessage::PushUavSndInfo:
         case IMessage::ControlGs:
             process2GsMsg(((GSOrUavMessage *)msg)->GetProtobuf());

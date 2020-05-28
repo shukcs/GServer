@@ -539,6 +539,9 @@ bool ObjectUav::_parsePostOr(const OperationRoute &sor)
     if (rdSz-1 != sor.end()-beg)
         return false;
 
+    if (m_mission->end() == m_nCurRidge)
+        _missionFinish(INVALIDLat, INVALIDLat);
+
     ReleasePointer(m_mission);
     m_fliedBeg = 0;
     m_mission = new OperationRoute();

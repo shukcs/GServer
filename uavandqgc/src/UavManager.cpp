@@ -74,13 +74,13 @@ bool UavManager::PrcsPublicMsg(const IMessage &msg)
     case IMessage::BindUav:
         checkBindUav(*(RequestBindUav *)proto, *(GS2UavMessage *)&msg);
         return true;
-    case IMessage::QueryUav:
+    case IMessage::QueryDevice:
         checkUavInfo(*(RequestUavStatus *)proto, *(GS2UavMessage*)&msg);
         return true;
     case IMessage::ControlUav:
         SendMsg(ObjectUav::AckControl2Uav(*(PostControl2Uav*)proto, -1));
         return true;
-    case IMessage::UavAllocation:
+    case IMessage::DeviceAllocation:
         processAllocationUav(((RequestIdentityAllocation *)proto)->seqno(), msg.GetSenderID());
         return true;
     case IMessage::NotifyFWUpdate:

@@ -47,8 +47,8 @@ public:
         PostOR,
         ControlUav,
         SychMission,
-        QueryUav,
-        UavAllocation,
+        QueryDevice,
+        DeviceAllocation,
         NotifyFWUpdate,
         Gs2UavEnd,
 
@@ -58,8 +58,8 @@ public:
         PostORRslt,
         PushUavSndInfo,
         ControlGs,
-        QueryUavRslt,
-        UavAllocationRslt,
+        QueryDeviceRslt,
+        DeviceAllocationRslt,
 
         Uav2GsEnd,
         Gs2GsBeging = Uav2GsEnd,
@@ -131,7 +131,7 @@ public:
         E_Logout,
     };
 public:
-    ObjectEvent(IObject *sender, const std::string &rcv, int32_t rcvTp, EventType e = E_Release);
+    SHARED_DECL ObjectEvent(IObject *sender, const std::string &rcv, int32_t rcvTp, EventType e = E_Release);
 protected:
     void *GetContent()const;
     int GetContentLength()const;

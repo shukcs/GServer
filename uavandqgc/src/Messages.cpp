@@ -191,9 +191,9 @@ IMessage::MessageType Uav2GSMessage::getMessageType(const Message &msg)
     else if (name == d_p_ClassName(PostStatus2GroundStation))
         ret = ControlGs;
     else if (name == d_p_ClassName(AckRequestUavStatus))
-        ret = QueryUavRslt;
+        ret = QueryDeviceRslt;
     else if (name == d_p_ClassName(AckIdentityAllocation))
-        ret = UavAllocationRslt;
+        ret = DeviceAllocationRslt;
 
     return ret;
 }
@@ -230,11 +230,11 @@ IMessage::MessageType GS2UavMessage::getMessageType(const google::protobuf::Mess
     else if (name == d_p_ClassName(RequestRouteMissions))
         ret = SychMission;
     else if (name == d_p_ClassName(RequestUavStatus))
-        ret = QueryUav;
+        ret = QueryDevice;
     else if (name == d_p_ClassName(RequestIdentityAllocation))
-        ret = UavAllocation;
+        ret = DeviceAllocation;
     else if (name == d_p_ClassName(RequestIdentityAllocation))
-        ret = UavAllocation;
+        ret = DeviceAllocation;
     else if (name == d_p_ClassName(NotifyProgram))
         ret = NotifyFWUpdate;
 
