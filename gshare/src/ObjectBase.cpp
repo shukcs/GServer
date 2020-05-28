@@ -538,19 +538,6 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
     return true;
 }
 
-MessageQue *IObjectManager::GetReleaseQue(int idThread)const
-{
-    if (idThread >= (int)m_lsThread.size() || idThread<0)
-        return NULL;
-
-    auto itr = m_lsThread.begin();
-    for (; idThread > 0; --idThread)
-    {
-        ++itr;
-    }
-    return &(*itr)->m_lsMsgRelease;
-}
-
 MessageQue *IObjectManager::GetSendQue(int idThread)const
 {
     if (idThread >= (int)m_lsThread.size() || idThread<0)

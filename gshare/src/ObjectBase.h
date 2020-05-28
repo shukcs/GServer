@@ -158,7 +158,6 @@ public:
     bool ProcessBussiness(BussinessThread *t);
     void ProcessMessage();
     bool ProcessLogins(BussinessThread *s);
-    MessageQue *GetReleaseQue(int idThread)const;
     MessageQue *GetSendQue(int idThread)const;
     bool ParseRequest(ISocket *s, const char *buf, int len);
     bool Exist(IObject *obj)const;

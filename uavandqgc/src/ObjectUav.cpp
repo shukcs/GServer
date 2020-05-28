@@ -432,10 +432,10 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
 
 void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)
 {
-    if(!msg)
+    if(!msg || !msg->has_or_())
         return;
 
-    const OperationRoute mission = msg->or_();
+    const OperationRoute &mission = msg->or_();
     int ret = 0;
     if (_isBind(gs) && _parsePostOr(mission))
     {
@@ -539,7 +539,7 @@ bool ObjectUav::_parsePostOr(const OperationRoute &sor)
     if (rdSz-1 != sor.end()-beg)
         return false;
 
-    if (m_mission->end() == m_nCurRidge)
+    if (m_mission && m_mission->end() == m_nCurRidge)
         _missionFinish(INVALIDLat, INVALIDLat);
 
     ReleasePointer(m_mission);
