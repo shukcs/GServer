@@ -138,6 +138,16 @@ void ObjectUav::_respondLogin(int seq, int res)
     }
 }
 
+void ObjectUav::OnLogined(bool suc, ISocket *s)
+{
+    if (m_bLogined != suc && suc)
+    {
+        if (auto ms = new ObjectEvent(this, string(), ObjectGS::GSType(), ObjectEvent::E_Login))
+            SendMsg(ms);
+    }
+    ObjectAbsPB::OnLogined(suc, s);
+}
+
 bool ObjectUav::IsValid() const
 {
     return m_tmValidLast<0 || m_tmValidLast>Utility::msTimeTick();
@@ -243,6 +253,11 @@ void ObjectUav::PrcsProtoBuff()
 
 void ObjectUav::CheckTimer(uint64_t ms)
 {
+    if (!m_sock && m_bLogined)
+    {
+        if (auto ms = new ObjectEvent(this, string(), ObjectGS::GSType(), ObjectEvent::E_Logout))
+            SendMsg(ms);
+    }
     ObjectAbsPB::CheckTimer(ms);
     if (m_sock)
     { 

@@ -375,6 +375,11 @@ bool IObject::IsInitaled() const
     return m_stInit == Initialed;
 }
 
+bool IObject::IsAllowRelease() const
+{
+    return true;
+}
+
 IObjectManager *IObject::GetManager() const
 {
     return GetManagerByType(GetObjectType());
@@ -431,7 +436,6 @@ bool IObjectManager::ProcessBussiness(BussinessThread *s)
     {
         if (!m_mtx)
             m_mtx = s->GetMutex();
-        InitManager();
         m_mtx->Lock();
         ret = ProcessLogins(s);
         m_mtx->Unlock();
@@ -470,9 +474,9 @@ void IObjectManager::ProcessMessage()
         if (msg->GetMessgeType() == ObjectEvent::E_Release)
         {
             auto itr = m_objects.find(msg->GetReceiverID());
-            if (itr != m_objects.end())
+            auto o = itr!=m_objects.end() ? itr->second : NULL;
+            if (o && o->IsAllowRelease())
             { 
-                auto o = itr->second;
                 m_objects.erase(itr);
                 delete o;
             }

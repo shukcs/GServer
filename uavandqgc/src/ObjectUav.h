@@ -59,6 +59,7 @@ protected:
     void OnConnected(bool bConnected);
     void InitObject();
     void _respondLogin(int seq, int res);
+    void OnLogined(bool suc, ISocket *s=NULL);
 protected:
     static IMessage *AckControl2Uav(const das::proto::PostControl2Uav &msg, int res, ObjectUav *obj = NULL);
 private:

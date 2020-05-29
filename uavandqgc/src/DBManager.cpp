@@ -238,11 +238,6 @@ DBManager::~DBManager()
 {
 }
 
-bool DBManager::InitManager(void)
-{
-    return false;
-}
-
 int DBManager::GetObjectType() const
 {
     return IObject::DBMySql;

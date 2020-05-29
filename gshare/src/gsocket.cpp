@@ -98,6 +98,16 @@ void GSocket::Close()
     }
 }
 
+bool GSocket::Reconnect()
+{
+    if (m_bAccept || m_bListen || m_stat != ISocket::Closed || !m_mgrPrcs)
+        return false;
+
+    m_stat = Connecting;
+    m_mgrPrcs->AddSocket(this);
+    return true;
+}
+
 ILog &GSocket::GetLog()
 {
     return ObjectManagers::GetLog();

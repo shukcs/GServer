@@ -7,6 +7,7 @@
 #include "Utility.h"
 #include "tinyxml.h"
 #include "ObjectGS.h"
+#include "ObjectUav.h"
 #include "ObjectManagers.h"
 #include "FWItem.h"
 
@@ -21,7 +22,6 @@ using namespace SOCKETS_NAMESPACE;
 //GSManager
 ////////////////////////////////////////////////////////////////////////////////
 GSManager::GSManager() : AbsPBManager()
-, m_bInit(false)
 {
 }
 
@@ -82,20 +82,57 @@ IObject *GSManager::PrcsProtoBuff(ISocket *s)
 
 bool GSManager::PrcsPublicMsg(const IMessage &ms)
 {
-    if (ms.GetMessgeType() == IMessage::Gs2GsMsg)
+    switch (ms.GetMessgeType())
     {
-        auto gsmsg = (const GroundStationsMessage *)ms.GetContent();
-        if (Gs2GsMessage *msg = new Gs2GsMessage(this, ms.GetSenderID()))
-        {
-            auto ack = new AckGroundStationsMessage;
-            ack->set_seqno(gsmsg->seqno());
-            ack->set_res(0);
-            ack->set_gs(ms.GetReceiverID());
-            msg->AttachProto(ack);
-            SendMsg(msg);
-        }
+    case IMessage::Gs2GsMsg:
+        processGSMessage(*(Gs2GsMessage*)&ms);
+        break;
+    case ObjectEvent::E_Login:
+        processDeviceLogin(ms.GetSenderType(), ms.GetSenderID(), true);
+        break;
+    case ObjectEvent::E_Logout:
+        processDeviceLogin(ms.GetSenderType(), ms.GetSenderID(), false);
+        break;
+    default:
+        break;
     }
     return true;
+}
+
+void GSManager::processDeviceLogin(int tp, const std::string &dev, bool bLogin)
+{
+    if (tp != ObjectUav::UAVType() || dev.empty())
+        return;
+
+    if (bLogin)
+        m_uavs.push_back(dev);
+    else
+        m_uavs.remove(dev);
+    UpdateDeviceList udl;
+    static int seq = 1;
+    udl.set_seqno(seq++);
+    udl.set_operation(bLogin ? 1 : 0);
+    udl.add_id(dev);
+
+    for (auto itr : m_mgrs)
+    {
+        if (itr->GetSocket()!= NULL)
+            itr->process2GsMsg(&udl);
+    }
+}
+
+void GSManager::processGSMessage(const Gs2GsMessage &gsM)
+{
+    if (Gs2GsMessage *msg = new Gs2GsMessage(this, gsM.GetSenderID()))
+    {
+        auto gsmsg = (const GroundStationsMessage *)gsM.GetProtobuf();
+        auto ack = new AckGroundStationsMessage;
+        ack->set_seqno(gsmsg->seqno());
+        ack->set_res(0);
+        ack->set_gs(gsM.GetReceiverID());
+        msg->AttachProto(ack);
+        SendMsg(msg);
+    }
 }
 
 IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthentication *rgi)
@@ -140,7 +177,7 @@ IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
 
     string userId = Utility::Lower(msg->userid());
     ObjectGS *o = (ObjectGS *)GetObjectByID(userId);
-    if (o && o->GetSocket())
+    if (o && (o->GetSocket() || !o->IsAllowRelease()))
     {
         AckNewGS ack;
         ack.set_seqno(msg->seqno());
@@ -174,18 +211,29 @@ void GSManager::LoadConfig()
         tmp = cfg->Attribute("buff");
         int buSz = tmp ? (int)Utility::str2int(tmp) : 6144;
         InitThread(n, buSz);
-    }
-}
 
-bool GSManager::InitManager()
-{
-    if (!m_bInit)
-    {
-        m_bInit = true;
-        AddDatabaseUser("root", "NIhao666", NULL, 0, ObjectGS::Type_ALL);
-    }
+        const TiXmlNode *dbNode = node ? node->FirstChild("Object") : NULL;
+        while (dbNode)
+        {
+            const TiXmlElement *e = dbNode->ToElement();
+            const char *id = e->Attribute("id");
+            const char *pswd = e->Attribute("pswd");
+            if (id && pswd)
+            {
+                auto obj = new ObjectGS(string(id));
+                if (!obj)
+                    return;
+                obj->SetPswd(pswd);
+                const char *auth = e->Attribute("auth");
+                obj->m_auth = auth ? int(Utility::str2int(auth)) : 3;
+                obj->m_stInit = IObject::Initialed;
+                AddObject(obj);
+                m_mgrs.push_back(obj);
+            }
 
-    return m_bInit;
+            dbNode = dbNode->NextSibling("Object");
+        }
+    }
 }
 
 bool GSManager::IsHasReuest(const char *buf, int len) const

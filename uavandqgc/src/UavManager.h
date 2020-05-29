@@ -46,7 +46,6 @@ protected:
     IObject *PrcsProtoBuff(ISocket *s);
     bool PrcsPublicMsg(const IMessage &msg);
     void LoadConfig();
-    bool InitManager();
     bool IsHasReuest(const char *buf, int len)const;
 private:
     void _getLastId();
@@ -63,7 +62,6 @@ private:
     void saveBind(const std::string &uav, bool bBind, const std::string &gs, bool bForce);
 private:
     uint32_t    m_lastId;
-    bool        m_bInit;
 };
 
 #ifdef SOCKETS_NAMESPACE

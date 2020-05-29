@@ -7,6 +7,7 @@ namespace das {
     namespace proto {
         class RequestGSIdentityAuthentication;
         class RequestNewGS;
+        class GroundStationsMessage;
     }
 }
 
@@ -24,6 +25,7 @@ using namespace SOCKETS_NAMESPACE;
 
 class ProtoMsg;
 class ObjectGS;
+class Gs2GsMessage;
 class GSManager : public AbsPBManager
 {
 public:
@@ -38,14 +40,17 @@ protected:
     IObject *PrcsProtoBuff(ISocket *s);
 
     bool PrcsPublicMsg(const IMessage &msg);
+    void processDeviceLogin(int tp, const std::string &dev, bool bLogin);
+    void processGSMessage(const Gs2GsMessage &gsM);
 
     IObject *prcsPBLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication *msg);
     IObject *prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg);
     void LoadConfig();
-    bool InitManager();
     bool IsHasReuest(const char *buf, int len)const;
 private:
-    bool            m_bInit;
+    bool                    m_bInit;
+    StringList              m_uavs;
+    std::list<ObjectGS *>   m_mgrs;
 };
 
 #endif // __OBJECT_UAV_H__

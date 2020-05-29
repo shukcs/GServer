@@ -52,7 +52,6 @@ public:
     ~DBManager();
 
 protected:
-    bool InitManager(void);
     int GetObjectType()const;
     bool PrcsPublicMsg();
     IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);

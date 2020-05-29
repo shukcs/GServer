@@ -23,7 +23,7 @@ using namespace SOCKETS_NAMESPACE;
 //UavManager
 ////////////////////////////////////////////////////////////////////////////////
 UavManager::UavManager() : AbsPBManager()
-, m_lastId(0), m_bInit(false)
+, m_lastId(0)
 {
 }
 
@@ -68,6 +68,12 @@ IObject *UavManager::PrcsProtoBuff(ISocket *s)
 
 bool UavManager::PrcsPublicMsg(const IMessage &msg)
 {
+    if (m_lastId == 0)
+    {
+        _getLastId();
+        m_lastId = 1;
+    }
+
     Message *proto = (Message *)msg.GetContent();
     switch (msg.GetMessgeType())
     {
@@ -109,16 +115,6 @@ void UavManager::LoadConfig()
         int n = tmp ? (int)Utility::str2int(tmp) : 1;
         InitThread(n, 512);
     }
-}
-
-bool UavManager::InitManager()
-{
-    if (!m_bInit)
-    {
-        m_bInit = true;
-        _getLastId();
-    }
-    return m_bInit;
 }
 
 bool UavManager::IsHasReuest(const char *buf, int len) const
@@ -264,7 +260,7 @@ void UavManager::processMaxID(const DBMessage &msg)
 {
     const Variant &v = msg.GetRead("max(id)");
     if (v.GetType() == Variant::Type_string)
-        m_lastId = toIntID(v.ToString());
+        m_lastId = toIntID(v.ToString())+1;
 }
 
 void UavManager::addUavId(int seq, const std::string &uav)
@@ -302,7 +298,7 @@ void UavManager::queryUavInfo(const string &gs, int seq, const std::list<std::st
                 msg->SetWrite("authCheck", GSOrUavMessage::GenCheckString(8), 1);
                 idx = 2;
                 if (id > m_lastId)
-                    m_lastId = id;
+                    m_lastId = id+1;
             }
         }
         if (idx < 1)

@@ -94,6 +94,7 @@ public:
     SHARED_DECL bool SendMsg(IMessage *msg);
     SHARED_DECL virtual ILink *GetLink();
     SHARED_DECL bool IsInitaled()const;
+    SHARED_DECL bool IsAllowRelease()const;
     virtual int GetObjectType()const = 0;
     virtual void InitObject() = 0;
 public:
@@ -174,7 +175,6 @@ protected:
     SHARED_DECL void InitThread(uint16_t nT = 1, uint16_t bufSz = 1024);
     SHARED_DECL virtual bool IsHasReuest(const char *buf, int len)const;
     SHARED_DECL virtual bool IsReceiveData()const;
-    virtual bool InitManager() = 0;
     const StringList &getMessageSubcribes(IMessage *msg);
     void PrcsSubcribes();
 protected:

@@ -88,6 +88,7 @@ protected:
     void processMissionsAcreage(const DBMessage &msg);
     void InitObject();
     void CheckTimer(uint64_t ms);
+    bool IsAllowRelease()const;
 private:
     void _prcsLogin(das::proto::RequestGSIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);

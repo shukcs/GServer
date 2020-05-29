@@ -58,6 +58,7 @@ public:
     virtual int Send(int len, const void *buff=NULL) = 0;
     virtual bool ResizeBuff(int sz) = 0;
     virtual bool IsNoWriteData()const = 0;
+    virtual bool Reconnect() = 0;
 
     //无限制调用函数
     virtual SocketStat GetSocketStat()const = 0;

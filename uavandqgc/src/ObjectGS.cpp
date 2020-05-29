@@ -931,6 +931,11 @@ void ObjectGS::CheckTimer(uint64_t ms)
         m_sock->Close();
 }
 
+bool ObjectGS::IsAllowRelease() const
+{
+    return false == GetAuth(ObjectGS::Type_UavManager);
+}
+
 void ObjectGS::SetCheck(const std::string &str)
 {
     m_check = str;
