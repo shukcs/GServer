@@ -24,7 +24,7 @@ enum
     INVALIDLat = (int)2e9,
 };
 #define MissionMod      "Mission"
-#define ReturnMod       "Return"
+#define Landing		    "Landing"
 typedef union {
     float tmp[7];
     MAVPACKED(struct {
@@ -308,7 +308,7 @@ void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg)
     {
         OperationInformation *oi = msg->mutable_oi(i);
         oi->set_uavid(GetObjectID());
-        if (oi->has_gps() && oi->has_status())
+        if (oi->has_gps() && oi->has_status() && m_mission && m_nCurRidge >= 0)
             _prcsGps(oi->gps(), oi->status().operationmode());
     }
 
@@ -397,6 +397,8 @@ void ObjectUav::_prcsPosAuth(RequestPositionAuthentication *msg)
         GetManager()->Log(0, GetObjectID(), 0, "Arm!");
         ack->set_devid(GetObjectID());
         WaitSend(ack);
+        if (n==1 && m_mission)
+            m_nCurRidge = m_mission->beg();
     }
 }
 
@@ -530,7 +532,7 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
 {
     m_lat = gps.latitude() / 1e7;
     m_lon = gps.longitude() / 1e7;
-    if (m_mission && m_bSys && mod==MissionMod && m_nCurRidge>=0)
+    if (m_bSys && mod==MissionMod)
     {
         GpsAdtionValue gpsAdt = { 0 };
         int count = (sizeof(GpsAdtionValue) + sizeof(float) - 1) / sizeof(float);
@@ -545,6 +547,10 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
         if (m_mission->end() == cur)
             _missionFinish(INVALIDLat, INVALIDLat);
     }
+    else if (mod == Landing && m_mission->end() == m_nCurRidge)
+    {
+        _missionFinish(INVALIDLat, INVALIDLat);
+    }
 }
 
 bool ObjectUav::_parsePostOr(const OperationRoute &sor)
@@ -554,9 +560,6 @@ bool ObjectUav::_parsePostOr(const OperationRoute &sor)
     if (rdSz-1 != sor.end()-beg)
         return false;
 
-    if (m_mission && m_mission->end() == m_nCurRidge)
-        _missionFinish(INVALIDLat, INVALIDLat);
-
     ReleasePointer(m_mission);
     m_fliedBeg = 0;
     m_mission = new OperationRoute();
@@ -564,7 +567,6 @@ bool ObjectUav::_parsePostOr(const OperationRoute &sor)
         return false;
 
     m_bSys = false;
-    m_nCurRidge = 0;
     m_mission->CopyFrom(sor);
     if (m_mission->createtime() == 0)
         m_mission->set_createtime(Utility::msTimeTick());
@@ -616,7 +618,7 @@ void ObjectUav::_missionFinish(int lat, int lon)
         if (m_mission->has_beg())
             msg->SetWrite("begin", m_mission->beg());
 
-        if (ridgeFlying>m_nCurRidge)
+        if (ridgeFlying > m_nCurRidge)
         {
             int latT=INVALIDLat, lonT = INVALIDLat;
             if (getGeo(m_mission->missions(m_nCurItem), latT, latT))
@@ -634,11 +636,10 @@ void ObjectUav::_missionFinish(int lat, int lon)
         msg->SetWrite("acreage", calculateOpArea(remainCur));
         SendMsg(msg);
     }
-
     m_fliedBeg = (float)remainCur;
-    m_nCurRidge = m_nCurRidge+1 > m_mission->end() ? -1: 0;
     if (m_nCurRidge < m_mission->end())
         m_mission->set_beg(ridgeFlying);
+    m_nCurRidge = -1;
 }
 
 void ObjectUav::savePos()
