@@ -95,8 +95,8 @@ public:
         SuspendRslt,
 
         DBAckEnd,
-
         DBMsgEnd,
+        GXClinetStat,
 
         User,
     };

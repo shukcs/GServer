@@ -1,38 +1,29 @@
-#ifndef __GSOCKET_H__
-#define __GSOCKET_H__
+#ifndef __GX_LINK_H__
+#define __GX_LINK_H__
 
-#include "stdconfig.h"
 #include "socketBase.h"
 
 class LoopQueBuff;
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE
 #endif
 
-class ILink;
+class ObjectGXClinet;
 class SocketAddress;
 class ILog;
 
-class GSocket : public ISocket
+class GXClientSocket : public ISocket
 {
 public:
-/***********************************************************************
-这是个Socket封装，对于服务端已近够用，客户端可以重载某些需要的函数
-GSocket(handle)
-handle:是创建他的线程，如果handle不为空，GSocket调用Close才能安全删除
-************************************************************************/
-    SHARED_DECL GSocket(ISocketManager *parent);
-    SHARED_DECL ~GSocket();
+    GXClientSocket(ObjectGXClinet *gx);
+    ~GXClientSocket();
 
     //无限制调用函数
-    SHARED_DECL bool Bind(int port, const std::string &hostLocal = "");
-    SHARED_DECL bool ConnectTo(const std::string &hostRemote, int port);
+    bool Bind(int port, const std::string &hostLocal = "");
+    bool ConnectTo(const std::string &hostRemote, int port);
     uint16_t GetPort()const;
     std::string GetHost()const;
     void Close();
-    bool Reconnect();
-public:
-     static SHARED_DECL ILog &GetLog();
 protected:
     //事务处理调用函数
     ILink *GetHandleLink()const;
@@ -70,20 +61,15 @@ protected:
     ISocketManager *GetPrcsManager()const;
     bool ResizeBuff(int sz);
     bool IsNoWriteData()const;
+
+    bool Reconnect();
 protected:
-    friend class GSocketManager;
-    ISocketManager  *m_parent;
+    ObjectGXClinet  *m_parent;
     ISocketManager  *m_mgrPrcs;
-    ILink           *m_object;
     int             m_fd;
-    bool            m_bListen;
-    bool            m_bAccept;
     SocketStat      m_stat;
     SocketAddress   *m_address;
     LoopQueBuff     *m_buffSocket;
 };
 
-#ifdef SOCKETS_NAMESPACE
-}
-#endif
-#endif // !__GSOCKET_H__
+#endif // !__GX_LINK_H__

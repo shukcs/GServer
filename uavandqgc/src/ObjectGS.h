@@ -49,7 +49,7 @@ public:
         Type_ALL = Type_Common | Type_UavManager | Type_Admin,
     };
 public:
-    ObjectGS(std::string &id);
+    ObjectGS(const std::string &id);
     ~ObjectGS();
 
     void SetPswd(const std::string &pswd);

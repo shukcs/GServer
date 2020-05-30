@@ -58,10 +58,9 @@ protected:
     {
         if (!m_mgr)
             return false;
-        bool ret = false;
         ReleasePrcsdMsg();
         ProcessAddLinks();
-        m_mgr->ProcessBussiness(this);
+        bool ret = m_mgr->ProcessBussiness(this);
         uint64_t ms = Utility::msTimeTick();
         auto itr = m_links.begin();
         for (; itr != m_links.end(); ++itr)
@@ -436,9 +435,14 @@ bool IObjectManager::ProcessBussiness(BussinessThread *s)
     {
         if (!m_mtx)
             m_mtx = s->GetMutex();
-        m_mtx->Lock();
-        ret = ProcessLogins(s);
-        m_mtx->Unlock();
+
+        if (IsReceiveData())
+        {
+            m_mtx->Lock();
+            ret = ProcessLogins(s);
+            m_mtx->Unlock();
+        }
+
         PrcsSubcribes();
         ProcessMessage();
     }
@@ -557,7 +561,7 @@ MessageQue *IObjectManager::GetSendQue(int idThread)const
 
 bool IObjectManager::ParseRequest(ISocket *s, const char *buf, int len)
 {
-    if (m_mtx && s && IsHasReuest(buf, len))
+    if (s && IsHasReuest(buf, len) && m_mtx)
     {
         m_mtx->Lock();
         m_loginSockets.push_back(s);

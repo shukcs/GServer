@@ -168,7 +168,8 @@ void GSocketManager::PrcsAddSockets()
     {
         ISocket *s = m_socketsAdd.Pop();
         int handle = s->GetHandle();
-        switch (s->GetSocketStat())
+        ISocket::SocketStat st = s->GetSocketStat();
+        switch (st)
         {
         case ISocket::Binding:
             handle = _bind(s);
@@ -184,6 +185,8 @@ void GSocketManager::PrcsAddSockets()
             _addSocketHandle(handle, s->IsListenSocket());
             m_sockets[handle] = s;
         }
+        if (ISocket::Connecting == st)
+            s->OnConnect(-1 != handle);
     }
 }
 
@@ -484,12 +487,13 @@ int GSocketManager::_connect(ISocket *sock)
         return -1;
     }
 
+    auto addr = sock->GetAddress();
+    if (connect(listenfd, *addr, socklen_t(*addr)) != 0)
+    {
+        closesocket(listenfd);
+        listenfd = -1;
+    }
     sock->SetHandle(listenfd);
-    struct sockaddr_in serveraddr = { 0 };
-    serveraddr.sin_family = AF_INET;
-    serveraddr.sin_addr.s_addr = inet_addr(sock->GetHost().c_str());//htons(portnumber);
-    serveraddr.sin_port = htons(sock->GetPort());
-    sock->OnConnect(0 == connect(listenfd, (sockaddr *)&serveraddr, sizeof(serveraddr)));
     return listenfd;
 }
 
@@ -529,7 +533,7 @@ bool GSocketManager::_recv(ISocket *sock)
 #else
         n = read(fd, m_buff, sizeof(m_buff));
 #endif
-        if (n <= 0)//关闭触发EPOLLIN，但接收不到数据
+        if (n <= 0) //关闭触发EPOLLIN，但接收不到数据
             return n < 0;
 
         sock->OnRead(m_buff, n);
@@ -547,10 +551,7 @@ void GSocketManager::_send(ISocket *sock)
     int len = sock->GetSendLength();
     while (len>sended)
     {
-        int res = sizeof(m_buff);
-        if (res > len)
-            res = len;
-        res = sock->CopyData(m_buff, sizeof(m_buff));
+        int res = sock->CopyData(m_buff, sizeof(m_buff));
 #if defined _WIN32 ||  defined _WIN64
         res = send(fd, m_buff, res, 0);
 #else

@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
     signal(SIGABRT, dump);
 #endif //defined _WIN32 || defined _WIN64
     GLibrary lib("uavandqgc", GLibrary::CurrentPath());
+    GLibrary lib2("trackerandgv", GLibrary::CurrentPath());
     sSockMgr = GSocketManager::CreateManager(1);
     ISocket *sock = new GSocket(NULL);
     int port = argc > 1 ? (int)Utility::str2int(argv[1]) : DefaultPort;
@@ -66,6 +67,7 @@ int main(int argc, char *argv[])
         sSockMgr->Poll(50);
     }
     lib.Unload();
+    lib2.Unload();
     delete sock;
     delete sSockMgr;
     return 0;

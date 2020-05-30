@@ -220,7 +220,7 @@ void GSManager::LoadConfig()
             const char *pswd = e->Attribute("pswd");
             if (id && pswd)
             {
-                auto obj = new ObjectGS(string(id));
+                auto obj = new ObjectGS(id);
                 if (!obj)
                     return;
                 obj->SetPswd(pswd);

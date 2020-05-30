@@ -38,7 +38,7 @@ public:
     virtual bool IsReconnectable()const = 0;
     virtual void EnableWrite(bool) = 0;
     virtual void OnWrite(int) = 0;
-    virtual void OnRead(void *buf, int len) = 0;
+    virtual void OnRead(const void *buf, int len) = 0;
     virtual void OnClose() = 0;
     virtual void OnConnect(bool=true) = 0;
     virtual void OnBind(bool=true) = 0;

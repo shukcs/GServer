@@ -189,7 +189,7 @@ void GSocket::OnWrite(int len)
     }
 }
 
-void GSocket::OnRead(void *buf, int len)
+void GSocket::OnRead(const void *buf, int len)
 {
     if (!buf || len <= 0)
         return;

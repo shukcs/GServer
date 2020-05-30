@@ -26,7 +26,7 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
-ObjectGS::ObjectGS(std::string &id): ObjectAbsPB(id)
+ObjectGS::ObjectGS(const std::string &id): ObjectAbsPB(id)
 , m_auth(1), m_bInitFriends(false), m_countLand(0)
 , m_countPlan(0)
 {
