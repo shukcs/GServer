@@ -88,7 +88,7 @@ bool TrackerManager::PrcsPublicMsg(const IMessage &msg)
 void TrackerManager::LoadConfig()
 {
     TiXmlDocument doc;
-    doc.LoadFile("DBTracker.xml");
+    doc.LoadFile("TrackerManager.xml");
     const TiXmlElement *rootElement = doc.RootElement();
     const TiXmlNode *node = rootElement ? rootElement->FirstChild("Manager") : NULL;
     const TiXmlElement *cfg = node ? node->ToElement() : NULL;
