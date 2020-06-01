@@ -128,6 +128,14 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new PostOperationInformation;                //设备位置
     else if (name == d_p_ClassName(AckOperationInformation))
         m_msg = new AckOperationInformation;                //设备位置
+    else if (name == d_p_ClassName(QueryParameters))
+        m_msg = new QueryParameters;                        //参数查询
+    else if (name == d_p_ClassName(AckQueryParameters))
+        m_msg = new AckQueryParameters;                     //参数查询
+    else if (name == d_p_ClassName(ConfigureParameters))
+        m_msg = new QueryParameters;                        //参数修改
+    else if (name == d_p_ClassName(AckConfigurParameters))
+        m_msg = new AckConfigurParameters;                  //参数修改结果
 
     if (m_msg)
         return m_msg->ParseFromArray(buff, len);

@@ -3,5 +3,6 @@
 	<GSocketManager thread="1" maxListen="100000" portListen="18198" />
 	<Libs>
 		<Library name="uavandqgc" />
+		<Library name="trackerandgv" />
 	</Libs>
 </document>

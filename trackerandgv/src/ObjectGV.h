@@ -8,6 +8,8 @@ namespace das {
         class RequestGVIdentityAuthentication;
         class PostHeartBeat;
         class PostProgram;
+        class QueryParameters;
+        class ConfigureParameters;
         class RequestIdentityAllocation;
         class SyncDeviceList;
     }
@@ -56,6 +58,8 @@ private:
     void _prcsLogin(das::proto::RequestGVIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
     void _prcsSyncDevice(das::proto::SyncDeviceList *ms);
+    void _prcsQueryParameters(das::proto::QueryParameters *pb);
+    void _prcsConfigureParameters(das::proto::ConfigureParameters *pb);
 private:
     friend class GVManager;
     int             m_auth;

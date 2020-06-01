@@ -225,11 +225,11 @@ void ObjectUav::ProcessMessage(IMessage *msg)
 {
     if (msg->GetMessgeType() == IMessage::BindUav)
         processBind((RequestBindUav*)msg->GetContent(), *(GS2UavMessage*)msg);
-    else if (msg->GetMessgeType() == IMessage::ControlUav)
+    else if (msg->GetMessgeType() == IMessage::ControlDevice)
         processControl2Uav((PostControl2Uav*)msg->GetContent());
     else if (msg->GetMessgeType() == IMessage::PostOR)
         processPostOr((PostOperationRoute*)msg->GetContent(), msg->GetSenderID());
-    else if (msg->GetMessgeType() == IMessage::UavQueryRslt)
+    else if (msg->GetMessgeType() == IMessage::DeviceQueryRslt)
         processBaseInfo(*(DBMessage *)msg);
 }
 
@@ -288,7 +288,7 @@ void ObjectUav::InitObject()
     if (m_stInit == IObject::Uninitial)
     {
         m_stInit = IObject::Initialing;
-        if (DBMessage *msg = new DBMessage(this, IMessage::UavQueryRslt))
+        if (DBMessage *msg = new DBMessage(this, IMessage::DeviceQueryRslt))
         {
             msg->SetSql("queryUavInfo");
             msg->SetCondition("id", m_id);
@@ -439,8 +439,7 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
     int res = 0;
     if (m_lastBinder == msg->userid() && m_bBind)
     {
-        auto ms = new PostControl2Uav(*msg);
-        WaitSend(ms);
+        CopyAndSend(*msg);
         res = 1;
     }
     

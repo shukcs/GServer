@@ -83,7 +83,7 @@ bool UavManager::PrcsPublicMsg(const IMessage &msg)
     case IMessage::QueryDevice:
         checkUavInfo(*(RequestUavStatus *)proto, *(GS2UavMessage*)&msg);
         return true;
-    case IMessage::ControlUav:
+    case IMessage::ControlDevice:
         SendMsg(ObjectUav::AckControl2Uav(*(PostControl2Uav*)proto, -1));
         return true;
     case IMessage::DeviceAllocation:
@@ -92,7 +92,7 @@ bool UavManager::PrcsPublicMsg(const IMessage &msg)
     case IMessage::NotifyFWUpdate:
         processNotifyProgram(*(NotifyProgram *)proto);
         return true;
-    case IMessage::UavsMaxIDRslt:
+    case IMessage::DeviceisMaxIDRslt:
         processMaxID(*(DBMessage *)&msg);
         return true;
     default:
@@ -124,7 +124,7 @@ bool UavManager::IsHasReuest(const char *buf, int len) const
 
 void UavManager::_getLastId()
 {
-    if (DBMessage *msg = new DBMessage(this, IMessage::UavsMaxIDRslt))
+    if (DBMessage *msg = new DBMessage(this, IMessage::DeviceisMaxIDRslt))
     {
         msg->SetSql("maxUavId");
         SendMsg(msg);
@@ -284,7 +284,7 @@ void UavManager::queryUavInfo(const string &gs, int seq, const std::list<std::st
     if (gs.empty())
         return;
 
-    if (DBMessage *msg = new DBMessage(gs,IObject::GroundStation, IMessage::UavsQueryRslt, DBMessage::DB_Uav))
+    if (DBMessage *msg = new DBMessage(gs,IObject::GroundStation, IMessage::DeviceisQueryRslt, DBMessage::DB_Uav))
     {
         msg->SetSeqNomb(seq);
         int idx = 0;
@@ -316,7 +316,7 @@ void UavManager::saveBind(const std::string &uav, bool bBind, const string &gs, 
     if (gs.empty() || (bForce && bBind))
         return;
 
-    if (DBMessage *msg = new DBMessage(gs, IObject::GroundStation, IMessage::UavBindRslt, DBMessage::DB_Uav))
+    if (DBMessage *msg = new DBMessage(gs, IObject::GroundStation, IMessage::DeviceBindRslt, DBMessage::DB_Uav))
     {
         msg->SetSql("updateBinded");
         msg->AddSql("queryUavInfo");

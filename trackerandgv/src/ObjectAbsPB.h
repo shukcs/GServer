@@ -33,6 +33,7 @@ protected:
     IObject *GetParObject();
     ILink *GetLink();
     void CheckTimer(uint64_t ms);
+    void CopyAndSend(const google::protobuf::Message &msg);
 
     static int serialize(const google::protobuf::Message &ms, char*buf, int sz);
 private:

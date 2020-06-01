@@ -120,6 +120,18 @@ void ObjectAbsPB::CheckTimer(uint64_t ms)
         send(msg);
     }
 }
+
+void ObjectAbsPB::CopyAndSend(const google::protobuf::Message &msg)
+{
+    if (!m_bLogined)
+        return;
+
+    if (Message *ms = msg.New())
+    {
+        ms->CopyFrom(msg);
+        WaitSend(ms);
+    }
+}
 ////////////////////////////////////////////////////////////////////////////////
 //AbsPBManager
 ////////////////////////////////////////////////////////////////////////////////

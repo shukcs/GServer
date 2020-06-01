@@ -128,26 +128,45 @@ void ObjectGV::_prcsSyncDevice(SyncDeviceList *ms)
     }
 }
 
+void ObjectGV::_prcsQueryParameters(das::proto::QueryParameters *pb)
+{
+    if (auto msg = new GV2TrackerMessage(this, pb->id()))
+    {
+        msg->AttachProto(pb);
+        SendMsg(msg);
+    }
+}
+
+void ObjectGV::_prcsConfigureParameters(das::proto::ConfigureParameters *pb)
+{
+    if (auto msg = new GV2TrackerMessage(this, pb->id()))
+    {
+        msg->AttachProto(pb);
+        SendMsg(msg);
+    }
+}
+
 void ObjectGV::ProcessMessage(IMessage *msg)
 {
-    int tp = msg->GetMessgeType();
-    if(m_p)
+    int tp = msg ? msg->GetMessgeType() : IMessage::Unknown;
+
+    switch (tp)
     {
-        switch (tp)
-        {
-        case IMessage::PushUavSndInfo:
-            process2GsMsg(((TrackerMessage *)msg)->GetProtobuf());
-            break;
-        case IMessage::SyncDeviceisRslt:
-            process2GsMsg(((TrackerMessage *)msg)->GetProtobuf());
-            break;
-        case ObjectEvent::E_Login:
-        case ObjectEvent::E_Logout:
-            processEvent(*msg, tp);
-            break;
-        default:
-            break;
-        }
+    case IMessage::ControlUser:
+        CopyAndSend(*((Tracker2GVMessage*)msg)->GetProtobuf());
+        break;
+    case IMessage::PushUavSndInfo:
+        process2GsMsg(((TrackerMessage *)msg)->GetProtobuf());
+        break;
+    case IMessage::SyncDeviceisRslt:
+        process2GsMsg(((TrackerMessage *)msg)->GetProtobuf());
+        break;
+    case ObjectEvent::E_Login:
+    case ObjectEvent::E_Logout:
+        processEvent(*msg, tp);
+        break;
+    default:
+        break;
     }
 }
 
@@ -163,6 +182,10 @@ void ObjectGV::PrcsProtoBuff()
         _prcsHeartBeat((PostHeartBeat *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(SyncDeviceList))
         _prcsSyncDevice((SyncDeviceList *)m_p->DeatachProto());
+    else if (strMsg == d_p_ClassName(QueryParameters))
+        _prcsQueryParameters((QueryParameters *)m_p->DeatachProto());
+    else if (strMsg == d_p_ClassName(QueryParameters))
+        _prcsConfigureParameters((ConfigureParameters *)m_p->DeatachProto());
 }
 
 void ObjectGV::process2GsMsg(const google::protobuf::Message *msg)

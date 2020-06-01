@@ -181,7 +181,7 @@ IMessage::MessageType Uav2GSMessage::getMessageType(const Message &msg)
     if (name == d_p_ClassName(AckRequestBindUav))
         ret = BindUavRslt;
     else if (name == d_p_ClassName(AckPostControl2Uav))
-        ret = ControlUavRslt;
+        ret = ControlDeviceRslt;
     else if (name == d_p_ClassName(SyscOperationRoutes))
         ret = SychMissionRslt;
     else if (name == d_p_ClassName(AckPostOperationRoute))
@@ -189,7 +189,7 @@ IMessage::MessageType Uav2GSMessage::getMessageType(const Message &msg)
     else if (name == d_p_ClassName(PostOperationInformation))
         ret = PushUavSndInfo;
     else if (name == d_p_ClassName(PostStatus2GroundStation))
-        ret = ControlGs;
+        ret = ControlUser;
     else if (name == d_p_ClassName(AckRequestUavStatus))
         ret = QueryDeviceRslt;
     else if (name == d_p_ClassName(AckIdentityAllocation))
@@ -226,7 +226,7 @@ IMessage::MessageType GS2UavMessage::getMessageType(const google::protobuf::Mess
     else if (name == d_p_ClassName(PostOperationRoute))
         ret = PostOR;
     else if (name == d_p_ClassName(PostControl2Uav))
-        ret = ControlUav;
+        ret = ControlDevice;
     else if (name == d_p_ClassName(RequestRouteMissions))
         ret = SychMission;
     else if (name == d_p_ClassName(RequestUavStatus))
@@ -259,9 +259,9 @@ IMessage::MessageType Gs2GsMessage::getMessageType(const google::protobuf::Messa
     MessageType ret = Unknown;
     const string &name = msg.GetDescriptor()->full_name();
     if (name == d_p_ClassName(GroundStationsMessage))
-        ret = Gs2GsMsg;
+        ret = User2User;
     if (name == d_p_ClassName(AckGroundStationsMessage))
-        ret = Gs2GsAck;
+        ret = User2UserAck;
 
     return ret;
 }

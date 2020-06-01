@@ -148,16 +148,16 @@ void ObjectGS::ProcessMessage(IMessage *msg)
         {
         case IMessage::BindUavRslt:
         case IMessage::QueryDeviceRslt:
-        case IMessage::ControlUavRslt:
+        case IMessage::ControlDeviceRslt:
         case IMessage::SychMissionRslt:
         case IMessage::PostORRslt:
         case IMessage::DeviceAllocationRslt:
         case IMessage::PushUavSndInfo:
-        case IMessage::ControlGs:
+        case IMessage::ControlUser:
             CopyAndSend(*((GSOrUavMessage *)msg)->GetProtobuf());
             break;
-        case IMessage::Gs2GsMsg:
-        case IMessage::Gs2GsAck:
+        case IMessage::User2User:
+        case IMessage::User2UserAck:
             processGs2Gs(*(Message*)msg->GetContent(), tp);
             break;
         case IMessage::SyncDeviceis:
@@ -165,19 +165,19 @@ void ObjectGS::ProcessMessage(IMessage *msg)
         case IMessage::SuspendRslt:
             processSuspend(*(DBMessage*)msg);
             break;
-        case IMessage::UavsQueryRslt:
+        case IMessage::DeviceisQueryRslt:
             processUavsInfo(*(DBMessage*)msg);
             break;
-        case IMessage::UavBindRslt:
+        case IMessage::DeviceBindRslt:
             processBind(*(DBMessage*)msg);
             break;
-        case IMessage::GSInsertRslt:
+        case IMessage::UserInsertRslt:
             processGSInsert(*(DBMessage*)msg);
             break;
-        case IMessage::GSQueryRslt:
+        case IMessage::UserQueryRslt:
             processGSInfo(*(DBMessage*)msg);
             break;
-        case IMessage::GSCheckRslt:
+        case IMessage::UserCheckRslt:
             processCheckGS(*(DBMessage*)msg);
             break;
         case IMessage::LandInsertRslt:
@@ -271,7 +271,7 @@ void ObjectGS::PrcsProtoBuff()
 
 void ObjectGS::processGs2Gs(const Message &msg, int tp)
 {
-    if (tp == IMessage::Gs2GsMsg)
+    if (tp == IMessage::User2User)
     {
         auto gsmsg = (const GroundStationsMessage *)&msg;
         if (Gs2GsMessage *ms = new Gs2GsMessage(this, gsmsg->from()))
@@ -894,7 +894,7 @@ void ObjectGS::InitObject()
             return;
         }
 
-        DBMessage *msg = new DBMessage(this, IMessage::GSQueryRslt);
+        DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
         if (!msg)
             return;
 
@@ -1487,7 +1487,7 @@ void ObjectGS::_prcsReqSuspend(das::proto::RequestMissionSuspend &msg)
 
 void ObjectGS::_checkGS(const string &user, int ack)
 {
-    DBMessage *msgDb = new DBMessage(this, IMessage::GSCheckRslt);
+    DBMessage *msgDb = new DBMessage(this, IMessage::UserCheckRslt);
     if (!msgDb)
         return;
 

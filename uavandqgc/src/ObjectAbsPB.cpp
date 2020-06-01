@@ -127,6 +127,9 @@ void ObjectAbsPB::CheckTimer(uint64_t ms)
 
 void ObjectAbsPB::CopyAndSend(const Message &msg)
 {
+    if (!m_bLogined)
+        return;
+
     if (Message *ms = msg.New())
     {
         ms->CopyFrom(msg);

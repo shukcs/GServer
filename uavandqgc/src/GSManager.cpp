@@ -36,7 +36,7 @@ int GSManager::AddDatabaseUser(const string &user, const string &pswd, ObjectGS 
 
     DBMessage *msg = NULL;
     if (gs)
-        msg = new DBMessage(gs, IMessage::GSInsertRslt);
+        msg = new DBMessage(gs, IMessage::UserInsertRslt);
     else
         msg = new DBMessage(this);
 
@@ -89,7 +89,7 @@ bool GSManager::PrcsPublicMsg(const IMessage &ms)
 {
     switch (ms.GetMessgeType())
     {
-    case IMessage::Gs2GsMsg:
+    case IMessage::User2User:
         processGSMessage(*(Gs2GsMessage*)&ms);
         break;
     case ObjectEvent::E_Login:

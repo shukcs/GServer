@@ -185,6 +185,8 @@ IMessage::MessageType Tracker2GVMessage::getMessageType(const Message &msg)
         ret = DeviceAllocationRslt;
     else if (name == d_p_ClassName(AckSyncDeviceList))
         ret = IMessage::SyncDeviceisRslt;
+    else if (name == d_p_ClassName(AckQueryParameters) || name == d_p_ClassName(AckConfigurParameters))
+        ret = IMessage::ControlUser;
 
     return ret;
 }
@@ -208,6 +210,8 @@ IMessage::MessageType GV2TrackerMessage::getMessageType(const google::protobuf::
    
     if (name == d_p_ClassName(RequestIdentityAllocation))
         ret = DeviceAllocation;
+    else if (name == d_p_ClassName(QueryParameters) || name == d_p_ClassName(ConfigureParameters))
+        ret = IMessage::ControlDevice;
     else if (name == d_p_ClassName(SyncDeviceList))
         ret = IMessage::SyncDeviceis;
 

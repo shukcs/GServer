@@ -45,7 +45,7 @@ public:
         Unknown,
         BindUav,
         PostOR,
-        ControlUav,
+        ControlDevice,
         SychMission,
         QueryDevice,
         DeviceAllocation,
@@ -54,33 +54,33 @@ public:
         UserMessageEnd,
 
         BindUavRslt,
-        ControlUavRslt,
+        ControlDeviceRslt,
         SychMissionRslt,
         PostORRslt,
         PushUavSndInfo,
-        ControlGs,
+        ControlUser,
         QueryDeviceRslt,
         SyncDeviceisRslt,
         DeviceAllocationRslt,
 
         DeviceMessageEnd,
-        Gs2GsMsg = DeviceMessageEnd,
-        Gs2GsAck,
+        User2User = DeviceMessageEnd,
+        User2UserAck,
 
-        Gs2GsEnd,
-        MSGDBBeging = Gs2GsEnd,
+        User2UserEnd,
+        MSGDBBeging = User2UserEnd,
         DBExec,
         DBAckBeging,
-        UavQueryRslt = DBAckBeging,
-        UavsQueryRslt,
-        UavUpdatePosRslt,
-        UavBindRslt,
-        UavsMaxIDRslt,
+        DeviceQueryRslt = DBAckBeging,
+        DeviceisQueryRslt,
+        DeviceUpdatePosRslt,
+        DeviceBindRslt,
+        DeviceisMaxIDRslt,
         MisionUpdateRslt,
         MisionQueryRslt,
-        GSInsertRslt,
-        GSQueryRslt,
-        GSCheckRslt,
+        UserInsertRslt,
+        UserQueryRslt,
+        UserCheckRslt,
         FriendUpdateRslt,
         FriendQueryRslt,
         LandInsertRslt,
@@ -136,8 +136,6 @@ public:
 protected:
     void *GetContent()const;
     int GetContentLength()const;
-private:
-    int m_tp;
 };
 
 #ifdef SOCKETS_NAMESPACE

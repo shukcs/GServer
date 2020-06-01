@@ -9,6 +9,8 @@ namespace das {
         class PostOperationInformation;
         class RequestMissionSuspend;
         class RequestPositionAuthentication;
+        class AckQueryParameters;
+        class AckConfigurParameters;
     }
 }
 
@@ -48,6 +50,8 @@ protected:
 private:
     void _prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
     void _prcsOperationInformation(das::proto::PostOperationInformation *msg);
+    void _prcsAckQueryParameters(das::proto::AckQueryParameters *msg);
+    void _prcsAckConfigurParameters(das::proto::AckConfigurParameters *msg);
     int _checkPos(double lat, double lon, double alt);
 private:
     friend class TrackerManager;
@@ -56,6 +60,7 @@ private:
     double                          m_lon;
     int64_t                         m_tmLastPos;
     int64_t                         m_tmValidLast;
+    das::proto::AckQueryParameters  *m_params;
 };
 
 #ifdef SOCKETS_NAMESPACE
