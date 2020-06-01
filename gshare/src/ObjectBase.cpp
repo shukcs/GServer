@@ -534,11 +534,11 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
             continue;
 
         int len = s->CopyData(t->m_buff, t->m_szBuff);
+        s->ClearBuff();
         IObject *o = PrcsNotObjectReceive(s, t->m_buff, len);
         if (!o)
             continue;
 
-        s->ClearBuff();
         AddObject(o);
         if (ILink *h = o->GetLink())
         {

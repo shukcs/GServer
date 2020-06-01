@@ -63,15 +63,7 @@ IObject *TrackerManager::PrcsProtoBuff(ISocket *s)
 
     if (m_p->GetMsgName() == d_p_ClassName(RequestProgramUpgrade))
     {
-        auto req = (RequestProgramUpgrade *)m_p->GetProtoMessage();
-        AckProgramUpgrade ack;
-        ack.set_seqno(req->seqno());
-        ack.set_result(0);
-        ack.set_software(req->software());
-        ack.set_length(0);
-        ack.set_forced(false);
-        s->ClearBuff();
-        ObjectAbsPB::SendProtoBuffTo(s, ack);
+       return _checkProgram(s, *(RequestProgramUpgrade*)m_p->GetProtoMessage());
     }
 
     return NULL;
@@ -152,5 +144,31 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
     }
     return ret;
 }
+
+IObject *TrackerManager::_checkProgram(ISocket *s, const das::proto::RequestProgramUpgrade &rpu)
+{
+    string uavid = Utility::Upper(rpu.extradata());
+    ObjectTracker *ret = (ObjectTracker *)GetObjectByID(uavid);
+    if (ret)
+    {
+        if (ret->GetSocket() == s)
+            return NULL;
+        Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
+    }
+    else
+    {
+        ret = new ObjectTracker(uavid, string());
+    }
+
+    AckProgramUpgrade ack;
+    ack.set_seqno(rpu.seqno());
+    ack.set_result(0);
+    ack.set_software(rpu.software());
+    ack.set_length(0);
+    ack.set_forced(false);
+    ObjectAbsPB::SendProtoBuffTo(s, ack);
+    return ret;
+}
+
 
 DECLARE_MANAGER_ITEM(TrackerManager)

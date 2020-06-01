@@ -13,6 +13,7 @@ namespace das {
     namespace proto {
         class PostOperationInformation;
         class RequestTrackerIdentityAuthentication;
+        class RequestProgramUpgrade;
     }
 }
 
@@ -42,6 +43,7 @@ protected:
     bool IsHasReuest(const char *buf, int len)const;
 private:
     IObject *_checkLogin(ISocket *s, const das::proto::RequestTrackerIdentityAuthentication &uia);
+    IObject *_checkProgram(ISocket *s, const das::proto::RequestProgramUpgrade &rpu);
 private:
 };
 
