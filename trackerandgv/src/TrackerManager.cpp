@@ -66,7 +66,7 @@ IObject *TrackerManager::PrcsProtoBuff(ISocket *s)
 
 bool TrackerManager::PrcsPublicMsg(const IMessage &msg)
 {
-    if (msg.GetMessgeType() == IMessage::QueryDevice)
+    if (msg.GetMessgeType() == IMessage::SyncDeviceis)
     {
         const GV2TrackerMessage &ms = *(GV2TrackerMessage*)&msg;
         if (auto ack = new Tracker2GVMessage(this, msg.GetSenderID()))

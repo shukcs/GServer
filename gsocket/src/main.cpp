@@ -9,8 +9,8 @@
 #include <signal.h>  
 #endif //defined _WIN32 || defined _WIN64
 #include "ILog.h"
+#include "tinyxml.h"
 
-#define DefaultPort 8198
 static ISocketManager *sSockMgr = NULL;
 static void dump(int signo)
 {
@@ -39,34 +39,65 @@ int main(int argc, char *argv[])
     signal(SIGSEGV, dump);
     signal(SIGABRT, dump);
 #endif //defined _WIN32 || defined _WIN64
-    GLibrary lib("uavandqgc", GLibrary::CurrentPath());
-    sSockMgr = GSocketManager::CreateManager(1);
-    ISocket *sock = new GSocket(NULL);
-    int port = argc > 1 ? (int)Utility::str2int(argv[1]) : DefaultPort;
-    if (port <1000)
-        port = DefaultPort;
+    TiXmlDocument doc;
+    doc.LoadFile("config.xml");
+    const TiXmlElement *rootElement = doc.RootElement();
+    if (!rootElement)
+        return -1;
 
-    if (sock)
+    std::list<GLibrary*> lsLib;
+    if (const TiXmlElement *libs = rootElement->FirstChildElement("Libs"))
     {
-        sock->Bind(port, "");
-        sSockMgr->AddSocket(sock);
-        sSockMgr->SetBindedCB(sock, &OnBindFinish);
-    }
-
-    while (sSockMgr->IsRun())
-    {
-#if defined _WIN32 || defined _WIN64
-        if (_kbhit() > 0)
+        const TiXmlNode *lib = libs->FirstChild("Library");
+        while (lib)
         {
-            int ch = _getch();
-            if (ch == 27)
-                sSockMgr->Exit();
+            if (const char *name = lib->ToElement()->Attribute("name"))
+                lsLib.push_back(new GLibrary(name, GLibrary::CurrentPath()));
+            lib = lib->NextSibling("Library");
         }
-#endif //defined _WIN32 || defined _WIN64
-        sSockMgr->Poll(50);
     }
-    lib.Unload();
-    delete sock;
-    delete sSockMgr;
-    return 0;
+
+    if (const TiXmlElement *socketCfg = rootElement->FirstChildElement("GSocketManager"))
+    {
+        const char *tmp = socketCfg->Attribute("thread");
+        int nThread = tmp ? int(Utility::str2int(tmp)) : 1;
+        tmp = socketCfg->Attribute("maxListen");
+        int maxListen = tmp ? int(Utility::str2int(tmp)) : 100000;
+        sSockMgr = GSocketManager::CreateManager(nThread, maxListen);
+        tmp = socketCfg->Attribute("portListen");
+        if (tmp)
+        {
+            for (const std::string &itr : Utility::SplitString(tmp, ";"))
+            {
+                if (ISocket *sock = new GSocket(sSockMgr))
+                {
+                    sock->Bind(int(Utility::str2int(itr)), "");
+                    sSockMgr->AddSocket(sock);
+                    sSockMgr->SetBindedCB(sock, &OnBindFinish);
+                }
+            }
+        }
+        while (sSockMgr->IsRun())
+        {
+#if defined _WIN32 || defined _WIN64
+            if (_kbhit() > 0)
+            {
+                int ch = _getch();
+                if (ch == 27)
+                    sSockMgr->Exit();
+            }
+#endif //defined _WIN32 || defined _WIN64
+            sSockMgr->Poll(50);
+        }
+        delete sSockMgr;
+        return 0;
+    }
+
+    for (auto itr : lsLib)
+    {
+        if (itr)
+            itr->Unload();
+        delete itr;
+    }
+    return -1;
 }

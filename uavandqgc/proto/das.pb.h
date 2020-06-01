@@ -42,6 +42,8 @@ class QueryParameters;
 class AckQueryParameters;
 class ConfigureParameters;
 class AckConfigurParameters;
+class SyncDeviceList;
+class AckSyncDeviceList;
 class UpdateDeviceList;
 class AckUpdateDeviceList;
 class RequestIdentityAllocation;
@@ -922,6 +924,197 @@ class AckConfigurParameters : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static AckConfigurParameters* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class SyncDeviceList : public ::google::protobuf::Message {
+ public:
+  SyncDeviceList();
+  virtual ~SyncDeviceList();
+
+  SyncDeviceList(const SyncDeviceList& from);
+
+  inline SyncDeviceList& operator=(const SyncDeviceList& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SyncDeviceList& default_instance();
+
+  void Swap(SyncDeviceList* other);
+
+  // implements Message ----------------------------------------------
+
+  SyncDeviceList* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const SyncDeviceList& from);
+  void MergeFrom(const SyncDeviceList& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.SyncDeviceList)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static SyncDeviceList* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckSyncDeviceList : public ::google::protobuf::Message {
+ public:
+  AckSyncDeviceList();
+  virtual ~AckSyncDeviceList();
+
+  AckSyncDeviceList(const AckSyncDeviceList& from);
+
+  inline AckSyncDeviceList& operator=(const AckSyncDeviceList& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckSyncDeviceList& default_instance();
+
+  void Swap(AckSyncDeviceList* other);
+
+  // implements Message ----------------------------------------------
+
+  AckSyncDeviceList* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckSyncDeviceList& from);
+  void MergeFrom(const AckSyncDeviceList& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required int32 result = 2;
+  inline bool has_result() const;
+  inline void clear_result();
+  static const int kResultFieldNumber = 2;
+  inline ::google::protobuf::int32 result() const;
+  inline void set_result(::google::protobuf::int32 value);
+
+  // repeated string id = 3;
+  inline int id_size() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 3;
+  inline const ::std::string& id(int index) const;
+  inline ::std::string* mutable_id(int index);
+  inline void set_id(int index, const ::std::string& value);
+  inline void set_id(int index, const char* value);
+  inline void set_id(int index, const char* value, size_t size);
+  inline ::std::string* add_id();
+  inline void add_id(const ::std::string& value);
+  inline void add_id(const char* value);
+  inline void add_id(const char* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& id() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_id();
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckSyncDeviceList)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_result();
+  inline void clear_has_result();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 result_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> id_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckSyncDeviceList* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -12127,6 +12320,124 @@ inline ::google::protobuf::int32 AckConfigurParameters::result() const {
 inline void AckConfigurParameters::set_result(::google::protobuf::int32 value) {
   set_has_result();
   result_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// SyncDeviceList
+
+// required uint32 seqno = 1;
+inline bool SyncDeviceList::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void SyncDeviceList::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void SyncDeviceList::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void SyncDeviceList::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 SyncDeviceList::seqno() const {
+  return seqno_;
+}
+inline void SyncDeviceList::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// AckSyncDeviceList
+
+// required uint32 seqno = 1;
+inline bool AckSyncDeviceList::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckSyncDeviceList::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckSyncDeviceList::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckSyncDeviceList::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckSyncDeviceList::seqno() const {
+  return seqno_;
+}
+inline void AckSyncDeviceList::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 result = 2;
+inline bool AckSyncDeviceList::has_result() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckSyncDeviceList::set_has_result() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckSyncDeviceList::clear_has_result() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckSyncDeviceList::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::google::protobuf::int32 AckSyncDeviceList::result() const {
+  return result_;
+}
+inline void AckSyncDeviceList::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
+}
+
+// repeated string id = 3;
+inline int AckSyncDeviceList::id_size() const {
+  return id_.size();
+}
+inline void AckSyncDeviceList::clear_id() {
+  id_.Clear();
+}
+inline const ::std::string& AckSyncDeviceList::id(int index) const {
+  return id_.Get(index);
+}
+inline ::std::string* AckSyncDeviceList::mutable_id(int index) {
+  return id_.Mutable(index);
+}
+inline void AckSyncDeviceList::set_id(int index, const ::std::string& value) {
+  id_.Mutable(index)->assign(value);
+}
+inline void AckSyncDeviceList::set_id(int index, const char* value) {
+  id_.Mutable(index)->assign(value);
+}
+inline void AckSyncDeviceList::set_id(int index, const char* value, size_t size) {
+  id_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* AckSyncDeviceList::add_id() {
+  return id_.Add();
+}
+inline void AckSyncDeviceList::add_id(const ::std::string& value) {
+  id_.Add()->assign(value);
+}
+inline void AckSyncDeviceList::add_id(const char* value) {
+  id_.Add()->assign(value);
+}
+inline void AckSyncDeviceList::add_id(const char* value, size_t size) {
+  id_.Add()->assign(reinterpret_cast<const char*>(value), size);
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+AckSyncDeviceList::id() const {
+  return id_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+AckSyncDeviceList::mutable_id() {
+  return &id_;
 }
 
 // -------------------------------------------------------------------

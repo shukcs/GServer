@@ -33,6 +33,7 @@ public:
     ~GSManager();
 
     int AddDatabaseUser(const std::string &user, const std::string &pswd, ObjectGS *gs=NULL, int seq=0, int auth = 1);
+    const StringList &Uavs()const;
 public:
     static std::string CatString(const std::string &s1, const std::string &s2);
 protected:

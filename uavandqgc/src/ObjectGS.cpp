@@ -26,9 +26,9 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
-ObjectGS::ObjectGS(const std::string &id): ObjectAbsPB(id)
-, m_auth(1), m_bInitFriends(false), m_countLand(0)
-, m_countPlan(0)
+ObjectGS::ObjectGS(const std::string &id, int seq): ObjectAbsPB(id)
+, m_auth(1), m_bInitFriends(false), m_countLand(0), m_countPlan(0)
+, m_seq(seq)
 {
     SetBuffSize(WRITE_BUFFLEN);
 }
@@ -70,11 +70,6 @@ int ObjectGS::Authorize() const
 bool ObjectGS::GetAuth(GSAuthorizeType auth) const
 {
     return (auth & m_auth) == auth;
-}
-
-void ObjectGS::SetSeq(int seq)
-{
-    m_seq = seq;
 }
 
 int ObjectGS::GSType()
@@ -159,12 +154,14 @@ void ObjectGS::ProcessMessage(IMessage *msg)
         case IMessage::DeviceAllocationRslt:
         case IMessage::PushUavSndInfo:
         case IMessage::ControlGs:
-            process2GsMsg(((GSOrUavMessage *)msg)->GetProtobuf());
+            CopyAndSend(*((GSOrUavMessage *)msg)->GetProtobuf());
             break;
         case IMessage::Gs2GsMsg:
         case IMessage::Gs2GsAck:
             processGs2Gs(*(Message*)msg->GetContent(), tp);
             break;
+        case IMessage::SyncDeviceis:
+            ackSyncDeviceis();
         case IMessage::SuspendRslt:
             processSuspend(*(DBMessage*)msg);
             break;
@@ -236,6 +233,8 @@ void ObjectGS::PrcsProtoBuff()
         _prcsHeartBeat((PostHeartBeat *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(PostProgram))
         _prcsProgram((PostProgram *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(SyncDeviceList))
+        _prcsSyncDeviceList((SyncDeviceList *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(RequestBindUav))
         _prcsReqBind((RequestBindUav *)m_p->DeatachProto());
     else if (strMsg == d_p_ClassName(PostControl2Uav))
@@ -270,18 +269,6 @@ void ObjectGS::PrcsProtoBuff()
         _prcsReqSuspend(*(RequestMissionSuspend*)m_p->GetProtoMessage());
 }
 
-void ObjectGS::process2GsMsg(const Message *msg)
-{
-    if (!msg)
-        return;
-
-    if (Message *ms = msg->New())
-    {
-        ms->CopyFrom(*msg);
-        WaitSend(ms);
-    }
-}
-
 void ObjectGS::processGs2Gs(const Message &msg, int tp)
 {
     if (tp == IMessage::Gs2GsMsg)
@@ -303,7 +290,7 @@ void ObjectGS::processGs2Gs(const Message &msg, int tp)
             m_friends.push_back(gsmsg->from());
     }
 
-    process2GsMsg(&msg);
+    CopyAndSend(msg);
 }
 
 void ObjectGS::processBind(const DBMessage &msg)
@@ -459,6 +446,7 @@ void ObjectGS::processGSInfo(const DBMessage &msg)
         ack->set_auth(m_auth);
         WaitSend(ack);
     }
+    m_seq = -1;
     m_pswd = pswd;
     if (Initialed == m_stInit)
     {
@@ -953,6 +941,25 @@ void ObjectGS::_prcsReqUavs(RequestUavStatus *msg)
     }
 }
 
+void ObjectGS::_prcsSyncDeviceList(SyncDeviceList *ms)
+{
+    if (ms && GetAuth(ObjectGS::Type_UavManager))
+    {
+        m_seq = ms->seqno();
+        if (auto syn = new ObjectEvent(this, GSType(), IMessage::SyncDeviceis, GetObjectID()))
+            SendMsg(syn);
+    }
+    else if (ms)
+    {
+        if (auto ack = new AckSyncDeviceList)
+        {
+            ack->set_seqno(m_seq);
+            ack->set_result(0);
+            WaitSend(ack);
+        }
+    }
+}
+
 void ObjectGS::_prcsReqBind(das::proto::RequestBindUav *msg)
 {
     if (!msg)
@@ -987,8 +994,9 @@ void ObjectGS::_prcsControl2Uav(das::proto::PostControl2Uav *msg)
 
 void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
 {
-    if (!msg)
+    if (!msg || GetAuth(ObjectGS::Type_UavManager))
         return;
+
     if (m_countLand >= MAXLANDRECORDS)
     {
         if (auto appd = new AckPostParcelDescription)
@@ -1059,15 +1067,20 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
 
 void ObjectGS::_prcsReqLand(RequestParcelDescriptions *msg)
 {
-    if (!msg || msg->registerid().empty())
+    if (!msg || (!msg->has_registerid() && !msg->has_pdid()))
         return;
 
     DBMessage *db = new DBMessage(this, IMessage::LandQueryRslt);
     if (!db)
         return;
+
+    if (msg->has_registerid())
+        db->SetCondition("LandInfo.gsuser", msg->registerid());
+    if (msg->has_pdid())
+        db->SetCondition("LandInfo.id", msg->pdid());
+
     db->SetSeqNomb(msg->seqno());
     db->SetSql("queryLand", true);
-    db->SetCondition("LandInfo.gsuser", m_id);
 
     SendMsg(db);
     AckRequestParcelDescriptions ack;
@@ -1102,6 +1115,30 @@ void ObjectGS::notifyUavNewFw(const std::string &fw, int seq)
         ms->AttachProto(np);
         SendMsg(ms);
     }
+}
+
+void ObjectGS::ackSyncDeviceis()
+{
+    auto mgr = (GSManager *)GetManager();
+    AckSyncDeviceList ack;
+    ack.set_seqno(m_seq);
+    ack.set_result(1);
+    int i = 0;
+    for (const string &itr : mgr->Uavs())
+    {
+        if (++i < 100)
+        {
+            ack.add_id(itr);
+            continue;
+        }
+        CopyAndSend(ack);
+        ack.clear_id();
+        i = 0;
+    }
+    if (ack.id_size() > 0)
+        CopyAndSend(ack);
+
+    m_seq = -1;
 }
 
 void ObjectGS::initFriend()

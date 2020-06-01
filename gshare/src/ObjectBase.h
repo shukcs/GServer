@@ -152,6 +152,7 @@ public:
     SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
     SHARED_DECL void Subcribe(const std::string &dsub, const std::string &sender, int tpMsg);
     SHARED_DECL void Unsubcribe(const std::string &dsub, const std::string &sender, int tpMsg);
+    SHARED_DECL virtual bool IsReceiveData()const;
 
     void PushManagerMessage(IMessage *);
     IMessage *PopRecycleMessage();
@@ -174,7 +175,6 @@ protected:
     SHARED_DECL virtual void ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb);
     SHARED_DECL void InitThread(uint16_t nT = 1, uint16_t bufSz = 1024);
     SHARED_DECL virtual bool IsHasReuest(const char *buf, int len)const;
-    SHARED_DECL virtual bool IsReceiveData()const;
     const StringList &getMessageSubcribes(IMessage *msg);
     void PrcsSubcribes();
 protected:

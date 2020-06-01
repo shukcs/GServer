@@ -142,7 +142,7 @@ void ObjectUav::OnLogined(bool suc, ISocket *s)
 {
     if (m_bLogined != suc && suc)
     {
-        if (auto ms = new ObjectEvent(this, string(), ObjectGS::GSType(), ObjectEvent::E_Login))
+        if (auto ms = new ObjectEvent(this, ObjectGS::GSType(), ObjectEvent::E_Login))
             SendMsg(ms);
     }
     ObjectAbsPB::OnLogined(suc, s);
@@ -255,7 +255,7 @@ void ObjectUav::CheckTimer(uint64_t ms)
 {
     if (!m_sock && m_bLogined)
     {
-        if (auto ms = new ObjectEvent(this, string(), ObjectGS::GSType(), ObjectEvent::E_Logout))
+        if (auto ms = new ObjectEvent(this, ObjectGS::GSType(), ObjectEvent::E_Logout))
             SendMsg(ms);
     }
     ObjectAbsPB::CheckTimer(ms);

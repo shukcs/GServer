@@ -138,7 +138,7 @@ void ObjectGXClinet::InitObject()
     m_stInit = IObject::Initialed;
 }
 
-void ObjectGXClinet::ProcessMessage(IMessage *msg)
+void ObjectGXClinet::ProcessMessage(IMessage *)
 {
     if (m_stInit == Uninitial)
         InitObject();

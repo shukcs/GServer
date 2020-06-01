@@ -124,6 +124,15 @@ void ObjectAbsPB::CheckTimer(uint64_t ms)
         send(msg);
     }
 }
+
+void ObjectAbsPB::CopyAndSend(const Message &msg)
+{
+    if (Message *ms = msg.New())
+    {
+        ms->CopyFrom(msg);
+        WaitSend(ms);
+    }
+}
 ////////////////////////////////////////////////////////////////////////////////
 //AbsPBManager
 ////////////////////////////////////////////////////////////////////////////////

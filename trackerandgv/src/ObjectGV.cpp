@@ -110,7 +110,7 @@ void ObjectGV::_prcsLogin(RequestGVIdentityAuthentication *msg)
     }
 }
 
-void ObjectGV::_prcsHeartBeat(das::proto::PostHeartBeat *msg)
+void ObjectGV::_prcsHeartBeat(PostHeartBeat *msg)
 {
     if (auto ahb = new AckHeartBeat)
     {
@@ -119,7 +119,7 @@ void ObjectGV::_prcsHeartBeat(das::proto::PostHeartBeat *msg)
     }
 }
 
-void ObjectGV::_prcsSyncDevice(das::proto::SyncDeviceList *ms)
+void ObjectGV::_prcsSyncDevice(SyncDeviceList *ms)
 {
     if (auto msg = new GV2TrackerMessage(this, string()))
     {
@@ -138,7 +138,7 @@ void ObjectGV::ProcessMessage(IMessage *msg)
         case IMessage::PushUavSndInfo:
             process2GsMsg(((TrackerMessage *)msg)->GetProtobuf());
             break;
-        case IMessage::QueryDeviceRslt:
+        case IMessage::SyncDeviceisRslt:
             process2GsMsg(((TrackerMessage *)msg)->GetProtobuf());
             break;
         case ObjectEvent::E_Login:

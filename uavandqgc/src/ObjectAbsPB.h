@@ -34,6 +34,7 @@ protected:
     IObject *GetParObject();
     ILink *GetLink();
     void CheckTimer(uint64_t ms);
+    void CopyAndSend(const google::protobuf::Message &msg);
 private:
     void send(google::protobuf::Message *msg);
 protected:

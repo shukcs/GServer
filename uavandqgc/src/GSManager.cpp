@@ -55,6 +55,11 @@ int GSManager::AddDatabaseUser(const string &user, const string &pswd, ObjectGS 
     return 0;
 }
 
+const StringList &GSManager::Uavs() const
+{
+    return m_uavs;
+}
+
 string GSManager::CatString(const string &s1, const string &s2)
 {
     return s1 < s2 ? s1 + ":" + s2 : s2 + ":" + s1;
@@ -117,7 +122,7 @@ void GSManager::processDeviceLogin(int tp, const std::string &dev, bool bLogin)
     for (auto itr : m_mgrs)
     {
         if (itr->GetSocket()!= NULL)
-            itr->process2GsMsg(&udl);
+            itr->CopyAndSend(udl);
     }
 }
 
@@ -162,8 +167,7 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
     }
     else if(o==NULL)
     {
-        o = new ObjectGS(usr);
-        o->SetSeq(rgi->seqno());
+        o = new ObjectGS(usr, rgi->seqno());
         o->SetPswd(pswd);
     }
 

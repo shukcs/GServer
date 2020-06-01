@@ -120,6 +120,10 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new AckNotifyProgram;                       //通知Uav固件升级回复
     else if (name == d_p_ClassName(RequestProgram))
         m_msg = new RequestProgram;                         //Uav FW下载
+    else if (name == d_p_ClassName(SyncDeviceList))
+        m_msg = new SyncDeviceList;                         //设备同步
+    else if (name == d_p_ClassName(AckUpdateDeviceList))
+        m_msg = new AckUpdateDeviceList;                    //设备在线变化回应
     else if (name == d_p_ClassName(PostParcelDescription))
         m_msg = new PostParcelDescription;                  //上传地块
     else if (name == d_p_ClassName(DeleteParcelDescription))

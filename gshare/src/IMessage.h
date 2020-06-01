@@ -50,7 +50,8 @@ public:
         QueryDevice,
         DeviceAllocation,
         NotifyFWUpdate,
-        Gs2UavEnd,
+        SyncDeviceis,
+        UserMessageEnd,
 
         BindUavRslt,
         ControlUavRslt,
@@ -59,11 +60,11 @@ public:
         PushUavSndInfo,
         ControlGs,
         QueryDeviceRslt,
+        SyncDeviceisRslt,
         DeviceAllocationRslt,
 
-        Uav2GsEnd,
-        Gs2GsBeging = Uav2GsEnd,
-        Gs2GsMsg,
+        DeviceMessageEnd,
+        Gs2GsMsg = DeviceMessageEnd,
         Gs2GsAck,
 
         Gs2GsEnd,
@@ -131,12 +132,12 @@ public:
         E_Logout,
     };
 public:
-    SHARED_DECL ObjectEvent(IObject *sender, const std::string &rcv, int32_t rcvTp, EventType e = E_Release);
+    SHARED_DECL ObjectEvent(IObject *sender, int32_t rcvTp, int e = E_Release, const std::string &rcv=std::string());
 protected:
     void *GetContent()const;
     int GetContentLength()const;
 private:
-    EventType m_tp;
+    int m_tp;
 };
 
 #ifdef SOCKETS_NAMESPACE

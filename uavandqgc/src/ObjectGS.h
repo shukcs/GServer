@@ -28,6 +28,7 @@ namespace das {
         class RequestIdentityAllocation;
         class GroundStationsMessage;
         class RequestFriends;
+        class SyncDeviceList;
     }
 }
 class FWItem;
@@ -49,7 +50,7 @@ public:
         Type_ALL = Type_Common | Type_UavManager | Type_Admin,
     };
 public:
-    ObjectGS(const std::string &id);
+    ObjectGS(const std::string &id, int seq=-1);
     ~ObjectGS();
 
     void SetPswd(const std::string &pswd);
@@ -58,7 +59,6 @@ public:
     void SetAuth(int);
     int Authorize()const;
     bool GetAuth(GSAuthorizeType auth = Type_Common)const;
-    void SetSeq(int seq);
 public:
     static int GSType();
 protected:
@@ -67,7 +67,6 @@ protected:
     void ProcessMessage(IMessage *msg);
     void PrcsProtoBuff();
 
-    void process2GsMsg(const google::protobuf::Message *msg);
     void processGs2Gs(const google::protobuf::Message &msg, int tp);
     void processBind(const DBMessage &msg);
     void processUavsInfo(const DBMessage &msg);
@@ -94,6 +93,7 @@ private:
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
     void _prcsProgram(das::proto::PostProgram *msg);
     void _prcsReqUavs(das::proto::RequestUavStatus *msg);
+    void _prcsSyncDeviceList(das::proto::SyncDeviceList *ms);
     void _prcsReqBind(das::proto::RequestBindUav *msg);
     void _prcsControl2Uav(das::proto::PostControl2Uav *msg);
     void _prcsPostLand(das::proto::PostParcelDescription *msg);
@@ -116,6 +116,7 @@ private:
     void addDBFriend(const std::string &user1, const std::string &user2);
     int _addDatabaseUser(const std::string &user, const std::string &pswd, int seq);
     void notifyUavNewFw(const std::string &fw, int seq);
+    void ackSyncDeviceis();
 private:
     friend class GSManager;
     int             m_auth;

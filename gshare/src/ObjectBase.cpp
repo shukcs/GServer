@@ -54,13 +54,9 @@ protected:
             delete m_lsMsgRelease.Pop();
         }
     }
-    bool RunLoop()
+    bool CheckLinks()
     {
-        if (!m_mgr)
-            return false;
-        ReleasePrcsdMsg();
-        ProcessAddLinks();
-        bool ret = m_mgr->ProcessBussiness(this);
+        bool ret = false;
         uint64_t ms = Utility::msTimeTick();
         auto itr = m_links.begin();
         for (; itr != m_links.end(); ++itr)
@@ -71,13 +67,27 @@ protected:
 
             if (l->IsRealse())
             {
-                m_lsMsgSend.Push(new ObjectEvent(l->GetParObject(), itr->first, m_mgr->GetObjectType()));
+                auto obj = l->GetParObject();
+                if (obj && obj->IsAllowRelease())
+                    m_lsMsgSend.Push(new ObjectEvent(obj, obj->GetObjectType()));
                 auto tmp = itr++;
                 m_links.erase(tmp);
-                if (itr==m_links.end())
+                if (itr == m_links.end())
                     break;
             }
         }
+        return ret;
+    }
+    bool RunLoop()
+    {
+        if (!m_mgr)
+            return false;
+        ReleasePrcsdMsg();
+        ProcessAddLinks();
+        bool ret = m_mgr->ProcessBussiness(this);
+        if (m_mgr->IsReceiveData() && CheckLinks())
+            return true;
+
         return ret;
     }
     void ProcessAddLinks()
@@ -195,7 +205,7 @@ bool ILink::ChangeLogind(bool b)
     return true;
 }
 
-void ILink::CheckTimer(uint64_t ms)
+void ILink::CheckTimer(uint64_t)
 {
     IObject *o = GetParObject();
     if (o)
@@ -477,9 +487,9 @@ void IObjectManager::ProcessMessage()
 
         if (msg->GetMessgeType() == ObjectEvent::E_Release)
         {
-            auto itr = m_objects.find(msg->GetReceiverID());
+            auto itr = m_objects.find(msg->GetSenderID());
             auto o = itr!=m_objects.end() ? itr->second : NULL;
-            if (o && o->IsAllowRelease())
+            if (o)
             { 
                 m_objects.erase(itr);
                 delete o;
@@ -571,7 +581,7 @@ bool IObjectManager::ParseRequest(ISocket *s, const char *buf, int len)
     return false;
 }
 
-bool IObjectManager::IsHasReuest(const char *buf, int len)const
+bool IObjectManager::IsHasReuest(const char *, int)const
 {
     return false;
 }

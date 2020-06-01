@@ -6,6 +6,7 @@ include_directories(
 	.
 	../src/
 	../gshare/src
+	../tinyxml
 )
 
 
@@ -20,6 +21,8 @@ set_target_properties(
 	OUTPUT_NAME
 	${PACKAGE_NAME}
 )
+
+target_link_libraries(${PACKAGE_NAME} tinyxml)
 target_link_libraries(${PACKAGE_NAME} gshare)
 #install(
 #	TARGETS

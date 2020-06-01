@@ -42,6 +42,12 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* AckConfigurParameters_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   AckConfigurParameters_reflection_ = NULL;
+const ::google::protobuf::Descriptor* SyncDeviceList_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  SyncDeviceList_reflection_ = NULL;
+const ::google::protobuf::Descriptor* AckSyncDeviceList_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  AckSyncDeviceList_reflection_ = NULL;
 const ::google::protobuf::Descriptor* UpdateDeviceList_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   UpdateDeviceList_reflection_ = NULL;
@@ -427,7 +433,39 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckConfigurParameters));
-  UpdateDeviceList_descriptor_ = file->message_type(7);
+  SyncDeviceList_descriptor_ = file->message_type(7);
+  static const int SyncDeviceList_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SyncDeviceList, seqno_),
+  };
+  SyncDeviceList_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      SyncDeviceList_descriptor_,
+      SyncDeviceList::default_instance_,
+      SyncDeviceList_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SyncDeviceList, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SyncDeviceList, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(SyncDeviceList));
+  AckSyncDeviceList_descriptor_ = file->message_type(8);
+  static const int AckSyncDeviceList_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSyncDeviceList, seqno_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSyncDeviceList, result_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSyncDeviceList, id_),
+  };
+  AckSyncDeviceList_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      AckSyncDeviceList_descriptor_,
+      AckSyncDeviceList::default_instance_,
+      AckSyncDeviceList_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSyncDeviceList, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSyncDeviceList, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(AckSyncDeviceList));
+  UpdateDeviceList_descriptor_ = file->message_type(9);
   static const int UpdateDeviceList_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UpdateDeviceList, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UpdateDeviceList, operation_),
@@ -444,7 +482,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UpdateDeviceList));
-  AckUpdateDeviceList_descriptor_ = file->message_type(8);
+  AckUpdateDeviceList_descriptor_ = file->message_type(10);
   static const int AckUpdateDeviceList_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUpdateDeviceList, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUpdateDeviceList, result_),
@@ -460,7 +498,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckUpdateDeviceList));
-  RequestIdentityAllocation_descriptor_ = file->message_type(9);
+  RequestIdentityAllocation_descriptor_ = file->message_type(11);
   static const int RequestIdentityAllocation_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestIdentityAllocation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestIdentityAllocation, devtype_),
@@ -477,7 +515,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestIdentityAllocation));
-  AckIdentityAllocation_descriptor_ = file->message_type(10);
+  AckIdentityAllocation_descriptor_ = file->message_type(12);
   static const int AckIdentityAllocation_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckIdentityAllocation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckIdentityAllocation, result_),
@@ -495,7 +533,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckIdentityAllocation));
-  PostProgram_descriptor_ = file->message_type(11);
+  PostProgram_descriptor_ = file->message_type(13);
   static const int PostProgram_offsets_[8] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostProgram, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostProgram, name_),
@@ -517,7 +555,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostProgram));
-  AckPostProgram_descriptor_ = file->message_type(12);
+  AckPostProgram_descriptor_ = file->message_type(14);
   static const int AckPostProgram_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostProgram, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostProgram, result_),
@@ -533,7 +571,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostProgram));
-  NotifyProgram_descriptor_ = file->message_type(13);
+  NotifyProgram_descriptor_ = file->message_type(15);
   static const int NotifyProgram_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NotifyProgram, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NotifyProgram, name_),
@@ -553,7 +591,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(NotifyProgram));
-  AckNotifyProgram_descriptor_ = file->message_type(14);
+  AckNotifyProgram_descriptor_ = file->message_type(16);
   static const int AckNotifyProgram_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckNotifyProgram, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckNotifyProgram, result_),
@@ -569,7 +607,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckNotifyProgram));
-  RequestProgram_descriptor_ = file->message_type(15);
+  RequestProgram_descriptor_ = file->message_type(17);
   static const int RequestProgram_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestProgram, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestProgram, name_),
@@ -587,7 +625,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestProgram));
-  AckRequestProgram_descriptor_ = file->message_type(16);
+  AckRequestProgram_descriptor_ = file->message_type(18);
   static const int AckRequestProgram_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestProgram, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestProgram, result_),
@@ -606,7 +644,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestProgram));
-  RequestPositionAuthentication_descriptor_ = file->message_type(17);
+  RequestPositionAuthentication_descriptor_ = file->message_type(19);
   static const int RequestPositionAuthentication_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestPositionAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestPositionAuthentication, devid_),
@@ -623,7 +661,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestPositionAuthentication));
-  AckPositionAuthentication_descriptor_ = file->message_type(18);
+  AckPositionAuthentication_descriptor_ = file->message_type(20);
   static const int AckPositionAuthentication_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPositionAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPositionAuthentication, result_),
@@ -640,7 +678,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPositionAuthentication));
-  RequestUavIdentityAuthentication_descriptor_ = file->message_type(19);
+  RequestUavIdentityAuthentication_descriptor_ = file->message_type(21);
   static const int RequestUavIdentityAuthentication_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavIdentityAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavIdentityAuthentication, uavid_),
@@ -657,7 +695,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestUavIdentityAuthentication));
-  AckUavIdentityAuthentication_descriptor_ = file->message_type(20);
+  AckUavIdentityAuthentication_descriptor_ = file->message_type(22);
   static const int AckUavIdentityAuthentication_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavIdentityAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavIdentityAuthentication, uavid_),
@@ -676,7 +714,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckUavIdentityAuthentication));
-  RequestNewGS_descriptor_ = file->message_type(21);
+  RequestNewGS_descriptor_ = file->message_type(23);
   static const int RequestNewGS_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestNewGS, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestNewGS, userid_),
@@ -695,7 +733,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestNewGS));
-  AckNewGS_descriptor_ = file->message_type(22);
+  AckNewGS_descriptor_ = file->message_type(24);
   static const int AckNewGS_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckNewGS, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckNewGS, result_),
@@ -712,7 +750,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckNewGS));
-  RequestGSIdentityAuthentication_descriptor_ = file->message_type(23);
+  RequestGSIdentityAuthentication_descriptor_ = file->message_type(25);
   static const int RequestGSIdentityAuthentication_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestGSIdentityAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestGSIdentityAuthentication, userid_),
@@ -731,7 +769,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestGSIdentityAuthentication));
-  AckGSIdentityAuthentication_descriptor_ = file->message_type(24);
+  AckGSIdentityAuthentication_descriptor_ = file->message_type(26);
   static const int AckGSIdentityAuthentication_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckGSIdentityAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckGSIdentityAuthentication, result_),
@@ -749,7 +787,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckGSIdentityAuthentication));
-  GroundStationsMessage_descriptor_ = file->message_type(25);
+  GroundStationsMessage_descriptor_ = file->message_type(27);
   static const int GroundStationsMessage_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GroundStationsMessage, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GroundStationsMessage, type_),
@@ -768,7 +806,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(GroundStationsMessage));
-  AckGroundStationsMessage_descriptor_ = file->message_type(26);
+  AckGroundStationsMessage_descriptor_ = file->message_type(28);
   static const int AckGroundStationsMessage_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckGroundStationsMessage, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckGroundStationsMessage, res_),
@@ -785,7 +823,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckGroundStationsMessage));
-  RequestFriends_descriptor_ = file->message_type(27);
+  RequestFriends_descriptor_ = file->message_type(29);
   static const int RequestFriends_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestFriends, seqno_),
   };
@@ -800,7 +838,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestFriends));
-  AckFriends_descriptor_ = file->message_type(28);
+  AckFriends_descriptor_ = file->message_type(30);
   static const int AckFriends_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckFriends, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckFriends, friends_),
@@ -816,7 +854,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckFriends));
-  GpsInformation_descriptor_ = file->message_type(29);
+  GpsInformation_descriptor_ = file->message_type(31);
   static const int GpsInformation_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GpsInformation, longitude_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GpsInformation, latitude_),
@@ -834,7 +872,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(GpsInformation));
-  UavAttitude_descriptor_ = file->message_type(30);
+  UavAttitude_descriptor_ = file->message_type(32);
   static const int UavAttitude_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavAttitude, roll_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavAttitude, pitch_),
@@ -853,7 +891,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UavAttitude));
-  OperationStatus_descriptor_ = file->message_type(31);
+  OperationStatus_descriptor_ = file->message_type(33);
   static const int OperationStatus_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationStatus, operationmode_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationStatus, voltage_),
@@ -872,7 +910,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationStatus));
-  OperationParams_descriptor_ = file->message_type(32);
+  OperationParams_descriptor_ = file->message_type(34);
   static const int OperationParams_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationParams, alarmvoltage_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationParams, alarmdose_),
@@ -892,7 +930,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationParams));
-  OperationInformation_descriptor_ = file->message_type(33);
+  OperationInformation_descriptor_ = file->message_type(35);
   static const int OperationInformation_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationInformation, uavid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationInformation, timestamp_),
@@ -912,7 +950,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationInformation));
-  PostOperationInformation_descriptor_ = file->message_type(34);
+  PostOperationInformation_descriptor_ = file->message_type(36);
   static const int PostOperationInformation_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationInformation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationInformation, oi_),
@@ -928,7 +966,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostOperationInformation));
-  AckOperationInformation_descriptor_ = file->message_type(35);
+  AckOperationInformation_descriptor_ = file->message_type(37);
   static const int AckOperationInformation_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckOperationInformation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckOperationInformation, result_),
@@ -944,7 +982,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckOperationInformation));
-  Coordinate_descriptor_ = file->message_type(36);
+  Coordinate_descriptor_ = file->message_type(38);
   static const int Coordinate_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Coordinate, longitude_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Coordinate, latitude_),
@@ -961,7 +999,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Coordinate));
-  OperationSnapshot_descriptor_ = file->message_type(37);
+  OperationSnapshot_descriptor_ = file->message_type(39);
   static const int OperationSnapshot_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationSnapshot, devid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationSnapshot, timestamp_),
@@ -980,7 +1018,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationSnapshot));
-  PostOperationSnapshot_descriptor_ = file->message_type(38);
+  PostOperationSnapshot_descriptor_ = file->message_type(40);
   static const int PostOperationSnapshot_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationSnapshot, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationSnapshot, os_),
@@ -996,7 +1034,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostOperationSnapshot));
-  AckPostOperationSnapshot_descriptor_ = file->message_type(39);
+  AckPostOperationSnapshot_descriptor_ = file->message_type(41);
   static const int AckPostOperationSnapshot_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostOperationSnapshot, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostOperationSnapshot, result_),
@@ -1012,7 +1050,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostOperationSnapshot));
-  Outline_descriptor_ = file->message_type(40);
+  Outline_descriptor_ = file->message_type(42);
   static const int Outline_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Outline, coordinates_),
   };
@@ -1027,7 +1065,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Outline));
-  ParcelSurveyInformation_descriptor_ = file->message_type(41);
+  ParcelSurveyInformation_descriptor_ = file->message_type(43);
   static const int ParcelSurveyInformation_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ParcelSurveyInformation, surveryorid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ParcelSurveyInformation, surverytime_),
@@ -1047,7 +1085,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ParcelSurveyInformation));
-  PostParcelSurveyInformation_descriptor_ = file->message_type(42);
+  PostParcelSurveyInformation_descriptor_ = file->message_type(44);
   static const int PostParcelSurveyInformation_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostParcelSurveyInformation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostParcelSurveyInformation, psi_),
@@ -1063,7 +1101,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostParcelSurveyInformation));
-  AckPostParcelSurveyInformation_descriptor_ = file->message_type(43);
+  AckPostParcelSurveyInformation_descriptor_ = file->message_type(45);
   static const int AckPostParcelSurveyInformation_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostParcelSurveyInformation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostParcelSurveyInformation, result_),
@@ -1080,7 +1118,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostParcelSurveyInformation));
-  RequestParcelSurveyInformations_descriptor_ = file->message_type(44);
+  RequestParcelSurveyInformations_descriptor_ = file->message_type(46);
   static const int RequestParcelSurveyInformations_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestParcelSurveyInformations, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestParcelSurveyInformations, psiid_),
@@ -1097,7 +1135,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestParcelSurveyInformations));
-  AckRequestParcelSurveyInformations_descriptor_ = file->message_type(45);
+  AckRequestParcelSurveyInformations_descriptor_ = file->message_type(47);
   static const int AckRequestParcelSurveyInformations_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestParcelSurveyInformations, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestParcelSurveyInformations, result_),
@@ -1114,7 +1152,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestParcelSurveyInformations));
-  ParcelContracter_descriptor_ = file->message_type(46);
+  ParcelContracter_descriptor_ = file->message_type(48);
   static const int ParcelContracter_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ParcelContracter, name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ParcelContracter, birthdate_),
@@ -1135,7 +1173,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ParcelContracter));
-  ParcelDescription_descriptor_ = file->message_type(47);
+  ParcelDescription_descriptor_ = file->message_type(49);
   static const int ParcelDescription_offsets_[8] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ParcelDescription, name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ParcelDescription, registerid_),
@@ -1157,7 +1195,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ParcelDescription));
-  PostParcelDescription_descriptor_ = file->message_type(48);
+  PostParcelDescription_descriptor_ = file->message_type(50);
   static const int PostParcelDescription_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostParcelDescription, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostParcelDescription, pd_),
@@ -1173,7 +1211,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostParcelDescription));
-  AckPostParcelDescription_descriptor_ = file->message_type(49);
+  AckPostParcelDescription_descriptor_ = file->message_type(51);
   static const int AckPostParcelDescription_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostParcelDescription, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostParcelDescription, result_),
@@ -1192,7 +1230,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostParcelDescription));
-  RequestParcelDescriptions_descriptor_ = file->message_type(50);
+  RequestParcelDescriptions_descriptor_ = file->message_type(52);
   static const int RequestParcelDescriptions_offsets_[11] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestParcelDescriptions, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestParcelDescriptions, pdid_),
@@ -1217,7 +1255,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestParcelDescriptions));
-  AckRequestParcelDescriptions_descriptor_ = file->message_type(51);
+  AckRequestParcelDescriptions_descriptor_ = file->message_type(53);
   static const int AckRequestParcelDescriptions_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestParcelDescriptions, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestParcelDescriptions, result_),
@@ -1234,7 +1272,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestParcelDescriptions));
-  DeleteParcelDescription_descriptor_ = file->message_type(52);
+  DeleteParcelDescription_descriptor_ = file->message_type(54);
   static const int DeleteParcelDescription_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeleteParcelDescription, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeleteParcelDescription, pdid_),
@@ -1252,7 +1290,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(DeleteParcelDescription));
-  AckDeleteParcelDescription_descriptor_ = file->message_type(53);
+  AckDeleteParcelDescription_descriptor_ = file->message_type(55);
   static const int AckDeleteParcelDescription_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckDeleteParcelDescription, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckDeleteParcelDescription, result_),
@@ -1268,7 +1306,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckDeleteParcelDescription));
-  SingleShrink_descriptor_ = file->message_type(54);
+  SingleShrink_descriptor_ = file->message_type(56);
   static const int SingleShrink_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SingleShrink, bdr_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SingleShrink, safe_),
@@ -1284,7 +1322,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(SingleShrink));
-  OperationPlan_descriptor_ = file->message_type(55);
+  OperationPlan_descriptor_ = file->message_type(57);
   static const int OperationPlan_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationPlan, width_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationPlan, angle_),
@@ -1304,7 +1342,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationPlan));
-  OperationDescription_descriptor_ = file->message_type(56);
+  OperationDescription_descriptor_ = file->message_type(58);
   static const int OperationDescription_offsets_[10] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, registerid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationDescription, pdid_),
@@ -1328,7 +1366,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationDescription));
-  PostOperationDescription_descriptor_ = file->message_type(57);
+  PostOperationDescription_descriptor_ = file->message_type(59);
   static const int PostOperationDescription_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationDescription, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationDescription, od_),
@@ -1344,7 +1382,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostOperationDescription));
-  AckPostOperationDescription_descriptor_ = file->message_type(58);
+  AckPostOperationDescription_descriptor_ = file->message_type(60);
   static const int AckPostOperationDescription_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostOperationDescription, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostOperationDescription, result_),
@@ -1361,7 +1399,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostOperationDescription));
-  RequestOperationDescriptions_descriptor_ = file->message_type(59);
+  RequestOperationDescriptions_descriptor_ = file->message_type(61);
   static const int RequestOperationDescriptions_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestOperationDescriptions, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestOperationDescriptions, odid_),
@@ -1379,7 +1417,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestOperationDescriptions));
-  AckRequestOperationDescriptions_descriptor_ = file->message_type(60);
+  AckRequestOperationDescriptions_descriptor_ = file->message_type(62);
   static const int AckRequestOperationDescriptions_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestOperationDescriptions, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestOperationDescriptions, result_),
@@ -1396,7 +1434,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestOperationDescriptions));
-  DeleteOperationDescription_descriptor_ = file->message_type(61);
+  DeleteOperationDescription_descriptor_ = file->message_type(63);
   static const int DeleteOperationDescription_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeleteOperationDescription, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(DeleteOperationDescription, odid_),
@@ -1412,7 +1450,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(DeleteOperationDescription));
-  AckDeleteOperationDescription_descriptor_ = file->message_type(62);
+  AckDeleteOperationDescription_descriptor_ = file->message_type(64);
   static const int AckDeleteOperationDescription_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckDeleteOperationDescription, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckDeleteOperationDescription, result_),
@@ -1428,7 +1466,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckDeleteOperationDescription));
-  BillInformation_descriptor_ = file->message_type(63);
+  BillInformation_descriptor_ = file->message_type(65);
   static const int BillInformation_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, servicecharge_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(BillInformation, pesticidecharge_),
@@ -1448,7 +1486,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(BillInformation));
-  OperationRoute_descriptor_ = file->message_type(64);
+  OperationRoute_descriptor_ = file->message_type(66);
   static const int OperationRoute_offsets_[13] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, gsid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationRoute, uavid_),
@@ -1475,7 +1513,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationRoute));
-  PostOperationRoute_descriptor_ = file->message_type(65);
+  PostOperationRoute_descriptor_ = file->message_type(67);
   static const int PostOperationRoute_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationRoute, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationRoute, or__),
@@ -1491,7 +1529,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostOperationRoute));
-  AckPostOperationRoute_descriptor_ = file->message_type(66);
+  AckPostOperationRoute_descriptor_ = file->message_type(68);
   static const int AckPostOperationRoute_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostOperationRoute, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostOperationRoute, result_),
@@ -1507,7 +1545,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostOperationRoute));
-  UploadOperationRoutes_descriptor_ = file->message_type(67);
+  UploadOperationRoutes_descriptor_ = file->message_type(69);
   static const int UploadOperationRoutes_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UploadOperationRoutes, uavid_),
@@ -1527,7 +1565,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UploadOperationRoutes));
-  SyscOperationRoutes_descriptor_ = file->message_type(68);
+  SyscOperationRoutes_descriptor_ = file->message_type(70);
   static const int SyscOperationRoutes_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SyscOperationRoutes, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SyscOperationRoutes, result_),
@@ -1546,7 +1584,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(SyscOperationRoutes));
-  RequestRouteMissions_descriptor_ = file->message_type(69);
+  RequestRouteMissions_descriptor_ = file->message_type(71);
   static const int RequestRouteMissions_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestRouteMissions, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestRouteMissions, uavid_),
@@ -1565,7 +1603,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestRouteMissions));
-  AckRequestRouteMissions_descriptor_ = file->message_type(70);
+  AckRequestRouteMissions_descriptor_ = file->message_type(72);
   static const int AckRequestRouteMissions_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestRouteMissions, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestRouteMissions, result_),
@@ -1584,7 +1622,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestRouteMissions));
-  RequestUavMission_descriptor_ = file->message_type(71);
+  RequestUavMission_descriptor_ = file->message_type(73);
   static const int RequestUavMission_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavMission, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavMission, uav_),
@@ -1604,7 +1642,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestUavMission));
-  UavRoute_descriptor_ = file->message_type(72);
+  UavRoute_descriptor_ = file->message_type(74);
   static const int UavRoute_offsets_[11] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavRoute, uav_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavRoute, land_),
@@ -1629,7 +1667,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UavRoute));
-  AckUavMission_descriptor_ = file->message_type(73);
+  AckUavMission_descriptor_ = file->message_type(75);
   static const int AckUavMission_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavMission, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavMission, routes_),
@@ -1645,7 +1683,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckUavMission));
-  RequestUavMissionAcreage_descriptor_ = file->message_type(74);
+  RequestUavMissionAcreage_descriptor_ = file->message_type(76);
   static const int RequestUavMissionAcreage_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavMissionAcreage, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavMissionAcreage, uav_),
@@ -1665,7 +1703,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestUavMissionAcreage));
-  AckUavMissionAcreage_descriptor_ = file->message_type(75);
+  AckUavMissionAcreage_descriptor_ = file->message_type(77);
   static const int AckUavMissionAcreage_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavMissionAcreage, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavMissionAcreage, acreage_),
@@ -1681,7 +1719,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckUavMissionAcreage));
-  RequestMissionSuspend_descriptor_ = file->message_type(76);
+  RequestMissionSuspend_descriptor_ = file->message_type(78);
   static const int RequestMissionSuspend_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestMissionSuspend, uav_),
@@ -1698,7 +1736,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestMissionSuspend));
-  MissionSuspend_descriptor_ = file->message_type(77);
+  MissionSuspend_descriptor_ = file->message_type(79);
   static const int MissionSuspend_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MissionSuspend, uav_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(MissionSuspend, user_),
@@ -1718,7 +1756,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(MissionSuspend));
-  AckMissionSuspend_descriptor_ = file->message_type(78);
+  AckMissionSuspend_descriptor_ = file->message_type(80);
   static const int AckMissionSuspend_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckMissionSuspend, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckMissionSuspend, result_),
@@ -1735,7 +1773,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckMissionSuspend));
-  UavStatus_descriptor_ = file->message_type(79);
+  UavStatus_descriptor_ = file->message_type(81);
   static const int UavStatus_offsets_[12] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavStatus, uavid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavStatus, result_),
@@ -1761,7 +1799,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UavStatus));
-  RequestUavStatus_descriptor_ = file->message_type(80);
+  RequestUavStatus_descriptor_ = file->message_type(82);
   static const int RequestUavStatus_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavStatus, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavStatus, uavid_),
@@ -1777,7 +1815,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestUavStatus));
-  AckRequestUavStatus_descriptor_ = file->message_type(81);
+  AckRequestUavStatus_descriptor_ = file->message_type(83);
   static const int AckRequestUavStatus_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavStatus, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavStatus, status_),
@@ -1793,7 +1831,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestUavStatus));
-  RequestBindUav_descriptor_ = file->message_type(82);
+  RequestBindUav_descriptor_ = file->message_type(84);
   static const int RequestBindUav_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestBindUav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestBindUav, opid_),
@@ -1812,7 +1850,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestBindUav));
-  AckRequestBindUav_descriptor_ = file->message_type(83);
+  AckRequestBindUav_descriptor_ = file->message_type(85);
   static const int AckRequestBindUav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestBindUav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestBindUav, opid_),
@@ -1830,7 +1868,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestBindUav));
-  UavProductInfo_descriptor_ = file->message_type(84);
+  UavProductInfo_descriptor_ = file->message_type(86);
   static const int UavProductInfo_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavProductInfo, uavid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UavProductInfo, producttype_),
@@ -1850,7 +1888,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UavProductInfo));
-  RequestUavProductInfos_descriptor_ = file->message_type(85);
+  RequestUavProductInfos_descriptor_ = file->message_type(87);
   static const int RequestUavProductInfos_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavProductInfos, productid_),
@@ -1867,7 +1905,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestUavProductInfos));
-  AckRequestUavProductInfos_descriptor_ = file->message_type(86);
+  AckRequestUavProductInfos_descriptor_ = file->message_type(88);
   static const int AckRequestUavProductInfos_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckRequestUavProductInfos, result_),
@@ -1884,7 +1922,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckRequestUavProductInfos));
-  PostUavProductInfos_descriptor_ = file->message_type(87);
+  PostUavProductInfos_descriptor_ = file->message_type(89);
   static const int PostUavProductInfos_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostUavProductInfos, upi_),
@@ -1900,7 +1938,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostUavProductInfos));
-  AckPostUavProductInfos_descriptor_ = file->message_type(88);
+  AckPostUavProductInfos_descriptor_ = file->message_type(90);
   static const int AckPostUavProductInfos_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostUavProductInfos, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostUavProductInfos, result_),
@@ -1916,7 +1954,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostUavProductInfos));
-  PostControl2Uav_descriptor_ = file->message_type(89);
+  PostControl2Uav_descriptor_ = file->message_type(91);
   static const int PostControl2Uav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostControl2Uav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostControl2Uav, uavid_),
@@ -1934,7 +1972,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostControl2Uav));
-  AckPostControl2Uav_descriptor_ = file->message_type(90);
+  AckPostControl2Uav_descriptor_ = file->message_type(92);
   static const int AckPostControl2Uav_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostControl2Uav, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostControl2Uav, result_),
@@ -1952,7 +1990,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostControl2Uav));
-  PostStatus2GroundStation_descriptor_ = file->message_type(91);
+  PostStatus2GroundStation_descriptor_ = file->message_type(93);
   static const int PostStatus2GroundStation_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostStatus2GroundStation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostStatus2GroundStation, uavid_),
@@ -1997,6 +2035,10 @@ void protobuf_RegisterTypes(const ::std::string&) {
     ConfigureParameters_descriptor_, &ConfigureParameters::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     AckConfigurParameters_descriptor_, &AckConfigurParameters::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    SyncDeviceList_descriptor_, &SyncDeviceList::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    AckSyncDeviceList_descriptor_, &AckSyncDeviceList::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     UpdateDeviceList_descriptor_, &UpdateDeviceList::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -2186,6 +2228,10 @@ void protobuf_ShutdownFile_das_2eproto() {
   delete ConfigureParameters_reflection_;
   delete AckConfigurParameters::default_instance_;
   delete AckConfigurParameters_reflection_;
+  delete SyncDeviceList::default_instance_;
+  delete SyncDeviceList_reflection_;
+  delete AckSyncDeviceList::default_instance_;
+  delete AckSyncDeviceList_reflection_;
   delete UpdateDeviceList::default_instance_;
   delete UpdateDeviceList_reflection_;
   delete AckUpdateDeviceList::default_instance_;
@@ -2377,226 +2423,229 @@ void protobuf_AddDesc_das_2eproto() {
     "onfigureParameters\022\r\n\005seqno\030\001 \002(\r\022\n\n\002id\030"
     "\002 \002(\t\022+\n\002pd\030\003 \003(\0132\037.das.proto.ParameterD"
     "escription\"B\n\025AckConfigurParameters\022\r\n\005s"
-    "eqno\030\001 \002(\r\022\n\n\002id\030\002 \002(\t\022\016\n\006result\030\003 \002(\005\"@"
-    "\n\020UpdateDeviceList\022\r\n\005seqno\030\001 \002(\r\022\021\n\tope"
-    "ration\030\002 \002(\r\022\n\n\002id\030\003 \003(\t\"4\n\023AckUpdateDev"
-    "iceList\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"N"
-    "\n\031RequestIdentityAllocation\022\r\n\005seqno\030\001 \002"
-    "(\r\022\017\n\007devtype\030\002 \002(\t\022\021\n\textradata\030\003 \001(\t\"U"
-    "\n\025AckIdentityAllocation\022\r\n\005seqno\030\001 \002(\r\022\016"
-    "\n\006result\030\002 \002(\005\022\n\n\002id\030\003 \001(\t\022\021\n\textradata\030"
-    "\004 \001(\t\"\210\001\n\013PostProgram\022\r\n\005seqno\030\001 \002(\r\022\014\n\004"
-    "name\030\002 \002(\t\022\016\n\006offset\030\003 \002(\005\022\014\n\004data\030\004 \001(\014"
-    "\022\016\n\006fwtype\030\005 \001(\005\022\016\n\006length\030\006 \001(\005\022\r\n\005crc3"
-    "2\030\007 \001(\r\022\017\n\007release\030\010 \001(\010\"/\n\016AckPostProgr"
-    "am\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"j\n\rNot"
-    "ifyProgram\022\r\n\005seqno\030\001 \002(\r\022\014\n\004name\030\002 \002(\t\022"
-    "\016\n\006fwtype\030\003 \002(\005\022\016\n\006length\030\004 \002(\005\022\r\n\005crc32"
-    "\030\005 \002(\r\022\r\n\005uavid\030\006 \001(\t\"1\n\020AckNotifyProgra"
-    "m\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"M\n\016Requ"
-    "estProgram\022\r\n\005seqno\030\001 \002(\r\022\014\n\004name\030\002 \002(\t\022"
-    "\016\n\006offset\030\003 \002(\005\022\016\n\006length\030\004 \002(\005\"^\n\021AckRe"
-    "questProgram\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 "
-    "\002(\005\022\014\n\004name\030\003 \002(\t\022\016\n\006offset\030\004 \002(\005\022\014\n\004dat"
-    "a\030\005 \001(\014\"e\n\035RequestPositionAuthentication"
-    "\022\r\n\005seqno\030\001 \002(\r\022\r\n\005devid\030\002 \002(\t\022&\n\003pos\030\003 "
-    "\002(\0132\031.das.proto.GpsInformation\"I\n\031AckPos"
-    "itionAuthentication\022\r\n\005seqno\030\001 \002(\r\022\016\n\006re"
-    "sult\030\002 \002(\005\022\r\n\005devid\030\003 \001(\t\"S\n RequestUavI"
-    "dentityAuthentication\022\r\n\005seqno\030\001 \002(\r\022\r\n\005"
-    "uavid\030\002 \002(\t\022\021\n\textradata\030\003 \001(\t\"r\n\034AckUav"
-    "IdentityAuthentication\022\r\n\005seqno\030\001 \002(\r\022\r\n"
-    "\005uavid\030\002 \001(\t\022\016\n\006result\030\003 \002(\005\022\020\n\010deadline"
-    "\030\004 \001(\004\022\022\n\nauthString\030\005 \001(\t\"]\n\014RequestNew"
-    "GS\022\r\n\005seqno\030\001 \002(\r\022\016\n\006userid\030\002 \002(\t\022\r\n\005pho"
-    "ne\030\003 \001(\t\022\r\n\005check\030\004 \001(\t\022\020\n\010password\030\005 \001("
-    "\t\"8\n\010AckNewGS\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002"
-    " \002(\005\022\r\n\005check\030\003 \001(\t\"p\n\037RequestGSIdentity"
-    "Authentication\022\r\n\005seqno\030\001 \002(\r\022\016\n\006userid\030"
-    "\002 \002(\t\022\020\n\010password\030\003 \001(\t\022\r\n\005phone\030\004 \001(\t\022\r"
-    "\n\005check\030\005 \001(\t\"\\\n\033AckGSIdentityAuthentica"
-    "tion\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\020\n\010p"
-    "assword\030\003 \001(\t\022\014\n\004auth\030\004 \001(\r\"u\n\025GroundSta"
-    "tionsMessage\022\r\n\005seqno\030\001 \002(\r\022\"\n\004type\030\002 \002("
-    "\0162\024.das.proto.GSMsgType\022\014\n\004from\030\003 \002(\t\022\n\n"
-    "\002to\030\004 \002(\t\022\017\n\007content\030\005 \001(\014\"B\n\030AckGroundS"
-    "tationsMessage\022\r\n\005seqno\030\001 \002(\r\022\013\n\003res\030\002 \002"
-    "(\r\022\n\n\002gs\030\003 \002(\t\"\037\n\016RequestFriends\022\r\n\005seqn"
-    "o\030\001 \002(\r\",\n\nAckFriends\022\r\n\005seqno\030\001 \002(\r\022\017\n\007"
-    "friends\030\002 \003(\t\"Y\n\016GpsInformation\022\021\n\tlongi"
-    "tude\030\001 \002(\005\022\020\n\010latitude\030\002 \002(\005\022\020\n\010altitude"
-    "\030\003 \002(\005\022\020\n\010velocity\030\004 \003(\002\"b\n\013UavAttitude\022"
-    "\014\n\004roll\030\001 \002(\002\022\r\n\005pitch\030\002 \002(\002\022\013\n\003yaw\030\003 \002("
-    "\002\022\024\n\014relative_alt\030\004 \002(\002\022\023\n\013groundspeed\030\005"
-    " \002(\002\"z\n\017OperationStatus\022\025\n\roperationmode"
-    "\030\001 \001(\t\022\017\n\007voltage\030\002 \001(\002\022\025\n\rsurplusenergy"
-    "\030\003 \001(\002\022\023\n\013jetvelocity\030\004 \001(\002\022\023\n\013sprayeddo"
-    "se\030\005 \001(\002\"\230\001\n\017OperationParams\022\024\n\014alarmvol"
-    "tage\030\001 \001(\002\022\021\n\talarmdose\030\002 \001(\002\022\025\n\rsprayin"
-    "gwidth\030\003 \001(\002\022\027\n\017desiredaltitude\030\004 \001(\002\022\027\n"
-    "\017desiredvelocity\030\005 \001(\002\022\023\n\013jetvelocity\030\006 "
-    "\001(\002\"\342\001\n\024OperationInformation\022\r\n\005uavid\030\001 "
-    "\002(\t\022\021\n\ttimestamp\030\002 \002(\004\022&\n\003gps\030\003 \002(\0132\031.da"
-    "s.proto.GpsInformation\022*\n\006status\030\004 \001(\0132\032"
-    ".das.proto.OperationStatus\022*\n\006params\030\005 \001"
-    "(\0132\032.das.proto.OperationParams\022(\n\010attitu"
-    "de\030\006 \001(\0132\026.das.proto.UavAttitude\"V\n\030Post"
-    "OperationInformation\022\r\n\005seqno\030\001 \002(\r\022+\n\002o"
-    "i\030\002 \003(\0132\037.das.proto.OperationInformation"
-    "\"8\n\027AckOperationInformation\022\r\n\005seqno\030\001 \002"
-    "(\r\022\016\n\006result\030\002 \002(\005\"C\n\nCoordinate\022\021\n\tlong"
-    "itude\030\001 \002(\005\022\020\n\010latitude\030\002 \002(\005\022\020\n\010altitud"
-    "e\030\003 \001(\005\"t\n\021OperationSnapshot\022\r\n\005devid\030\001 "
-    "\002(\t\022\021\n\ttimestamp\030\002 \002(\004\022\"\n\003pos\030\003 \001(\0132\025.da"
-    "s.proto.Coordinate\022\014\n\004size\030\004 \001(\005\022\013\n\003pic\030"
-    "\005 \002(\014\"P\n\025PostOperationSnapshot\022\r\n\005seqno\030"
-    "\001 \002(\r\022(\n\002os\030\002 \002(\0132\034.das.proto.OperationS"
-    "napshot\"9\n\030AckPostOperationSnapshot\022\r\n\005s"
-    "eqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"5\n\007Outline\022*\n"
-    "\013coordinates\030\001 \003(\0132\025.das.proto.Coordinat"
-    "e\"\270\001\n\027ParcelSurveyInformation\022\023\n\013survery"
-    "orid\030\001 \002(\t\022\023\n\013surverytime\030\002 \002(\004\022\'\n\002sp\030\003 "
-    "\002(\0162\033.das.proto.SurveryPrecision\022\036\n\002po\030\004"
-    " \002(\0132\022.das.proto.Outline\022\036\n\002bo\030\005 \003(\0132\022.d"
-    "as.proto.Outline\022\n\n\002id\030\006 \001(\t\"]\n\033PostParc"
-    "elSurveyInformation\022\r\n\005seqno\030\001 \002(\r\022/\n\003ps"
-    "i\030\002 \002(\0132\".das.proto.ParcelSurveyInformat"
-    "ion\"N\n\036AckPostParcelSurveyInformation\022\r\n"
-    "\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005psiid\030\003 "
-    "\001(\t\"j\n\037RequestParcelSurveyInformations\022\r"
-    "\n\005seqno\030\001 \002(\r\022\r\n\005psiid\030\002 \001(\t\022)\n\ncoordina"
-    "te\030\003 \001(\0132\025.das.proto.Coordinate\"u\n\"AckRe"
-    "questParcelSurveyInformations\022\r\n\005seqno\030\001"
-    " \002(\r\022\016\n\006result\030\002 \002(\005\0220\n\004psis\030\003 \003(\0132\".das"
-    ".proto.ParcelSurveyInformation\"\203\001\n\020Parce"
-    "lContracter\022\014\n\004name\030\001 \002(\t\022\021\n\tbirthdate\030\002"
-    " \002(\004\022\017\n\007address\030\003 \002(\t\022\020\n\010mobileno\030\004 \002(\t\022"
-    "\017\n\007phoneno\030\005 \001(\t\022\016\n\006weixin\030\006 \001(\t\022\n\n\002id\030\007"
-    " \001(\t\"\346\001\n\021ParcelDescription\022\014\n\004name\030\001 \002(\t"
-    "\022\022\n\nregisterid\030\002 \002(\t\022\'\n\002pc\030\003 \002(\0132\033.das.p"
-    "roto.ParcelContracter\022\017\n\007acreage\030\004 \002(\002\022\r"
-    "\n\005psiid\030\005 \001(\t\022/\n\003psi\030\006 \001(\0132\".das.proto.P"
-    "arcelSurveyInformation\022)\n\ncoordinate\030\007 \001"
-    "(\0132\025.das.proto.Coordinate\022\n\n\002id\030\010 \001(\t\"P\n"
-    "\025PostParcelDescription\022\r\n\005seqno\030\001 \002(\r\022(\n"
-    "\002pd\030\002 \002(\0132\034.das.proto.ParcelDescription\""
-    "d\n\030AckPostParcelDescription\022\r\n\005seqno\030\001 \002"
-    "(\r\022\016\n\006result\030\002 \002(\005\022\014\n\004pcid\030\003 \001(\t\022\r\n\005psii"
-    "d\030\004 \001(\t\022\014\n\004pdid\030\005 \001(\t\"\231\002\n\031RequestParcelD"
-    "escriptions\022\r\n\005seqno\030\001 \002(\r\022\014\n\004pdid\030\002 \001(\t"
-    "\022)\n\ncoordinate\030\003 \001(\0132\025.das.proto.Coordin"
-    "ate\022\025\n\rsurveryorname\030\004 \001(\t\022\023\n\013surveryori"
-    "d\030\005 \001(\t\022\024\n\014registername\030\006 \001(\t\022\022\n\nregiste"
-    "rid\030\007 \001(\t\022\022\n\nparcelname\030\010 \001(\t\022\022\n\ncontrac"
-    "ter\030\t \001(\t\022\020\n\010mobileno\030\n \001(\t\022$\n\005zones\030\013 \003"
-    "(\0132\025.das.proto.Coordinate\"h\n\034AckRequestP"
-    "arcelDescriptions\022\r\n\005seqno\030\001 \002(\r\022\016\n\006resu"
-    "lt\030\002 \002(\005\022)\n\003pds\030\003 \003(\0132\034.das.proto.Parcel"
-    "Description\"U\n\027DeleteParcelDescription\022\r"
-    "\n\005seqno\030\001 \002(\r\022\014\n\004pdid\030\002 \002(\t\022\016\n\006delpsi\030\003 "
-    "\001(\010\022\r\n\005delpc\030\004 \001(\010\";\n\032AckDeleteParcelDes"
-    "cription\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\""
-    ")\n\014SingleShrink\022\013\n\003bdr\030\001 \002(\005\022\014\n\004safe\030\002 \002"
-    "(\001\"\204\001\n\rOperationPlan\022\r\n\005width\030\001 \002(\001\022\r\n\005a"
-    "ngle\030\002 \002(\002\022\014\n\004anti\030\003 \002(\010\022\016\n\006single\030\004 \002(\010"
-    "\022(\n\007bdrsafe\030\005 \003(\0132\027.das.proto.SingleShri"
-    "nk\022\r\n\005block\030\006 \002(\001\"\307\001\n\024OperationDescripti"
-    "on\022\022\n\nregisterid\030\001 \002(\t\022\014\n\004pdid\030\002 \002(\t\022$\n\002"
-    "op\030\003 \002(\0132\030.das.proto.OperationPlan\022\014\n\004cr"
-    "op\030\004 \002(\t\022\014\n\004drug\030\005 \002(\t\022\r\n\005prize\030\006 \002(\002\022\r\n"
-    "\005ridge\030\007 \002(\005\022\020\n\010plantime\030\010 \001(\004\022\r\n\005notes\030"
-    "\t \001(\t\022\014\n\004odid\030\n \001(\t\"V\n\030PostOperationDesc"
-    "ription\022\r\n\005seqno\030\001 \002(\r\022+\n\002od\030\002 \002(\0132\037.das"
-    ".proto.OperationDescription\"J\n\033AckPostOp"
-    "erationDescription\022\r\n\005seqno\030\001 \002(\r\022\016\n\006res"
-    "ult\030\002 \002(\005\022\014\n\004odid\030\003 \001(\t\"]\n\034RequestOperat"
-    "ionDescriptions\022\r\n\005seqno\030\001 \002(\r\022\014\n\004odid\030\002"
-    " \001(\t\022\014\n\004pdid\030\003 \001(\t\022\022\n\nregisterid\030\004 \001(\t\"n"
-    "\n\037AckRequestOperationDescriptions\022\r\n\005seq"
-    "no\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022,\n\003ods\030\003 \003(\0132\037."
-    "das.proto.OperationDescription\"9\n\032Delete"
-    "OperationDescription\022\r\n\005seqno\030\001 \002(\r\022\014\n\004o"
-    "did\030\002 \002(\t\">\n\035AckDeleteOperationDescripti"
-    "on\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"\212\001\n\017Bi"
-    "llInformation\022\025\n\rservicecharge\030\001 \001(\002\022\027\n\017"
-    "pesticidecharge\030\002 \001(\002\022\023\n\013othercharge\030\003 \001"
-    "(\002\022\021\n\tsumcharge\030\004 \002(\002\022\021\n\tpesticide\030\005 \002(\t"
-    "\022\014\n\004crop\030\006 \002(\t\"\374\001\n\016OperationRoute\022\014\n\004gsi"
-    "d\030\001 \002(\t\022\r\n\005uavid\030\002 \002(\t\022\022\n\ncreatetime\030\003 \002"
-    "(\004\022\021\n\tmaxvoyage\030\004 \002(\002\022\020\n\010missions\030\005 \003(\014\022"
-    "\021\n\tboundarys\030\006 \003(\014\022&\n\002bi\030\007 \001(\0132\032.das.pro"
-    "to.BillInformation\022\014\n\004rpid\030\010 \001(\t\022\013\n\003beg\030"
-    "\t \001(\005\022\013\n\003end\030\n \001(\005\022\016\n\006landid\030\013 \001(\t\022\020\n\010ri"
-    "dgeBeg\030\014 \003(\005\022\017\n\007acreage\030\r \002(\002\"J\n\022PostOpe"
-    "rationRoute\022\r\n\005seqno\030\001 \002(\r\022%\n\002or\030\002 \002(\0132\031"
-    ".das.proto.OperationRoute\"6\n\025AckPostOper"
-    "ationRoute\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002("
-    "\005\"\205\001\n\025UploadOperationRoutes\022\r\n\005seqno\030\001 \002"
-    "(\r\022\r\n\005uavid\030\002 \002(\t\022\016\n\006userid\030\003 \002(\t\022\021\n\ttim"
-    "estamp\030\004 \002(\004\022\024\n\014countmission\030\005 \002(\005\022\025\n\rco"
-    "untboundary\030\006 \002(\005\"a\n\023SyscOperationRoutes"
-    "\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005uavid"
-    "\030\003 \002(\t\022\r\n\005index\030\004 \001(\005\022\r\n\005count\030\005 \001(\005\"e\n\024"
-    "RequestRouteMissions\022\r\n\005seqno\030\001 \002(\r\022\r\n\005u"
-    "avid\030\002 \002(\t\022\020\n\010boundary\030\003 \002(\010\022\016\n\006offset\030\004"
-    " \002(\005\022\r\n\005count\030\005 \002(\005\"l\n\027AckRequestRouteMi"
-    "ssions\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\020\n"
-    "\010boundary\030\003 \002(\010\022\016\n\006offset\030\004 \002(\005\022\020\n\010missi"
-    "ons\030\005 \003(\014\"e\n\021RequestUavMission\022\r\n\005seqno\030"
-    "\001 \002(\r\022\013\n\003uav\030\002 \002(\t\022\n\n\002id\030\003 \001(\t\022\016\n\006planid"
-    "\030\004 \001(\t\022\013\n\003beg\030\005 \001(\004\022\013\n\003end\030\006 \001(\004\"\263\001\n\010Uav"
-    "Route\022\013\n\003uav\030\001 \002(\t\022\014\n\004land\030\002 \002(\t\022\014\n\004plan"
-    "\030\003 \002(\t\022\r\n\005crtTm\030\004 \002(\004\022\014\n\004opTm\030\005 \002(\004\022\013\n\003b"
-    "eg\030\006 \002(\005\022\013\n\003end\030\007 \002(\005\022\014\n\004user\030\010 \002(\t\022\023\n\013c"
-    "ontiniuLat\030\t \001(\005\022\023\n\013continiuLon\030\n \001(\005\022\017\n"
-    "\007acreage\030\013 \001(\002\"C\n\rAckUavMission\022\r\n\005seqno"
-    "\030\001 \002(\r\022#\n\006routes\030\002 \003(\0132\023.das.proto.UavRo"
-    "ute\"l\n\030RequestUavMissionAcreage\022\r\n\005seqno"
-    "\030\001 \002(\r\022\013\n\003uav\030\002 \001(\t\022\n\n\002id\030\003 \001(\t\022\016\n\006plani"
-    "d\030\004 \001(\t\022\013\n\003beg\030\005 \001(\004\022\013\n\003end\030\006 \001(\004\"6\n\024Ack"
-    "UavMissionAcreage\022\r\n\005seqno\030\001 \002(\r\022\017\n\007acre"
-    "age\030\002 \002(\002\"C\n\025RequestMissionSuspend\022\r\n\005se"
-    "qno\030\001 \002(\r\022\013\n\003uav\030\002 \002(\t\022\016\n\006planID\030\003 \002(\t\"w"
-    "\n\016MissionSuspend\022\013\n\003uav\030\001 \002(\t\022\014\n\004user\030\002 "
-    "\002(\t\022\016\n\006planId\030\003 \002(\t\022\020\n\010curRidge\030\004 \002(\005\022\023\n"
-    "\013continiuLat\030\005 \001(\005\022\023\n\013continiuLon\030\006 \001(\005\""
-    "^\n\021AckMissionSuspend\022\r\n\005seqno\030\001 \002(\r\022\016\n\006r"
-    "esult\030\002 \002(\005\022*\n\007suspend\030\003 \001(\0132\031.das.proto"
-    ".MissionSuspend\"\350\001\n\tUavStatus\022\r\n\005uavid\030\001"
-    " \002(\t\022\016\n\006result\030\002 \002(\005\022\016\n\006online\030\003 \001(\010\022\016\n\006"
-    "landed\030\004 \001(\010\022\020\n\010deadline\030\005 \001(\004\022\016\n\006binded"
-    "\030\006 \001(\010\022\016\n\006binder\030\007 \001(\t\022\014\n\004time\030\010 \001(\004\022&\n\003"
-    "pos\030\t \001(\0132\031.das.proto.GpsInformation\022\021\n\t"
-    "timestamp\030\n \001(\004\022\022\n\nauthString\030\013 \001(\t\022\r\n\005s"
-    "imId\030\014 \001(\t\"0\n\020RequestUavStatus\022\r\n\005seqno\030"
-    "\001 \002(\r\022\r\n\005uavid\030\002 \003(\t\"J\n\023AckRequestUavSta"
-    "tus\022\r\n\005seqno\030\001 \002(\r\022$\n\006status\030\002 \003(\0132\024.das"
-    ".proto.UavStatus\"`\n\016RequestBindUav\022\r\n\005se"
-    "qno\030\001 \002(\r\022\014\n\004opid\030\002 \002(\r\022\r\n\005uavid\030\003 \002(\t\022\016"
-    "\n\006binder\030\004 \002(\t\022\022\n\nauthString\030\005 \001(\t\"f\n\021Ac"
-    "kRequestBindUav\022\r\n\005seqno\030\001 \002(\r\022\014\n\004opid\030\002"
-    " \002(\r\022\016\n\006result\030\003 \002(\005\022$\n\006status\030\004 \001(\0132\024.d"
-    "as.proto.UavStatus\"v\n\016UavProductInfo\022\r\n\005"
-    "uavid\030\001 \001(\t\022\023\n\013producttype\030\002 \001(\t\022\021\n\tprod"
-    "uctid\030\003 \001(\t\022\017\n\007fwLight\030\004 \001(\t\022\r\n\005fwFMU\030\005 "
-    "\001(\t\022\r\n\005fwIMU\030\006 \001(\t\"I\n\026RequestUavProductI"
-    "nfos\022\r\n\005seqno\030\001 \002(\r\022\021\n\tproductid\030\002 \003(\t\022\r"
-    "\n\005uavid\030\003 \003(\t\"b\n\031AckRequestUavProductInf"
-    "os\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022&\n\003upi"
-    "\030\003 \003(\0132\031.das.proto.UavProductInfo\"L\n\023Pos"
-    "tUavProductInfos\022\r\n\005seqno\030\001 \002(\r\022&\n\003upi\030\002"
-    " \003(\0132\031.das.proto.UavProductInfo\"7\n\026AckPo"
-    "stUavProductInfos\022\r\n\005seqno\030\001 \002(\r\022\016\n\006resu"
-    "lt\030\002 \002(\005\"M\n\017PostControl2Uav\022\r\n\005seqno\030\001 \002"
-    "(\r\022\r\n\005uavid\030\002 \002(\t\022\016\n\006userid\030\003 \002(\t\022\014\n\004dat"
-    "a\030\004 \003(\014\"R\n\022AckPostControl2Uav\022\r\n\005seqno\030\001"
-    " \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005uavid\030\003 \002(\t\022\016\n\006u"
-    "serid\030\004 \002(\t\"F\n\030PostStatus2GroundStation\022"
-    "\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\014\n\004data\030\003 "
-    "\003(\014*g\n\tGSMsgType\022\020\n\014DeleteFriend\020\001\022\021\n\rRe"
-    "questFriend\020\002\022\017\n\013AgreeFriend\020\003\022\020\n\014Reject"
-    "Friend\020\004\022\010\n\004Text\020\005\022\010\n\004Land\020\006*1\n\020SurveryP"
-    "recision\022\007\n\003LOW\020\001\022\n\n\006MEDIUM\020\002\022\010\n\004HIGH\020\003", 9279);
+    "eqno\030\001 \002(\r\022\n\n\002id\030\002 \002(\t\022\016\n\006result\030\003 \002(\005\"\037"
+    "\n\016SyncDeviceList\022\r\n\005seqno\030\001 \002(\r\">\n\021AckSy"
+    "ncDeviceList\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 "
+    "\002(\005\022\n\n\002id\030\003 \003(\t\"@\n\020UpdateDeviceList\022\r\n\005s"
+    "eqno\030\001 \002(\r\022\021\n\toperation\030\002 \002(\r\022\n\n\002id\030\003 \003("
+    "\t\"4\n\023AckUpdateDeviceList\022\r\n\005seqno\030\001 \002(\r\022"
+    "\016\n\006result\030\002 \002(\005\"N\n\031RequestIdentityAlloca"
+    "tion\022\r\n\005seqno\030\001 \002(\r\022\017\n\007devtype\030\002 \002(\t\022\021\n\t"
+    "extradata\030\003 \001(\t\"U\n\025AckIdentityAllocation"
+    "\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\n\n\002id\030\003 "
+    "\001(\t\022\021\n\textradata\030\004 \001(\t\"\210\001\n\013PostProgram\022\r"
+    "\n\005seqno\030\001 \002(\r\022\014\n\004name\030\002 \002(\t\022\016\n\006offset\030\003 "
+    "\002(\005\022\014\n\004data\030\004 \001(\014\022\016\n\006fwtype\030\005 \001(\005\022\016\n\006len"
+    "gth\030\006 \001(\005\022\r\n\005crc32\030\007 \001(\r\022\017\n\007release\030\010 \001("
+    "\010\"/\n\016AckPostProgram\022\r\n\005seqno\030\001 \002(\r\022\016\n\006re"
+    "sult\030\002 \002(\005\"j\n\rNotifyProgram\022\r\n\005seqno\030\001 \002"
+    "(\r\022\014\n\004name\030\002 \002(\t\022\016\n\006fwtype\030\003 \002(\005\022\016\n\006leng"
+    "th\030\004 \002(\005\022\r\n\005crc32\030\005 \002(\r\022\r\n\005uavid\030\006 \001(\t\"1"
+    "\n\020AckNotifyProgram\022\r\n\005seqno\030\001 \002(\r\022\016\n\006res"
+    "ult\030\002 \002(\005\"M\n\016RequestProgram\022\r\n\005seqno\030\001 \002"
+    "(\r\022\014\n\004name\030\002 \002(\t\022\016\n\006offset\030\003 \002(\005\022\016\n\006leng"
+    "th\030\004 \002(\005\"^\n\021AckRequestProgram\022\r\n\005seqno\030\001"
+    " \002(\r\022\016\n\006result\030\002 \002(\005\022\014\n\004name\030\003 \002(\t\022\016\n\006of"
+    "fset\030\004 \002(\005\022\014\n\004data\030\005 \001(\014\"e\n\035RequestPosit"
+    "ionAuthentication\022\r\n\005seqno\030\001 \002(\r\022\r\n\005devi"
+    "d\030\002 \002(\t\022&\n\003pos\030\003 \002(\0132\031.das.proto.GpsInfo"
+    "rmation\"I\n\031AckPositionAuthentication\022\r\n\005"
+    "seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005devid\030\003 \001"
+    "(\t\"S\n RequestUavIdentityAuthentication\022\r"
+    "\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\021\n\textradat"
+    "a\030\003 \001(\t\"r\n\034AckUavIdentityAuthentication\022"
+    "\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \001(\t\022\016\n\006result\030"
+    "\003 \002(\005\022\020\n\010deadline\030\004 \001(\004\022\022\n\nauthString\030\005 "
+    "\001(\t\"]\n\014RequestNewGS\022\r\n\005seqno\030\001 \002(\r\022\016\n\006us"
+    "erid\030\002 \002(\t\022\r\n\005phone\030\003 \001(\t\022\r\n\005check\030\004 \001(\t"
+    "\022\020\n\010password\030\005 \001(\t\"8\n\010AckNewGS\022\r\n\005seqno\030"
+    "\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005check\030\003 \001(\t\"p\n\037"
+    "RequestGSIdentityAuthentication\022\r\n\005seqno"
+    "\030\001 \002(\r\022\016\n\006userid\030\002 \002(\t\022\020\n\010password\030\003 \001(\t"
+    "\022\r\n\005phone\030\004 \001(\t\022\r\n\005check\030\005 \001(\t\"\\\n\033AckGSI"
+    "dentityAuthentication\022\r\n\005seqno\030\001 \002(\r\022\016\n\006"
+    "result\030\002 \002(\005\022\020\n\010password\030\003 \001(\t\022\014\n\004auth\030\004"
+    " \001(\r\"u\n\025GroundStationsMessage\022\r\n\005seqno\030\001"
+    " \002(\r\022\"\n\004type\030\002 \002(\0162\024.das.proto.GSMsgType"
+    "\022\014\n\004from\030\003 \002(\t\022\n\n\002to\030\004 \002(\t\022\017\n\007content\030\005 "
+    "\001(\014\"B\n\030AckGroundStationsMessage\022\r\n\005seqno"
+    "\030\001 \002(\r\022\013\n\003res\030\002 \002(\r\022\n\n\002gs\030\003 \002(\t\"\037\n\016Reque"
+    "stFriends\022\r\n\005seqno\030\001 \002(\r\",\n\nAckFriends\022\r"
+    "\n\005seqno\030\001 \002(\r\022\017\n\007friends\030\002 \003(\t\"Y\n\016GpsInf"
+    "ormation\022\021\n\tlongitude\030\001 \002(\005\022\020\n\010latitude\030"
+    "\002 \002(\005\022\020\n\010altitude\030\003 \002(\005\022\020\n\010velocity\030\004 \003("
+    "\002\"b\n\013UavAttitude\022\014\n\004roll\030\001 \002(\002\022\r\n\005pitch\030"
+    "\002 \002(\002\022\013\n\003yaw\030\003 \002(\002\022\024\n\014relative_alt\030\004 \002(\002"
+    "\022\023\n\013groundspeed\030\005 \002(\002\"z\n\017OperationStatus"
+    "\022\025\n\roperationmode\030\001 \001(\t\022\017\n\007voltage\030\002 \001(\002"
+    "\022\025\n\rsurplusenergy\030\003 \001(\002\022\023\n\013jetvelocity\030\004"
+    " \001(\002\022\023\n\013sprayeddose\030\005 \001(\002\"\230\001\n\017OperationP"
+    "arams\022\024\n\014alarmvoltage\030\001 \001(\002\022\021\n\talarmdose"
+    "\030\002 \001(\002\022\025\n\rsprayingwidth\030\003 \001(\002\022\027\n\017desired"
+    "altitude\030\004 \001(\002\022\027\n\017desiredvelocity\030\005 \001(\002\022"
+    "\023\n\013jetvelocity\030\006 \001(\002\"\342\001\n\024OperationInform"
+    "ation\022\r\n\005uavid\030\001 \002(\t\022\021\n\ttimestamp\030\002 \002(\004\022"
+    "&\n\003gps\030\003 \002(\0132\031.das.proto.GpsInformation\022"
+    "*\n\006status\030\004 \001(\0132\032.das.proto.OperationSta"
+    "tus\022*\n\006params\030\005 \001(\0132\032.das.proto.Operatio"
+    "nParams\022(\n\010attitude\030\006 \001(\0132\026.das.proto.Ua"
+    "vAttitude\"V\n\030PostOperationInformation\022\r\n"
+    "\005seqno\030\001 \002(\r\022+\n\002oi\030\002 \003(\0132\037.das.proto.Ope"
+    "rationInformation\"8\n\027AckOperationInforma"
+    "tion\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"C\n\nC"
+    "oordinate\022\021\n\tlongitude\030\001 \002(\005\022\020\n\010latitude"
+    "\030\002 \002(\005\022\020\n\010altitude\030\003 \001(\005\"t\n\021OperationSna"
+    "pshot\022\r\n\005devid\030\001 \002(\t\022\021\n\ttimestamp\030\002 \002(\004\022"
+    "\"\n\003pos\030\003 \001(\0132\025.das.proto.Coordinate\022\014\n\004s"
+    "ize\030\004 \001(\005\022\013\n\003pic\030\005 \002(\014\"P\n\025PostOperationS"
+    "napshot\022\r\n\005seqno\030\001 \002(\r\022(\n\002os\030\002 \002(\0132\034.das"
+    ".proto.OperationSnapshot\"9\n\030AckPostOpera"
+    "tionSnapshot\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 "
+    "\002(\005\"5\n\007Outline\022*\n\013coordinates\030\001 \003(\0132\025.da"
+    "s.proto.Coordinate\"\270\001\n\027ParcelSurveyInfor"
+    "mation\022\023\n\013surveryorid\030\001 \002(\t\022\023\n\013surveryti"
+    "me\030\002 \002(\004\022\'\n\002sp\030\003 \002(\0162\033.das.proto.Survery"
+    "Precision\022\036\n\002po\030\004 \002(\0132\022.das.proto.Outlin"
+    "e\022\036\n\002bo\030\005 \003(\0132\022.das.proto.Outline\022\n\n\002id\030"
+    "\006 \001(\t\"]\n\033PostParcelSurveyInformation\022\r\n\005"
+    "seqno\030\001 \002(\r\022/\n\003psi\030\002 \002(\0132\".das.proto.Par"
+    "celSurveyInformation\"N\n\036AckPostParcelSur"
+    "veyInformation\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030"
+    "\002 \002(\005\022\r\n\005psiid\030\003 \001(\t\"j\n\037RequestParcelSur"
+    "veyInformations\022\r\n\005seqno\030\001 \002(\r\022\r\n\005psiid\030"
+    "\002 \001(\t\022)\n\ncoordinate\030\003 \001(\0132\025.das.proto.Co"
+    "ordinate\"u\n\"AckRequestParcelSurveyInform"
+    "ations\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\0220\n"
+    "\004psis\030\003 \003(\0132\".das.proto.ParcelSurveyInfo"
+    "rmation\"\203\001\n\020ParcelContracter\022\014\n\004name\030\001 \002"
+    "(\t\022\021\n\tbirthdate\030\002 \002(\004\022\017\n\007address\030\003 \002(\t\022\020"
+    "\n\010mobileno\030\004 \002(\t\022\017\n\007phoneno\030\005 \001(\t\022\016\n\006wei"
+    "xin\030\006 \001(\t\022\n\n\002id\030\007 \001(\t\"\346\001\n\021ParcelDescript"
+    "ion\022\014\n\004name\030\001 \002(\t\022\022\n\nregisterid\030\002 \002(\t\022\'\n"
+    "\002pc\030\003 \002(\0132\033.das.proto.ParcelContracter\022\017"
+    "\n\007acreage\030\004 \002(\002\022\r\n\005psiid\030\005 \001(\t\022/\n\003psi\030\006 "
+    "\001(\0132\".das.proto.ParcelSurveyInformation\022"
+    ")\n\ncoordinate\030\007 \001(\0132\025.das.proto.Coordina"
+    "te\022\n\n\002id\030\010 \001(\t\"P\n\025PostParcelDescription\022"
+    "\r\n\005seqno\030\001 \002(\r\022(\n\002pd\030\002 \002(\0132\034.das.proto.P"
+    "arcelDescription\"d\n\030AckPostParcelDescrip"
+    "tion\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\014\n\004p"
+    "cid\030\003 \001(\t\022\r\n\005psiid\030\004 \001(\t\022\014\n\004pdid\030\005 \001(\t\"\231"
+    "\002\n\031RequestParcelDescriptions\022\r\n\005seqno\030\001 "
+    "\002(\r\022\014\n\004pdid\030\002 \001(\t\022)\n\ncoordinate\030\003 \001(\0132\025."
+    "das.proto.Coordinate\022\025\n\rsurveryorname\030\004 "
+    "\001(\t\022\023\n\013surveryorid\030\005 \001(\t\022\024\n\014registername"
+    "\030\006 \001(\t\022\022\n\nregisterid\030\007 \001(\t\022\022\n\nparcelname"
+    "\030\010 \001(\t\022\022\n\ncontracter\030\t \001(\t\022\020\n\010mobileno\030\n"
+    " \001(\t\022$\n\005zones\030\013 \003(\0132\025.das.proto.Coordina"
+    "te\"h\n\034AckRequestParcelDescriptions\022\r\n\005se"
+    "qno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022)\n\003pds\030\003 \003(\0132\034"
+    ".das.proto.ParcelDescription\"U\n\027DeletePa"
+    "rcelDescription\022\r\n\005seqno\030\001 \002(\r\022\014\n\004pdid\030\002"
+    " \002(\t\022\016\n\006delpsi\030\003 \001(\010\022\r\n\005delpc\030\004 \001(\010\";\n\032A"
+    "ckDeleteParcelDescription\022\r\n\005seqno\030\001 \002(\r"
+    "\022\016\n\006result\030\002 \002(\005\")\n\014SingleShrink\022\013\n\003bdr\030"
+    "\001 \002(\005\022\014\n\004safe\030\002 \002(\001\"\204\001\n\rOperationPlan\022\r\n"
+    "\005width\030\001 \002(\001\022\r\n\005angle\030\002 \002(\002\022\014\n\004anti\030\003 \002("
+    "\010\022\016\n\006single\030\004 \002(\010\022(\n\007bdrsafe\030\005 \003(\0132\027.das"
+    ".proto.SingleShrink\022\r\n\005block\030\006 \002(\001\"\307\001\n\024O"
+    "perationDescription\022\022\n\nregisterid\030\001 \002(\t\022"
+    "\014\n\004pdid\030\002 \002(\t\022$\n\002op\030\003 \002(\0132\030.das.proto.Op"
+    "erationPlan\022\014\n\004crop\030\004 \002(\t\022\014\n\004drug\030\005 \002(\t\022"
+    "\r\n\005prize\030\006 \002(\002\022\r\n\005ridge\030\007 \002(\005\022\020\n\010plantim"
+    "e\030\010 \001(\004\022\r\n\005notes\030\t \001(\t\022\014\n\004odid\030\n \001(\t\"V\n\030"
+    "PostOperationDescription\022\r\n\005seqno\030\001 \002(\r\022"
+    "+\n\002od\030\002 \002(\0132\037.das.proto.OperationDescrip"
+    "tion\"J\n\033AckPostOperationDescription\022\r\n\005s"
+    "eqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\014\n\004odid\030\003 \001(\t"
+    "\"]\n\034RequestOperationDescriptions\022\r\n\005seqn"
+    "o\030\001 \002(\r\022\014\n\004odid\030\002 \001(\t\022\014\n\004pdid\030\003 \001(\t\022\022\n\nr"
+    "egisterid\030\004 \001(\t\"n\n\037AckRequestOperationDe"
+    "scriptions\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002("
+    "\005\022,\n\003ods\030\003 \003(\0132\037.das.proto.OperationDesc"
+    "ription\"9\n\032DeleteOperationDescription\022\r\n"
+    "\005seqno\030\001 \002(\r\022\014\n\004odid\030\002 \002(\t\">\n\035AckDeleteO"
+    "perationDescription\022\r\n\005seqno\030\001 \002(\r\022\016\n\006re"
+    "sult\030\002 \002(\005\"\212\001\n\017BillInformation\022\025\n\rservic"
+    "echarge\030\001 \001(\002\022\027\n\017pesticidecharge\030\002 \001(\002\022\023"
+    "\n\013othercharge\030\003 \001(\002\022\021\n\tsumcharge\030\004 \002(\002\022\021"
+    "\n\tpesticide\030\005 \002(\t\022\014\n\004crop\030\006 \002(\t\"\374\001\n\016Oper"
+    "ationRoute\022\014\n\004gsid\030\001 \002(\t\022\r\n\005uavid\030\002 \002(\t\022"
+    "\022\n\ncreatetime\030\003 \002(\004\022\021\n\tmaxvoyage\030\004 \002(\002\022\020"
+    "\n\010missions\030\005 \003(\014\022\021\n\tboundarys\030\006 \003(\014\022&\n\002b"
+    "i\030\007 \001(\0132\032.das.proto.BillInformation\022\014\n\004r"
+    "pid\030\010 \001(\t\022\013\n\003beg\030\t \001(\005\022\013\n\003end\030\n \001(\005\022\016\n\006l"
+    "andid\030\013 \001(\t\022\020\n\010ridgeBeg\030\014 \003(\005\022\017\n\007acreage"
+    "\030\r \002(\002\"J\n\022PostOperationRoute\022\r\n\005seqno\030\001 "
+    "\002(\r\022%\n\002or\030\002 \002(\0132\031.das.proto.OperationRou"
+    "te\"6\n\025AckPostOperationRoute\022\r\n\005seqno\030\001 \002"
+    "(\r\022\016\n\006result\030\002 \002(\005\"\205\001\n\025UploadOperationRo"
+    "utes\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\016\n\006us"
+    "erid\030\003 \002(\t\022\021\n\ttimestamp\030\004 \002(\004\022\024\n\014countmi"
+    "ssion\030\005 \002(\005\022\025\n\rcountboundary\030\006 \002(\005\"a\n\023Sy"
+    "scOperationRoutes\022\r\n\005seqno\030\001 \002(\r\022\016\n\006resu"
+    "lt\030\002 \002(\005\022\r\n\005uavid\030\003 \002(\t\022\r\n\005index\030\004 \001(\005\022\r"
+    "\n\005count\030\005 \001(\005\"e\n\024RequestRouteMissions\022\r\n"
+    "\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\020\n\010boundary\030"
+    "\003 \002(\010\022\016\n\006offset\030\004 \002(\005\022\r\n\005count\030\005 \002(\005\"l\n\027"
+    "AckRequestRouteMissions\022\r\n\005seqno\030\001 \002(\r\022\016"
+    "\n\006result\030\002 \002(\005\022\020\n\010boundary\030\003 \002(\010\022\016\n\006offs"
+    "et\030\004 \002(\005\022\020\n\010missions\030\005 \003(\014\"e\n\021RequestUav"
+    "Mission\022\r\n\005seqno\030\001 \002(\r\022\013\n\003uav\030\002 \002(\t\022\n\n\002i"
+    "d\030\003 \001(\t\022\016\n\006planid\030\004 \001(\t\022\013\n\003beg\030\005 \001(\004\022\013\n\003"
+    "end\030\006 \001(\004\"\263\001\n\010UavRoute\022\013\n\003uav\030\001 \002(\t\022\014\n\004l"
+    "and\030\002 \002(\t\022\014\n\004plan\030\003 \002(\t\022\r\n\005crtTm\030\004 \002(\004\022\014"
+    "\n\004opTm\030\005 \002(\004\022\013\n\003beg\030\006 \002(\005\022\013\n\003end\030\007 \002(\005\022\014"
+    "\n\004user\030\010 \002(\t\022\023\n\013continiuLat\030\t \001(\005\022\023\n\013con"
+    "tiniuLon\030\n \001(\005\022\017\n\007acreage\030\013 \001(\002\"C\n\rAckUa"
+    "vMission\022\r\n\005seqno\030\001 \002(\r\022#\n\006routes\030\002 \003(\0132"
+    "\023.das.proto.UavRoute\"l\n\030RequestUavMissio"
+    "nAcreage\022\r\n\005seqno\030\001 \002(\r\022\013\n\003uav\030\002 \001(\t\022\n\n\002"
+    "id\030\003 \001(\t\022\016\n\006planid\030\004 \001(\t\022\013\n\003beg\030\005 \001(\004\022\013\n"
+    "\003end\030\006 \001(\004\"6\n\024AckUavMissionAcreage\022\r\n\005se"
+    "qno\030\001 \002(\r\022\017\n\007acreage\030\002 \002(\002\"C\n\025RequestMis"
+    "sionSuspend\022\r\n\005seqno\030\001 \002(\r\022\013\n\003uav\030\002 \002(\t\022"
+    "\016\n\006planID\030\003 \002(\t\"w\n\016MissionSuspend\022\013\n\003uav"
+    "\030\001 \002(\t\022\014\n\004user\030\002 \002(\t\022\016\n\006planId\030\003 \002(\t\022\020\n\010"
+    "curRidge\030\004 \002(\005\022\023\n\013continiuLat\030\005 \001(\005\022\023\n\013c"
+    "ontiniuLon\030\006 \001(\005\"^\n\021AckMissionSuspend\022\r\n"
+    "\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022*\n\007suspend\030"
+    "\003 \001(\0132\031.das.proto.MissionSuspend\"\350\001\n\tUav"
+    "Status\022\r\n\005uavid\030\001 \002(\t\022\016\n\006result\030\002 \002(\005\022\016\n"
+    "\006online\030\003 \001(\010\022\016\n\006landed\030\004 \001(\010\022\020\n\010deadlin"
+    "e\030\005 \001(\004\022\016\n\006binded\030\006 \001(\010\022\016\n\006binder\030\007 \001(\t\022"
+    "\014\n\004time\030\010 \001(\004\022&\n\003pos\030\t \001(\0132\031.das.proto.G"
+    "psInformation\022\021\n\ttimestamp\030\n \001(\004\022\022\n\nauth"
+    "String\030\013 \001(\t\022\r\n\005simId\030\014 \001(\t\"0\n\020RequestUa"
+    "vStatus\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \003(\t\"J\n"
+    "\023AckRequestUavStatus\022\r\n\005seqno\030\001 \002(\r\022$\n\006s"
+    "tatus\030\002 \003(\0132\024.das.proto.UavStatus\"`\n\016Req"
+    "uestBindUav\022\r\n\005seqno\030\001 \002(\r\022\014\n\004opid\030\002 \002(\r"
+    "\022\r\n\005uavid\030\003 \002(\t\022\016\n\006binder\030\004 \002(\t\022\022\n\nauthS"
+    "tring\030\005 \001(\t\"f\n\021AckRequestBindUav\022\r\n\005seqn"
+    "o\030\001 \002(\r\022\014\n\004opid\030\002 \002(\r\022\016\n\006result\030\003 \002(\005\022$\n"
+    "\006status\030\004 \001(\0132\024.das.proto.UavStatus\"v\n\016U"
+    "avProductInfo\022\r\n\005uavid\030\001 \001(\t\022\023\n\013productt"
+    "ype\030\002 \001(\t\022\021\n\tproductid\030\003 \001(\t\022\017\n\007fwLight\030"
+    "\004 \001(\t\022\r\n\005fwFMU\030\005 \001(\t\022\r\n\005fwIMU\030\006 \001(\t\"I\n\026R"
+    "equestUavProductInfos\022\r\n\005seqno\030\001 \002(\r\022\021\n\t"
+    "productid\030\002 \003(\t\022\r\n\005uavid\030\003 \003(\t\"b\n\031AckReq"
+    "uestUavProductInfos\022\r\n\005seqno\030\001 \002(\r\022\016\n\006re"
+    "sult\030\002 \002(\005\022&\n\003upi\030\003 \003(\0132\031.das.proto.UavP"
+    "roductInfo\"L\n\023PostUavProductInfos\022\r\n\005seq"
+    "no\030\001 \002(\r\022&\n\003upi\030\002 \003(\0132\031.das.proto.UavPro"
+    "ductInfo\"7\n\026AckPostUavProductInfos\022\r\n\005se"
+    "qno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"M\n\017PostControl"
+    "2Uav\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\016\n\006us"
+    "erid\030\003 \002(\t\022\014\n\004data\030\004 \003(\014\"R\n\022AckPostContr"
+    "ol2Uav\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n"
+    "\005uavid\030\003 \002(\t\022\016\n\006userid\030\004 \002(\t\"F\n\030PostStat"
+    "us2GroundStation\022\r\n\005seqno\030\001 \002(\r\022\r\n\005uavid"
+    "\030\002 \002(\t\022\014\n\004data\030\003 \003(\014*g\n\tGSMsgType\022\020\n\014Del"
+    "eteFriend\020\001\022\021\n\rRequestFriend\020\002\022\017\n\013AgreeF"
+    "riend\020\003\022\020\n\014RejectFriend\020\004\022\010\n\004Text\020\005\022\010\n\004L"
+    "and\020\006*1\n\020SurveryPrecision\022\007\n\003LOW\020\001\022\n\n\006ME"
+    "DIUM\020\002\022\010\n\004HIGH\020\003", 9376);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "das.proto", &protobuf_RegisterTypes);
   PostHeartBeat::default_instance_ = new PostHeartBeat();
@@ -2606,6 +2655,8 @@ void protobuf_AddDesc_das_2eproto() {
   AckQueryParameters::default_instance_ = new AckQueryParameters();
   ConfigureParameters::default_instance_ = new ConfigureParameters();
   AckConfigurParameters::default_instance_ = new AckConfigurParameters();
+  SyncDeviceList::default_instance_ = new SyncDeviceList();
+  AckSyncDeviceList::default_instance_ = new AckSyncDeviceList();
   UpdateDeviceList::default_instance_ = new UpdateDeviceList();
   AckUpdateDeviceList::default_instance_ = new AckUpdateDeviceList();
   RequestIdentityAllocation::default_instance_ = new RequestIdentityAllocation();
@@ -2698,6 +2749,8 @@ void protobuf_AddDesc_das_2eproto() {
   AckQueryParameters::default_instance_->InitAsDefaultInstance();
   ConfigureParameters::default_instance_->InitAsDefaultInstance();
   AckConfigurParameters::default_instance_->InitAsDefaultInstance();
+  SyncDeviceList::default_instance_->InitAsDefaultInstance();
+  AckSyncDeviceList::default_instance_->InitAsDefaultInstance();
   UpdateDeviceList::default_instance_->InitAsDefaultInstance();
   AckUpdateDeviceList::default_instance_->InitAsDefaultInstance();
   RequestIdentityAllocation::default_instance_->InitAsDefaultInstance();
@@ -4936,6 +4989,512 @@ void AckConfigurParameters::Swap(AckConfigurParameters* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = AckConfigurParameters_descriptor_;
   metadata.reflection = AckConfigurParameters_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int SyncDeviceList::kSeqnoFieldNumber;
+#endif  // !_MSC_VER
+
+SyncDeviceList::SyncDeviceList()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void SyncDeviceList::InitAsDefaultInstance() {
+}
+
+SyncDeviceList::SyncDeviceList(const SyncDeviceList& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void SyncDeviceList::SharedCtor() {
+  _cached_size_ = 0;
+  seqno_ = 0u;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+SyncDeviceList::~SyncDeviceList() {
+  SharedDtor();
+}
+
+void SyncDeviceList::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void SyncDeviceList::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* SyncDeviceList::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return SyncDeviceList_descriptor_;
+}
+
+const SyncDeviceList& SyncDeviceList::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
+  return *default_instance_;
+}
+
+SyncDeviceList* SyncDeviceList::default_instance_ = NULL;
+
+SyncDeviceList* SyncDeviceList::New() const {
+  return new SyncDeviceList;
+}
+
+void SyncDeviceList::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    seqno_ = 0u;
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool SyncDeviceList::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required uint32 seqno = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &seqno_)));
+          set_has_seqno();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void SyncDeviceList::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* SyncDeviceList::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int SyncDeviceList::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required uint32 seqno = 1;
+    if (has_seqno()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->seqno());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void SyncDeviceList::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const SyncDeviceList* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const SyncDeviceList*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void SyncDeviceList::MergeFrom(const SyncDeviceList& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_seqno()) {
+      set_seqno(from.seqno());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void SyncDeviceList::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void SyncDeviceList::CopyFrom(const SyncDeviceList& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SyncDeviceList::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
+
+  return true;
+}
+
+void SyncDeviceList::Swap(SyncDeviceList* other) {
+  if (other != this) {
+    std::swap(seqno_, other->seqno_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata SyncDeviceList::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = SyncDeviceList_descriptor_;
+  metadata.reflection = SyncDeviceList_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int AckSyncDeviceList::kSeqnoFieldNumber;
+const int AckSyncDeviceList::kResultFieldNumber;
+const int AckSyncDeviceList::kIdFieldNumber;
+#endif  // !_MSC_VER
+
+AckSyncDeviceList::AckSyncDeviceList()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void AckSyncDeviceList::InitAsDefaultInstance() {
+}
+
+AckSyncDeviceList::AckSyncDeviceList(const AckSyncDeviceList& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void AckSyncDeviceList::SharedCtor() {
+  _cached_size_ = 0;
+  seqno_ = 0u;
+  result_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+AckSyncDeviceList::~AckSyncDeviceList() {
+  SharedDtor();
+}
+
+void AckSyncDeviceList::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void AckSyncDeviceList::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* AckSyncDeviceList::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return AckSyncDeviceList_descriptor_;
+}
+
+const AckSyncDeviceList& AckSyncDeviceList::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
+  return *default_instance_;
+}
+
+AckSyncDeviceList* AckSyncDeviceList::default_instance_ = NULL;
+
+AckSyncDeviceList* AckSyncDeviceList::New() const {
+  return new AckSyncDeviceList;
+}
+
+void AckSyncDeviceList::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    seqno_ = 0u;
+    result_ = 0;
+  }
+  id_.Clear();
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool AckSyncDeviceList::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required uint32 seqno = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &seqno_)));
+          set_has_seqno();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(16)) goto parse_result;
+        break;
+      }
+
+      // required int32 result = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_result:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &result_)));
+          set_has_result();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_id;
+        break;
+      }
+
+      // repeated string id = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_id:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->add_id()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->id(this->id_size() - 1).data(),
+            this->id(this->id_size() - 1).length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_id;
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void AckSyncDeviceList::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
+  }
+
+  // required int32 result = 2;
+  if (has_result()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->result(), output);
+  }
+
+  // repeated string id = 3;
+  for (int i = 0; i < this->id_size(); i++) {
+  ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+    this->id(i).data(), this->id(i).length(),
+    ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      3, this->id(i), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* AckSyncDeviceList::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
+  }
+
+  // required int32 result = 2;
+  if (has_result()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->result(), target);
+  }
+
+  // repeated string id = 3;
+  for (int i = 0; i < this->id_size(); i++) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->id(i).data(), this->id(i).length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteStringToArray(3, this->id(i), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int AckSyncDeviceList::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required uint32 seqno = 1;
+    if (has_seqno()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->seqno());
+    }
+
+    // required int32 result = 2;
+    if (has_result()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->result());
+    }
+
+  }
+  // repeated string id = 3;
+  total_size += 1 * this->id_size();
+  for (int i = 0; i < this->id_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->id(i));
+  }
+
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void AckSyncDeviceList::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const AckSyncDeviceList* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const AckSyncDeviceList*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void AckSyncDeviceList::MergeFrom(const AckSyncDeviceList& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  id_.MergeFrom(from.id_);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_seqno()) {
+      set_seqno(from.seqno());
+    }
+    if (from.has_result()) {
+      set_result(from.result());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void AckSyncDeviceList::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void AckSyncDeviceList::CopyFrom(const AckSyncDeviceList& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool AckSyncDeviceList::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+
+  return true;
+}
+
+void AckSyncDeviceList::Swap(AckSyncDeviceList* other) {
+  if (other != this) {
+    std::swap(seqno_, other->seqno_);
+    std::swap(result_, other->result_);
+    id_.Swap(&other->id_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata AckSyncDeviceList::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = AckSyncDeviceList_descriptor_;
+  metadata.reflection = AckSyncDeviceList_reflection_;
   return metadata;
 }
 
