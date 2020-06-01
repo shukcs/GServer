@@ -61,6 +61,18 @@ IObject *TrackerManager::PrcsProtoBuff(ISocket *s)
         return _checkLogin(s, *rua);
     }
 
+    if (m_p->GetMsgName() == d_p_ClassName(RequestProgramUpgrade))
+    {
+        auto req = (RequestProgramUpgrade *)m_p->GetProtoMessage();
+        AckProgramUpgrade ack;
+        ack.set_seqno(req->seqno());
+        ack.set_result(0);
+        ack.set_software(req->software());
+        ack.set_length(0);
+        ack.set_forced(false);
+        ObjectAbsPB::SendProtoBuffTo(s, ack);
+    }
+
     return NULL;
 }
 
@@ -102,12 +114,8 @@ void TrackerManager::LoadConfig()
 
 bool TrackerManager::IsHasReuest(const char *buf, int len) const
 {
-    int pos = Utility::FindString(buf, len, d_p_ClassName(RequestTrackerIdentityAuthentication));
-    if (pos > 0)
-    {
-        printf("Tracker request connect length:%d\n", len);
-    }
-    return pos >= 8;
+    return Utility::FindString(buf, len, d_p_ClassName(RequestTrackerIdentityAuthentication)) >= 8
+        || Utility::FindString(buf, len, d_p_ClassName(RequestProgramUpgrade)) >= 8;
 }
 
 IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAuthentication &uia)

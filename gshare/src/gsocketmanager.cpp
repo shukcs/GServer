@@ -14,7 +14,7 @@
 #endif
 
 #define MAX_EVENT 20
-#define SocketTimeOut 10
+#define SocketTimeOut 30
 using namespace std;
 
 class WSAInitializer // Winsock Initializer
