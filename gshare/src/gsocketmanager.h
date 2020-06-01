@@ -21,6 +21,8 @@ class GSocketManager : public ISocketManager
     typedef LoopQueue<ILink *> SocketHandleQue;
     typedef LoopQueue<int> SocketPrcsQue;
     typedef std::map<ISocket *, FuncOnBinded> SocketBindedCallbacks;
+    typedef std::list<ISocket *> SocketList;
+    typedef std::map<int64_t, SocketList> SecSocketMap;
 public:
     SHARED_DECL static ISocketManager *CreateManager(int nThread = 0, int maxSock = 100000);
 protected:
@@ -42,7 +44,7 @@ maxSock:支持最大连接数
     bool IsRun()const;
     void Exit();
     void InitThread(int nThread);
-    void PrcsAddSockets();
+    void PrcsAddSockets(int64_t sec);
     void PrcsDestroySockets();
     bool PrcsSockets();
     bool SokectPoll(unsigned ms);
@@ -65,6 +67,8 @@ private:
     void _addSocketHandle(int h, bool bListen=false);
     int _createSocket(int tp=SOCK_STREAM);
     void _close(ISocket *sock);
+    void _addAcceptSocket(ISocket *sock, int64_t sec);
+    void _checkSocketTimeout(int64_t sec);
 #if !defined _WIN32 && !defined _WIN64
     bool _isCloseEvent(uint32_t e)const;
 #endif
@@ -81,6 +85,7 @@ private:
     char                        m_buff[1024];
     static bool                 s_bRun;
     SocketBindedCallbacks       m_bindedCBs;
+    SecSocketMap                m_socketsAccept;
 #if defined _WIN32 || defined _WIN64 //Windows与epoll对应的是IOCP，但不好做成epoll一样操作
     void _checkMaxSock();
     SOCKET                      m_maxsock;

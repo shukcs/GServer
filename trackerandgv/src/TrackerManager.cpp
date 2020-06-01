@@ -102,7 +102,12 @@ void TrackerManager::LoadConfig()
 
 bool TrackerManager::IsHasReuest(const char *buf, int len) const
 {
-    return Utility::FindString(buf, len, d_p_ClassName(RequestTrackerIdentityAuthentication)) >= 8;
+    int pos = Utility::FindString(buf, len, d_p_ClassName(RequestTrackerIdentityAuthentication));
+    if (pos > 0)
+    {
+        printf("Tracker request connect length:%d\n", len);
+    }
+    return pos >= 8;
 }
 
 IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAuthentication &uia)

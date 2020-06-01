@@ -144,12 +144,12 @@ void GSocket::SetAddress(SocketAddress *a)
     m_bAccept = true;
 }
 
-int GSocket::GetHandle() const
+int GSocket::GetSocketHandle() const
 {
     return m_fd;
 }
 
-void GSocket::SetHandle(int fd)
+void GSocket::SetSocketHandle(int fd)
 {
     m_fd = fd;
 }

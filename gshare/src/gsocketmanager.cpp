@@ -14,6 +14,7 @@
 #endif
 
 #define MAX_EVENT 20
+#define SocketTimeOut 10
 using namespace std;
 
 class WSAInitializer // Winsock Initializer
@@ -119,9 +120,11 @@ bool GSocketManager::IsMainManager()const
 
 bool GSocketManager::Poll(unsigned ms)
 {
-    PrcsAddSockets();
+    int64_t sec = Utility::secTimeCount();
+    PrcsAddSockets(sec);
     PrcsDestroySockets();
     bool ret = PrcsSockets();
+    _checkSocketTimeout(sec);
     ret = SokectPoll(ms)?true:ret;
     return ret;
 }
@@ -140,13 +143,13 @@ void GSocketManager::AddProcessThread()
 
 bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
 {
-    int fd = s != NULL ? s->GetHandle() : -1;
+    int fd = s != NULL ? s->GetSocketHandle() : -1;
     if (fd==-1 || m_sockets.find(fd)==m_sockets.end())
         return false;
 
     m_mtx->Lock();      //应对不同线程
     if (!m_socketsPrcs.IsContains(fd))
-        m_socketsPrcs.Push(s->GetHandle());
+        m_socketsPrcs.Push(s->GetSocketHandle());
     m_mtx->Unlock();
     return true;
 }
@@ -162,12 +165,12 @@ void GSocketManager::InitThread(int nThread)
     }
 }
 
-void GSocketManager::PrcsAddSockets()
+void GSocketManager::PrcsAddSockets(int64_t sec)
 {
     while (!m_socketsAdd.IsEmpty())
     {
         ISocket *s = m_socketsAdd.Pop();
-        int handle = s->GetHandle();
+        int handle = s->GetSocketHandle();
         ISocket::SocketStat st = s->GetSocketStat();
         switch (st)
         {
@@ -183,6 +186,7 @@ void GSocketManager::PrcsAddSockets()
         {
             SetNonblocking(s);
             _addSocketHandle(handle, s->IsListenSocket());
+            _addAcceptSocket(s, sec);
             m_sockets[handle] = s;
         }
         if (ISocket::Connecting == st)
@@ -298,8 +302,7 @@ bool GSocketManager::SokectPoll(unsigned ms)
 #endif
     for (ISocket *s : lsRm)
     {
-        s->OnClose();
-        _remove(s->GetHandle());
+        _close(s);
     }
 
     return ret;
@@ -307,7 +310,7 @@ bool GSocketManager::SokectPoll(unsigned ms)
 
 bool GSocketManager::SetNonblocking(ISocket *sock)
 {
-    int h = sock ? sock->GetHandle() : -1;
+    int h = sock ? sock->GetSocketHandle() : -1;
     if (-1 == h)
         return false;
 #if defined _WIN32 || defined _WIN64
@@ -427,8 +430,43 @@ int GSocketManager::_createSocket(int tp)
 
 void GSocketManager::_close(ISocket *sock)
 {
-    _remove(sock->GetHandle());
+    _remove(sock->GetSocketHandle());
     sock->OnClose();
+
+    for (auto itr= m_socketsAccept.begin(); itr != m_socketsAccept.end(); ++itr)
+    {
+        itr->second.remove(sock);
+    }
+}
+
+void GSocketManager::_addAcceptSocket(ISocket *sock, int64_t sec)
+{
+    if (!sock || !sock->IsAccetSock())
+        return;
+
+    auto itr = m_socketsAccept.find(sec);
+    if (itr == m_socketsAccept.end())
+        m_socketsAccept[sec].push_back(sock);
+    else
+        itr->second.push_back(sock);
+}
+
+void GSocketManager::_checkSocketTimeout(int64_t sec)
+{
+    if (m_socketsAccept.empty())
+        return;
+
+    auto itr = m_socketsAccept.begin();
+    if (sec - itr->first > SocketTimeOut)
+    {
+        for (auto sock : itr->second)
+        {
+            if (!sock->GetHandleLink())
+                _close(sock);
+        }
+        itr->second.clear();
+        m_socketsAccept.erase(itr);
+    }
 }
 
 #if defined _WIN32 || defined _WIN64 
@@ -466,7 +504,7 @@ int GSocketManager::_bind(ISocket *sock)
     else
     {
         listen(listenfd, 20);
-        sock->SetHandle(listenfd);
+        sock->SetSocketHandle(listenfd);
         sock->OnBind();
     }
     SocketBindedCallbacks::iterator itr = m_bindedCBs.find(sock);
@@ -493,7 +531,7 @@ int GSocketManager::_connect(ISocket *sock)
         closesocket(listenfd);
         listenfd = -1;
     }
-    sock->SetHandle(listenfd);
+    sock->SetSocketHandle(listenfd);
     return listenfd;
 }
 
@@ -509,7 +547,7 @@ void GSocketManager::_accept(int listenfd)
     {
         Ipv4Address *ad = new Ipv4Address(addr);
         s->SetAddress(ad);
-        s->SetHandle(connfd);
+        s->SetSocketHandle(connfd);
         s->OnConnect(true);
         GSocketManager *m = GetManagerofLeastSocket();
         if (!m)
@@ -521,7 +559,7 @@ void GSocketManager::_accept(int listenfd)
 
 bool GSocketManager::_recv(ISocket *sock)
 {
-    int fd = sock ? sock->GetHandle() : -1;
+    int fd = sock ? sock->GetSocketHandle() : -1;
     if (fd == -1)
         return false;
 
@@ -543,7 +581,7 @@ bool GSocketManager::_recv(ISocket *sock)
 
 void GSocketManager::_send(ISocket *sock)
 {
-    int fd = sock ? sock->GetHandle() : -1;
+    int fd = sock ? sock->GetSocketHandle() : -1;
     if (-1 == fd)
         return;
 

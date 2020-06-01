@@ -110,12 +110,12 @@ void GXClientSocket::SetAddress(SocketAddress *)
 {
 }
 
-int GXClientSocket::GetHandle() const
+int GXClientSocket::GetSocketHandle() const
 {
     return m_fd;
 }
 
-void GXClientSocket::SetHandle(int fd)
+void GXClientSocket::SetSocketHandle(int fd)
 {
     m_fd = fd;
 }

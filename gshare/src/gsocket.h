@@ -48,8 +48,8 @@ protected:
     //GSockM
     SocketAddress *GetAddress()const;
     void SetAddress(SocketAddress *);
-    int GetHandle()const;
-    void SetHandle(int fd);
+    int GetSocketHandle()const;
+    void SetSocketHandle(int fd);
     ISocketManager *GetParent()const;
     bool IsReconnectable()const;
     bool IsWriteEnabled()const;

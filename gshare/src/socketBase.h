@@ -32,8 +32,8 @@ public:
     virtual SocketAddress *GetAddress()const = 0;
     virtual void SetAddress(SocketAddress *) = 0;
     virtual ISocketManager *GetParent()const = 0;
-    virtual int GetHandle()const = 0;
-    virtual void SetHandle(int fd) = 0;
+    virtual int GetSocketHandle()const = 0;
+    virtual void SetSocketHandle(int fd) = 0;
     virtual bool IsWriteEnabled()const = 0;
     virtual bool IsReconnectable()const = 0;
     virtual void EnableWrite(bool) = 0;
