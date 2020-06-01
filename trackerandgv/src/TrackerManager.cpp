@@ -70,6 +70,7 @@ IObject *TrackerManager::PrcsProtoBuff(ISocket *s)
         ack.set_software(req->software());
         ack.set_length(0);
         ack.set_forced(false);
+        s->ClearBuff();
         ObjectAbsPB::SendProtoBuffTo(s, ack);
     }
 
