@@ -125,7 +125,7 @@ bool GSocketManager::Poll(unsigned ms)
     PrcsDestroySockets();
     bool ret = PrcsSockets();
     _checkSocketTimeout(sec);
-    ret = SokectPoll(ms)?true:ret;
+    ret = SokectPoll(ms) ? true : ret;
     return ret;
 }
 
@@ -430,13 +430,16 @@ int GSocketManager::_createSocket(int tp)
 
 void GSocketManager::_close(ISocket *sock)
 {
-    _remove(sock->GetSocketHandle());
-    sock->OnClose();
-
     for (auto itr= m_socketsAccept.begin(); itr != m_socketsAccept.end(); ++itr)
     {
-        itr->second.remove(sock);
+        for (auto it = itr->second.begin(); it != itr->second.end(); )
+            if (sock == *it)
+                it = itr->second.erase(it);
+            else
+                ++it;
     }
+    _remove(sock->GetSocketHandle());
+    sock->OnClose();
 }
 
 void GSocketManager::_addAcceptSocket(ISocket *sock, int64_t sec)
