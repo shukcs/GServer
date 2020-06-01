@@ -66,7 +66,7 @@ private:
     void _remove(int h);
     void _addSocketHandle(int h, bool bListen=false);
     int _createSocket(int tp=SOCK_STREAM);
-    void _close(ISocket *sock);
+    void _close(ISocket *sock, bool prcs=true);
     void _addAcceptSocket(ISocket *sock, int64_t sec);
     void _checkSocketTimeout(int64_t sec);
 #if !defined _WIN32 && !defined _WIN64

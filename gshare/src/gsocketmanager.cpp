@@ -428,15 +428,14 @@ int GSocketManager::_createSocket(int tp)
     return socket(AF_INET, tp, IPPROTO_TCP);
 }
 
-void GSocketManager::_close(ISocket *sock)
+void GSocketManager::_close(ISocket *sock, bool prcs)
 {
-    for (auto itr= m_socketsAccept.begin(); itr != m_socketsAccept.end(); ++itr)
+    if(prcs)
     {
-        for (auto it = itr->second.begin(); it != itr->second.end(); )
-            if (sock == *it)
-                it = itr->second.erase(it);
-            else
-                ++it;
+        for (auto itr = m_socketsAccept.begin(); itr != m_socketsAccept.end(); ++itr)
+        {
+            itr->second.remove(sock);
+        }
     }
     _remove(sock->GetSocketHandle());
     sock->OnClose();
@@ -465,7 +464,7 @@ void GSocketManager::_checkSocketTimeout(int64_t sec)
         for (auto sock : itr->second)
         {
             if (!sock->GetHandleLink())
-                _close(sock);
+                _close(sock, false);
         }
         itr->second.clear();
         m_socketsAccept.erase(itr);
