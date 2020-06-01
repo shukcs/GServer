@@ -205,7 +205,6 @@ void ObjectGV::processEvent(const IMessage &msg, int tp)
     if (   !m_bLogined
         || msg.GetSenderType() != ObjectTracker::TrackerType()
         || (ObjectEvent::E_Login!=tp && ObjectEvent::E_Logout!=tp) )
-
         return;
 
     if (auto *snd = new UpdateDeviceList)
@@ -226,8 +225,14 @@ void ObjectGV::InitObject()
 void ObjectGV::CheckTimer(uint64_t ms)
 {
     ObjectAbsPB::CheckTimer(ms);
-    if (ms - m_tmLastInfo > 3600000)
+    uint32_t noInfo = uint32_t(ms - m_tmLastInfo);
+    if (noInfo > 600000)
         Release();
-    else if (m_sock && ms - m_tmLastInfo > 30000)//超时关闭
+    else if (m_sock && noInfo > 30000)//超时关闭
         m_sock->Close();
+}
+
+bool ObjectGV::IsAllowRelease() const
+{
+    return false;
 }

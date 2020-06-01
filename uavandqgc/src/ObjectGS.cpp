@@ -921,7 +921,7 @@ void ObjectGS::CheckTimer(uint64_t ms)
 
 bool ObjectGS::IsAllowRelease() const
 {
-    return false == GetAuth(ObjectGS::Type_UavManager);
+    return !GetAuth(ObjectGS::Type_UavManager);
 }
 
 void ObjectGS::SetCheck(const std::string &str)

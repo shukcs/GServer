@@ -264,7 +264,7 @@ void ObjectUav::CheckTimer(uint64_t ms)
         if (m_mission && !m_bSys && (uint32_t)ms-m_lastORNotify > 500)
             _notifyUavUOR(*m_mission);
         int64_t n = ms - m_tmLastPos;
-        if (n > 3600000)
+        if (n > 600000)
             Release();
         else if (n>6000)//³¬Ê±¹Ø±Õ
             m_sock->Close();

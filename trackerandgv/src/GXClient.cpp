@@ -218,6 +218,8 @@ bool GXClinetManager::PrcsPublicMsg(const IMessage &msg)
     {
     case ObjectEvent::E_Login:
         ProcessLogin(msg.GetSenderID(), msg.GetSenderType(), true); break;
+    case ObjectEvent::E_Logout:
+        ProcessLogin(msg.GetSenderID(), msg.GetSenderType(), false); break;
     case IMessage::PushUavSndInfo:
         ProcessPostInfo(*(TrackerMessage*)&msg); break;
     default:

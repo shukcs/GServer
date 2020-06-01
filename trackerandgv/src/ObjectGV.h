@@ -54,6 +54,7 @@ protected:
     void processEvent(const IMessage &msg, int tp);
     void InitObject();
     void CheckTimer(uint64_t ms);
+    bool IsAllowRelease()const;
 private:
     void _prcsLogin(das::proto::RequestGVIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
