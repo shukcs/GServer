@@ -9,6 +9,7 @@ namespace SOCKETS_NAMESPACE {
 
 class IMutex;
 class ILink;
+class IObjectManager;
 class ISocketManager;
 class SocketAddress;
 class ILog;
@@ -49,6 +50,7 @@ public:
     virtual bool ResetSendBuff(uint16_t sz)=0;
     virtual void SetPrcsManager(ISocketManager *) = 0;
     virtual ISocketManager *GetPrcsManager()const = 0;
+    virtual void SetLogin(IObjectManager *) = 0;
 
     //事务处理调用函数
     virtual ILink *GetHandleLink()const = 0;

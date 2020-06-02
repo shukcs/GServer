@@ -63,6 +63,7 @@ protected:
     bool IsNoWriteData()const;
 
     bool Reconnect();
+    void SetLogin(IObjectManager *);
 protected:
     ObjectGXClinet  *m_parent;
     ISocketManager  *m_mgrPrcs;

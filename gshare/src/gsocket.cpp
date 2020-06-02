@@ -17,7 +17,7 @@ using namespace SOCKETS_NAMESPACE
 GSocket::GSocket(ISocketManager *parent): m_parent(parent)
 ,m_mgrPrcs(NULL), m_object(NULL), m_fd(-1), m_bListen(false)
 , m_bAccept(false), m_stat(UnConnected), m_address(NULL)
-, m_buffSocket(new LoopQueBuff(1024))
+, m_buffSocket(new LoopQueBuff(1024)), m_mgrLogin(NULL)
 {
 }
 
@@ -35,6 +35,8 @@ ILink *GSocket::GetHandleLink() const
 void GSocket::SetHandleLink(ILink *o)
 {
     m_object = o;
+    if (m_object)
+        m_mgrLogin = NULL;
 }
 
 bool GSocket::Bind(int port, const std::string &hostLocal)
@@ -199,6 +201,12 @@ void GSocket::OnRead(const void *buf, int len)
         m_object->Receive(buf, len);
         return;
     }
+    if (m_mgrLogin)
+    {
+        m_mgrLogin->AddLoginData(this, buf, len);
+        return;
+    }
+
     m_buffSocket->Push(buf, len, true);
     ObjectManagers::Instance().ProcessReceive(this, buf, len);
 }
@@ -277,4 +285,9 @@ bool GSocket::ResizeBuff(int sz)
 bool GSocket::IsNoWriteData() const
 {
     return m_buffSocket && m_buffSocket->Count() == 0;
+}
+
+void GSocket::SetLogin(IObjectManager *mgr)
+{
+    m_mgrLogin = mgr;
 }

@@ -168,7 +168,6 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
         else
         {
             Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
-            ret = NULL;
         }
 
         AckUavIdentityAuthentication ack;

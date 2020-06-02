@@ -242,3 +242,7 @@ bool GXClientSocket::Reconnect()
     m_mgrPrcs->AddSocket(this);
     return true;
 }
+
+void GXClientSocket::SetLogin(IObjectManager *)
+{
+}

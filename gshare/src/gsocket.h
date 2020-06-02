@@ -70,6 +70,7 @@ protected:
     ISocketManager *GetPrcsManager()const;
     bool ResizeBuff(int sz);
     bool IsNoWriteData()const;
+    void SetLogin(IObjectManager *mgr);
 protected:
     friend class GSocketManager;
     ISocketManager  *m_parent;
@@ -81,6 +82,7 @@ protected:
     SocketStat      m_stat;
     SocketAddress   *m_address;
     LoopQueBuff     *m_buffSocket;
+    IObjectManager  *m_mgrLogin;
 };
 
 #ifdef SOCKETS_NAMESPACE

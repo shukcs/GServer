@@ -526,31 +526,43 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
     if (!t || m_loginSockets.empty())
         return false;
 
-    while (!m_loginSockets.empty())
+    bool ret = false;
+    for (auto itr = m_loginSockets.begin(); itr!= m_loginSockets.end();)
     {
-        ISocket *s = m_loginSockets.front();
-        m_loginSockets.pop_front();
-        if (!s)
-            continue;
-
-        int len = s->CopyData(t->m_buff, t->m_szBuff);
-        s->ClearBuff();
-        IObject *o = PrcsNotObjectReceive(s, t->m_buff, len);
-        if (!o)
-            continue;
-
-        AddObject(o);
-        if (ILink *h = o->GetLink())
+        ISocket *s = itr->first;
+        LoginBuff &buf = itr->second;
+        IObject *o = PrcsNotObjectReceive(s, buf.buff, buf.pos);
+        if (o)
         {
-            BussinessThread *tmp = GetPropertyThread();
-            h->SetSocket(s);
-            h->SetThread(tmp);
-            t->m_linksAdd.Push(h);
-        }
+            AddObject(o);
+            ILink *h = o->GetLink();
+            if (h && !h->GetSocket())
+            {
+                BussinessThread *tmp = GetPropertyThread();
+                h->SetSocket(s);
+                h->SetThread(tmp);
+                t->m_linksAdd.Push(h);
+            }
+            else
+            {
+                if (h->GetSocket() != s)
+                    s->Close();
 
-        return o != NULL;
+                itr = m_loginSockets.erase(itr);
+            }
+            ret = true;
+        }
+        else if (buf.pos >= sizeof(buf.buff))
+        {
+            s->Close();
+            itr = m_loginSockets.erase(itr);
+        }
+        else
+        {
+            ++itr;
+        }
     }
-    return true;
+    return ret;
 }
 
 MessageQue *IObjectManager::GetSendQue(int idThread)const
@@ -566,13 +578,13 @@ MessageQue *IObjectManager::GetSendQue(int idThread)const
     return &(*itr)->m_lsMsgSend;
 }
 
-bool IObjectManager::ParseRequest(ISocket *s, const char *buf, int len)
+bool IObjectManager::ParseRequest(const char *buf, int len)
 {
-    if (s && IsHasReuest(buf, len) && m_mtx)
+    if (IsHasReuest(buf, len))
     {
-        m_mtx->Lock();
-        m_loginSockets.push_back(s);
-        m_mtx->Unlock();
+        if (!m_mtx && !m_lsThread.empty())
+            m_mtx = m_lsThread.front()->GetMutex();
+
         return true;
     }
     return false;
@@ -667,9 +679,28 @@ void IObjectManager::OnSocketClose(ISocket *s)
     if (m_mtx && s)
     {
         m_mtx->Lock();
-        m_loginSockets.remove(s);
+        m_loginSockets.erase(s);
         m_mtx->Unlock();
     }
+}
+
+void IObjectManager::AddLoginData(ISocket *s, const void *buf, int len)
+{
+    if (!s)
+        return;
+
+    m_mtx->Lock();
+    bool bInitial = m_loginSockets.find(s) == m_loginSockets.end();
+    LoginBuff &buff = m_loginSockets[s];
+    if (!bInitial)
+        buff.initial();
+    int cp = sizeof(buff.buff) - buff.pos;
+    if (len < cp)
+        cp = len;
+
+    memcpy(buff.buff + buff.pos, buf, cp);    
+    buff.pos = cp;
+    m_mtx->Unlock();
 }
 
 IObjectManager *IObjectManager::MangerOfType(int type)

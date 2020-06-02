@@ -161,9 +161,6 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
         ack.set_result(bLogin ? 1 : 0);
         ack.set_auth(o->Authorize());
         ObjectAbsPB::SendProtoBuffTo(s, ack);
-
-        if (!bLogin)
-            o = NULL;
     }
     else if(o==NULL)
     {

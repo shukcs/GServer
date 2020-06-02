@@ -143,6 +143,16 @@ protected:
     typedef std::map<int, StringList> SubcribeList;
     typedef std::map<std::string, SubcribeList> MessageSubcribes;
     typedef LoopQueue<SubcribeStruct *> SubcribeQueue;
+    typedef struct _LoginBuff
+    {
+        uint16_t pos;
+        char buff[1024];
+        void initial()
+        {
+            pos = 0;
+        }
+    }LoginBuff;
+    typedef std::map<ISocket *, LoginBuff> LoginMap;
 public:
     SHARED_DECL virtual ~IObjectManager();
     virtual int GetObjectType()const = 0;
@@ -161,10 +171,11 @@ public:
     void ProcessMessage();
     bool ProcessLogins(BussinessThread *s);
     MessageQue *GetSendQue(int idThread)const;
-    bool ParseRequest(ISocket *s, const char *buf, int len);
+    bool ParseRequest(const char *buf, int len);
     bool Exist(IObject *obj)const;
     BussinessThread *GetThread(int id = -1)const;
     void OnSocketClose(ISocket *s);
+    void AddLoginData(ISocket *s, const void *buf, int len);
 public:
     SHARED_DECL static IObjectManager *MangerOfType(int type);
 protected:
@@ -187,11 +198,11 @@ protected:
     IMutex                          *m_mtx;
     std::list<BussinessThread*>     m_lsThread;
     MapObjects                      m_objects;
-    std::list<ISocket*>             m_loginSockets;
     MessageQue                      m_messages;         //接收消息队列
     MessageQue                      m_lsMsgRecycle;     //消息回收队列
     MessageSubcribes                m_subcribes;        //订阅消息
     SubcribeQueue                   m_subcribeQue;
+    LoginMap                        m_loginSockets;
 };
 
 #ifdef SOCKETS_NAMESPACE

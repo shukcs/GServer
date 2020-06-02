@@ -34,8 +34,8 @@ void ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
 
     char buf[256] = { 0 };
     int sz = serialize(msg, buf, 256);
-    if (sz>0)
-        s->Send(sz + 4, buf);
+    if (sz > 0)
+        s->Send(sz, buf);
 }
 
 int ObjectAbsPB::ProcessReceive(void *buf, int len)

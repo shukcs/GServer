@@ -83,9 +83,6 @@ IObject *GVManager::prcsPBLogin(ISocket *s, const RequestIVIdentityAuthenticatio
         ack.set_seqno(rgi->seqno());
         ack.set_result(bLogin ? 1 : 0);
         ObjectAbsPB::SendProtoBuffTo(s, ack);
-
-        if (!bLogin)
-            o = NULL;
     }
 
     return o;

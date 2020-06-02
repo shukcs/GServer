@@ -119,7 +119,7 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
     if (ret)
     {
         if (ret->GetSocket() == s)
-            return NULL;
+            return ret;
 
         bool bLogin = !ret->IsConnect() && ret->IsInitaled();
         if (bLogin)
@@ -130,7 +130,6 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
         else
         {
             Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
-            ret = NULL;
         }
 
         AckTrackerIdentityAuthentication ack;
