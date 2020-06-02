@@ -117,6 +117,8 @@ void ObjectTracker::PrcsProtoBuff()
         _prcsAckQueryParameters((AckQueryParameters *)m_p->DeatachProto());
     else if (name == d_p_ClassName(AckConfigurParameters))
         _prcsAckConfigurParameters((AckConfigurParameters *)m_p->DeatachProto());
+    else if (name == d_p_ClassName(RequestProgramUpgrade))
+        _prcsProgramUpgrade((RequestProgramUpgrade *)m_p->GetProtoMessage());
 }
 
 int ObjectTracker::_checkPos(double lat, double lon, double alt)
@@ -229,5 +231,21 @@ void ObjectTracker::_prcsAckConfigurParameters(das::proto::AckConfigurParameters
     {
         ack->SetPBContent(*msg);
         SendMsg(ack);
+    }
+}
+
+void ObjectTracker::_prcsProgramUpgrade(das::proto::RequestProgramUpgrade *msg)
+{
+    if (!msg)
+        return;
+
+    if (auto ack = new AckProgramUpgrade)
+    {
+        ack->set_seqno(msg->seqno());
+        ack->set_result(1);
+        ack->set_software(msg->software());
+        ack->set_length(0);
+        ack->set_forced(false);
+        WaitSend(ack);
     }
 }

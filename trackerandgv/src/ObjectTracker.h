@@ -11,6 +11,7 @@ namespace das {
         class RequestPositionAuthentication;
         class AckQueryParameters;
         class AckConfigurParameters;
+        class RequestProgramUpgrade;
     }
 }
 
@@ -52,6 +53,7 @@ private:
     void _prcsOperationInformation(das::proto::PostOperationInformation *msg);
     void _prcsAckQueryParameters(das::proto::AckQueryParameters *msg);
     void _prcsAckConfigurParameters(das::proto::AckConfigurParameters *msg);
+    void _prcsProgramUpgrade(das::proto::RequestProgramUpgrade *msg);
     int _checkPos(double lat, double lon, double alt);
 private:
     friend class TrackerManager;
