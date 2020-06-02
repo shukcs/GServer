@@ -150,9 +150,8 @@ IObject *TrackerManager::_checkProgram(ISocket *s, const das::proto::RequestProg
     ObjectTracker *ret = (ObjectTracker *)GetObjectByID(uavid);
     if (ret)
     {
-        if (ret->GetSocket() == s)
-            return NULL;
-        Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
+        if (ret->GetSocket() != s)
+            Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
     }
     else
     {

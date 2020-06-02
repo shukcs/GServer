@@ -38,13 +38,13 @@ void ObjectTracker::_respondLogin(int seq, int res)
 {
     if(m_p && m_sock)
     {
+        OnLogined(true);
         if (auto ack = new AckTrackerIdentityAuthentication)
         {
             ack->set_seqno(seq);
             ack->set_result(res);
             WaitSend(ack);
         }
-        OnLogined(true);
     }
 }
 
