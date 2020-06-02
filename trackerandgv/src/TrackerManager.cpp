@@ -116,25 +116,26 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
     string uavid = Utility::Upper(uia.trackerid());
     ObjectTracker *ret = (ObjectTracker *)GetObjectByID(uavid);
     string sim = uia.has_extradata() ? uia.extradata() : "";
+    Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestTrackerIdentityAuthentication!");
     if (ret)
     {
         if (ret->GetSocket() == s)
             return ret;
 
-        bool bLogin = !ret->IsConnect() && ret->IsInitaled();
-        if (bLogin)
+        AckTrackerIdentityAuthentication ack;
+        ack.set_seqno(uia.seqno());
+        if (!ret->GetSocket())
         {
+            ack.set_result(1);
+            ret->OnLogined(true, s);
             ret->SetSimId(sim);
-            ret->OnLogined(bLogin, s);
         }
         else
         {
+            ack.set_result(0);
             Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
         }
 
-        AckTrackerIdentityAuthentication ack;
-        ack.set_seqno(uia.seqno());
-        ack.set_result(bLogin ? 1 : 0);
         ObjectAbsPB::SendProtoBuffTo(s, ack);
     }
     else
@@ -144,10 +145,11 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
     return ret;
 }
 
-IObject *TrackerManager::_checkProgram(ISocket *s, const das::proto::RequestProgramUpgrade &rpu)
+IObject *TrackerManager::_checkProgram(ISocket *s, const RequestProgramUpgrade &rpu)
 {
     string uavid = Utility::Upper(rpu.extradata());
     ObjectTracker *ret = (ObjectTracker *)GetObjectByID(uavid);
+    Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
     bool snd = true;
     if (ret)
     {
@@ -159,7 +161,6 @@ IObject *TrackerManager::_checkProgram(ISocket *s, const das::proto::RequestProg
         ret = new ObjectTracker(uavid, string());
     }
 
-    Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
     ret->OnLogined(snd, s);
     if (snd && ret)
     {

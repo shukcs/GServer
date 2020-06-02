@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <document>
-	<GSocketManager thread="1" maxListen="100000" portListen="18198" />
+	<GSocketManager thread="1" maxListen="100000" portListen="8198" />
 	<Libs>
 		<Library name="uavandqgc" />
 		<Library name="trackerandgv" />
