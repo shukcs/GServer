@@ -443,9 +443,6 @@ bool IObjectManager::ProcessBussiness(BussinessThread *s)
     bool ret = false;
     if (s && !m_lsThread.empty() && s==m_lsThread.front())
     {
-        if (!m_mtx)
-            m_mtx = s->GetMutex();
-
         if (IsReceiveData())
         {
             m_mtx->Lock();
@@ -653,6 +650,9 @@ void IObjectManager::InitThread(uint16_t nThread, uint16_t bufSz)
         BussinessThread *t = new BussinessThread(this);
         if(t)
         {
+            if (!m_mtx)
+                m_mtx = t->GetMutex();
+
             t->InitialBuff(bufSz);
             m_lsThread.push_back(t);
         }
@@ -689,15 +689,15 @@ void IObjectManager::AddLoginData(ISocket *s, const void *buf, int len)
 
     m_mtx->Lock();
     bool bInitial = m_loginSockets.find(s) == m_loginSockets.end();
-    LoginBuff &buff = m_loginSockets[s];
+    LoginBuff &tmp = m_loginSockets[s];
     if (!bInitial)
-        buff.initial();
-    int cp = sizeof(buff.buff) - buff.pos;
+        tmp.initial();
+    int cp = sizeof(tmp.buff) - tmp.pos;
     if (len < cp)
         cp = len;
 
-    memcpy(buff.buff + buff.pos, buf, cp);    
-    buff.pos = cp;
+    memcpy(tmp.buff + tmp.pos, buf, cp);
+    tmp.pos = cp;
     m_mtx->Unlock();
 }
 
