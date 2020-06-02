@@ -144,16 +144,15 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
     len = sock->CopyData(m_buff, sizeof(m_buff));
     for (const pair<int, IObjectManager*> &m : m_managersMap)
     {
-        if (m.second->ParseRequest(m_buff, len))
+        IObjectManager *mgr = m.second;
+        if (mgr->ParseRequest(m_buff, len))
         {
-            sock->SetLogin(m.second);
-            m.second->AddLoginData(sock, buf, len);
+            sock->SetLogin(mgr);
+            mgr->AddLoginData(sock, buf, len);
             sock->ClearBuff();
             return;
         }
     }
-    if (len > 64)
-        sock->Close();
 }
 
 void ObjectManagers::OnSocketClose(ISocket *s)

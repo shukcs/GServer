@@ -6,7 +6,6 @@
 #if defined _WIN32 || defined _WIN64
 #include <time.h>
 #include <direct.h>
-#include "process.h"
 #else
 #include <netdb.h>
 #include <pthread.h>
@@ -1382,7 +1381,6 @@ void Utility::Dump(const std::string &file, int sig)
     if (!fd)
         return;
 
-    int pid = getpid();
     char szLine[512] = { 0 };
     time_t t = time(NULL);
     tm* now = localtime(&t);
@@ -1395,6 +1393,7 @@ void Utility::Dump(const std::string &file, int sig)
     void *arrayB[MAX_STACK_FRAMES];
     size_t size = backtrace(arrayB, MAX_STACK_FRAMES);
     char **strings = (char**)backtrace_symbols(arrayB, size);
+    int pid = getpid();
     for (size_t i = 0; i < size; ++i)
     {
         len = sprintf(szLine, "%s\n", strings[i]);

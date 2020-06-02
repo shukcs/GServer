@@ -543,13 +543,11 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
                 h->SetThread(tmp);
                 t->m_linksAdd.Push(h);
             }
-            else
+            else if (h->GetSocket() != s)
             {
-                if (h->GetSocket() != s)
-                    s->Close();
-
-                itr = m_loginSockets.erase(itr);
+                s->Close();
             }
+            itr = m_loginSockets.erase(itr);
             ret = true;
         }
         else if (buf.pos >= sizeof(buf.buff))

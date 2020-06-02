@@ -14,7 +14,7 @@
 #endif
 
 #define MAX_EVENT 20
-#define SocketTimeOut 30
+#define SocketTimeOut 20
 using namespace std;
 
 class WSAInitializer // Winsock Initializer
@@ -433,7 +433,11 @@ void GSocketManager::_close(ISocket *sock, bool prcs)
         int64_t t = sock->GetCheckTime();
         auto itr = t > 0 ? m_socketsAccept.find(t) : m_socketsAccept.end();
         if (itr != m_socketsAccept.end())
+        {
             itr->second.remove(sock);
+            if (itr->second.empty())
+                m_socketsAccept.erase(itr);
+        }
     }
 }
 
@@ -570,10 +574,10 @@ bool GSocketManager::_recv(ISocket *sock)
 #else
         n = read(fd, m_buff, sizeof(m_buff));
 #endif
-        if (n <= 0) //关闭触发EPOLLIN，可能接收不到
+        if (n > 0)
+            sock->OnRead(m_buff, n);
+        else //关闭触发EPOLLIN，但接收不到数据
             return n == 0;
-
-        sock->OnRead(m_buff, n);
     }
     return true;
 }
