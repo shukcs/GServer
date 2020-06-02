@@ -273,7 +273,7 @@ bool GSocketManager::SokectPoll(unsigned ms)
             if (sock->IsListenSocket())
                 _accept(rfds.fd_array[i]);
             else if (!_recv(sock))
-                lsRm.push_back(sock);
+                _close(sock);
             ret = true;
         }
     }
@@ -292,18 +292,14 @@ bool GSocketManager::SokectPoll(unsigned ms)
         if (sock->IsListenSocket()) //有新的连接
             _accept(ev->data.fd);
         else if (_isCloseEvent(ev->events))
-            lsRm.push_back(sock);
+            _close(sock);
         else if ((ev->events & EPOLLIN) && !_recv(sock))  //接收到数据，读socket
-            lsRm.push_back(sock);
+            _close(sock);
         else if (ev->events&EPOLLOUT)                      //数据发送就绪
             sock->EnableWrite(true);
         ret = true;
     }
 #endif
-    for (ISocket *s : lsRm)
-    {
-        _close(s);
-    }
 
     return ret;
 }
@@ -430,15 +426,15 @@ int GSocketManager::_createSocket(int tp)
 
 void GSocketManager::_close(ISocket *sock, bool prcs)
 {
-    if(prcs)
-    {
-        for (auto itr = m_socketsAccept.begin(); itr != m_socketsAccept.end(); ++itr)
-        {
-            itr->second.remove(sock);
-        }
-    }
     _remove(sock->GetSocketHandle());
     sock->OnClose();
+    if(prcs)
+    {
+        int64_t t = sock->GetCheckTime();
+        auto itr = t > 0 ? m_socketsAccept.find(t) : m_socketsAccept.end();
+        if (itr != m_socketsAccept.end())
+            itr->second.remove(sock);
+    }
 }
 
 void GSocketManager::_addAcceptSocket(ISocket *sock, int64_t sec)
@@ -446,6 +442,7 @@ void GSocketManager::_addAcceptSocket(ISocket *sock, int64_t sec)
     if (!sock || !sock->IsAccetSock())
         return;
 
+    sock->SetCheckTime(sec);
     auto itr = m_socketsAccept.find(sec);
     if (itr == m_socketsAccept.end())
         m_socketsAccept[sec].push_back(sock);
@@ -573,8 +570,8 @@ bool GSocketManager::_recv(ISocket *sock)
 #else
         n = read(fd, m_buff, sizeof(m_buff));
 #endif
-        if (n <= 0) //关闭触发EPOLLIN，但接收不到数据
-            return n < 0;
+        if (n <= 0) //关闭触发EPOLLIN，可能接收不到
+            return n == 0;
 
         sock->OnRead(m_buff, n);
     }

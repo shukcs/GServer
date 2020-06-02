@@ -64,6 +64,8 @@ protected:
 
     bool Reconnect();
     void SetLogin(IObjectManager *);
+    void SetCheckTime(int64_t);
+    int64_t GetCheckTime()const;
 protected:
     ObjectGXClinet  *m_parent;
     ISocketManager  *m_mgrPrcs;

@@ -246,3 +246,12 @@ bool GXClientSocket::Reconnect()
 void GXClientSocket::SetLogin(IObjectManager *)
 {
 }
+
+void GXClientSocket::SetCheckTime(int64_t)
+{
+}
+
+int64_t GXClientSocket::GetCheckTime() const
+{
+    return -1;
+}

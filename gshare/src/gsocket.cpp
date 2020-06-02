@@ -18,6 +18,7 @@ GSocket::GSocket(ISocketManager *parent): m_parent(parent)
 ,m_mgrPrcs(NULL), m_object(NULL), m_fd(-1), m_bListen(false)
 , m_bAccept(false), m_stat(UnConnected), m_address(NULL)
 , m_buffSocket(new LoopQueBuff(1024)), m_mgrLogin(NULL)
+, m_checkTm(-1)
 {
 }
 
@@ -290,4 +291,14 @@ bool GSocket::IsNoWriteData() const
 void GSocket::SetLogin(IObjectManager *mgr)
 {
     m_mgrLogin = mgr;
+}
+
+void GSocket::SetCheckTime(int64_t tm)
+{
+    m_checkTm = tm;
+}
+
+int64_t GSocket::GetCheckTime() const
+{
+    return m_checkTm;
 }

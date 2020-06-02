@@ -71,6 +71,8 @@ protected:
     bool ResizeBuff(int sz);
     bool IsNoWriteData()const;
     void SetLogin(IObjectManager *mgr);
+    void SetCheckTime(int64_t);
+    int64_t GetCheckTime()const;
 protected:
     friend class GSocketManager;
     ISocketManager  *m_parent;
@@ -83,6 +85,7 @@ protected:
     SocketAddress   *m_address;
     LoopQueBuff     *m_buffSocket;
     IObjectManager  *m_mgrLogin;
+    int64_t         m_checkTm;
 };
 
 #ifdef SOCKETS_NAMESPACE
