@@ -154,6 +154,9 @@ IObject *AbsPBManager::PrcsNotObjectReceive(ISocket *s, const char *buf, int len
         pos += l;
         l = len - pos;
         o = PrcsProtoBuff(s);
+
+        if (o)
+            break;
     }
 
     return o;
