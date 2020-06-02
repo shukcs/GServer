@@ -1,4 +1,4 @@
-#ifndef _SOCKETS_StdoutLog_H
+﻿#ifndef _SOCKETS_StdoutLog_H
 #define _SOCKETS_StdoutLog_H
 
 #include "ILog.h"

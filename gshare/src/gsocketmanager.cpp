@@ -1,4 +1,4 @@
-#include "gsocketmanager.h"
+ï»¿#include "gsocketmanager.h"
 #include "Mutex.h"
 #include "gsocket.h"
 #include "Thread.h"
@@ -79,7 +79,7 @@ GSocketManager::~GSocketManager()
     if(IsOpenEpoll())
     {
 #if !defined _WIN32 && !defined _WIN64
-        close(m_ep_fd);       /* ´´½¨epollÄ£ĞÍ,ep_fdÖ¸ÏòºìºÚÊ÷¸ù½Úµã */
+        close(m_ep_fd);       /* åˆ›å»ºepollæ¨¡å‹,ep_fdæŒ‡å‘çº¢é»‘æ ‘æ ¹èŠ‚ç‚¹ */
 #endif
     }
 
@@ -147,7 +147,7 @@ bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
     if (fd==-1 || m_sockets.find(fd)==m_sockets.end())
         return false;
 
-    m_mtx->Lock();      //Ó¦¶Ô²»Í¬Ïß³Ì
+    m_mtx->Lock();      //åº”å¯¹ä¸åŒçº¿ç¨‹
     if (!m_socketsPrcs.IsContains(fd))
         m_socketsPrcs.Push(s->GetSocketHandle());
     m_mtx->Unlock();
@@ -289,13 +289,13 @@ bool GSocketManager::SokectPoll(unsigned ms)
             _remove(ev->data.fd);
             continue;
         }
-        if (sock->IsListenSocket()) //ÓĞĞÂµÄÁ¬½Ó
+        if (sock->IsListenSocket()) //æœ‰æ–°çš„è¿æ¥
             _accept(ev->data.fd);
         else if (_isCloseEvent(ev->events))
             _close(sock);
-        else if ((ev->events & EPOLLIN) && !_recv(sock))  //½ÓÊÕµ½Êı¾İ£¬¶Ásocket
+        else if ((ev->events & EPOLLIN) && !_recv(sock))  //æ¥æ”¶åˆ°æ•°æ®ï¼Œè¯»socket
             _close(sock);
-        else if (ev->events&EPOLLOUT)                      //Êı¾İ·¢ËÍ¾ÍĞ÷
+        else if (ev->events&EPOLLOUT)                      //æ•°æ®å‘é€å°±ç»ª
             sock->EnableWrite(true);
         ret = true;
     }
@@ -313,7 +313,7 @@ bool GSocketManager::SetNonblocking(ISocket *sock)
     unsigned long ul=1;
     if(SOCKET_ERROR == ioctlsocket(h, FIONBIO, &ul))
 #else
-    if (0 != ioctl(h, FIONBIO, 1))//ÉèÖÃ³É·Ç×èÈûÄ£Ê½£»
+    if (0 != ioctl(h, FIONBIO, 1))//è®¾ç½®æˆéé˜»å¡æ¨¡å¼ï¼›
 #endif
         return false;
     return true;
@@ -337,7 +337,7 @@ void GSocketManager::InitEpoll()
         m_openMax = FD_SETSIZE;
     m_maxsock = 0;
 #else
-    m_ep_fd = epoll_create(m_openMax);       /* ´´½¨epollÄ£ĞÍ,ep_fdÖ¸ÏòºìºÚÊ÷¸ù½Úµã */
+    m_ep_fd = epoll_create(m_openMax);       /* åˆ›å»ºepollæ¨¡å‹,ep_fdæŒ‡å‘çº¢é»‘æ ‘æ ¹èŠ‚ç‚¹ */
 #endif
 }
 
@@ -411,10 +411,10 @@ void GSocketManager::_addSocketHandle(int h, bool bListen)
         m_maxsock = h;
 #else
     struct epoll_event e = { 0 };
-    e.events = EPOLLIN | EPOLLRDHUP;    //Ö¸¶¨¼àÌı¶Á¹Ø±ÕÊÂ¼ş ×¢Òâ:Ä¬ÈÏÎªË®Æ½´¥·¢LT
-    if (!bListen)           //·Ç¼àÌı
+    e.events = EPOLLIN | EPOLLRDHUP;    //æŒ‡å®šç›‘å¬è¯»å…³é—­äº‹ä»¶ æ³¨æ„:é»˜è®¤ä¸ºæ°´å¹³è§¦å‘LT
+    if (!bListen)           //éç›‘å¬
         e.events |= EPOLLET | EPOLLOUT;
-    e.data.fd = h;                 //Ò»°ãµÄepollÔÚÕâÀï·Åfd 
+    e.data.fd = h;                 //ä¸€èˆ¬çš„epollåœ¨è¿™é‡Œæ”¾fd 
     epoll_ctl(m_ep_fd, EPOLL_CTL_ADD, h, &e);
 #endif
 }
@@ -477,7 +477,7 @@ void GSocketManager::_checkMaxSock()
 #else
 bool GSocketManager::_isCloseEvent(uint32_t evt) const
 {
-    //socket¶Ï¿ª£¬ÕâĞ©ÏûÏ¢²»¶¨ÓĞ
+    //socketæ–­å¼€ï¼Œè¿™äº›æ¶ˆæ¯ä¸å®šæœ‰
     return (evt&EPOLLERR) || (evt&EPOLLRDHUP) || (evt&EPOLLHUP);
 }
 #endif
@@ -538,7 +538,7 @@ void GSocketManager::_accept(int listenfd)
 {
     struct sockaddr_in addr;
     socklen_t len = sizeof(addr);
-    int connfd = accept(listenfd, (sockaddr *)&addr, &len); //acceptÕâ¸öÁ¬½Ó
+    int connfd = accept(listenfd, (sockaddr *)&addr, &len); //acceptè¿™ä¸ªè¿æ¥
     if (-1 == connfd)
         return;
 
@@ -570,7 +570,7 @@ bool GSocketManager::_recv(ISocket *sock)
 #else
         n = read(fd, m_buff, sizeof(m_buff));
 #endif
-        if (n <= 0) //¹Ø±Õ´¥·¢EPOLLIN£¬¿ÉÄÜ½ÓÊÕ²»µ½
+        if (n <= 0) //å…³é—­è§¦å‘EPOLLINï¼Œå¯èƒ½æ¥æ”¶ä¸åˆ°
             return n == 0;
 
         sock->OnRead(m_buff, n);

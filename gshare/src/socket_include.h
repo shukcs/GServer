@@ -1,4 +1,4 @@
-#ifndef _SOCKETS_socket_include_H
+﻿#ifndef _SOCKETS_socket_include_H
 #define _SOCKETS_socket_include_H
 #include "stdconfig.h"
 

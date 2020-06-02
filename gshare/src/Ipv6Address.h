@@ -1,4 +1,4 @@
-#ifndef _SOCKETS_Ipv6Address_H
+﻿#ifndef _SOCKETS_Ipv6Address_H
 #define _SOCKETS_Ipv6Address_H
 #include "stdconfig.h"
 #ifdef ENABLE_IPV6

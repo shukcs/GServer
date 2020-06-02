@@ -1,4 +1,4 @@
-#ifdef _MSC_VER
+﻿#ifdef _MSC_VER
 #pragma warning(disable:4786)
 #include <time.h>
 #endif

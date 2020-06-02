@@ -1,4 +1,4 @@
-#ifndef __GSOCKET_H__
+ï»¿#ifndef __GSOCKET_H__
 #define __GSOCKET_H__
 
 #include "stdconfig.h"
@@ -17,14 +17,14 @@ class GSocket : public ISocket
 {
 public:
 /***********************************************************************
-ÕâÊÇ¸öSocket·â×°£¬¶ÔÓÚ·şÎñ¶ËÒÑ½ü¹»ÓÃ£¬¿Í»§¶Ë¿ÉÒÔÖØÔØÄ³Ğ©ĞèÒªµÄº¯Êı
+è¿™æ˜¯ä¸ªSocketå°è£…ï¼Œå¯¹äºæœåŠ¡ç«¯å·²è¿‘å¤Ÿç”¨ï¼Œå®¢æˆ·ç«¯å¯ä»¥é‡è½½æŸäº›éœ€è¦çš„å‡½æ•°
 GSocket(handle)
-handle:ÊÇ´´½¨ËûµÄÏß³Ì£¬Èç¹ûhandle²»Îª¿Õ£¬GSocketµ÷ÓÃClose²ÅÄÜ°²È«É¾³ı
+handle:æ˜¯åˆ›å»ºä»–çš„çº¿ç¨‹ï¼Œå¦‚æœhandleä¸ä¸ºç©ºï¼ŒGSocketè°ƒç”¨Closeæ‰èƒ½å®‰å…¨åˆ é™¤
 ************************************************************************/
     SHARED_DECL GSocket(ISocketManager *parent);
     SHARED_DECL ~GSocket();
 
-    //ÎŞÏŞÖÆµ÷ÓÃº¯Êı
+    //æ— é™åˆ¶è°ƒç”¨å‡½æ•°
     SHARED_DECL bool Bind(int port, const std::string &hostLocal = "");
     SHARED_DECL bool ConnectTo(const std::string &hostRemote, int port);
     uint16_t GetPort()const;
@@ -34,13 +34,13 @@ handle:ÊÇ´´½¨ËûµÄÏß³Ì£¬Èç¹ûhandle²»Îª¿Õ£¬GSocketµ÷ÓÃClose²ÅÄÜ°²È«É¾³ı
 public:
      static SHARED_DECL ILog &GetLog();
 protected:
-    //ÊÂÎñ´¦Àíµ÷ÓÃº¯Êı
+    //äº‹åŠ¡å¤„ç†è°ƒç”¨å‡½æ•°
     ILink *GetHandleLink()const;
     void SetHandleLink(ILink *o);
     int Send(int len, const void *buff); 
     void ClearBuff()const;
 
-    //ÎŞÏŞÖÆµ÷ÓÃº¯Êı
+    //æ— é™åˆ¶è°ƒç”¨å‡½æ•°
     SocketStat GetSocketStat()const;
     bool IsListenSocket()const;
     bool IsConnect()const;

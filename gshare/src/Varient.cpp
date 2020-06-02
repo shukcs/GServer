@@ -1,4 +1,4 @@
-#include "Varient.h"
+﻿#include "Varient.h"
 
 using namespace std;
 const static StringList sEmptyStrLs;

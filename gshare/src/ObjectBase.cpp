@@ -1,4 +1,4 @@
-#include "ObjectBase.h"
+ï»¿#include "ObjectBase.h"
 #include "socketBase.h"
 #include "Thread.h"
 #include "Mutex.h"
@@ -114,8 +114,8 @@ private:
     char            *m_buff;
     MapLinks        m_links;
     LinksQue        m_linksAdd;
-    MessageQue      m_lsMsgSend;        //·¢ËÍÏûÏ¢¶ÓÁĞ
-    MessageQue      m_lsMsgRelease;     //ÊÍ·ÅµÈ´ı¶ÓÁĞ
+    MessageQue      m_lsMsgSend;        //å‘é€æ¶ˆæ¯é˜Ÿåˆ—
+    MessageQue      m_lsMsgRelease;     //é‡Šæ”¾ç­‰å¾…é˜Ÿåˆ—
 };
 ////////////////////////////////////////////////////////////////////////
 //SubcribeStruct

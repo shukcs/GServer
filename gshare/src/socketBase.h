@@ -1,4 +1,4 @@
-#ifndef __SOCKETBASE_H__
+ï»¿#ifndef __SOCKETBASE_H__
 #define __SOCKETBASE_H__
 
 #include <string>
@@ -29,7 +29,7 @@ public:
     };
 public:
     virtual ~ISocket() {}
-    //ISocketManagerµ÷ÓÃº¯Êı
+    //ISocketManagerè°ƒç”¨å‡½æ•°
     virtual SocketAddress *GetAddress()const = 0;
     virtual void SetAddress(SocketAddress *) = 0;
     virtual ISocketManager *GetParent()const = 0;
@@ -53,7 +53,7 @@ public:
     virtual void SetLogin(IObjectManager *) = 0;
     virtual void SetCheckTime(int64_t) = 0;
     virtual int64_t GetCheckTime()const = 0;
-    //ÊÂÎñ´¦Àíµ÷ÓÃº¯Êı
+    //äº‹åŠ¡å¤„ç†è°ƒç”¨å‡½æ•°
     virtual ILink *GetHandleLink()const = 0;
     virtual void SetHandleLink(ILink *o) = 0;
     virtual bool Bind(int port, const std::string &hostLocal="") = 0;
@@ -63,7 +63,7 @@ public:
     virtual bool IsNoWriteData()const = 0;
     virtual bool Reconnect() = 0;
 
-    //ÎŞÏŞÖÆµ÷ÓÃº¯Êı
+    //æ— é™åˆ¶è°ƒç”¨å‡½æ•°
     virtual SocketStat GetSocketStat()const = 0;
     virtual bool IsListenSocket()const = 0;
     virtual void Close() = 0;

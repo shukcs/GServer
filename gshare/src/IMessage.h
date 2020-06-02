@@ -1,4 +1,4 @@
-#ifndef __IMESSAGE_H__
+ï»¿#ifndef __IMESSAGE_H__
 #define __IMESSAGE_H__
 
 #include <string>
@@ -30,12 +30,12 @@ private:
 };
 
 /*************************************************************************
-ÕâÊÇ¸öÁ¬½ÓÊµÌåÖ®¼äÍ¨Ñ¶ÏûÏ¢³éÏóÀà£¬ObjectManagers::SendMsg()·¢ËÍµ½½ÓÊÜÊµÌå
+è¿™æ˜¯ä¸ªè¿æ¥å®ä½“ä¹‹é—´é€šè®¯æ¶ˆæ¯æŠ½è±¡ç±»ï¼ŒObjectManagers::SendMsg()å‘é€åˆ°æ¥å—å®ä½“
 IMessage(sender, id, rcv, tpMsg)
-sender:·¢ËÍ¶ÔÏó£¬¿ÉÒÔÊÇIObject»òIObjectManager,µ«±ØĞëÊôÓÚÒ»¸öÏß³Ì
-id:½ÓÊÕIObject ID£¬¿ÉÒÔ¿Õ£¬¿Õ´ú±í½ÓÊÕ¶ÔÏóÊÇIObjectManager
-rcv:½ÓÊÕ¶ÔÏóÀàĞÍ
-tpMsg:ÏûÏ¢ÀàĞÍ
+sender:å‘é€å¯¹è±¡ï¼Œå¯ä»¥æ˜¯IObjectæˆ–IObjectManager,ä½†å¿…é¡»å±äºä¸€ä¸ªçº¿ç¨‹
+id:æ¥æ”¶IObject IDï¼Œå¯ä»¥ç©ºï¼Œç©ºä»£è¡¨æ¥æ”¶å¯¹è±¡æ˜¯IObjectManager
+rcv:æ¥æ”¶å¯¹è±¡ç±»å‹
+tpMsg:æ¶ˆæ¯ç±»å‹
 **************************************************************************/
 class IMessage
 {

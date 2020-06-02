@@ -1,4 +1,4 @@
-#ifndef __GSOCKET_MANAGER_H__
+ï»¿#ifndef __GSOCKET_MANAGER_H__
 #define __GSOCKET_MANAGER_H__
 
 #include "LoopQueue.h"
@@ -27,10 +27,10 @@ public:
     SHARED_DECL static ISocketManager *CreateManager(int nThread = 0, int maxSock = 100000);
 protected:
 /***********************************************************************
-GSocketManagerÊÇ¸öÏß³Ì³Ø£¬¹ÜÀísecketÕû¸öÉú´æÖÜÆÚ
-Ê¹ÓÃepollÄ£ĞÍGSocketManager(nThread, maxSock)
-nThread:´´½¨×ÓÏß³Ì¸öÊı,0½«²»´´½¨ĞÂÏß³Ì£¬Ò»°ãµ±¿Í»§¶ËÊ¹ÓÃ
-maxSock:Ö§³Ö×î´óÁ¬½ÓÊı
+GSocketManageræ˜¯ä¸ªçº¿ç¨‹æ± ï¼Œç®¡ç†secketæ•´ä¸ªç”Ÿå­˜å‘¨æœŸ
+ä½¿ç”¨epollæ¨¡å‹GSocketManager(nThread, maxSock)
+nThread:åˆ›å»ºå­çº¿ç¨‹ä¸ªæ•°,0å°†ä¸åˆ›å»ºæ–°çº¿ç¨‹ï¼Œä¸€èˆ¬å½“å®¢æˆ·ç«¯ä½¿ç”¨
+maxSock:æ”¯æŒæœ€å¤§è¿æ¥æ•°
 ************************************************************************/
     GSocketManager(int nThread, int maxSock);
     ~GSocketManager();
@@ -77,16 +77,16 @@ private:
     IMutex                      *m_mtx;
     Thread                      *m_thread;
     std::map<int, ISocket*>     m_sockets;
-    SocketPrcsQue               m_socketsPrcs;      //µÈ´ı´¦Àí¶ÓÁĞ
-    SocketQue                   m_socketsRemove;    //µÈ´ıÏú»Ù¶ÓÁĞ
-    SocketQue                   m_socketsAdd;       //µÈ´ı¼à¿Ø¶ÓÁĞ
-    SocketHandleQue             m_handlesRelease;   //µÈ´ı¼à¿Ø¶ÓÁĞ
+    SocketPrcsQue               m_socketsPrcs;      //ç­‰å¾…å¤„ç†é˜Ÿåˆ—
+    SocketQue                   m_socketsRemove;    //ç­‰å¾…é”€æ¯é˜Ÿåˆ—
+    SocketQue                   m_socketsAdd;       //ç­‰å¾…ç›‘æ§é˜Ÿåˆ—
+    SocketHandleQue             m_handlesRelease;   //ç­‰å¾…ç›‘æ§é˜Ÿåˆ—
     std::list<GSocketManager*>  m_othManagers;
     char                        m_buff[1024];
     static bool                 s_bRun;
     SocketBindedCallbacks       m_bindedCBs;
     SecSocketMap                m_socketsAccept;
-#if defined _WIN32 || defined _WIN64 //WindowsÓëepoll¶ÔÓ¦µÄÊÇIOCP£¬µ«²»ºÃ×ö³ÉepollÒ»Ñù²Ù×÷
+#if defined _WIN32 || defined _WIN64 //Windowsä¸epollå¯¹åº”çš„æ˜¯IOCPï¼Œä½†ä¸å¥½åšæˆepollä¸€æ ·æ“ä½œ
     void _checkMaxSock();
     SOCKET                      m_maxsock;
     fd_set                      m_ep_fd;

@@ -1,4 +1,4 @@
-#ifndef __VG_VARIENT_H__
+﻿#ifndef __VG_VARIENT_H__
 #define __VG_VARIENT_H__
 
 #include <string>

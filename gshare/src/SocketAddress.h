@@ -1,4 +1,4 @@
-#ifndef _SOCKETS_SocketAddress_H
+﻿#ifndef _SOCKETS_SocketAddress_H
 #define _SOCKETS_SocketAddress_H
 
 #include "stdconfig.h"

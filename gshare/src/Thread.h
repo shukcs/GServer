@@ -1,4 +1,4 @@
-#ifndef _SOCKETS_Thread_H
+﻿#ifndef _SOCKETS_Thread_H
 #define _SOCKETS_Thread_H
 
 #include "socket_include.h"

@@ -1,4 +1,4 @@
-#ifndef _SOCKETS_Mutex_H
+﻿#ifndef _SOCKETS_Mutex_H
 #define _SOCKETS_Mutex_H
 
 #ifndef _WIN32

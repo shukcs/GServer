@@ -1,4 +1,4 @@
-#include "GLibrary.h"
+﻿#include "GLibrary.h"
 #include "socket_include.h"
 #include "Utility.h"
 #if !defined _WIN32 && !defined _WIN64

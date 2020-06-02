@@ -1,4 +1,4 @@
-#ifndef __OBJECT_BASE_H__
+ï»¿#ifndef __OBJECT_BASE_H__
 #define __OBJECT_BASE_H__
 
 #include <map>
@@ -53,7 +53,7 @@ protected:
     SHARED_DECL bool ChangeLogind(bool b);
     SHARED_DECL virtual void OnLogined(bool suc, ISocket *s = NULL);
     SHARED_DECL bool CanSend()const;
-    SHARED_DECL int Send(const char *buf, int len); //µ÷ÓÃĞèÔÚCheckTimerÖĞ
+    SHARED_DECL int Send(const char *buf, int len); //è°ƒç”¨éœ€åœ¨CheckTimerä¸­
     SHARED_DECL void ClearRecv(int n = -1);
     SHARED_DECL void Release();
     SHARED_DECL char *GetThreadBuff()const;
@@ -115,12 +115,12 @@ protected:
     void PushReleaseMsg(IMessage *);
 protected:
 /*******************************************************************************************
-ÕâÊÇ¸öÁ¬½ÓÊµÌå³éÏóÀà
-ProcessMessage():´¦Àí¶ÔÏóÖ®¼äÏûÏ¢µÄ
-ProcessReceive():´¦ÀíÍøÂçÊı¾İ£¬ret:ÒÑ´¦ÀíÊı¾İ³¤¶È
-GetObjectType():Á¬½ÓÊµÌåÀàĞÍ£¬·µ»ØÖµĞèÒªÓë¶ÔÓ¦µÄIObjectManager::GetObjectType()ÏàÍ¬
-OnConnected(bConnected):Á¬½Ó¶Ï¿ª´¦Àí
-IObject(sock, id)£»sock:socket;id:Á¬½ÓÊµÌå±êÊ¶
+è¿™æ˜¯ä¸ªè¿æ¥å®ä½“æŠ½è±¡ç±»
+ProcessMessage():å¤„ç†å¯¹è±¡ä¹‹é—´æ¶ˆæ¯çš„
+ProcessReceive():å¤„ç†ç½‘ç»œæ•°æ®ï¼Œret:å·²å¤„ç†æ•°æ®é•¿åº¦
+GetObjectType():è¿æ¥å®ä½“ç±»å‹ï¼Œè¿”å›å€¼éœ€è¦ä¸å¯¹åº”çš„IObjectManager::GetObjectType()ç›¸åŒ
+OnConnected(bConnected):è¿æ¥æ–­å¼€å¤„ç†
+IObject(sock, id)ï¼›sock:socket;id:è¿æ¥å®ä½“æ ‡è¯†
 ********************************************************************************************/
     SHARED_DECL IObject(const std::string &id);
     SHARED_DECL virtual ~IObject();
@@ -198,9 +198,9 @@ protected:
     IMutex                          *m_mtx;
     std::list<BussinessThread*>     m_lsThread;
     MapObjects                      m_objects;
-    MessageQue                      m_messages;         //½ÓÊÕÏûÏ¢¶ÓÁĞ
-    MessageQue                      m_lsMsgRecycle;     //ÏûÏ¢»ØÊÕ¶ÓÁĞ
-    MessageSubcribes                m_subcribes;        //¶©ÔÄÏûÏ¢
+    MessageQue                      m_messages;         //æ¥æ”¶æ¶ˆæ¯é˜Ÿåˆ—
+    MessageQue                      m_lsMsgRecycle;     //æ¶ˆæ¯å›æ”¶é˜Ÿåˆ—
+    MessageSubcribes                m_subcribes;        //è®¢é˜…æ¶ˆæ¯
     SubcribeQueue                   m_subcribeQue;
     LoginMap                        m_loginSockets;
 };

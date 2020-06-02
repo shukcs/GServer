@@ -1,4 +1,4 @@
-#ifndef _SOCKETS_Lock_H
+﻿#ifndef _SOCKETS_Lock_H
 #define _SOCKETS_Lock_H
 
 #include "stdconfig.h"

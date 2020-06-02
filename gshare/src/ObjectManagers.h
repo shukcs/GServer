@@ -1,4 +1,4 @@
-#ifndef __OBJECT_MANAGERS_H__
+ï»¿#ifndef __OBJECT_MANAGERS_H__
 #define __OBJECT_MANAGERS_H__
 
 #include "LoopQueue.h"
@@ -17,7 +17,7 @@ class IObject;
 class IObjectManager;
 class ILog;
 
-//Êı¾İ´¦Àí¹¤³§ÔªËØ³éÏó
+//æ•°æ®å¤„ç†å·¥å‚å…ƒç´ æŠ½è±¡
 class SHARED_DECL ManagerAbstractItem
 {
 public:

@@ -1,4 +1,4 @@
-#ifndef __GLIBARRY_H__
+﻿#ifndef __GLIBARRY_H__
 #define __GLIBARRY_H__
 
 #include "stdconfig.h"

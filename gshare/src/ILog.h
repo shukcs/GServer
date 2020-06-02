@@ -1,4 +1,4 @@
-#ifndef _SOCKETS_ILog_H
+﻿#ifndef _SOCKETS_ILog_H
 #define _SOCKETS_ILog_H
 
 #include "stdconfig.h"

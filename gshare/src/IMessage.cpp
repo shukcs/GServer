@@ -1,4 +1,4 @@
-#include "IMessage.h"
+﻿#include "IMessage.h"
 #include "ObjectBase.h"
 #include "ObjectManagers.h"
 #include "Utility.h"
