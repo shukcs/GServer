@@ -687,7 +687,7 @@ void IObjectManager::AddLoginData(ISocket *s, const void *buf, int len)
     if (!s)
         return;
 
-    m_mtx->Lock();
+    Lock l(m_mtx);
     bool bInitial = m_loginSockets.find(s) == m_loginSockets.end();
     LoginBuff &tmp = m_loginSockets[s];
     if (!bInitial)
@@ -698,7 +698,6 @@ void IObjectManager::AddLoginData(ISocket *s, const void *buf, int len)
 
     memcpy(tmp.buff + tmp.pos, buf, cp);
     tmp.pos = cp;
-    m_mtx->Unlock();
 }
 
 IObjectManager *IObjectManager::MangerOfType(int type)
