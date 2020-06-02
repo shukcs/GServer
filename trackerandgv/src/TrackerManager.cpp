@@ -148,23 +148,29 @@ IObject *TrackerManager::_checkProgram(ISocket *s, const das::proto::RequestProg
 {
     string uavid = Utility::Upper(rpu.extradata());
     ObjectTracker *ret = (ObjectTracker *)GetObjectByID(uavid);
+    bool snd = true;
     if (ret)
     {
-        if (ret->GetSocket() != s)
-            Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
+        if (ret->GetSocket())
+            snd = false;
     }
     else
     {
         ret = new ObjectTracker(uavid, string());
     }
 
-    AckProgramUpgrade ack;
-    ack.set_seqno(rpu.seqno());
-    ack.set_result(1);
-    ack.set_software(rpu.software());
-    ack.set_length(0);
-    ack.set_forced(false);
-    ObjectAbsPB::SendProtoBuffTo(s, ack);
+    Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
+    ret->OnLogined(snd, s);
+    if (snd && ret)
+    {
+        AckProgramUpgrade ack;
+        ack.set_seqno(rpu.seqno());
+        ack.set_result(1);
+        ack.set_software(rpu.software());
+        ack.set_length(0);
+        ack.set_forced(false);
+        ObjectAbsPB::SendProtoBuffTo(s, ack);
+    }
     return ret;
 }
 
