@@ -48,6 +48,7 @@ public:
     virtual IObject *GetParObject() = 0;
     void SetMutex(IMutex *m);
     void SetThread(BussinessThread *t);
+    void processSocket(ISocket *s, BussinessThread &t);
 protected:
     SHARED_DECL void SetBuffSize(uint16_t sz);
     SHARED_DECL bool ChangeLogind(bool b);

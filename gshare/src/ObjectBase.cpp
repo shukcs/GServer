@@ -58,8 +58,7 @@ protected:
     {
         bool ret = false;
         uint64_t ms = Utility::msTimeTick();
-        auto itr = m_links.begin();
-        for (; itr != m_links.end(); ++itr)
+        for (auto itr = m_links.begin(); itr != m_links.end(); )
         {
             ILink *l = itr->second;
             if (l->PrcsBussiness(ms, *this))
@@ -68,12 +67,13 @@ protected:
             if (l->IsRealse())
             {
                 auto obj = l->GetParObject();
+                itr = m_links.erase(itr);
                 if (obj && obj->IsAllowRelease())
                     m_lsMsgSend.Push(new ObjectEvent(obj, obj->GetObjectType()));
-                auto tmp = itr++;
-                m_links.erase(tmp);
-                if (itr == m_links.end())
-                    break;
+            }
+            else
+            {
+                ++itr;
             }
         }
         return ret;
@@ -278,6 +278,20 @@ void ILink::SetMutex(IMutex *m)
 void ILink::SetThread(BussinessThread *t)
 {
     m_thread = t;
+}
+
+void ILink::processSocket(ISocket *s, BussinessThread &t)
+{
+    if (!m_sock)
+    {
+        SetSocket(s);
+        SetThread(&t);
+        t.m_linksAdd.Push(this);
+    }
+    else if (m_sock != s)
+    {
+        s->Close();
+    }
 }
 
 void ILink::ClearRecv(int n)
@@ -485,11 +499,10 @@ void IObjectManager::ProcessMessage()
         if (msg->GetMessgeType() == ObjectEvent::E_Release)
         {
             auto itr = m_objects.find(msg->GetSenderID());
-            auto o = itr!=m_objects.end() ? itr->second : NULL;
-            if (o)
-            { 
+            if (itr != m_objects.end())
+            {
+                delete itr->second;
                 m_objects.erase(itr);
-                delete o;
             }
         }
         else if (msg->IsValid())
@@ -531,21 +544,11 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
         IObject *o = PrcsNotObjectReceive(s, buf.buff, buf.pos);
         if (o)
         {
-            AddObject(o);
-            ILink *h = o->GetLink();
-            if (h && !h->GetSocket())
-            {
-                BussinessThread *tmp = GetPropertyThread();
-                h->SetSocket(s);
-                h->SetThread(tmp);
-                t->m_linksAdd.Push(h);
-            }
-            else if (h->GetSocket() != s)
-            {
-                s->Close();
-            }
             itr = m_loginSockets.erase(itr);
             ret = true;
+            AddObject(o);
+            if (ILink *link = o->GetLink())
+                link->processSocket(s, *GetPropertyThread());
         }
         else if (buf.pos >= sizeof(buf.buff))
         {

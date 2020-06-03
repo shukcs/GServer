@@ -78,9 +78,11 @@ bool TrackerManager::PrcsPublicMsg(const IMessage &msg)
         {
             auto dls = new AckSyncDeviceList;
             dls->set_seqno(((SyncDeviceList*)ms.GetProtobuf())->seqno());
-            for (const pair<string, IObject *> &itr : m_objects)
+            for (auto itr = m_objects.begin(); itr!=m_objects.end(); ++itr)
             {
-                dls->add_id(itr.first);
+                const string &id = itr->first;
+                if (id != "VIGAT:00000000")
+                    dls->add_id(id);
             }
             dls->set_result(1);
             ack->AttachProto(dls);
@@ -102,6 +104,7 @@ void TrackerManager::LoadConfig()
         const char *tmp = cfg->Attribute("thread");
         int n = tmp ? (int)Utility::str2int(tmp) : 1;
         InitThread(n, 512);
+        AddObject(new ObjectTracker("VIGAT:00000000"));
     }
 }
 
@@ -116,7 +119,7 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
     string uavid = Utility::Upper(uia.trackerid());
     ObjectTracker *ret = (ObjectTracker *)GetObjectByID(uavid);
     string sim = uia.has_extradata() ? uia.extradata() : "";
-    Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestTrackerIdentityAuthentication!");
+    Log(0, uavid, 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestTrackerIdentityAuthentication!");
     if (ret)
     {
         if (ret->GetSocket() == s)
@@ -148,31 +151,17 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
 IObject *TrackerManager::_checkProgram(ISocket *s, const RequestProgramUpgrade &rpu)
 {
     string uavid = Utility::Upper(rpu.extradata());
-    ObjectTracker *ret = (ObjectTracker *)GetObjectByID(uavid);
-    Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
-    bool snd = true;
-    if (ret)
-    {
-        if (ret->GetSocket())
-            snd = false;
-    }
-    else
-    {
-        ret = new ObjectTracker(uavid, string());
-    }
+    Log(0, uavid, 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
 
-    ret->OnLogined(snd, s);
-    if (snd && ret)
-    {
-        AckProgramUpgrade ack;
-        ack.set_seqno(rpu.seqno());
-        ack.set_result(1);
-        ack.set_software(rpu.software());
-        ack.set_length(0);
-        ack.set_forced(false);
-        ObjectAbsPB::SendProtoBuffTo(s, ack);
-    }
-    return ret;
+    AckProgramUpgrade ack;
+    ack.set_seqno(rpu.seqno());
+    ack.set_result(1);
+    ack.set_software(rpu.software());
+    ack.set_length(0);
+    ack.set_forced(false);
+    ObjectAbsPB::SendProtoBuffTo(s, ack);
+
+    return GetObjectByID("VIGAT:00000000");
 }
 
 

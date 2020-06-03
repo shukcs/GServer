@@ -48,6 +48,8 @@ protected:
     void InitObject();
     void _respondLogin(int seq, int res);
     void OnLogined(bool suc, ISocket *s = NULL);
+    bool IsAllowRelease()const;
+    ILink *GetLink();
 private:
     void _prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
     void _prcsOperationInformation(das::proto::PostOperationInformation *msg);

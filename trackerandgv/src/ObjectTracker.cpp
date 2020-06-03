@@ -60,6 +60,19 @@ void ObjectTracker::OnLogined(bool suc, ISocket *s)
     ObjectAbsPB::OnLogined(suc, s);
 }
 
+bool ObjectTracker::IsAllowRelease() const
+{
+    return m_id != "VIGAT:00000000";
+}
+
+ILink *ObjectTracker::GetLink()
+{
+    if (m_id != "VIGAT:00000000")
+        return ObjectAbsPB::GetLink();
+
+    return NULL;
+}
+
 bool ObjectTracker::IsValid() const
 {
     return m_tmValidLast<0 || m_tmValidLast>Utility::msTimeTick();
@@ -145,7 +158,7 @@ void ObjectTracker::CheckTimer(uint64_t ms)
     if (m_sock)
     { 
         int64_t n = ms - m_tmLastPos;
-        if (n > 3600000)
+        if (n > 600000)
             Release();
         else if (n>6000)//³¬Ê±¹Ø±Õ
             m_sock->Close();
