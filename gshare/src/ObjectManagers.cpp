@@ -145,7 +145,7 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
     for (const pair<int, IObjectManager*> &m : m_managersMap)
     {
         IObjectManager *mgr = m.second;
-        if (mgr->ParseRequest(m_buff, len))
+        if (mgr->IsHasReuest(m_buff, len))
         {
             sock->SetLogin(mgr);
             mgr->AddLoginData(sock, buf, len);

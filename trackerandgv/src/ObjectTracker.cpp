@@ -20,7 +20,7 @@ using namespace SOCKETS_NAMESPACE;
 //ObjectTracker
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectTracker::ObjectTracker(const string &id, const string &sim) : ObjectAbsPB(id), m_strSim(sim),
-m_lat(200), m_lon(0), m_tmLastPos(0), m_tmValidLast(-1), m_params(NULL)
+m_lat(200), m_lon(0), m_tmValidLast(-1), m_params(NULL)
 {
     SetBuffSize(1024 * 2);
 }
@@ -157,10 +157,10 @@ void ObjectTracker::CheckTimer(uint64_t ms)
     ObjectAbsPB::CheckTimer(ms);
     if (m_sock)
     { 
-        int64_t n = ms - m_tmLastPos;
+        int64_t n = (int64_t)ms - m_tmLastInfo;
         if (n > 600000)
             Release();
-        else if (n>6000)//超时关闭
+        else if (n>10000)//超时关闭
             m_sock->Close();
     }
 }
@@ -205,7 +205,6 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg)
     if (!msg)
         return;
 
-    m_tmLastPos = Utility::msTimeTick();
     if (Tracker2GVMessage *ms = new Tracker2GVMessage(this, string()))
     {
         ms->AttachProto(msg);

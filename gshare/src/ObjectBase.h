@@ -172,7 +172,6 @@ public:
     void ProcessMessage();
     bool ProcessLogins(BussinessThread *s);
     MessageQue *GetSendQue(int idThread)const;
-    bool ParseRequest(const char *buf, int len);
     bool Exist(IObject *obj)const;
     BussinessThread *GetThread(int id = -1)const;
     void OnSocketClose(ISocket *s);

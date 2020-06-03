@@ -62,7 +62,6 @@ private:
     std::string                     m_strSim;
     double                          m_lat;
     double                          m_lon;
-    int64_t                         m_tmLastPos;
     int64_t                         m_tmValidLast;
     das::proto::AckQueryParameters  *m_params;
 };

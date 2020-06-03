@@ -576,18 +576,6 @@ MessageQue *IObjectManager::GetSendQue(int idThread)const
     return &(*itr)->m_lsMsgSend;
 }
 
-bool IObjectManager::ParseRequest(const char *buf, int len)
-{
-    if (IsHasReuest(buf, len))
-    {
-        if (!m_mtx && !m_lsThread.empty())
-            m_mtx = m_lsThread.front()->GetMutex();
-
-        return true;
-    }
-    return false;
-}
-
 bool IObjectManager::IsHasReuest(const char *, int)const
 {
     return false;

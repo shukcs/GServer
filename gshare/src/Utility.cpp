@@ -1198,6 +1198,9 @@ string Utility::ToUtf8(const string& str)
 
 string Utility::Upper(const string &str)
 {
+    if (str.empty())
+        return str;
+
     string ret = str;
     int count = ret.length();
     char *p = &ret.at(0);
@@ -1211,6 +1214,9 @@ string Utility::Upper(const string &str)
 
 string Utility::Lower(const std::string &str)
 {
+    if (str.empty())
+        return str;
+
     string ret = str;
     int count = ret.length();
     char *p = count>0 ? &ret.at(0):NULL;

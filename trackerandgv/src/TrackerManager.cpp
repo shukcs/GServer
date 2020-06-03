@@ -150,7 +150,7 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
 
 IObject *TrackerManager::_checkProgram(ISocket *s, const RequestProgramUpgrade &rpu)
 {
-    string uavid = Utility::Upper(rpu.extradata());
+    string uavid = Utility::Upper(rpu.has_extradata() ? rpu.extradata() : string());
     Log(0, uavid, 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
 
     AckProgramUpgrade ack;
