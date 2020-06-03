@@ -398,7 +398,7 @@ void ObjectUav::_prcsPosAuth(RequestPositionAuthentication *msg)
         ack->set_devid(GetObjectID());
         WaitSend(ack);
         if (n==1 && m_mission)
-            m_nCurRidge = m_mission->beg();
+            m_nCurRidge = m_mission->beg()-1;
     }
 }
 
@@ -597,7 +597,7 @@ int32_t ObjectUav::getCurRidgeByItem(int32_t curItem)
 
 void ObjectUav::_missionFinish(int lat, int lon)
 {
-    if (!m_mission || m_nCurRidge<m_mission->beg())
+    if (!m_mission || m_nCurRidge<m_mission->beg()-1)
         return;
 
     double remainCur = 0;
