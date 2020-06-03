@@ -170,9 +170,6 @@ void ObjectTracker::OnConnected(bool bConnected)
     ObjectAbsPB::OnConnected(bConnected);
     if (m_sock && bConnected)
         m_sock->ResizeBuff(WRITE_BUFFLEN);
-
-    if (bConnected)
-        m_tmLastPos = Utility::msTimeTick();
 }
 
 void ObjectTracker::InitObject()
