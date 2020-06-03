@@ -184,7 +184,7 @@ void ObjectGV::PrcsProtoBuff()
         _prcsSyncDevice((SyncDeviceList *)m_p->DeatachProto());
     else if (strMsg == d_p_ClassName(QueryParameters))
         _prcsQueryParameters((QueryParameters *)m_p->DeatachProto());
-    else if (strMsg == d_p_ClassName(QueryParameters))
+    else if (strMsg == d_p_ClassName(ConfigureParameters))
         _prcsConfigureParameters((ConfigureParameters *)m_p->DeatachProto());
 }
 

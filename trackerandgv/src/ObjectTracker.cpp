@@ -20,7 +20,7 @@ using namespace SOCKETS_NAMESPACE;
 //ObjectTracker
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectTracker::ObjectTracker(const string &id, const string &sim) : ObjectAbsPB(id), m_strSim(sim),
-m_lat(200), m_lon(0), m_tmValidLast(-1), m_params(NULL)
+m_lat(200), m_lon(0), m_tmValidLast(-1)
 {
     SetBuffSize(1024 * 2);
 }
@@ -101,15 +101,6 @@ void ObjectTracker::ProcessMessage(IMessage *msg)
     if (msg->GetMessgeType() == IMessage::ControlDevice)
     {
         auto pb = ((TrackerMessage *)msg)->GetProtobuf();
-        if (pb && pb->GetTypeName()==d_p_ClassName(QueryParameters) && m_params)
-        {
-            if (auto ack = new Tracker2GVMessage(this, msg->GetSenderID()))
-            {
-                ack->SetPBContent(*pb);
-                SendMsg(ack);
-                return;
-            }
-        }
         CopyAndSend(*pb);
     }  
 }
@@ -125,8 +116,8 @@ void ObjectTracker::PrcsProtoBuff()
     else if (name == d_p_ClassName(RequestPositionAuthentication))
         _prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
     else if (name == d_p_ClassName(PostOperationInformation))
-        _prcsOperationInformation((PostOperationInformation *)m_p->DeatachProto());
-    else if (name == d_p_ClassName(PostOperationInformation))
+        _prcsOperationInformation((PostOperationInformation *)m_p->GetProtoMessage());
+    else if (name == d_p_ClassName(AckQueryParameters))
         _prcsAckQueryParameters((AckQueryParameters *)m_p->DeatachProto());
     else if (name == d_p_ClassName(AckConfigurParameters))
         _prcsAckConfigurParameters((AckConfigurParameters *)m_p->DeatachProto());
@@ -204,7 +195,7 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg)
 
     if (Tracker2GVMessage *ms = new Tracker2GVMessage(this, string()))
     {
-        ms->AttachProto(msg);
+        ms->SetPBContent(*msg);
         SendMsg(ms);
     }
     if (auto *ms = new Tracker2GXMessage(this))
@@ -223,22 +214,18 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg)
 
 void ObjectTracker::_prcsAckQueryParameters(das::proto::AckQueryParameters *msg)
 {
-    m_params = msg;
     if (auto ack = new Tracker2GVMessage(this, string()))
     {
-        ack->SetPBContent(*msg);
+        ack->AttachProto(msg);
         SendMsg(ack);
     }
 }
 
 void ObjectTracker::_prcsAckConfigurParameters(das::proto::AckConfigurParameters *msg)
 {
-    if (msg->result()==1)
-        ReleasePointer(m_params);
-
     if (auto ack = new Tracker2GVMessage(this, string()))
     {
-        ack->SetPBContent(*msg);
+        ack->AttachProto(msg);
         SendMsg(ack);
     }
 }

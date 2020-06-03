@@ -131,9 +131,9 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
     else if (name == d_p_ClassName(QueryParameters))
         m_msg = new QueryParameters;                        //参数查询
     else if (name == d_p_ClassName(AckQueryParameters))
-        m_msg = new AckQueryParameters;                     //参数查询
+        m_msg = new AckQueryParameters;                     //参数回应
     else if (name == d_p_ClassName(ConfigureParameters))
-        m_msg = new QueryParameters;                        //参数修改
+        m_msg = new ConfigureParameters;                        //参数修改
     else if (name == d_p_ClassName(AckConfigurParameters))
         m_msg = new AckConfigurParameters;                  //参数修改结果
     else if (name == d_p_ClassName(RequestProgramUpgrade))

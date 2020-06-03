@@ -56,6 +56,7 @@ bool GVManager::PrcsPublicMsg(const IMessage &ms)
     case IMessage::PushUavSndInfo:
     case ObjectEvent::E_Login:
     case ObjectEvent::E_Logout:
+    case IMessage::ControlUser:
         return false;
     default:
         break;
