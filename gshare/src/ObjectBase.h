@@ -95,7 +95,7 @@ public:
     SHARED_DECL bool SendMsg(IMessage *msg);
     SHARED_DECL virtual ILink *GetLink();
     SHARED_DECL bool IsInitaled()const;
-    SHARED_DECL bool IsAllowRelease()const;
+    SHARED_DECL virtual bool IsAllowRelease()const;
     virtual int GetObjectType()const = 0;
     virtual void InitObject() = 0;
 public:
