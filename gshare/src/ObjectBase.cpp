@@ -66,8 +66,9 @@ protected:
 
             if (l->IsRealse())
             {
-                auto obj = l->GetParObject();
                 itr = m_links.erase(itr);
+                l->SetThread(NULL);
+                auto obj = l->GetParObject();
                 if (obj && obj->IsAllowRelease())
                     m_lsMsgSend.Push(new ObjectSignal(obj, obj->GetObjectType()));
             }
@@ -95,13 +96,15 @@ protected:
         while (!m_linksAdd.IsEmpty())
         {
             ILink *l = m_linksAdd.Pop();
+            if (!l)
+                continue;
+
             IObject *o = l ? l->GetParObject() : NULL;
             auto id = o ? o->GetObjectID() : string();
             if (!id.empty() && m_links.find(id)==m_links.end())
-            {
-                l->SetMutex(GetMutex());
                 m_links[id] = l;
-            }
+
+            l->SetMutex(GetMutex());
         }
     }
 private:
@@ -278,6 +281,8 @@ void ILink::SetMutex(IMutex *m)
 void ILink::SetThread(BussinessThread *t)
 {
     m_thread = t;
+    if (!t)
+        m_mtx = NULL;
 }
 
 void ILink::processSocket(ISocket *s, BussinessThread &t)
@@ -285,8 +290,10 @@ void ILink::processSocket(ISocket *s, BussinessThread &t)
     if (!m_sock)
     {
         SetSocket(s);
-        SetThread(&t);
-        t.m_linksAdd.Push(this);
+        if (!m_thread)
+            m_thread = &t;
+
+        m_thread->m_linksAdd.Push(this);
     }
     else if (m_sock != s)
     {
