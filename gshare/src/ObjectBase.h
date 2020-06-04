@@ -40,7 +40,7 @@ public:
     SHARED_DECL ISocket *GetSocket()const;
 public:
     bool PrcsBussiness(uint64_t ms, BussinessThread &t);
-    virtual int ProcessReceive(void *buf, int len) = 0;
+    virtual int ProcessReceive(void *buf, int len, uint64_t) = 0;
     bool Receive(const void *buf, int len);
     bool IsChanged()const;
     int CopyData(void *data, int len)const;
@@ -172,7 +172,6 @@ public:
     void ProcessMessage();
     bool ProcessLogins(BussinessThread *s);
     MessageQue *GetSendQue(int idThread)const;
-    bool Exist(IObject *obj)const;
     BussinessThread *GetThread(int id = -1)const;
     void OnSocketClose(ISocket *s);
     void AddLoginData(ISocket *s, const void *buf, int len);
@@ -186,6 +185,8 @@ protected:
     SHARED_DECL virtual void ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb);
     SHARED_DECL void InitThread(uint16_t nT = 1, uint16_t bufSz = 1024);
     SHARED_DECL virtual bool IsHasReuest(const char *buf, int len)const;
+    SHARED_DECL virtual void ProcessEvents();
+    SHARED_DECL bool Exist(IObject *obj)const;
     const StringList &getMessageSubcribes(IMessage *msg);
     void PrcsSubcribes();
 protected:

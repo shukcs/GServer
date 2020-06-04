@@ -54,8 +54,8 @@ bool GVManager::PrcsPublicMsg(const IMessage &ms)
     switch (ms.GetMessgeType())
     {
     case IMessage::PushUavSndInfo:
-    case ObjectEvent::E_Login:
-    case ObjectEvent::E_Logout:
+    case ObjectSignal::S_Login:
+    case ObjectSignal::S_Logout:
     case IMessage::ControlUser:
         return false;
     default:

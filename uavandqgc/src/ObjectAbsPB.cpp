@@ -41,7 +41,7 @@ void ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
         s->Send(sz + 4, buf);
 }
 
-int ObjectAbsPB::ProcessReceive(void *buf, int len)
+int ObjectAbsPB::ProcessReceive(void *buf, int len, uint64_t ms)
 {
     int pos = 0;
     uint32_t l = len;
@@ -49,7 +49,7 @@ int ObjectAbsPB::ProcessReceive(void *buf, int len)
     {
         pos += l;
         l = len - pos;
-        PrcsProtoBuff();
+        PrcsProtoBuff(ms);
     }
     pos += l;
     return pos;

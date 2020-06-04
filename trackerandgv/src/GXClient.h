@@ -18,6 +18,7 @@ class GXLinkThread;
 class TrackerMessage;
 class IMutex;
 class ProtoMsg;
+class GXClinetManager;
 
 class ObjectGXClinet : public IObject
 {
@@ -44,10 +45,12 @@ public:
 protected:
     int GetObjectType()const;
     void InitObject();
+    void SetStat(GXLink_Stat st);
 
     void ProcessMessage(IMessage *msg);
     void _prcsRcv();
 private:
+    friend class GXClinetManager;
     ISocket     *m_gxClient;
     LoopQueBuff m_buff;
     int         m_seq;
@@ -59,6 +62,7 @@ private:
 
 class GXClinetManager : public IObjectManager
 {
+    typedef LoopQueue<std::string> EventsQue;
 public:
     GXClinetManager();
     ~GXClinetManager();
@@ -66,6 +70,7 @@ public:
     char *GetBuff();
     int BuffLength()const;
     ISocketManager *GetSocketManager()const;
+    void PushEvent(ObjectGXClinet *);
 protected:
     int GetObjectType()const;
     bool PrcsPublicMsg(const IMessage &msg);
@@ -75,10 +80,12 @@ protected:
 
     void ProcessLogin(const std::string sender, int sendTy, bool bLogin);
     void ProcessPostInfo(const TrackerMessage &msg);
+    void ProcessEvents();
 private:
     ISocketManager  *m_sockMgr;
     GXLinkThread    *m_thread;
     char            m_bufPublic[1024];
+    EventsQue       m_events;
 };
 
 #ifdef SOCKETS_NAMESPACE

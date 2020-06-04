@@ -2,6 +2,7 @@
 #define __OBJECT_UAV_H__
 
 #include "ObjectAbsPB.h"
+#include <stdio.h>
 
 namespace das {
     namespace proto {
@@ -33,15 +34,13 @@ public:
     ObjectTracker(const std::string &id, const std::string &sim="");
     ~ObjectTracker();
 
-    bool IsValid()const;
-    void SetValideTime(int64_t tmV);
     void SetSimId(const std::string &sim);
 public:
     static int TrackerType();
 protected:
     virtual int GetObjectType()const;
     virtual void ProcessMessage(IMessage *msg);
-    void PrcsProtoBuff();
+    void PrcsProtoBuff(uint64_t);
 
     void CheckTimer(uint64_t ms);
     void OnConnected(bool bConnected);
@@ -52,7 +51,7 @@ protected:
     ILink *GetLink();
 private:
     void _prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
-    void _prcsOperationInformation(das::proto::PostOperationInformation *msg);
+    void _prcsOperationInformation(das::proto::PostOperationInformation *msg, uint64_t ms);
     void _prcsAckQueryParameters(das::proto::AckQueryParameters *msg);
     void _prcsAckConfigurParameters(das::proto::AckConfigurParameters *msg);
     void _prcsProgramUpgrade(das::proto::RequestProgramUpgrade *msg);
@@ -62,7 +61,9 @@ private:
     std::string                     m_strSim;
     double                          m_lat;
     double                          m_lon;
-    int64_t                         m_tmValidLast;
+    FILE*                           m_posRecord;
+    int64_t                         m_tmLast;
+    std::string                     m_strFile;
 };
 
 #ifdef SOCKETS_NAMESPACE

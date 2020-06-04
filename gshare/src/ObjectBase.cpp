@@ -69,7 +69,7 @@ protected:
                 auto obj = l->GetParObject();
                 itr = m_links.erase(itr);
                 if (obj && obj->IsAllowRelease())
-                    m_lsMsgSend.Push(new ObjectEvent(obj, obj->GetObjectType()));
+                    m_lsMsgSend.Push(new ObjectSignal(obj, obj->GetObjectType()));
             }
             else
             {
@@ -307,7 +307,7 @@ bool ILink::PrcsBussiness(uint64_t ms, BussinessThread &t)
     if (IsChanged())
     {
         int len = CopyData(t.m_buff, t.m_szBuff);
-        len = ProcessReceive(t.m_buff, len);
+        len = ProcessReceive(t.m_buff, len, ms);
         ClearRecv(len);
         ret = true;
     }
@@ -466,6 +466,7 @@ bool IObjectManager::ProcessBussiness(BussinessThread *s)
 
         PrcsSubcribes();
         ProcessMessage();
+        ProcessEvents();
     }
     return ret;
 }
@@ -496,7 +497,7 @@ void IObjectManager::ProcessMessage()
         if (!msg)
             continue;
 
-        if (msg->GetMessgeType() == ObjectEvent::E_Release)
+        if (msg->GetMessgeType() == ObjectSignal::S_Release)
         {
             auto itr = m_objects.find(msg->GetSenderID());
             if (itr != m_objects.end())
@@ -579,6 +580,10 @@ MessageQue *IObjectManager::GetSendQue(int idThread)const
 bool IObjectManager::IsHasReuest(const char *, int)const
 {
     return false;
+}
+
+void IObjectManager::ProcessEvents()
+{
 }
 
 bool IObjectManager::IsReceiveData() const

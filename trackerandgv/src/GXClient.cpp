@@ -97,12 +97,12 @@ void ObjectGXClinet::OnConnect(bool b)
         s.set_seqno(m_seq++);
         s.set_trackerid(GetObjectID());
         ObjectAbsPB::SendProtoBuffTo(m_gxClient, s);
-        m_stat = ObjectGXClinet::St_Authing;
+        SetStat(St_Authing);
     }
     else
     {
         printf("ObjectGXClinet %s disconnect\n", GetObjectID().c_str());
-        m_stat = ObjectGXClinet::St_Unconnect;
+        SetStat(St_Unconnect);
     }
     m_bConnect = b;
 }
@@ -138,6 +138,16 @@ void ObjectGXClinet::InitObject()
     m_stInit = IObject::Initialed;
 }
 
+void ObjectGXClinet::SetStat(GXLink_Stat st)
+{
+    if (m_stat != st)
+    {
+        m_stat = st;
+        auto mgr = (GXClinetManager*)GetManager();
+        mgr->PushEvent(this);
+    }
+}
+
 void ObjectGXClinet::ProcessMessage(IMessage *)
 {
     if (m_stInit == Uninitial)
@@ -160,11 +170,11 @@ void ObjectGXClinet::_prcsRcv()
             const string &name = m_p->GetMsgName();
             if (name == d_p_ClassName(AckTrackerIdentityAuthentication))
             {
-                m_stat = ((AckTrackerIdentityAuthentication*)m_p->GetProtoMessage())->result() == 1 ? St_Authed : St_AuthFail;
+                SetStat(((AckTrackerIdentityAuthentication*)m_p->GetProtoMessage())->result() == 1 ? St_Authed : St_AuthFail);
             }
             if (name == d_p_ClassName(AckOperationInformation))
             {
-                m_stat = St_AcceptPos;
+                SetStat(St_AcceptPos);
             }
         }
         pos += tmp;
@@ -207,6 +217,15 @@ ISocketManager *GXClinetManager::GetSocketManager() const
     return m_sockMgr;
 }
 
+void GXClinetManager::PushEvent(ObjectGXClinet *o)
+{
+    if (o)
+    {
+        Lock l(m_mtx);
+        m_events.Push(o->GetObjectID());
+    }
+}
+
 int GXClinetManager::GetObjectType() const
 {
     return ObjectGXClinet::GXClinetType();
@@ -216,9 +235,9 @@ bool GXClinetManager::PrcsPublicMsg(const IMessage &msg)
 {
     switch (msg.GetMessgeType())
     {
-    case ObjectEvent::E_Login:
+    case ObjectSignal::S_Login:
         ProcessLogin(msg.GetSenderID(), msg.GetSenderType(), true); break;
-    case ObjectEvent::E_Logout:
+    case ObjectSignal::S_Logout:
         ProcessLogin(msg.GetSenderID(), msg.GetSenderType(), false); break;
     case IMessage::PushUavSndInfo:
         ProcessPostInfo(*(TrackerMessage*)&msg); break;
@@ -270,6 +289,18 @@ void GXClinetManager::ProcessPostInfo(const TrackerMessage &msg)
 
     if (auto obj = (ObjectGXClinet*)GetObjectByID(msg.GetSenderID()))
         obj->Send(*msg.GetProtobuf());
+}
+
+void GXClinetManager::ProcessEvents()
+{
+    while (!m_events.IsEmpty())
+    {
+        if (auto oGx = (ObjectGXClinet*)GetObjectByID(m_events.Pop()))
+        {
+            if (auto msg = new GX2TrackerMessage(oGx, oGx->m_stat))
+                SendMsg(msg);
+        }
+    }
 }
 
 

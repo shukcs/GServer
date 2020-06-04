@@ -92,10 +92,10 @@ bool GSManager::PrcsPublicMsg(const IMessage &ms)
     case IMessage::User2User:
         processGSMessage(*(Gs2GsMessage*)&ms);
         break;
-    case ObjectEvent::E_Login:
+    case ObjectSignal::S_Login:
         processDeviceLogin(ms.GetSenderType(), ms.GetSenderID(), true);
         break;
-    case ObjectEvent::E_Logout:
+    case ObjectSignal::S_Logout:
         processDeviceLogin(ms.GetSenderType(), ms.GetSenderID(), false);
         break;
     default:

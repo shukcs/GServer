@@ -101,17 +101,17 @@ int IMessage::CreateThreadID() const
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-ObjectEvent::ObjectEvent(IObject *sender, int32_t rcvTp, int e, const string &rcv)
+ObjectSignal::ObjectSignal(IObject *sender, int32_t rcvTp, int e, const string &rcv)
 :IMessage(new MessageData(sender, e), rcv, rcvTp)
 {
 }
 
-void *ObjectEvent::GetContent() const
+void *ObjectSignal::GetContent() const
 {
     return NULL;
 }
 
-int ObjectEvent::GetContentLength() const
+int ObjectSignal::GetContentLength() const
 {
     return 0;
 }

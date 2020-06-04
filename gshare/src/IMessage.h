@@ -123,16 +123,16 @@ protected:
     std::string m_idRcv;
 };
 
-class ObjectEvent : public IMessage
+class ObjectSignal : public IMessage
 {
 public:
     enum EventType {
-        E_Release = User + 0x2000,
-        E_Login,
-        E_Logout,
+        S_Release = User + 0x2000,
+        S_Login,
+        S_Logout,
     };
 public:
-    SHARED_DECL ObjectEvent(IObject *sender, int32_t rcvTp, int e = E_Release, const std::string &rcv=std::string());
+    SHARED_DECL ObjectSignal(IObject *sender, int32_t rcvTp, int e = S_Release, const std::string &rcv=std::string());
 protected:
     void *GetContent()const;
     int GetContentLength()const;

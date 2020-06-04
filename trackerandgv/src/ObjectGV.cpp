@@ -161,8 +161,8 @@ void ObjectGV::ProcessMessage(IMessage *msg)
     case IMessage::SyncDeviceisRslt:
         process2GsMsg(((TrackerMessage *)msg)->GetProtobuf());
         break;
-    case ObjectEvent::E_Login:
-    case ObjectEvent::E_Logout:
+    case ObjectSignal::S_Login:
+    case ObjectSignal::S_Logout:
         processEvent(*msg, tp);
         break;
     default:
@@ -170,7 +170,7 @@ void ObjectGV::ProcessMessage(IMessage *msg)
     }
 }
 
-void ObjectGV::PrcsProtoBuff()
+void ObjectGV::PrcsProtoBuff(uint64_t)
 {
     if (!m_p)
         return;
@@ -204,13 +204,13 @@ void ObjectGV::processEvent(const IMessage &msg, int tp)
 {
     if (   !m_bLogined
         || msg.GetSenderType() != ObjectTracker::TrackerType()
-        || (ObjectEvent::E_Login!=tp && ObjectEvent::E_Logout!=tp) )
+        || (ObjectSignal::S_Login!=tp && ObjectSignal::S_Logout!=tp) )
         return;
 
     if (auto *snd = new UpdateDeviceList)
     {
         snd->set_seqno(m_seq++);
-        snd->set_operation(ObjectEvent::E_Login == tp ? 1 : 0);
+        snd->set_operation(ObjectSignal::S_Login == tp ? 1 : 0);
         snd->add_id(msg.GetSenderID());
         WaitSend(snd);
     }

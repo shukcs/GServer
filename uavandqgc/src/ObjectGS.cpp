@@ -219,7 +219,7 @@ void ObjectGS::ProcessMessage(IMessage *msg)
     }
 }
 
-void ObjectGS::PrcsProtoBuff()
+void ObjectGS::PrcsProtoBuff(uint64_t)
 {
     if (!m_p)
         return;
@@ -946,7 +946,7 @@ void ObjectGS::_prcsSyncDeviceList(SyncDeviceList *ms)
     if (ms && GetAuth(ObjectGS::Type_UavManager))
     {
         m_seq = ms->seqno();
-        if (auto syn = new ObjectEvent(this, GSType(), IMessage::SyncDeviceis, GetObjectID()))
+        if (auto syn = new ObjectSignal(this, GSType(), IMessage::SyncDeviceis, GetObjectID()))
             SendMsg(syn);
     }
     else if (ms)

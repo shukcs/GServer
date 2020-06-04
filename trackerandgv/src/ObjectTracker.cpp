@@ -20,9 +20,13 @@ using namespace SOCKETS_NAMESPACE;
 //ObjectTracker
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectTracker::ObjectTracker(const string &id, const string &sim) : ObjectAbsPB(id), m_strSim(sim),
-m_lat(200), m_lon(0), m_tmValidLast(-1)
+m_lat(200), m_lon(0), m_posRecord(NULL), m_tmLast(-1)
 {
     SetBuffSize(1024 * 2);
+    string name = id;
+    Utility::ReplacePart(name, ':', '-');
+    if (!id.empty())
+        m_strFile = Utility::ModuleDirectory()+ "/" + name;
 }
 
 ObjectTracker::~ObjectTracker()
@@ -52,9 +56,9 @@ void ObjectTracker::OnLogined(bool suc, ISocket *s)
 {
     if (m_bLogined != suc && suc)
     {
-        if (auto ms = new ObjectEvent(this, ObjectGV::GVType(), ObjectEvent::E_Login))
+        if (auto ms = new ObjectSignal(this, ObjectGV::GVType(), ObjectSignal::S_Login))
             SendMsg(ms);
-        if (auto ms = new ObjectEvent(this, ObjectGXClinet::GXClinetType(), ObjectEvent::E_Login))
+        if (auto ms = new ObjectSignal(this, ObjectGXClinet::GXClinetType(), ObjectSignal::S_Login))
             SendMsg(ms);
     }
     ObjectAbsPB::OnLogined(suc, s);
@@ -71,16 +75,6 @@ ILink *ObjectTracker::GetLink()
         return ObjectAbsPB::GetLink();
 
     return NULL;
-}
-
-bool ObjectTracker::IsValid() const
-{
-    return m_tmValidLast<0 || m_tmValidLast>Utility::msTimeTick();
-}
-
-void ObjectTracker::SetValideTime(int64_t tmV)
-{
-    m_tmValidLast = tmV;
 }
 
 void ObjectTracker::SetSimId(const std::string &sim)
@@ -105,7 +99,7 @@ void ObjectTracker::ProcessMessage(IMessage *msg)
     }  
 }
 
-void ObjectTracker::PrcsProtoBuff()
+void ObjectTracker::PrcsProtoBuff(uint64_t ms)
 {
     if (!m_p)
         return;
@@ -116,7 +110,7 @@ void ObjectTracker::PrcsProtoBuff()
     else if (name == d_p_ClassName(RequestPositionAuthentication))
         _prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
     else if (name == d_p_ClassName(PostOperationInformation))
-        _prcsOperationInformation((PostOperationInformation *)m_p->GetProtoMessage());
+        _prcsOperationInformation((PostOperationInformation *)m_p->GetProtoMessage(), ms);
     else if (name == d_p_ClassName(AckQueryParameters))
         _prcsAckQueryParameters((AckQueryParameters *)m_p->DeatachProto());
     else if (name == d_p_ClassName(AckConfigurParameters))
@@ -127,9 +121,6 @@ void ObjectTracker::PrcsProtoBuff()
 
 int ObjectTracker::_checkPos(double lat, double lon, double alt)
 {
-    if (!IsValid())
-        return 0;
-
     if (TrackerManager *m = (TrackerManager *)GetManager())
         return m->CanFlight(lat, lon, alt) ? 1 : 0;
 
@@ -140,9 +131,9 @@ void ObjectTracker::CheckTimer(uint64_t ms)
 {
     if (!m_sock && m_bLogined)
     {
-        if (auto ms = new ObjectEvent(this, ObjectGV::GVType(), ObjectEvent::E_Logout))
+        if (auto ms = new ObjectSignal(this, ObjectGV::GVType(), ObjectSignal::S_Logout))
             SendMsg(ms);
-        if (auto ms = new ObjectEvent(this, ObjectGXClinet::GXClinetType(), ObjectEvent::E_Logout))
+        if (auto ms = new ObjectSignal(this, ObjectGXClinet::GXClinetType(), ObjectSignal::S_Logout))
             SendMsg(ms);
     }
     ObjectAbsPB::CheckTimer(ms);
@@ -161,6 +152,12 @@ void ObjectTracker::OnConnected(bool bConnected)
     ObjectAbsPB::OnConnected(bConnected);
     if (m_sock && bConnected)
         m_sock->ResizeBuff(WRITE_BUFFLEN);
+    
+    if (!bConnected && m_posRecord)
+    {
+        fclose(m_posRecord);
+        m_posRecord = NULL;
+    }
 }
 
 void ObjectTracker::InitObject()
@@ -188,17 +185,38 @@ void ObjectTracker::_prcsPosAuth(RequestPositionAuthentication *msg)
     }
 }
 
-void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg)
+void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uint64_t ms)
 {
     if (!msg)
         return;
+    if (!m_posRecord && !m_strFile.empty())
+    {
+        m_posRecord = fopen(m_strFile.c_str(), "rb+");
+        if (m_posRecord)//已经存在移动到末尾
+            fseek(m_posRecord, 0, SEEK_END);
+        else //创建
+            m_posRecord = fopen(m_strFile.c_str(), "wb+");
+    }
+
+    if (ms - m_tmLast> 2000)
+    {
+        for (int i = 0; i < msg->oi_size() && m_posRecord; i++)
+        {
+            const OperationInformation &oi = msg->oi(i);
+            fprintf(m_posRecord, "%s\t", Utility::bigint2string(ms).c_str());
+            fprintf(m_posRecord, "%s\t", Utility::l2string(oi.gps().latitude()).c_str());
+            fprintf(m_posRecord, "%s\t", Utility::l2string(oi.gps().longitude()).c_str());
+            fprintf(m_posRecord, "%s\n", Utility::l2string(oi.gps().altitude()).c_str());
+        }
+        if (auto *ms = new Tracker2GXMessage(this))
+        {
+            ms->SetPBContent(*msg);
+            SendMsg(ms);
+        }
+        m_tmLast = ms;
+    }
 
     if (Tracker2GVMessage *ms = new Tracker2GVMessage(this, string()))
-    {
-        ms->SetPBContent(*msg);
-        SendMsg(ms);
-    }
-    if (auto *ms = new Tracker2GXMessage(this))
     {
         ms->SetPBContent(*msg);
         SendMsg(ms);

@@ -48,7 +48,7 @@ protected:
     void OnConnected(bool bConnected);
     int GetObjectType()const;
     void ProcessMessage(IMessage *msg);
-    void PrcsProtoBuff();
+    void PrcsProtoBuff(uint64_t);
 
     void process2GsMsg(const google::protobuf::Message *msg);
     void processEvent(const IMessage &msg, int tp);

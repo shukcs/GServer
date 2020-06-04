@@ -26,10 +26,10 @@ public:
 public:
     static void SendProtoBuffTo(ISocket *s, const google::protobuf::Message &ms);
 protected:
-    int ProcessReceive(void *buf, int len);
+    int ProcessReceive(void *buf, int len, uint64_t ms);
     void OnConnected(bool bConnected);
     void WaitSend(google::protobuf::Message *msg);
-    virtual void PrcsProtoBuff() = 0;
+    virtual void PrcsProtoBuff(uint64_t) = 0;
     IObject *GetParObject();
     ILink *GetLink();
     void CheckTimer(uint64_t ms);

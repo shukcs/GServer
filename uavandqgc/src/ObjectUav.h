@@ -53,7 +53,7 @@ public:
 protected:
     virtual int GetObjectType()const;
     virtual void ProcessMessage(IMessage *msg);
-    void PrcsProtoBuff();
+    void PrcsProtoBuff(uint64_t);
 
     void CheckTimer(uint64_t ms);
     void OnConnected(bool bConnected);
