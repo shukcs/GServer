@@ -110,7 +110,7 @@ void ObjectTracker::PrcsProtoBuff(uint64_t ms)
     else if (name == d_p_ClassName(RequestPositionAuthentication))
         _prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
     else if (name == d_p_ClassName(PostOperationInformation))
-        _prcsOperationInformation((PostOperationInformation *)m_p->GetProtoMessage(), ms);
+        _prcsOperationInformation((PostOperationInformation *)m_p->DeatachProto(), ms);
     else if (name == d_p_ClassName(AckQueryParameters))
         _prcsAckQueryParameters((AckQueryParameters *)m_p->DeatachProto());
     else if (name == d_p_ClassName(AckConfigurParameters))
@@ -189,6 +189,7 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
 {
     if (!msg)
         return;
+
     if (!m_posRecord && !m_strFile.empty())
     {
         m_posRecord = fopen(m_strFile.c_str(), "rb+");
@@ -200,26 +201,49 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
 
     if (ms - m_tmLast> 2000)
     {
-        for (int i = 0; i < msg->oi_size() && m_posRecord; i++)
+        auto poi = new PostOperationInformation();
+        if (!poi)
         {
-            const OperationInformation &oi = msg->oi(i);
-            fprintf(m_posRecord, "%s\t", Utility::bigint2string(ms).c_str());
-            fprintf(m_posRecord, "%s\t", Utility::l2string(oi.gps().latitude()).c_str());
-            fprintf(m_posRecord, "%s\t", Utility::l2string(oi.gps().longitude()).c_str());
-            fprintf(m_posRecord, "%s\n", Utility::l2string(oi.gps().altitude()).c_str());
+            poi->set_seqno(msg->seqno());
+            for (int i = 0; i < msg->oi_size() && m_posRecord; i++)
+            {
+                const OperationInformation &oi = msg->oi(i);
+                auto oiAdd = poi->add_oi();
+                oiAdd->set_timestamp(ms);
+                oiAdd->set_uavid(m_id);
+                if (oi.has_params())
+                    oiAdd->set_allocated_params(new OperationParams(oi.params()));
+                oiAdd->set_allocated_gps(new GpsInformation(oi.gps()));
+                if (oi.has_status())
+                    oiAdd->set_allocated_status(new OperationStatus(oi.status()));
+
+                fprintf(m_posRecord, "%s\t", Utility::bigint2string(ms).c_str());
+                fprintf(m_posRecord, "%s\t", Utility::l2string(oi.gps().latitude()).c_str());
+                fprintf(m_posRecord, "%s\t", Utility::l2string(oi.gps().longitude()).c_str());
+                fprintf(m_posRecord, "%s\n", Utility::l2string(oi.gps().altitude()).c_str());
+            }
+
+            if (auto *ms = new Tracker2GXMessage(this))
+            {
+                ms->AttachProto(msg);
+                SendMsg(ms);
+            }
+            else
+            {
+                delete poi;
+            }
+            m_tmLast = ms;
         }
-        if (auto *ms = new Tracker2GXMessage(this))
-        {
-            ms->SetPBContent(*msg);
-            SendMsg(ms);
-        }
-        m_tmLast = ms;
     }
 
     if (Tracker2GVMessage *ms = new Tracker2GVMessage(this, string()))
     {
-        ms->SetPBContent(*msg);
+        ms->AttachProto(msg);
         SendMsg(ms);
+    }
+    else
+    {
+        delete msg;
     }
 
     if (auto ack = new AckOperationInformation)
