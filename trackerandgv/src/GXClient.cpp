@@ -92,7 +92,6 @@ void ObjectGXClinet::OnConnect(bool b)
 {
     if (b)
     {
-        Lock l(m_mtx);
         RequestTrackerIdentityAuthentication s;
         s.set_seqno(m_seq++);
         s.set_trackerid(GetObjectID());
@@ -101,7 +100,7 @@ void ObjectGXClinet::OnConnect(bool b)
     }
     else
     {
-        SetStat(St_Unconnect);
+        SetStat(St_Unknow);
     }
     m_bConnect = b;
 }

@@ -739,80 +739,70 @@ string Utility::Sa2String(struct sockaddr *sa)
 
 bool Utility::u2ip(const string& host, struct sockaddr_in& sa, int ai_flags)
 {
-	memset(&sa, 0, sizeof(sa));
-	sa.sin_family = AF_INET;
+    memset(&sa, 0, sizeof(sa));
+    sa.sin_family = AF_INET;
 #ifdef NO_GETADDRINFO
-	if ((ai_flags & AI_NUMERICHOST) != 0 || isipv4(host))
-	{
+    if ((ai_flags & AI_NUMERICHOST) != 0 || isipv4(host))
+    {
         uint32_t ip = str2ipv4(host);
-		memcpy(&sa.sin_addr, &ip, sizeof(ip));
-		return true;
-	}
+        memcpy(&sa.sin_addr, &ip, sizeof(sa.sin_addr));
+        return true;
+    }
 #ifndef LINUX
-	struct hostent *he = gethostbyname( host.c_str() );
-	if (!he)
-	{
-		return false;
-	}
-	memcpy(&sa.sin_addr, he -> h_addr, sizeof(sa.sin_addr));
+    struct hostent *he = gethostbyname(host.c_str());
+    if (!he)
+        return false;
+
+    memcpy(&sa.sin_addr, he->h_addr, sizeof(sa.sin_addr));
 #else
-	struct hostent he;
-	struct hostent *result = NULL;
-	int myerrno = 0;
-	char buf[2000];
-	int n = gethostbyname_r(host.c_str(), &he, buf, sizeof(buf), &result, &myerrno);
-	if (n || !result)
-	{
-		return false;
-	}
-	if (he.h_addr_list && he.h_addr_list[0])
-		memcpy(&sa.sin_addr, he.h_addr, 4);
-	else
-		return false;
+    struct hostent he;
+    struct hostent *result = NULL;
+    int myerrno = 0;
+    char buf[2000];
+    int n = gethostbyname_r(host.c_str(), &he, buf, sizeof(buf), &result, &myerrno);
+    if (n || !result)
+        return false;
+
+    if (he.h_addr_list && he.h_addr_list[0])
+        memcpy(&sa.sin_addr, he.h_addr, 4);
+    else
+        return false;
 #endif
-	return true;
+    return true;
 #else
-	struct addrinfo hints;
-	memset(&hints, 0, sizeof(hints));
-	// AI_NUMERICHOST
-	// AI_CANONNAME
-	// AI_PASSIVE - server
-	// AI_ADDRCONFIG
-	// AI_V4MAPPED
-	// AI_ALL
-	// AI_NUMERICSERV
-	hints.ai_flags = ai_flags;
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = 0;
-	hints.ai_protocol = 0;
-	struct addrinfo *res;
-	if (Utility::isipv4(host))
-		hints.ai_flags |= AI_NUMERICHOST;
-	int n = getaddrinfo(host.c_str(), NULL, &hints, &res);
-	if (!n)
-	{
-		vector<struct addrinfo *> vec;
-		struct addrinfo *ai = res;
-		while (ai)
-		{
-			if (ai -> ai_addrlen == sizeof(sa))
-				vec.push_back( ai );
-			ai = ai -> ai_next;
-		}
-		if (!vec.size())
-			return false;
-		ai = vec[Utility::Rnd() % vec.size()];
-		{
-			memcpy(&sa, ai -> ai_addr, ai -> ai_addrlen);
-		}
-		freeaddrinfo(res);
-		return true;
-	}
-	string error = "Error: ";
+    struct addrinfo hints;
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_flags = ai_flags;
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = 0;
+    hints.ai_protocol = 0;
+    struct addrinfo *res;
+    if (Utility::isipv4(host))
+        hints.ai_flags |= AI_NUMERICHOST;
+    int n = getaddrinfo(host.c_str(), NULL, &hints, &res);
+    if (!n)
+    {
+        std::vector<struct addrinfo *> vec;
+        struct addrinfo *ai = res;
+        while (ai)
+        {
+            if (ai->ai_addrlen == sizeof(sa))
+                vec.push_back(ai);
+            ai = ai->ai_next;
+        }
+        if (!vec.size())
+            return false;
+        ai = vec[Utility::Rnd() % vec.size()];
+        memcpy(&sa, ai->ai_addr, ai->ai_addrlen);
+
+        freeaddrinfo(res);
+        return true;
+    }
+    std::string error = "Error: ";
 #ifndef __CYGWIN__
-	error += gai_strerror(n);
+    error += gai_strerror(n);
 #endif
-	return false;
+    return false;
 #endif // NO_GETADDRINFO
 }
 

@@ -26,7 +26,7 @@ public:
     enum GXLink_Stat
     {
         St_Unknow,
-        St_Unconnect,
+        St_Connect,
         St_Authing,
         St_AuthFail,
         St_Authed,
