@@ -218,10 +218,11 @@ ISocketManager *GXClinetManager::GetSocketManager() const
 
 void GXClinetManager::PushEvent(ObjectGXClinet *o)
 {
-    if (o)
+    if (o && m_mtx)
     {
-        Lock l(m_mtx);
+        m_mtx->Lock();
         m_events.Push(o->GetObjectID());
+        m_mtx->Unlock();
     }
 }
 

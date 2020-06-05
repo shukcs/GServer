@@ -13,6 +13,7 @@ namespace das {
         class AckQueryParameters;
         class AckConfigurParameters;
         class RequestProgramUpgrade;
+        class QueryParameters;
     }
 }
 
@@ -57,6 +58,7 @@ private:
     void _prcsProgramUpgrade(das::proto::RequestProgramUpgrade *msg);
     int _checkPos(double lat, double lon, double alt);
     void _checkFile();
+    void _ackPartParameters(const std::string &gv, const das::proto::QueryParameters &qp);
 private:
     friend class TrackerManager;
     std::string                     m_strSim;
@@ -64,6 +66,7 @@ private:
     double                          m_lon;
     FILE*                           m_posRecord;
     int64_t                         m_tmLast;
+    int                             m_statGX;
     std::string                     m_strFile;
 };
 

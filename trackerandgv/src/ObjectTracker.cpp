@@ -20,7 +20,7 @@ using namespace SOCKETS_NAMESPACE;
 //ObjectTracker
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectTracker::ObjectTracker(const string &id, const string &sim) : ObjectAbsPB(id), m_strSim(sim),
-m_lat(200), m_lon(0), m_posRecord(NULL), m_tmLast(-1)
+m_lat(200), m_lon(0), m_posRecord(NULL), m_tmLast(-1), m_statGX(0)
 {
     SetBuffSize(1024 * 2);
     string name = id;
@@ -96,7 +96,13 @@ void ObjectTracker::ProcessMessage(IMessage *msg)
     {
         auto pb = ((TrackerMessage *)msg)->GetProtobuf();
         CopyAndSend(*pb);
-    }  
+        if (pb->GetTypeName() == d_p_ClassName(QueryParameters))
+            _ackPartParameters(msg->GetSenderID(), *(QueryParameters*)pb);
+    }
+    else if (msg->GetMessgeType() == IMessage::GXClinetStat)
+    {
+        m_statGX = ((GX2TrackerMessage *)msg)->GetStat();
+    }
 }
 
 void ObjectTracker::PrcsProtoBuff(uint64_t ms)
@@ -141,6 +147,35 @@ void ObjectTracker::_checkFile()
             m_posRecord = fopen(m_strFile.c_str(), "wb+");
             fprintf(m_posRecord, "%s\n", m_id.c_str());
         }
+    }
+}
+
+void ObjectTracker::_ackPartParameters(const std::string &gv, const das::proto::QueryParameters &qp)
+{
+    auto acp = new AckQueryParameters;
+    auto pd = acp ? acp->add_pd() : NULL;
+    if (!pd)
+        return;
+
+    acp->set_seqno(qp.seqno());
+    acp->set_id(m_id);
+    acp->set_result(1);
+    if (auto ms = new Tracker2GVMessage(this, gv))
+    {
+        if (auto pd = acp->add_pd())
+        {
+            pd->set_name("GX_Clinet_Stat");
+            pd->set_readonly(true);
+            pd->set_type(1);
+            pd->set_value(Utility::l2string(m_statGX));
+        }
+        ms->AttachProto(acp);
+        SendMsg(ms);
+    }
+    else
+    {
+        delete pd;
+        delete acp;
     }
 }
 
@@ -264,8 +299,19 @@ void ObjectTracker::_prcsAckQueryParameters(das::proto::AckQueryParameters *msg)
 {
     if (auto ack = new Tracker2GVMessage(this, string()))
     {
+        if (auto pd = msg->add_pd())
+        {
+            pd->set_name("GX_Clinet_Stat");
+            pd->set_readonly(true);
+            pd->set_type(1);
+            pd->set_value(Utility::l2string(m_statGX));
+        }
         ack->AttachProto(msg);
         SendMsg(ack);
+    }
+    else
+    {
+        delete msg;
     }
 }
 
