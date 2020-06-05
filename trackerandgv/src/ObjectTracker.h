@@ -56,6 +56,7 @@ private:
     void _prcsAckConfigurParameters(das::proto::AckConfigurParameters *msg);
     void _prcsProgramUpgrade(das::proto::RequestProgramUpgrade *msg);
     int _checkPos(double lat, double lon, double alt);
+    void _checkFile();
 private:
     friend class TrackerManager;
     std::string                     m_strSim;

@@ -24,7 +24,7 @@ m_lat(200), m_lon(0), m_posRecord(NULL), m_tmLast(-1)
 {
     SetBuffSize(1024 * 2);
     string name = id;
-    Utility::ReplacePart(name, ':', '-');
+    Utility::ReplacePart(name, ':', '=');
     if (!id.empty())
         m_strFile = Utility::ModuleDirectory()+ "/" + name;
 }
@@ -127,6 +127,23 @@ int ObjectTracker::_checkPos(double lat, double lon, double alt)
     return 0;
 }
 
+void ObjectTracker::_checkFile()
+{
+    if (!m_posRecord && !m_strFile.empty())
+    {
+        m_posRecord = fopen(m_strFile.c_str(), "rb+");
+        if (m_posRecord)//已经存在移动到末尾
+        {
+            fseek(m_posRecord, 0, SEEK_END);
+        }
+        else //创建
+        {
+            m_posRecord = fopen(m_strFile.c_str(), "wb+");
+            fprintf(m_posRecord, "%s\n", m_id.c_str());
+        }
+    }
+}
+
 void ObjectTracker::CheckTimer(uint64_t ms)
 {
     if (!m_sock && m_bLogined)
@@ -190,15 +207,7 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
     if (!msg)
         return;
 
-    if (!m_posRecord && !m_strFile.empty())
-    {
-        m_posRecord = fopen(m_strFile.c_str(), "rb+");
-        if (m_posRecord)//已经存在移动到末尾
-            fseek(m_posRecord, 0, SEEK_END);
-        else //创建
-            m_posRecord = fopen(m_strFile.c_str(), "wb+");
-    }
-
+    _checkFile();
     if (ms - m_tmLast> 2000)
     {
         auto poi = new PostOperationInformation();
