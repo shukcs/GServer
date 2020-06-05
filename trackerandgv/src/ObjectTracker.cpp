@@ -208,10 +208,10 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
         return;
 
     _checkFile();
-    if (ms - m_tmLast> 2000)
+    if ((int64_t)ms - m_tmLast > 2000)
     {
         auto poi = new PostOperationInformation();
-        if (!poi)
+        if (poi)
         {
             poi->set_seqno(msg->seqno());
             for (int i = 0; i < msg->oi_size() && m_posRecord; i++)
