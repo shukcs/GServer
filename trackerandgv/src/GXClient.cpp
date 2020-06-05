@@ -117,7 +117,6 @@ void ObjectGXClinet::Send(const google::protobuf::Message &msg)
         else
             m_gxClient->Reconnect();
     }
-    SendMsg(new GX2TrackerMessage(this, m_stat));
 }
 
 void ObjectGXClinet::SetMutex(IMutex *mtx)

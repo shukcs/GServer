@@ -217,8 +217,6 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
             auto oiAdd = poi->add_oi();
             oiAdd->set_timestamp(ms);
             oiAdd->set_uavid(m_id);
-            if (oi.has_params())
-                oiAdd->set_allocated_params(new OperationParams(oi.params()));
             oiAdd->set_allocated_gps(new GpsInformation(oi.gps()));
             if (oi.has_status())
                 oiAdd->set_allocated_status(new OperationStatus(oi.status()));
