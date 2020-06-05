@@ -25,6 +25,7 @@ class ObjectGXClinet : public IObject
 public:
     enum GXLink_Stat
     {
+        St_Unknow,
         St_Unconnect,
         St_Authing,
         St_AuthFail,

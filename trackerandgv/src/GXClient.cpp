@@ -43,7 +43,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 ObjectGXClinet::ObjectGXClinet(const std::string &id) : IObject(id)
 , m_gxClient(NULL), m_seq(1), m_bConnect(false), m_mtx(NULL)
-, m_stat(St_Unconnect), m_p(new ProtoMsg)
+, m_stat(St_Unknow), m_p(new ProtoMsg)
 {
     m_buff.ReSize(2048);
 }
@@ -101,7 +101,6 @@ void ObjectGXClinet::OnConnect(bool b)
     }
     else
     {
-        printf("ObjectGXClinet %s disconnect\n", GetObjectID().c_str());
         SetStat(St_Unconnect);
     }
     m_bConnect = b;
