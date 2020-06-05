@@ -221,7 +221,7 @@ void GXClinetManager::PushEvent(ObjectGXClinet *o)
     if (o && m_mtx)
     {
         m_mtx->Lock();
-        m_events.Push(o->GetObjectID());
+        m_events.Push(o);
         m_mtx->Unlock();
     }
 }
@@ -295,7 +295,7 @@ void GXClinetManager::ProcessEvents()
 {
     while (!m_events.IsEmpty())
     {
-        if (auto oGx = (ObjectGXClinet*)GetObjectByID(m_events.Pop()))
+        if (auto oGx = m_events.Pop())
         {
             if (auto msg = new GX2TrackerMessage(oGx, oGx->m_stat))
                 SendMsg(msg);

@@ -62,7 +62,7 @@ private:
 
 class GXClinetManager : public IObjectManager
 {
-    typedef LoopQueue<std::string> EventsQue;
+    typedef LoopQueue<ObjectGXClinet*> EventsQue;
 public:
     GXClinetManager();
     ~GXClinetManager();

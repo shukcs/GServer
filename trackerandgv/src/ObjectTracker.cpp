@@ -153,8 +153,7 @@ void ObjectTracker::_checkFile()
 void ObjectTracker::_ackPartParameters(const std::string &gv, const das::proto::QueryParameters &qp)
 {
     auto acp = new AckQueryParameters;
-    auto pd = acp ? acp->add_pd() : NULL;
-    if (!pd)
+    if (!acp)
         return;
 
     acp->set_seqno(qp.seqno());
@@ -174,7 +173,6 @@ void ObjectTracker::_ackPartParameters(const std::string &gv, const das::proto::
     }
     else
     {
-        delete pd;
         delete acp;
     }
 }
