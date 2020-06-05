@@ -208,37 +208,33 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
         return;
 
     _checkFile();
-    if ((int64_t)ms - m_tmLast > 2000)
+    if ((int64_t)ms - m_tmLast > 2000 && msg->oi_size()>0)
     {
-        auto poi = new PostOperationInformation();
-        if (poi)
+        if (auto poi = new PostOperationInformation())
         {
             poi->set_seqno(msg->seqno());
-            for (int i = 0; i < msg->oi_size() && i<1; i++) //只要一个点
-            {
-                const OperationInformation &oi = msg->oi(i);
-                auto oiAdd = poi->add_oi();
-                oiAdd->set_timestamp(ms);
-                oiAdd->set_uavid(m_id);
-                if (oi.has_params())
-                    oiAdd->set_allocated_params(new OperationParams(oi.params()));
-                oiAdd->set_allocated_gps(new GpsInformation(oi.gps()));
-                if (oi.has_status())
-                    oiAdd->set_allocated_status(new OperationStatus(oi.status()));
+            const OperationInformation &oi = msg->oi(0);    
+            auto oiAdd = poi->add_oi();
+            oiAdd->set_timestamp(ms);
+            oiAdd->set_uavid(m_id);
+            if (oi.has_params())
+                oiAdd->set_allocated_params(new OperationParams(oi.params()));
+            oiAdd->set_allocated_gps(new GpsInformation(oi.gps()));
+            if (oi.has_status())
+                oiAdd->set_allocated_status(new OperationStatus(oi.status()));
 
-                if (m_posRecord)
-                {
-                    fprintf(m_posRecord, "%s\t", Utility::bigint2string(ms).c_str());
-                    fprintf(m_posRecord, "%s\t", Utility::l2string(oi.gps().latitude()).c_str());
-                    fprintf(m_posRecord, "%s\t", Utility::l2string(oi.gps().longitude()).c_str());
-                    fprintf(m_posRecord, "%s\n", Utility::l2string(oi.gps().altitude()).c_str());
-                }
+            if (m_posRecord)
+            {
+                fprintf(m_posRecord, "%s\t", Utility::bigint2string(ms).c_str());
+                fprintf(m_posRecord, "%s\t", Utility::l2string(oiAdd->gps().latitude()).c_str());
+                fprintf(m_posRecord, "%s\t", Utility::l2string(oiAdd->gps().longitude()).c_str());
+                fprintf(m_posRecord, "%s\n", Utility::l2string(oiAdd->gps().altitude()).c_str());
             }
 
-            if (auto *ms = new Tracker2GXMessage(this))
+            if (auto *msGx = new Tracker2GXMessage(this))
             {
-                ms->AttachProto(poi);
-                SendMsg(ms);
+                msGx->AttachProto(poi);
+                SendMsg(msGx);
             }
             else
             {
@@ -248,10 +244,10 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
         }
     }
 
-    if (Tracker2GVMessage *ms = new Tracker2GVMessage(this, string()))
+    if (Tracker2GVMessage *msGV = new Tracker2GVMessage(this, string()))
     {
-        ms->AttachProto(msg);
-        SendMsg(ms);
+        msGV->AttachProto(msg);
+        SendMsg(msGV);
     }
     else
     {
