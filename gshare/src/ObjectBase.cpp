@@ -99,6 +99,7 @@ protected:
             if (!l || l->GetThread())
                 continue;
 
+            l->SetThread(this);
             IObject *o = l ? l->GetParObject() : NULL;
             auto id = o ? o->GetObjectID() : string();
             if (!id.empty() && m_links.find(id)==m_links.end())
