@@ -294,10 +294,10 @@ void ILink::processSocket(ISocket *s, BussinessThread &t)
 {
     if (!m_sock)
     {
+        SetSocket(s);
         if (s)
             m_bRelease = false;
 
-        SetSocket(s);
         t.m_linksAdd.Push(this);
     }
     else if (m_sock != s)
