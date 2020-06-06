@@ -63,7 +63,7 @@ protected:
 protected:
     static IMessage *AckControl2Uav(const das::proto::PostControl2Uav &msg, int res, ObjectUav *obj = NULL);
 private:
-    void _prcsRcvPostOperationInfo(das::proto::PostOperationInformation *msg);
+    void _prcsRcvPostOperationInfo(das::proto::PostOperationInformation *msg, uint64_t tm);
     void _prcsRcvPost2Gs(das::proto::PostStatus2GroundStation *msg);
     void _prcsRcvReqMissions(das::proto::RequestRouteMissions *msg);
     void _prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
@@ -98,7 +98,7 @@ private:
     double                          m_lat;
     double                          m_lon;
     int64_t                         m_tmLastBind;
-    int64_t                         m_tmLastPos;
+    uint64_t                        m_tmLastPos;
     int64_t                         m_tmValidLast;
     das::proto::OperationRoute      *m_mission;
     int                             m_nCurRidge;

@@ -233,7 +233,7 @@ void ObjectUav::ProcessMessage(IMessage *msg)
         processBaseInfo(*(DBMessage *)msg);
 }
 
-void ObjectUav::PrcsProtoBuff(uint64_t)
+void ObjectUav::PrcsProtoBuff(uint64_t tm)
 {
     if (!m_p)
         return;
@@ -242,7 +242,7 @@ void ObjectUav::PrcsProtoBuff(uint64_t)
     if (name == d_p_ClassName(RequestUavIdentityAuthentication))
         _respondLogin(((RequestUavIdentityAuthentication*)m_p->GetProtoMessage())->seqno(), 1);
     else if (name == d_p_ClassName(PostOperationInformation))
-        _prcsRcvPostOperationInfo((PostOperationInformation *)m_p->DeatachProto());
+        _prcsRcvPostOperationInfo((PostOperationInformation *)m_p->DeatachProto(), tm);
     else if (name == d_p_ClassName(PostStatus2GroundStation))
         _prcsRcvPost2Gs((PostStatus2GroundStation *)m_p->GetProtoMessage());
     else if (name == d_p_ClassName(RequestRouteMissions))
@@ -299,12 +299,12 @@ void ObjectUav::InitObject()
     }
 }
 
-void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg)
+void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg, uint64_t tm)
 {
     if (!msg)
         return;
 
-    m_tmLastPos = Utility::msTimeTick();
+    m_tmLastPos = tm;
     int nCount = msg->oi_size();
     for (int i = 0; i < nCount; i++)
     {
