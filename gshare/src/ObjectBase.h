@@ -60,7 +60,7 @@ protected:
     SHARED_DECL char *GetThreadBuff()const;
     SHARED_DECL int GetThreadBuffLength()const;
 protected:
-    int64_t                 m_tmLastInfo;
+    uint64_t                m_tmLastInfo;
     ISocket                 *m_sock;
     LoopQueBuff             *m_recv;
     IMutex                  *m_mtx;

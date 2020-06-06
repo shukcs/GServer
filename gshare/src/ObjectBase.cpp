@@ -140,7 +140,7 @@ public:
 ///////////////////////////////////////////////////////////////////////////////////////
 //SocketHandle
 ///////////////////////////////////////////////////////////////////////////////////////
-ILink::ILink() : m_tmLastInfo(Utility::msTimeTick()), m_sock(NULL)
+ILink::ILink() : m_tmLastInfo(0), m_sock(NULL)
 , m_recv(NULL), m_mtx(NULL), m_thread(NULL), m_bLogined(false)
 , m_bChanged(false), m_bRelease(false)
 {

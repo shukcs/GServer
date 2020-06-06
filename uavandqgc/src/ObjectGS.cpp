@@ -913,9 +913,10 @@ void ObjectGS::InitObject()
 void ObjectGS::CheckTimer(uint64_t ms)
 {
     ObjectAbsPB::CheckTimer(ms);
-    if (ms - m_tmLastInfo > 3600000)
+    ms -= m_tmLastInfo;
+    if (ms > 3600000)
         Release();
-    else if (m_sock && ms - m_tmLastInfo > 30000)//超时关闭
+    else if (m_sock && ms > 30000)//超时关闭
         m_sock->Close();
 }
 

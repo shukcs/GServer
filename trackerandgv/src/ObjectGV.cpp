@@ -225,10 +225,10 @@ void ObjectGV::InitObject()
 void ObjectGV::CheckTimer(uint64_t ms)
 {
     ObjectAbsPB::CheckTimer(ms);
-    uint32_t noInfo = uint32_t(ms - m_tmLastInfo);
-    if (noInfo > 600000)
+    ms -= m_tmLastInfo;
+    if (ms > 600000)
         Release();
-    else if (m_sock && noInfo > 30000)//超时关闭
+    else if (m_sock && ms > 30000)//超时关闭
         m_sock->Close();
 }
 

@@ -258,15 +258,17 @@ void ObjectUav::CheckTimer(uint64_t ms)
         if (auto ms = new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Logout))
             SendMsg(ms);
     }
+
     ObjectAbsPB::CheckTimer(ms);
-    if (m_sock)
+    if (ms-m_tmLastPos > 600000)
+    {
+        Release();
+    }
+    else if (m_sock)
     { 
         if (m_mission && !m_bSys && (uint32_t)ms-m_lastORNotify > 500)
             _notifyUavUOR(*m_mission);
-        int64_t n = ms - m_tmLastPos;
-        if (n > 600000)
-            Release();
-        else if (n>6000)//超时关闭
+        else if (ms-m_tmLastPos > 6000)//超时关闭
             m_sock->Close();
     }
 }

@@ -90,18 +90,7 @@ void ObjectGXClinet::Login(bool b)
 
 void ObjectGXClinet::OnConnect(bool b)
 {
-    if (b)
-    {
-        RequestTrackerIdentityAuthentication s;
-        s.set_seqno(m_seq++);
-        s.set_trackerid(GetObjectID());
-        ObjectAbsPB::SendProtoBuffTo(m_gxClient, s);
-        SetStat(St_Authing);
-    }
-    else
-    {
-        SetStat(St_Unknow);
-    }
+    SetStat(b ? St_Connect : St_Unknow);
     m_bConnect = b;
 }
 
@@ -295,6 +284,15 @@ void GXClinetManager::ProcessEvents()
     {
         if (auto oGx = m_events.Pop())
         {
+            if (ObjectGXClinet::St_Connect == oGx->m_stat)
+            {
+                RequestTrackerIdentityAuthentication req;
+                req.set_seqno(oGx->m_seq++);
+                req.set_trackerid(oGx->GetObjectID());
+                ObjectAbsPB::SendProtoBuffTo(oGx->m_gxClient, req);
+                oGx->m_stat = ObjectGXClinet::St_Authing;
+            }
+
             if (auto msg = new GX2TrackerMessage(oGx, oGx->m_stat))
                 SendMsg(msg);
         }

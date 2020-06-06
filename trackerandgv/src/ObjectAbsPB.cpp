@@ -60,7 +60,6 @@ void ObjectAbsPB::OnConnected(bool bConnected)
             m_p = new ProtoMsg;
         return;
     }
-    m_sock = NULL;
 }
 
 void ObjectAbsPB::send(google::protobuf::Message *msg)

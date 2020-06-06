@@ -187,14 +187,11 @@ void ObjectTracker::CheckTimer(uint64_t ms)
             SendMsg(ms);
     }
     ObjectAbsPB::CheckTimer(ms);
-    if (m_sock)
-    { 
-        int64_t n = (int64_t)ms - m_tmLastInfo;
-        if (n > 600000)
-            Release();
-        else if (n>10000)//超时关闭
-            m_sock->Close();
-    }
+    ms -= m_tmLastInfo;
+    if (ms > 600000)
+        Release();
+    else if (m_sock && ms>10000)//超时关闭
+        m_sock->Close();
 }
 
 void ObjectTracker::OnConnected(bool bConnected)

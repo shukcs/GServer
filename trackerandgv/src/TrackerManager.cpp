@@ -78,13 +78,14 @@ bool TrackerManager::PrcsPublicMsg(const IMessage &msg)
         {
             auto dls = new AckSyncDeviceList;
             dls->set_seqno(((SyncDeviceList*)ms.GetProtobuf())->seqno());
+            dls->set_result(1);
             for (auto itr = m_objects.begin(); itr!=m_objects.end(); ++itr)
             {
                 const string &id = itr->first;
-                if (id != "VIGAT:00000000")
+                auto tracker = (ObjectTracker *)itr->second;
+                if (tracker && tracker->IsConnect())
                     dls->add_id(id);
             }
-            dls->set_result(1);
             ack->AttachProto(dls);
             SendMsg(ack);
         }

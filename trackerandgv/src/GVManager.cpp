@@ -72,11 +72,11 @@ IObject *GVManager::prcsPBLogin(ISocket *s, const RequestIVIdentityAuthenticatio
     string usr = Utility::Lower(rgi->userid());
     string pswd = rgi->password();
     ObjectGV *o = (ObjectGV*)GetObjectByID(usr);
-    if (o && o->IsInitaled())
+    if (o)
     {
         bool bLogin = !o->IsConnect() && o->m_pswd == pswd;
         if (bLogin)
-            o->OnLogined(bLogin, s);
+            o->OnLogined(true, s);
         else
             Log(0, o->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
 
