@@ -226,7 +226,7 @@ void ObjectGV::CheckTimer(uint64_t ms)
 {
     ObjectAbsPB::CheckTimer(ms);
     ms -= m_tmLastInfo;
-    if (ms > 600000)
+    if (ms > 60000)
         Release();
     else if (m_sock && ms > 30000)//³¬Ê±¹Ø±Õ
         m_sock->Close();
