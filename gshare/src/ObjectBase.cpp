@@ -514,8 +514,12 @@ void IObjectManager::ProcessMessage()
             auto itr = m_objects.find(msg->GetSenderID());
             if (itr != m_objects.end())
             {
-                delete itr->second;
-                m_objects.erase(itr);
+                auto obj = itr->second;
+                if (!obj->GetLink() || obj->GetLink()->IsRealse())
+                {
+                    delete itr->second;
+                    m_objects.erase(itr);
+                }
             }
         }
         else if (msg->IsValid())
