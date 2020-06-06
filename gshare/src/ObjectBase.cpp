@@ -66,8 +66,8 @@ protected:
 
             if (l->IsRealse())
             {
-                itr = m_links.erase(itr);
                 l->SetThread(NULL);
+                itr = m_links.erase(itr);
                 auto obj = l->GetParObject();
                 if (obj && obj->IsAllowRelease())
                     m_lsMsgSend.Push(new ObjectSignal(obj, obj->GetObjectType()));
@@ -96,7 +96,7 @@ protected:
         while (!m_linksAdd.IsEmpty())
         {
             ILink *l = m_linksAdd.Pop();
-            if (!l)
+            if (!l || l->GetThread())
                 continue;
 
             IObject *o = l ? l->GetParObject() : NULL;
@@ -285,15 +285,20 @@ void ILink::SetThread(BussinessThread *t)
         m_mtx = NULL;
 }
 
+BussinessThread *ILink::GetThread() const
+{
+    return m_thread;
+}
+
 void ILink::processSocket(ISocket *s, BussinessThread &t)
 {
     if (!m_sock)
     {
-        SetSocket(s);
-        if (!m_thread)
-            m_thread = &t;
+        if (s)
+            m_bRelease = false;
 
-        m_thread->m_linksAdd.Push(this);
+        SetSocket(s);
+        t.m_linksAdd.Push(this);
     }
     else if (m_sock != s)
     {

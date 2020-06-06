@@ -121,7 +121,7 @@ void GSManager::processDeviceLogin(int tp, const std::string &dev, bool bLogin)
 
     for (auto itr : m_mgrs)
     {
-        if (itr->GetSocket()!= NULL)
+        if (itr->IsConnect())
             itr->CopyAndSend(udl);
     }
 }
