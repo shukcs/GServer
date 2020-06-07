@@ -1053,7 +1053,7 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
     if (land.has_coordinate())
     {
         db->SetWrite("lat", double(land.coordinate().latitude() / 1e7), 2);
-        db->SetWrite("lat", double(land.coordinate().longitude() / 1e7), 2);
+        db->SetWrite("lon", double(land.coordinate().longitude() / 1e7), 2);
     }
     if (land.has_psi())
     {
