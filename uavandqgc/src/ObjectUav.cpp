@@ -24,7 +24,9 @@ enum
     INVALIDLat = (int)2e9,
 };
 #define MissionMod      "Mission"
-#define Landing		    "Landing"
+#define Landing         "Landing"
+#define MagMission      "MagMsm"
+
 typedef union {
     float tmp[7];
     MAVPACKED(struct {
@@ -400,7 +402,7 @@ void ObjectUav::_prcsPosAuth(RequestPositionAuthentication *msg)
         ack->set_devid(GetObjectID());
         WaitSend(ack);
         if (n==1 && m_mission)
-            m_nCurRidge = m_mission->beg()-1;
+            m_nCurRidge = 0;
     }
 }
 
@@ -552,6 +554,10 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
     {
         _missionFinish(INVALIDLat, INVALIDLat);
     }
+    else if (MagMission == mod)
+    {
+        m_nCurRidge = -1;
+    }
 }
 
 bool ObjectUav::_parsePostOr(const OperationRoute &sor)
@@ -599,11 +605,11 @@ int32_t ObjectUav::getCurRidgeByItem(int32_t curItem)
 
 void ObjectUav::_missionFinish(int lat, int lon)
 {
-    if (!m_mission || m_nCurRidge<m_mission->beg()-1)
+    int ridgeFlying = GetOprRidge();
+    if (!m_mission || ridgeFlying<m_mission->beg())
         return;
 
     double remainCur = 0;
-    int ridgeFlying = GetOprRidge();
     if (DBMessage *msg = new DBMessage(this, IMessage::Unknown, DBMessage::DB_GS))
     {
         msg->SetSql("insertMissions");
@@ -722,7 +728,7 @@ void ObjectUav::mavLinkfilter(const PostStatus2GroundStation &msg)
 
             mavlink_assist_position_t supports;
             mavlink_msg_assist_position_decode(&msg, &supports);
-            if (supports.assist_state & 4)
+            if ((supports.assist_state & 4) && m_nCurRidge>=0)
                 _missionFinish(supports.int_latitude, supports.int_longitude);
         }
     }
