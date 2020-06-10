@@ -402,7 +402,10 @@ void ObjectUav::_prcsPosAuth(RequestPositionAuthentication *msg)
         ack->set_devid(GetObjectID());
         WaitSend(ack);
         if (n==1 && m_mission)
-            m_nCurRidge = 0;
+		{
+			m_nCurRidge = 0;
+			m_nCurItem = 0;
+		}
     }
 }
 
@@ -543,7 +546,8 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
         {
             gpsAdt.tmp[i] = gps.velocity(i);
         }
-        int cur = getCurRidgeByItem(gpsAdt.curMs);
+		m_nCurItem = gpsAdt.curMs;
+        int cur = getCurRidgeByItem();
         if (cur > 0)
             m_nCurRidge = cur;
 
@@ -589,15 +593,14 @@ bool ObjectUav::_parsePostOr(const OperationRoute &sor)
     return true;
 }
 
-int32_t ObjectUav::getCurRidgeByItem(int32_t curItem)
+int32_t ObjectUav::getCurRidgeByItem()
 {
-    if (m_ridges.size() < 0 || curItem >= m_mission->missions_size())
+    if (m_ridges.size() < 0 || m_nCurItem >= m_mission->missions_size())
         return -1;
 
-    m_nCurItem = curItem;
     for (const pair<int32_t, RidgeDat> &itr : m_ridges)
     {
-        if (curItem <= itr.first)
+        if (m_nCurItem <= itr.first)
             return itr.second.idx-1;
     }
     return m_mission->end();
@@ -606,10 +609,25 @@ int32_t ObjectUav::getCurRidgeByItem(int32_t curItem)
 void ObjectUav::_missionFinish(int lat, int lon)
 {
     int ridgeFlying = GetOprRidge();
-    if (!m_mission || ridgeFlying<m_mission->beg())
+    if (!m_mission || ridgeFlying<m_mission->beg() || m_nCurRidge<m_mission->beg())
         return;
 
-    double remainCur = 0;
+	double remainCur = 0;
+	if (ridgeFlying > m_nCurRidge)
+	{
+		int latT = INVALIDLat, lonT = INVALIDLat;
+		if (getGeo(m_mission->missions(m_nCurItem), latT, latT))
+		{
+			remainCur = geoDistance(lat, lon, latT, lonT);
+			double opLn = GetOprLength();
+			if (remainCur > opLn)
+				remainCur = opLn;
+
+			if (ridgeFlying==m_mission->beg() && m_fliedBeg <= remainCur)//没有飞到断点前不要统计
+				return;
+		}
+	}
+
     if (DBMessage *msg = new DBMessage(this, IMessage::Unknown, DBMessage::DB_GS))
     {
         msg->SetSql("insertMissions");
@@ -627,14 +645,6 @@ void ObjectUav::_missionFinish(int lat, int lon)
 
         if (ridgeFlying > m_nCurRidge)
         {
-            int latT=INVALIDLat, lonT = INVALIDLat;
-            if (getGeo(m_mission->missions(m_nCurItem), latT, latT))
-            {
-                remainCur = geoDistance(lat, lon, latT, lonT);
-                double opLn = GetOprLength();
-                if (remainCur > opLn)
-                    remainCur = opLn;
-            }
             msg->SetWrite("continiuLat", lat);
             msg->SetWrite("continiuLon", lon);
         }
@@ -643,7 +653,7 @@ void ObjectUav::_missionFinish(int lat, int lon)
         msg->SetWrite("acreage", calculateOpArea(remainCur));
         SendMsg(msg);
     }
-    m_fliedBeg = (float)remainCur;
+    m_fliedBeg = remainCur;
     if (m_nCurRidge < m_mission->end())
         m_mission->set_beg(ridgeFlying);
     m_nCurRidge = -1;

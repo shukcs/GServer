@@ -80,7 +80,7 @@ private:
     void _prcsGps(const das::proto::GpsInformation &gps, const std::string &mod);
 private:
     bool _parsePostOr(const das::proto::OperationRoute &sor);
-    int32_t getCurRidgeByItem(int32_t curItem);
+    int32_t getCurRidgeByItem();
     void _missionFinish(int lat, int lon);
     void savePos();
     void saveBind(bool bBind, const std::string &gs, bool bForce=false);
@@ -89,7 +89,7 @@ private:
     double genRidgeLength(int idx);
     float calculateOpArea(double oped);
     int GetOprRidge()const;
-    double GetOprLength()const;
+	double GetOprLength()const;
 private:
     friend class UavManager;
     std::string                     m_strSim;
@@ -104,7 +104,7 @@ private:
     int                             m_nCurRidge;
     int                             m_nCurItem;
     bool                            m_bSys;
-    float                           m_fliedBeg;
+    double                          m_fliedBeg;
     std::string                     m_lastBinder;
     std::string                     m_authCheck;
     std::map<int32_t, RidgeDat>     m_ridges;   //µØÂ¢key:itemseq
