@@ -40,7 +40,7 @@ bool GLibrary::Load(const string &nameLib, const string &path)
     file += nameLib + ".dll";
     m_module = LoadLibrary(file.c_str());
     if (NULL == m_module)
-        fprintf(stderr, "error numb %d\n", errno);
+        fprintf(stderr, "Load library fail!\n");
 #else
     if (last != '/')
         file = path + "/";

@@ -104,7 +104,7 @@ private:
     int                             m_nCurRidge;
     int                             m_nCurItem;
     bool                            m_bSys;
-    double                          m_fliedBeg;
+    double                          m_disBeg;
     std::string                     m_lastBinder;
     std::string                     m_authCheck;
     std::map<int32_t, RidgeDat>     m_ridges;   //µØÂ¢key:itemseq
