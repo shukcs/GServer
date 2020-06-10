@@ -609,24 +609,25 @@ int32_t ObjectUav::getCurRidgeByItem()
 void ObjectUav::_missionFinish(int lat, int lon)
 {
     int ridgeFlying = GetOprRidge();
-    if (!m_mission || ridgeFlying<m_mission->beg() || m_nCurRidge<m_mission->beg())
+    if (!m_mission || ridgeFlying<m_mission->beg() || m_nCurRidge<m_mission->beg()-1)
         return;
 
-	double remainCur = 0;
-	if (ridgeFlying > m_nCurRidge)
-	{
-		int latT = INVALIDLat, lonT = INVALIDLat;
-		if (getGeo(m_mission->missions(m_nCurItem), latT, latT))
-		{
-			remainCur = geoDistance(lat, lon, latT, lonT);
-			double opLn = GetOprLength();
-			if (remainCur > opLn)
-				remainCur = opLn;
+    double remainCur = 0;
+    if (ridgeFlying > m_nCurRidge)
+    {
+        int latT = INVALIDLat, lonT = INVALIDLat;
+        if (getGeo(m_mission->missions(m_nCurItem), latT, latT))
+        {
+            remainCur = geoDistance(lat, lon, latT, lonT);
+            double opLn = GetOprLength();
+            if ( ridgeFlying == m_mission->beg()
+              &&(m_fliedBeg<=remainCur || remainCur>opLn) )
+                return;		//没有飞到断点前不要统计
 
-			if (ridgeFlying==m_mission->beg() && m_fliedBeg <= remainCur)//没有飞到断点前不要统计
-				return;
-		}
-	}
+            if (remainCur > opLn)
+                remainCur = opLn;
+        }
+    }
 
     if (DBMessage *msg = new DBMessage(this, IMessage::Unknown, DBMessage::DB_GS))
     {
