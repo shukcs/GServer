@@ -419,7 +419,7 @@ void ObjectGS::processSuspend(const DBMessage &msg)
         sus->set_user(msg.GetRead("userID").ToString());
         sus->set_curridge(msg.GetRead("end").ToInt32());
         int l = msg.GetRead("continiuLat").ToInt32();
-        if (-180e7 <= l && l < 180e7)
+        if (-180e7 <= l && l <= 180e7)
         {
             sus->set_continiulat(l);
             sus->set_continiulon(msg.GetRead("continiuLon").ToInt32());
@@ -1334,6 +1334,11 @@ void ObjectGS::_prcsPostMission(PostOperationRoute *msg)
     {
         ms->AttachProto(msg);
         SendMsg(ms);
+        GetManager()->Log(0, m_id, 0, "PostOperationRoute acreage:%f, ridges:%d!", ort.acreage(), ort.ridgebeg_size());
+    }
+    else
+    {
+        delete msg;
     }
 }
 

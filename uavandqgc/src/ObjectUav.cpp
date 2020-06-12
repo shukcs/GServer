@@ -86,7 +86,7 @@ static bool getGeo(const string &buff, int &lat, int &lon)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectUav::ObjectUav(const string &id, const string &sim) : ObjectAbsPB(id), m_strSim(sim), m_bBind(false)
 , m_lastORNotify(0), m_lat(200), m_lon(0), m_tmLastBind(0), m_tmLastPos(0), m_tmValidLast(-1)
-, m_mission(NULL), m_nCurRidge(-1), m_bSys(false), m_disBeg(0)
+, m_mission(NULL), m_nCurRidge(-1), m_bSys(false), m_disBeg(0), m_allLength(0)
 {
     SetBuffSize(1024 * 2);
 }
@@ -582,12 +582,14 @@ bool ObjectUav::_parsePostOr(const OperationRoute &sor)
     if (m_mission->createtime() == 0)
         m_mission->set_createtime(Utility::msTimeTick());
     m_ridges.clear();
+    m_allLength = 0;
     for (int i = 0; i < sor.ridgebeg_size(); ++i)
     {
         int item = sor.ridgebeg(i);
         RidgeDat &dat = m_ridges[item];
         dat.length = genRidgeLength(item);
         dat.idx = beg + i;
+        m_allLength += dat.length;
     }
 
     return true;
@@ -615,19 +617,20 @@ void ObjectUav::_missionFinish(int lat, int lon)
       || m_nCurRidge<m_mission->beg()-1 )
         return;
 
-    double remainedCur = 0;
-    double opLn = GetOprLength();
-    if (ridgeFlying > m_nCurRidge)
+    double flied = GetOprLength();
+    bool bRemain = lat != INVALIDLat && ridgeFlying > m_nCurRidge;
+    if (bRemain)
     {
         int latT = INVALIDLat, lonT = INVALIDLat;
         if (getGeo(m_mission->missions(m_nCurItem), latT, latT))
         {
-            remainedCur = geoDistance(lat, lon, latT, lonT);
-            if (ridgeFlying == m_mission->beg() || remainedCur>opLn-m_disBeg)
+            double remainedCur = geoDistance(lat, lon, latT, lonT);
+            flied -= remainedCur;
+            if (ridgeFlying == m_mission->beg() && flied<m_disBeg)
                 return;		//没有飞到断点前不要统计
 
-            if (remainedCur > opLn)
-                remainedCur = opLn;
+            if (flied < 0)
+                flied = 0;
         }
     }
 
@@ -653,11 +656,11 @@ void ObjectUav::_missionFinish(int lat, int lon)
         }
 
         msg->SetWrite("end", m_nCurRidge);
-        msg->SetWrite("acreage", calculateOpArea(remainedCur));
+        msg->SetWrite("acreage", calculateOpArea(flied));
         SendMsg(msg);
     }
 
-    m_disBeg = ridgeFlying > m_nCurRidge ? opLn - remainedCur : 0;
+    m_disBeg = bRemain ? flied : 0;
     m_mission->set_beg(m_nCurRidge + 1);
     m_nCurRidge = -1;
 }
@@ -763,30 +766,24 @@ double ObjectUav::genRidgeLength(int idx)
     return 0;
 }
 
-float ObjectUav::calculateOpArea(double remainCur)
+float ObjectUav::calculateOpArea(double flied)const
 {
-    if (!m_mission || m_nCurItem<1 || m_nCurItem>m_mission->missions_size())
+    if (!m_mission || m_nCurItem<1)
         return 0;
 
-    double allOp = 0;
-    double oped = -m_disBeg; //已经飞完的
-    int opR = GetOprRidge();
+    double oped = flied; //下垄已经飞完的
     for (const pair<int32_t, RidgeDat> &itr : m_ridges)
     {
         int idx = itr.second.idx;
-        allOp += itr.second.length;
-        if (m_mission->beg()<= idx && idx <=opR)
-        {
+        if (m_mission->beg()<= idx && idx <=m_nCurRidge)
             oped += itr.second.length;
-            if (idx == opR)
-                oped -= remainCur; //没有飞完的
-        }
     }
 
-    if (allOp < 0.0001)
+    oped -= m_disBeg;
+    if (m_allLength < 0.0001)
         return m_mission->acreage();
 
-    return float(m_mission->acreage()*oped / allOp);
+    return float(m_mission->acreage()*oped / m_allLength);
 }
 
 int ObjectUav::GetOprRidge() const

@@ -58,7 +58,7 @@ bool ProtoMsg::Parse(const char *buff, uint32_t &len)
         {
             pos += n-8;
             uint32_t szMsg = Utility::fromBigendian(buff+pos);
-            if (szMsg > Max_PBSize)
+            if (szMsg > Max_PBSize || szMsg<8)
             {
                 pos += 18;
                 continue;

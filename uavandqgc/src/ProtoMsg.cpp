@@ -58,7 +58,7 @@ bool ProtoMsg::Parse(const char *buff, uint32_t &len)
         {
             pos += n-8;
             uint32_t szMsg = Utility::fromBigendian(buff+pos);
-            if (szMsg > Max_PBSize)
+            if (szMsg>Max_PBSize || szMsg<8)
             {
                 pos += 18;
                 continue;
@@ -140,10 +140,8 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new PostOperationRoute;                     //飞机作业
     else if (name == d_p_ClassName(PostOperationInformation))
         m_msg = new PostOperationInformation;               //GPS 位置信息
-    else if (name == d_p_ClassName(PostOperationRoute))
-        m_msg = new PostOperationRoute;                     //上传航线结果
     else if (name == d_p_ClassName(AckPostOperationRoute))
-        m_msg = new AckPostOperationRoute;                 //查询航线结果
+        m_msg = new AckPostOperationRoute;                 //上传航线结果
     else if (name == d_p_ClassName(SyscOperationRoutes))
         m_msg = new SyscOperationRoutes;                   //同步航线结果
     else if (name == d_p_ClassName(RequestRouteMissions))

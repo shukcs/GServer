@@ -80,14 +80,14 @@ private:
     void _prcsGps(const das::proto::GpsInformation &gps, const std::string &mod);
 private:
     bool _parsePostOr(const das::proto::OperationRoute &sor);
-    int32_t getCurRidgeByItem();
+    int32_t getCurRidgeByItem();    //最新飞完垄
     void _missionFinish(int lat, int lon);
     void savePos();
     void saveBind(bool bBind, const std::string &gs, bool bForce=false);
     void sendBindAck(int ack, int res, bool bind, const std::string &gs);
     void mavLinkfilter(const das::proto::PostStatus2GroundStation &msg);
     double genRidgeLength(int idx);
-    float calculateOpArea(double oped);
+    float calculateOpArea(double opedNext)const;
     int GetOprRidge()const;
 	double GetOprLength()const;
 private:
@@ -105,6 +105,7 @@ private:
     int                             m_nCurItem;
     bool                            m_bSys;
     double                          m_disBeg;
+    double                          m_allLength;
     std::string                     m_lastBinder;
     std::string                     m_authCheck;
     std::map<int32_t, RidgeDat>     m_ridges;   //地垄key:itemseq
