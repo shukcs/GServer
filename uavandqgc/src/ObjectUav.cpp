@@ -1,4 +1,4 @@
-#include "ObjectUav.h"
+ï»¿#include "ObjectUav.h"
 #include "ObjectManagers.h"
 #include "das.pb.h"
 #include "ProtoMsg.h"
@@ -24,28 +24,28 @@ enum
     INVALIDLat = (int)2e9,
 };
 #define MissionMod      "Mission"
-#define Landing         "Landing"
+#define ReturmMod       "Return"
 #define MagMission      "MagMsm"
 
 typedef union {
     float tmp[7];
     MAVPACKED(struct {
         float velocity[3];
-        uint16_t precision;     //º½Ïß¾«¶È
-        uint16_t gndHeight;     //µØÃæ¸ß¶È
-        uint16_t gpsVSpeed;     //´¹Ö±ËÙ¶È
-        uint16_t curMs;         //µ±Ç°ÈÎÎñµã
-        uint8_t fixType;        //¶¨Î»Ä£Ê½¼°Ä£¿é×´Ì¬
-        uint8_t baseMode;       //·É¿ØÄ£¿é×´Ì¬
-        uint8_t satellites;     //ÎÀÐÇÊý
-        uint8_t sysStat;        //·É¿Ø×´Ì¬
-        uint8_t missionRes : 4; //ÈÎÎñ×´Ì¬
-        uint8_t voltageErr : 4; //µçÑ¹±¨¾¯
-        uint8_t sprayState : 4; //ÅçÈ÷±¨¾¯
-        uint8_t magneErr : 2;   //Ð£´Å±¨¾¯
-        uint8_t gpsJam : 1;     //GPS¸ÉÈÅ
-        uint8_t stDown : 1;     //ÏÂÔØ×´Ì¬ 0:Ã»ÓÐ»òÕßÍê³É£¬1:ÕýÏÂÔØ
-        uint8_t sysType;        //·É¿ØÀàÐÍ
+        uint16_t precision;     //èˆªçº¿ç²¾åº¦
+        uint16_t gndHeight;     //åœ°é¢é«˜åº¦
+        uint16_t gpsVSpeed;     //åž‚ç›´é€Ÿåº¦
+        uint16_t curMs;         //å½“å‰ä»»åŠ¡ç‚¹
+        uint8_t fixType;        //å®šä½æ¨¡å¼åŠæ¨¡å—çŠ¶æ€
+        uint8_t baseMode;       //é£žæŽ§æ¨¡å—çŠ¶æ€
+        uint8_t satellites;     //å«æ˜Ÿæ•°
+        uint8_t sysStat;        //é£žæŽ§çŠ¶æ€
+        uint8_t missionRes : 4; //ä»»åŠ¡çŠ¶æ€
+        uint8_t voltageErr : 4; //ç”µåŽ‹æŠ¥è­¦
+        uint8_t sprayState : 4; //å–·æ´’æŠ¥è­¦
+        uint8_t magneErr : 2;   //æ ¡ç£æŠ¥è­¦
+        uint8_t gpsJam : 1;     //GPSå¹²æ‰°
+        uint8_t stDown : 1;     //ä¸‹è½½çŠ¶æ€ 0:æ²¡æœ‰æˆ–è€…å®Œæˆï¼Œ1:æ­£ä¸‹è½½
+        uint8_t sysType;        //é£žæŽ§ç±»åž‹
     });
 } GpsAdtionValue;
 
@@ -86,7 +86,7 @@ static bool getGeo(const string &buff, int &lat, int &lon)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectUav::ObjectUav(const string &id, const string &sim) : ObjectAbsPB(id), m_strSim(sim), m_bBind(false)
 , m_lastORNotify(0), m_lat(200), m_lon(0), m_tmLastBind(0), m_tmLastPos(0), m_tmValidLast(-1)
-, m_mission(NULL), m_nCurRidge(-1), m_bSys(false), m_disBeg(0), m_allLength(0)
+, m_mission(NULL), m_nCurRidge(-1), m_bSys(false), m_disBeg(0), m_allLength(0), m_lonSuspend(INVALIDLat)
 {
     SetBuffSize(1024 * 2);
 }
@@ -270,7 +270,7 @@ void ObjectUav::CheckTimer(uint64_t ms)
     { 
         if (m_mission && !m_bSys && (uint32_t)ms-m_lastORNotify > 500)
             _notifyUavUOR(*m_mission);
-        else if (ms-m_tmLastPos > 6000)//³¬Ê±¹Ø±Õ
+        else if (ms-m_tmLastPos > 6000)//è¶…æ—¶å…³é—­
             m_sock->Close();
     }
 }
@@ -308,12 +308,14 @@ void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg, uint64_
 
     m_tmLastPos = tm;
     int nCount = msg->oi_size();
-    for (int i = 0; i < nCount; i++)
+    if (m_bSys && m_mission && m_nCurRidge>=0 && m_mission->beg()<=m_mission->end())
     {
-        OperationInformation *oi = msg->mutable_oi(i);
-        oi->set_uavid(GetObjectID());
-        if (oi->has_gps() && oi->has_status() && m_mission && m_nCurRidge >= 0)
-            _prcsGps(oi->gps(), oi->status().operationmode());
+        for (int i = 0; i < nCount; i++)
+        {
+            OperationInformation *oi = msg->mutable_oi(i);
+            if (oi->has_gps() && oi->has_status())
+                _prcsGps(oi->gps(), oi->status().operationmode());
+        }
     }
 
     if (Uav2GSMessage *ms = new Uav2GSMessage(this, m_bBind?m_lastBinder:string()))
@@ -402,10 +404,7 @@ void ObjectUav::_prcsPosAuth(RequestPositionAuthentication *msg)
         ack->set_devid(GetObjectID());
         WaitSend(ack);
         if (n==1 && m_mission)
-		{
 			m_nCurRidge = 0;
-			m_nCurItem = 0;
-		}
     }
 }
 
@@ -538,7 +537,11 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
 {
     m_lat = gps.latitude() / 1e7;
     m_lon = gps.longitude() / 1e7;
-    if (m_bSys && mod==MissionMod)
+    if (MagMission == mod)
+    {
+        m_nCurRidge = -1;
+    }
+    else if (mod == ReturmMod || mod == MissionMod || m_latSuspend != INVALIDLat)
     {
         GpsAdtionValue gpsAdt = { 0 };
         int count = (sizeof(GpsAdtionValue) + sizeof(float) - 1) / sizeof(float);
@@ -546,21 +549,16 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
         {
             gpsAdt.tmp[i] = gps.velocity(i);
         }
-		m_nCurItem = gpsAdt.curMs;
-        int cur = getCurRidgeByItem();
+        int cur = getCurRidgeByItem(gpsAdt.curMs);
         if (cur > 0)
             m_nCurRidge = cur;
 
-        if (m_mission->end() == cur)
-            _missionFinish(INVALIDLat, INVALIDLat);
-    }
-    else if (mod == Landing && m_mission->end() == m_nCurRidge)
-    {
-        _missionFinish(INVALIDLat, INVALIDLat);
-    }
-    else if (MagMission == mod)
-    {
-        m_nCurRidge = -1;
+        if (m_mission->end() == cur || m_latSuspend!=INVALIDLat)
+        {
+            _missionFinish(gpsAdt.curMs);
+            m_latSuspend = INVALIDLat;
+            m_nCurRidge = -1;
+        }
     }
 }
 
@@ -595,74 +593,43 @@ bool ObjectUav::_parsePostOr(const OperationRoute &sor)
     return true;
 }
 
-int32_t ObjectUav::getCurRidgeByItem()
+int32_t ObjectUav::getCurRidgeByItem(int curItem)
 {
-    if (m_ridges.size() < 0 || m_nCurItem >= m_mission->missions_size())
+    if (m_ridges.size() < 0 || curItem >= m_mission->missions_size())
         return -1;
 
     for (const pair<int32_t, RidgeDat> &itr : m_ridges)
     {
-        if (m_nCurItem <= itr.first)
+        if (curItem <= itr.first)
             return itr.second.idx-1;
     }
     return m_mission->end();
 }
 
-void ObjectUav::_missionFinish(int lat, int lon)
+void ObjectUav::_missionFinish(int curItem)
 {
-    int ridgeFlying = GetOprRidge();
-    if ( !m_mission
-      || m_mission ->beg()>m_mission->end()
-      || ridgeFlying<m_mission->beg()
-      || m_nCurRidge<m_mission->beg()-1 )
+    int ridgeFlying = _getOprRidge(curItem);
+    if (!m_mission || ridgeFlying<m_mission->beg())
         return;
 
-    double flied = GetOprLength();
-    bool bRemain = lat != INVALIDLat && ridgeFlying > m_nCurRidge;
+    bool bRemain = m_latSuspend!=INVALIDLat && ridgeFlying>m_nCurRidge;
+    double flied = bRemain ? _getOprLength(curItem) : 0;
     if (bRemain)
     {
         int latT = INVALIDLat, lonT = INVALIDLat;
-        if (getGeo(m_mission->missions(m_nCurItem), latT, latT))
-        {
-            double remainedCur = geoDistance(lat, lon, latT, lonT);
-            flied -= remainedCur;
-            if (ridgeFlying == m_mission->beg() && flied<m_disBeg)
-                return;		//Ã»ÓÐ·Éµ½¶ÏµãÇ°²»ÒªÍ³¼Æ
+        if (getGeo(m_mission->missions(curItem), latT, latT))
+            flied -= geoDistance(m_latSuspend, m_lonSuspend, latT, lonT);
 
-            if (flied < 0)
-                flied = 0;
-        }
+        if (ridgeFlying==m_mission->beg() && flied<m_disBeg)
+            return;		          //æ²¡æœ‰é£žåˆ°æ–­ç‚¹ä¹‹å‰ä¸è¦ç»Ÿè®¡
+
+        if (flied < 0)
+            flied = 0;
     }
 
-    if (DBMessage *msg = new DBMessage(this, IMessage::Unknown, DBMessage::DB_GS))
-    {
-        msg->SetSql("insertMissions");
-        msg->SetWrite("userID", m_mission->gsid());
-        if (m_mission->has_landid())
-            msg->SetWrite("landId", m_mission->landid());
-        if (m_mission->has_rpid())
-            msg->SetWrite("planID", m_mission->rpid());
-
-        msg->SetWrite("uavID", m_mission->uavid());
-        msg->SetWrite("createTime", m_mission->createtime());
-        msg->SetWrite("finishTime", Utility::msTimeTick());
-        if (m_mission->has_beg())
-            msg->SetWrite("begin", m_mission->beg());
-
-        if (ridgeFlying > m_nCurRidge)
-        {
-            msg->SetWrite("continiuLat", lat);
-            msg->SetWrite("continiuLon", lon);
-        }
-
-        msg->SetWrite("end", m_nCurRidge);
-        msg->SetWrite("acreage", calculateOpArea(flied));
-        SendMsg(msg);
-    }
-
-    m_disBeg = bRemain ? flied : 0;
+    _saveMission(ridgeFlying > m_nCurRidge, calculateOpArea(flied));
+    m_disBeg = flied;
     m_mission->set_beg(m_nCurRidge + 1);
-    m_nCurRidge = -1;
 }
 
 void ObjectUav::savePos()
@@ -744,8 +711,11 @@ void ObjectUav::mavLinkfilter(const PostStatus2GroundStation &msg)
 
             mavlink_assist_position_t supports;
             mavlink_msg_assist_position_decode(&msg, &supports);
-            if ((supports.assist_state & 4) && m_nCurRidge>=0)
-                _missionFinish(supports.int_latitude, supports.int_longitude);
+            if ((supports.assist_state & 4) && m_nCurRidge >= 0)
+            {
+                m_latSuspend = supports.int_latitude;
+                m_lonSuspend = supports.int_longitude;
+            }
         }
     }
 }
@@ -768,10 +738,10 @@ double ObjectUav::genRidgeLength(int idx)
 
 float ObjectUav::calculateOpArea(double flied)const
 {
-    if (!m_mission || m_nCurItem<1)
+    if (!m_mission)
         return 0;
 
-    double oped = flied; //ÏÂÂ¢ÒÑ¾­·ÉÍêµÄ
+    double oped = flied; //ä¸‹åž„å·²ç»é£žå®Œçš„
     for (const pair<int32_t, RidgeDat> &itr : m_ridges)
     {
         int idx = itr.second.idx;
@@ -786,20 +756,49 @@ float ObjectUav::calculateOpArea(double flied)const
     return float(m_mission->acreage()*oped / m_allLength);
 }
 
-int ObjectUav::GetOprRidge() const
+int ObjectUav::_getOprRidge(int curItem) const
 {
-    auto itr = m_ridges.find(m_nCurItem);
+    auto itr = m_ridges.find(curItem);
     if (itr == m_ridges.end())
         return m_nCurRidge;
 
     return itr->second.idx;
 }
 
-double ObjectUav::GetOprLength() const
+double ObjectUav::_getOprLength(int curItem) const
 {
-    auto itr = m_ridges.find(m_nCurItem);
+    auto itr = m_ridges.find(curItem);
     if (itr == m_ridges.end())
         return 0;
 
     return itr->second.length;
+}
+
+void ObjectUav::_saveMission(bool bSuspend, double acrage)
+{
+    if (DBMessage *msg = new DBMessage(this, IMessage::Unknown, DBMessage::DB_GS))
+    {
+        msg->SetSql("insertMissions");
+        msg->SetWrite("userID", m_mission->gsid());
+        if (m_mission->has_landid())
+            msg->SetWrite("landId", m_mission->landid());
+        if (m_mission->has_rpid())
+            msg->SetWrite("planID", m_mission->rpid());
+
+        msg->SetWrite("uavID", m_mission->uavid());
+        msg->SetWrite("createTime", m_mission->createtime());
+        msg->SetWrite("finishTime", Utility::msTimeTick());
+
+        if (bSuspend)
+        {
+            msg->SetWrite("continiuLat", m_latSuspend);
+            msg->SetWrite("continiuLon", m_lonSuspend);
+        }
+
+        if (m_mission->has_beg())
+            msg->SetWrite("begin", m_mission->beg());
+        msg->SetWrite("end", m_nCurRidge);
+        msg->SetWrite("acreage", acrage);
+        SendMsg(msg);
+    }
 }

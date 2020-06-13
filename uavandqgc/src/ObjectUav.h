@@ -1,4 +1,4 @@
-#ifndef  __OBJECT_UAV_H__
+ï»¿#ifndef  __OBJECT_UAV_H__
 #define __OBJECT_UAV_H__
 
 #include "ObjectAbsPB.h"
@@ -80,16 +80,17 @@ private:
     void _prcsGps(const das::proto::GpsInformation &gps, const std::string &mod);
 private:
     bool _parsePostOr(const das::proto::OperationRoute &sor);
-    int32_t getCurRidgeByItem();    //×îÐÂ·ÉÍêÂ¢
-    void _missionFinish(int lat, int lon);
+    int32_t getCurRidgeByItem(int curItem);    //æœ€æ–°é£žå®Œåž„
+    void _missionFinish(int curItem);
     void savePos();
     void saveBind(bool bBind, const std::string &gs, bool bForce=false);
     void sendBindAck(int ack, int res, bool bind, const std::string &gs);
     void mavLinkfilter(const das::proto::PostStatus2GroundStation &msg);
     double genRidgeLength(int idx);
     float calculateOpArea(double opedNext)const;
-    int GetOprRidge()const;
-	double GetOprLength()const;
+    int _getOprRidge(int curItem)const;
+    double _getOprLength(int curItem)const;
+    void _saveMission(bool bSuspend, double acrage);
 private:
     friend class UavManager;
     std::string                     m_strSim;
@@ -102,13 +103,14 @@ private:
     int64_t                         m_tmValidLast;
     das::proto::OperationRoute      *m_mission;
     int                             m_nCurRidge;
-    int                             m_nCurItem;
     bool                            m_bSys;
     double                          m_disBeg;
     double                          m_allLength;
+    int                             m_latSuspend;
+    int                             m_lonSuspend;
     std::string                     m_lastBinder;
     std::string                     m_authCheck;
-    std::map<int32_t, RidgeDat>     m_ridges;   //µØÂ¢key:itemseq
+    std::map<int32_t, RidgeDat>     m_ridges;   //åœ°åž„key:itemseq
 };
 
 #ifdef SOCKETS_NAMESPACE
