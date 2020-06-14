@@ -75,9 +75,10 @@ void ObjectAbsPB::send(google::protobuf::Message *msg)
 
 void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
 {
-    Lock l(m_mtx);
+    WaitSin();
     if(msg)
         m_protosSend.Push(msg);
+    PostSin();
 }
 
 int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int sz)

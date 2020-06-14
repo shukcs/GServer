@@ -42,8 +42,8 @@ public:
 	bool IsDeleteOnExit()const;
 	void SetDeleteOnExit(bool x = true);
 
-    virtual void PostSim();  //sim increase, for syc
-    virtual void WaitSim();  //sim decrease, for syc
+    virtual void PostSin();  //sin decrease, for syc
+    virtual void WaitSin();  //sin increase, for syc
 protected:
     virtual bool RunLoop() = 0;//
 private:

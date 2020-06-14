@@ -110,10 +110,10 @@ void Thread::SetDeleteOnExit(bool x)
     m_bDeleteOnExit = x;
 }
 
-void Thread::PostSim()
+void Thread::PostSin()
 {
 }
 
-void Thread::WaitSim()
+void Thread::WaitSin()
 {
 }

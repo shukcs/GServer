@@ -60,6 +60,8 @@ protected:
     SHARED_DECL void Release();
     SHARED_DECL char *GetThreadBuff()const;
     SHARED_DECL int GetThreadBuffLength()const;
+    SHARED_DECL bool WaitSin();
+    SHARED_DECL void PostSin();
 protected:
     uint64_t                m_tmLastInfo;
     ISocket                 *m_sock;

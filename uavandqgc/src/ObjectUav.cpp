@@ -142,7 +142,7 @@ void ObjectUav::_respondLogin(int seq, int res)
 
 void ObjectUav::OnLogined(bool suc, ISocket *s)
 {
-    if (m_bLogined != suc && suc)
+    if (suc && m_bLogined != suc)
     {
         if (auto ms = new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Login))
             SendMsg(ms);
@@ -308,7 +308,7 @@ void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg, uint64_
 
     m_tmLastPos = tm;
     int nCount = msg->oi_size();
-    if (m_bSys && m_mission && m_nCurRidge>=0 && m_mission->beg()<=m_mission->end())
+    if (m_nCurRidge>=0)
     {
         for (int i = 0; i < nCount; i++)
         {
@@ -403,7 +403,7 @@ void ObjectUav::_prcsPosAuth(RequestPositionAuthentication *msg)
         GetManager()->Log(0, GetObjectID(), 0, "Arm!");
         ack->set_devid(GetObjectID());
         WaitSend(ack);
-        if (n==1 && m_mission)
+        if (n==1 && m_nCurRidge && m_bSys && m_mission && m_mission->beg()<=m_mission->end())
 			m_nCurRidge = 0;
     }
 }
@@ -553,7 +553,7 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
         if (cur > 0)
             m_nCurRidge = cur;
 
-        if (m_mission->end() == cur || m_latSuspend!=INVALIDLat)
+        if (m_mission->end() == cur || m_latSuspend != INVALIDLat)
         {
             _missionFinish(gpsAdt.curMs);
             m_latSuspend = INVALIDLat;

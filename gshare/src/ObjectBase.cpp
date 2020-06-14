@@ -353,6 +353,23 @@ int ILink::GetThreadBuffLength() const
 
     return 0;
 }
+
+bool ILink::WaitSin()
+{
+    if (m_mtx)
+    {
+        m_mtx->Lock();
+        return true;
+    }
+    return false;
+}
+
+void ILink::PostSin()
+{
+    if (m_mtx)
+        m_mtx->Unlock();
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //IObject
 /////////////////////////////////////////////////////////////////////////////////////////
