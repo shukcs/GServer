@@ -774,7 +774,7 @@ double ObjectUav::_getOprLength(int curItem) const
     return itr->second.length;
 }
 
-void ObjectUav::_saveMission(bool bSuspend, double acrage)
+void ObjectUav::_saveMission(bool bSuspend, float acrage)
 {
     if (DBMessage *msg = new DBMessage(this, IMessage::Unknown, DBMessage::DB_GS))
     {

@@ -90,7 +90,7 @@ private:
     float calculateOpArea(double opedNext)const;
     int _getOprRidge(int curItem)const;
     double _getOprLength(int curItem)const;
-    void _saveMission(bool bSuspend, double acrage);
+    void _saveMission(bool bSuspend, float acrage);
 private:
     friend class UavManager;
     std::string                     m_strSim;
