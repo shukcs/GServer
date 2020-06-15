@@ -91,6 +91,7 @@ private:
     int _getOprRidge(int curItem)const;
     double _getOprLength(int curItem)const;
     void _saveMission(bool bSuspend, float acrage);
+    bool isOtherSuspend(int lat, int lon)const;
 private:
     friend class UavManager;
     std::string                     m_strSim;
@@ -104,6 +105,7 @@ private:
     das::proto::OperationRoute      *m_mission;
     int                             m_nCurRidge;
     bool                            m_bSys;
+    bool                            m_bSuspend;
     double                          m_disBeg;
     double                          m_allLength;
     int                             m_latSuspend;

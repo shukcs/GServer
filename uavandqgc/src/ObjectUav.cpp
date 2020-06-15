@@ -86,7 +86,8 @@ static bool getGeo(const string &buff, int &lat, int &lon)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectUav::ObjectUav(const string &id, const string &sim) : ObjectAbsPB(id), m_strSim(sim), m_bBind(false)
 , m_lastORNotify(0), m_lat(200), m_lon(0), m_tmLastBind(0), m_tmLastPos(0), m_tmValidLast(-1)
-, m_mission(NULL), m_nCurRidge(-1), m_bSys(false), m_disBeg(0), m_allLength(0), m_lonSuspend(INVALIDLat)
+, m_mission(NULL), m_nCurRidge(-1), m_bSys(false), m_bSuspend(false), m_disBeg(0), m_allLength(0)
+, m_latSuspend(INVALIDLat)
 {
     SetBuffSize(1024 * 2);
 }
@@ -541,7 +542,7 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
     {
         m_nCurRidge = -1;
     }
-    else if (mod == ReturmMod || mod == MissionMod || m_latSuspend != INVALIDLat)
+    else if (mod == ReturmMod || mod == MissionMod || m_bSuspend)
     {
         GpsAdtionValue gpsAdt = { 0 };
         int count = (sizeof(GpsAdtionValue) + sizeof(float) - 1) / sizeof(float);
@@ -553,11 +554,11 @@ void ObjectUav::_prcsGps(const GpsInformation &gps, const string &mod)
         if (cur > 0)
             m_nCurRidge = cur;
 
-        if (m_mission->end() == cur || m_latSuspend != INVALIDLat)
+        if (m_mission->end() == cur || m_bSuspend)
         {
             _missionFinish(gpsAdt.curMs);
-            m_latSuspend = INVALIDLat;
             m_nCurRidge = -1;
+            m_bSuspend = false;
         }
     }
 }
@@ -589,6 +590,7 @@ bool ObjectUav::_parsePostOr(const OperationRoute &sor)
         dat.idx = beg + i;
         m_allLength += dat.length;
     }
+    m_latSuspend = INVALIDLat;
 
     return true;
 }
@@ -612,7 +614,7 @@ void ObjectUav::_missionFinish(int curItem)
     if (!m_mission || ridgeFlying<m_mission->beg())
         return;
 
-    bool bRemain = m_latSuspend!=INVALIDLat && ridgeFlying>m_nCurRidge;
+    bool bRemain = m_bSuspend && ridgeFlying>m_nCurRidge;
     double flied = bRemain ? _getOprLength(curItem) : 0;
     if (bRemain)
     {
@@ -711,10 +713,13 @@ void ObjectUav::mavLinkfilter(const PostStatus2GroundStation &msg)
 
             mavlink_assist_position_t supports;
             mavlink_msg_assist_position_decode(&msg, &supports);
-            if ((supports.assist_state & 4) && m_nCurRidge >= 0)
+            if (  m_nCurRidge >= 0
+               && (supports.assist_state & 4) == 4
+               && isOtherSuspend(supports.int_latitude, supports.int_longitude) )
             {
                 m_latSuspend = supports.int_latitude;
                 m_lonSuspend = supports.int_longitude;
+                m_bSuspend = true;
             }
         }
     }
@@ -801,4 +806,9 @@ void ObjectUav::_saveMission(bool bSuspend, float acrage)
         msg->SetWrite("acreage", acrage);
         SendMsg(msg);
     }
+}
+
+bool ObjectUav::isOtherSuspend(int lat, int lon) const
+{
+    return m_latSuspend != lat || m_lonSuspend != lon;
 }
