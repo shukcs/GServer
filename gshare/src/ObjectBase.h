@@ -32,7 +32,6 @@ class ILink
 public:
     SHARED_DECL ILink();
     SHARED_DECL virtual ~ILink();
-    SHARED_DECL virtual void SetSocket(ISocket *s);
 
     SHARED_DECL void OnSockClose(ISocket *s);
     SHARED_DECL virtual void CheckTimer(uint64_t ms);
@@ -51,6 +50,7 @@ public:
     BussinessThread *GetThread()const;
     void processSocket(ISocket *s, BussinessThread &t);
 protected:
+    SHARED_DECL virtual void SetSocket(ISocket *s);
     SHARED_DECL void SetBuffSize(uint16_t sz);
     SHARED_DECL bool ChangeLogind(bool b);
     SHARED_DECL virtual void OnLogined(bool suc, ISocket *s = NULL);

@@ -117,7 +117,14 @@ ILink *ObjectAbsPB::GetLink()
 void ObjectAbsPB::CheckTimer(uint64_t ms)
 {
     ILink::CheckTimer(ms);
-    if (!m_protosSend.IsEmpty() && CanSend())
+    if (!GetSocket())
+    {
+        while (!m_protosSend.IsEmpty())
+        {
+            delete m_protosSend.Pop();
+        }
+    }
+    else if (!m_protosSend.IsEmpty() && CanSend())
     {
         Message *msg = m_protosSend.Pop();
         send(msg);

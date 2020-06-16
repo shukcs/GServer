@@ -200,9 +200,8 @@ void UavManager::checkUavInfo(const RequestUavStatus &uia, const GS2UavMessage &
     const string &id = gs.GetSenderID();
     for (int i = 0; i < uia.uavid_size(); ++i)
     {
-        const string &tmp = uia.uavid(i);
-        string uav = Utility::Upper(tmp);
-        ObjectUav *o = (ObjectUav *)GetObjectByID(uav);
+        string uav = Utility::Upper(uia.uavid(i));
+        auto *o = (ObjectUav *)GetObjectByID(uav);
         if (o)
         {
             UavStatus *us = as.add_status();

@@ -961,23 +961,38 @@ void ObjectGS::_prcsSyncDeviceList(SyncDeviceList *ms)
     }
 }
 
-void ObjectGS::_prcsReqBind(das::proto::RequestBindUav *msg)
+void ObjectGS::_prcsReqBind(RequestBindUav *msg)
 {
     if (!msg)
         return;
 
-    if (GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid()))
+    if (GetAuth(ObjectGS::Type_UavManager) && !msg->uavid().empty())
+    {
+        if (msg->opid() == 1)
+            Subcribe(msg->uavid(), IMessage::PushUavSndInfo);
+        else if (msg->opid() == 0)
+            Unsubcribe(msg->uavid(), IMessage::PushUavSndInfo);
+    }
+
+    if (msg->opid() != 0 && msg->opid() != 1)
+    {
+        if (auto ack = new AckRequestBindUav())
+        {
+            ack->set_seqno(msg->seqno());
+            ack->set_opid(msg->opid());
+            ack->set_result(1);
+            WaitSend(ack);
+        }
+        delete msg;
+    }
+    else if (GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid()))
     {
         ms->AttachProto(msg);
         SendMsg(ms);
     }
-
-    if (GetAuth(ObjectGS::Type_UavManager) && !msg->uavid().empty())
+    else
     {
-        if (msg->opid() == 1)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-            Subcribe(msg->uavid(), IMessage::PushUavSndInfo);
-        else
-            Unsubcribe(msg->uavid(), IMessage::PushUavSndInfo);
+        delete msg;
     }
 }
 
