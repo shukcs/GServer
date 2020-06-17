@@ -218,11 +218,12 @@ void ObjectGS::ProcessMessage(IMessage *msg)
     }
 }
 
-void ObjectGS::PrcsProtoBuff(uint64_t)
+void ObjectGS::PrcsProtoBuff(uint64_t ms)
 {
     if (!m_p)
         return;
 
+    m_tmLastInfo = ms;
     string strMsg = m_p->GetMsgName();
     if (strMsg == d_p_ClassName(RequestGSIdentityAuthentication))
         _prcsLogin((RequestGSIdentityAuthentication*)m_p->GetProtoMessage());
@@ -915,7 +916,7 @@ void ObjectGS::CheckTimer(uint64_t ms)
     ms -= m_tmLastInfo;
     if (ms > 600000)
         Release();
-    else if (m_sock && ms > 30000)//超时关闭
+    else if (m_sock && ms > 10000)//超时关闭
         m_sock->Close();
 }
 
