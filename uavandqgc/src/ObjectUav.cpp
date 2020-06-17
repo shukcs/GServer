@@ -143,12 +143,20 @@ void ObjectUav::_respondLogin(int seq, int res)
 
 void ObjectUav::OnLogined(bool suc, ISocket *s)
 {
-    if (suc && m_bLogined != suc)
+    if (m_bLogined != suc)
     {
-        if (auto ms = new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Login))
-            SendMsg(ms);
+        if (suc)
+            SendMsg(new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Login));
+        else
+            savePos();
     }
     ObjectAbsPB::OnLogined(suc, s);
+}
+
+void ObjectUav::FreshLogin(uint64_t ms)
+{
+    m_tmLastPos = ms;
+    ILink::FreshLogin(ms);
 }
 
 bool ObjectUav::IsValid() const
@@ -278,14 +286,8 @@ void ObjectUav::CheckTimer(uint64_t ms)
 
 void ObjectUav::OnConnected(bool bConnected)
 {
-    ObjectAbsPB::OnConnected(bConnected);
     if (m_sock && bConnected)
         m_sock->ResizeBuff(WRITE_BUFFLEN);
-
-    if (bConnected)
-        m_tmLastPos = Utility::msTimeTick();
-    else
-        savePos();
 }
 
 void ObjectUav::InitObject()

@@ -170,11 +170,12 @@ void ObjectGV::ProcessMessage(IMessage *msg)
     }
 }
 
-void ObjectGV::PrcsProtoBuff(uint64_t)
+void ObjectGV::PrcsProtoBuff(uint64_t ms)
 {
     if (!m_p)
         return;
 
+    m_tmLastInfo = ms;
     string strMsg = m_p->GetMsgName();
     if (strMsg == d_p_ClassName(RequestGVIdentityAuthentication))
         _prcsLogin((RequestGVIdentityAuthentication*)m_p->GetProtoMessage());
@@ -235,4 +236,10 @@ void ObjectGV::CheckTimer(uint64_t ms)
 bool ObjectGV::IsAllowRelease() const
 {
     return false;
+}
+
+void ObjectGV::FreshLogin(uint64_t ms)
+{
+    m_tmLastInfo = ms;
+    ILink::FreshLogin(ms);
 }

@@ -63,7 +63,6 @@ public:
     IObjectManager *GetManagerByType(int tp)const;
 
     void ProcessReceive(ISocket *sock, void const *buf, int len);
-    void OnSocketClose(ISocket *s);
 protected:
     void PrcsMessages();
 private:

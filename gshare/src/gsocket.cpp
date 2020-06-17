@@ -200,16 +200,16 @@ void GSocket::OnRead(const void *buf, int len)
     if (m_object)
     {
         m_object->Receive(buf, len);
-        return;
     }
-    if (m_mgrLogin)
+    else if (m_mgrLogin)
     {
         m_mgrLogin->AddLoginData(this, buf, len);
-        return;
     }
-
-    m_buffSocket->Push(buf, len, true);
-    ObjectManagers::Instance().ProcessReceive(this, buf, len);
+    else
+    {
+        m_buffSocket->Push(buf, len, true);
+        ObjectManagers::Instance().ProcessReceive(this, buf, len);
+    }
 }
 
 void GSocket::OnClose()
@@ -217,8 +217,8 @@ void GSocket::OnClose()
     m_stat = ISocket::Closed;
     if (m_object)
         m_object->OnSockClose(this);
-    else
-        ObjectManagers::Instance().OnSocketClose(this);
+    else if (m_mgrLogin)
+        m_mgrLogin->OnSocketClose(this);
 
     if (m_parent)
         m_parent->ReleaseSocket(this);

@@ -77,6 +77,12 @@ ILink *ObjectTracker::GetLink()
     return NULL;
 }
 
+void ObjectTracker::FreshLogin(uint64_t ms)
+{
+    m_tmLast = ms;
+    ILink::FreshLogin(ms);
+}
+
 void ObjectTracker::SetSimId(const std::string &sim)
 {
     m_strSim = sim;
@@ -110,6 +116,7 @@ void ObjectTracker::PrcsProtoBuff(uint64_t ms)
     if (!m_p)
         return;
 
+    m_tmLast = ms;
     const string &name = m_p->GetMsgName();
     if (name == d_p_ClassName(RequestTrackerIdentityAuthentication))
         _respondLogin(((RequestTrackerIdentityAuthentication*)m_p->GetProtoMessage())->seqno(), 1);
@@ -181,13 +188,13 @@ void ObjectTracker::CheckTimer(uint64_t ms)
 {
     if (!m_sock && m_bLogined)
     {
-        if (auto ms = new ObjectSignal(this, ObjectGV::GVType(), ObjectSignal::S_Logout))
-            SendMsg(ms);
-        if (auto ms = new ObjectSignal(this, ObjectGXClinet::GXClinetType(), ObjectSignal::S_Logout))
-            SendMsg(ms);
+        if (auto mss = new ObjectSignal(this, ObjectGV::GVType(), ObjectSignal::S_Logout))
+            SendMsg(mss);
+        if (auto mss = new ObjectSignal(this, ObjectGXClinet::GXClinetType(), ObjectSignal::S_Logout))
+            SendMsg(mss);
     }
     ObjectAbsPB::CheckTimer(ms);
-    ms -= m_tmLastInfo;
+    ms -= m_tmLast;
     if (ms > 600000)
         Release();
     else if (m_sock && ms>10000)//³¬Ê±¹Ø±Õ

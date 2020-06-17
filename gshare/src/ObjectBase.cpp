@@ -43,7 +43,8 @@ public:
     IMutex *GetMutex()
     {
         if (!m_mtx)
-            m_mtx = new Mutex();
+            m_mtx = new Mutex;
+
         return m_mtx;
     }
 protected:
@@ -141,9 +142,8 @@ public:
 ///////////////////////////////////////////////////////////////////////////////////////
 //SocketHandle
 ///////////////////////////////////////////////////////////////////////////////////////
-ILink::ILink() : m_tmLastInfo(0), m_sock(NULL)
-, m_recv(NULL), m_mtx(NULL), m_thread(NULL), m_bLogined(false)
-, m_bChanged(false), m_bRelease(false)
+ILink::ILink() : m_sock(NULL), m_recv(NULL), m_mtxS(NULL), m_thread(NULL)
+, m_bLogined(false), m_bChanged(false), m_bRelease(false)
 {
 }
 
@@ -183,18 +183,14 @@ void ILink::OnLogined(bool suc, ISocket *s)
 
 bool ILink::CanSend() const
 {
-    Lock l(m_mtx);
+    Lock l(m_mtxS);
     return m_sock && m_sock->IsNoWriteData();
 }
 
 void ILink::OnSockClose(ISocket *s)
 {
-    if (m_sock == s && m_mtx)
-    {
-        m_mtx->Lock();
+    if (m_sock == s)
         SetSocket(NULL);
-        m_mtx->Unlock();
-    }
 }
 
 bool ILink::ChangeLogind(bool b)
@@ -224,7 +220,7 @@ void ILink::CheckTimer(uint64_t)
 
 int ILink::Send(const char *buf, int len)
 {
-    Lock l(m_mtx);
+    Lock l(m_mtxS);
     if (buf && len && m_sock)
         return m_sock->Send(len, buf);
 
@@ -235,14 +231,18 @@ void ILink::SetSocket(ISocket *s)
 {
     if (m_sock != s)
     {
+        WaitSin();
         m_sock = s;
         OnConnected(s != NULL);
+        PostSin();
         if (s)
-        {
             s->SetHandleLink(this);
-            m_tmLastInfo = Utility::msTimeTick();
-        }
     }
+}
+
+void ILink::FreshLogin(uint64_t)
+{
+    m_bRelease = false;
 }
 
 ISocket *ILink::GetSocket() const
@@ -257,10 +257,8 @@ bool ILink::Receive(const void *buf, int len)
         ret = m_recv->Push(buf, len);
 
     if (ret)
-    {
-        m_tmLastInfo = Utility::msTimeTick();
         m_bChanged = true;
-    }
+
     return ret;
 }
 
@@ -276,14 +274,14 @@ int ILink::CopyData(void *data, int len) const
 
 void ILink::SetMutex(IMutex *m)
 {
-    m_mtx = m;
+    m_mtxS = m;
 }
 
 void ILink::SetThread(BussinessThread *t)
 {
     m_thread = t;
     if (!t)
-        m_mtx = NULL;
+        m_mtxS = NULL;
 }
 
 BussinessThread *ILink::GetThread() const
@@ -291,19 +289,17 @@ BussinessThread *ILink::GetThread() const
     return m_thread;
 }
 
-void ILink::processSocket(ISocket *s, BussinessThread &t)
+void ILink::processSocket(ISocket &s, BussinessThread &t)
 {
     if (!m_sock)
     {
-        SetSocket(s);
-        if (s)
-            m_bRelease = false;
-
+        SetSocket(&s);
+        FreshLogin(Utility::msTimeTick());
         t.m_linksAdd.Push(this);
     }
-    else if (m_sock != s)
+    else if (m_sock != &s)
     {
-        s->Close();
+        s.Close();
     }
 }
 
@@ -356,9 +352,9 @@ int ILink::GetThreadBuffLength() const
 
 bool ILink::WaitSin()
 {
-    if (m_mtx)
+    if (m_mtxS)
     {
-        m_mtx->Lock();
+        m_mtxS->Lock();
         return true;
     }
     return false;
@@ -366,8 +362,8 @@ bool ILink::WaitSin()
 
 void ILink::PostSin()
 {
-    if (m_mtx)
-        m_mtx->Unlock();
+    if (m_mtxS)
+        m_mtxS->Unlock();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -442,10 +438,10 @@ IObjectManager *IObject::GetManagerByType(int tp)
 {
     return ObjectManagers::Instance().GetManagerByType(tp);
 }
-//////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
 //IObjectManager
-//////////////////////////////////////////////////////////////////
-IObjectManager::IObjectManager() : m_log(NULL), m_mtx(NULL)
+///////////////////////////////////////////////////////////////////
+IObjectManager::IObjectManager() : m_log(NULL), m_mtxM(new Mutex())
 {
 }
 
@@ -489,9 +485,9 @@ bool IObjectManager::ProcessBussiness(BussinessThread *s)
     {
         if (IsReceiveData())
         {
-            m_mtx->Lock();
+            m_mtxM->Lock();
             ret = ProcessLogins(s);
-            m_mtx->Unlock();
+            m_mtxM->Unlock();
         }
 
         PrcsSubcribes();
@@ -542,12 +538,7 @@ void IObjectManager::ProcessMessage()
         }
         else if (msg->IsValid())
         {
-            const StringList &sbs = getMessageSubcribes(msg);
-            for (const string id : sbs)
-            {
-                if (IObject *obj = GetObjectByID(id))
-                    obj->ProcessMessage(msg);
-            }
+            SubcribesProcess(msg);
             const string &rcv = msg->GetReceiverID();
             if (IObject *obj = GetObjectByID(rcv))
             {
@@ -583,12 +574,12 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
             ret = true;
             AddObject(o);
             if (ILink *link = o->GetLink())
-                link->processSocket(s, *GetPropertyThread());
+                link->processSocket(*s, *GetPropertyThread());
         }
         else if (buf.pos >= sizeof(buf.buff))
         {
-            s->Close();
             itr = m_loginSockets.erase(itr);
+            s->Close();
         }
         else
         {
@@ -661,6 +652,9 @@ IMessage *IObjectManager::PopRecycleMessage()
 
 bool IObjectManager::SendMsg(IMessage *msg)
 {
+    if (!msg)
+        return false;
+
     if (auto t = GetThread(msg?msg->CreateThreadID(): -1))
         return t->m_lsMsgSend.Push(msg);
 
@@ -680,9 +674,6 @@ void IObjectManager::InitThread(uint16_t nThread, uint16_t bufSz)
         BussinessThread *t = new BussinessThread(this);
         if(t)
         {
-            if (!m_mtx)
-                m_mtx = t->GetMutex();
-
             t->InitialBuff(bufSz);
             m_lsThread.push_back(t);
         }
@@ -704,11 +695,11 @@ void IObjectManager::OnSocketClose(ISocket *s)
     if (!IsReceiveData())
         return;
 
-    if (m_mtx && s)
+    if (m_mtxM && s)
     {
-        m_mtx->Lock();
+        m_mtxM->Lock();
         m_loginSockets.erase(s);
-        m_mtx->Unlock();
+        m_mtxM->Unlock();
     }
 }
 
@@ -717,7 +708,13 @@ void IObjectManager::AddLoginData(ISocket *s, const void *buf, int len)
     if (!s)
         return;
 
-    Lock l(m_mtx);
+    Lock l(m_mtxM);
+    if (auto l = s->GetHandleLink())
+    { 
+        l->Receive(buf, len);
+        return;
+    }
+
     bool bInitial = m_loginSockets.find(s) == m_loginSockets.end();
     LoginBuff &tmp = m_loginSockets[s];
     if (!bInitial)
@@ -768,6 +765,16 @@ void IObjectManager::PrcsSubcribes()
     }
 }
 
+void IObjectManager::SubcribesProcess(IMessage *msg)
+{
+    const StringList &sbs = getMessageSubcribes(msg);
+    for (const string id : sbs)
+    {
+        if (IObject *obj = GetObjectByID(id))
+            obj->ProcessMessage(msg);
+    }
+}
+
 const StringList &IObjectManager::getMessageSubcribes(IMessage *msg)
 {
     static StringList sEpty;
@@ -788,27 +795,27 @@ const StringList &IObjectManager::getMessageSubcribes(IMessage *msg)
 
 void IObjectManager::Subcribe(const string &dsub, const std::string &sender, int tpMsg)
 {
-    if (!m_mtx || dsub.empty() || sender.empty() || tpMsg < 0)
+    if (!m_mtxM || dsub.empty() || sender.empty() || tpMsg < 0)
         return;
 
     if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, tpMsg, true))
     {
-        m_mtx->Lock();
+        m_mtxM->Lock();
         m_subcribeQue.Push(sub);
-        m_mtx->Unlock();
+        m_mtxM->Unlock();
     }
 }
 
 void IObjectManager::Unsubcribe(const string &dsub, const std::string &sender, int tpMsg)
 {
-    if (!m_mtx || dsub.empty() || sender.empty() || tpMsg < 0)
+    if (!m_mtxM || dsub.empty() || sender.empty() || tpMsg < 0)
         return;
 
     if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, tpMsg, false))
     {
-        m_mtx->Lock();
+        m_mtxM->Lock();
         m_subcribeQue.Push(sub);
-        m_mtx->Unlock();
+        m_mtxM->Unlock();
     }
 }
 

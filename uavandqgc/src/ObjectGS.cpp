@@ -39,7 +39,6 @@ ObjectGS::~ObjectGS()
 
 void ObjectGS::OnConnected(bool bConnected)
 {
-    ObjectAbsPB::OnConnected(bConnected);
     if (bConnected && m_sock)
         m_sock->ResizeBuff(WRITE_BUFFLEN);
 
@@ -914,7 +913,7 @@ void ObjectGS::CheckTimer(uint64_t ms)
 {
     ObjectAbsPB::CheckTimer(ms);
     ms -= m_tmLastInfo;
-    if (ms > 3600000)
+    if (ms > 600000)
         Release();
     else if (m_sock && ms > 30000)//³¬Ê±¹Ø±Õ
         m_sock->Close();
@@ -923,6 +922,12 @@ void ObjectGS::CheckTimer(uint64_t ms)
 bool ObjectGS::IsAllowRelease() const
 {
     return !GetAuth(ObjectGS::Type_UavManager);
+}
+
+void ObjectGS::FreshLogin(uint64_t ms)
+{
+    m_tmLastInfo = ms;
+    ILink::FreshLogin(ms);
 }
 
 void ObjectGS::SetCheck(const std::string &str)

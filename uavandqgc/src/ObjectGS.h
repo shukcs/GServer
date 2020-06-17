@@ -88,6 +88,7 @@ protected:
     void InitObject();
     void CheckTimer(uint64_t ms);
     bool IsAllowRelease()const;
+    void FreshLogin(uint64_t ms);
 private:
     void _prcsLogin(das::proto::RequestGSIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
@@ -126,6 +127,7 @@ private:
     int             m_countLand;
     int             m_countPlan;
     int             m_seq;
+    uint64_t        m_tmLastInfo;
     std::list<std::string> m_friends;
 };
 

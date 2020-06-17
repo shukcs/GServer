@@ -55,6 +55,7 @@ protected:
     void InitObject();
     void CheckTimer(uint64_t ms);
     bool IsAllowRelease()const;
+    void FreshLogin(uint64_t ms);
 private:
     void _prcsLogin(das::proto::RequestGVIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
@@ -66,6 +67,7 @@ private:
     int             m_auth;
     std::string     m_pswd;
     int             m_seq;
+    uint64_t        m_tmLastInfo;
 };
 
 #ifdef SOCKETS_NAMESPACE

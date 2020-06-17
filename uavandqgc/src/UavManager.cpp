@@ -163,7 +163,7 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
         if (bLogin)
         {
             ret->SetSimId(sim);
-            ret->OnLogined(bLogin, s);
+            ret->OnLogined(true, s);
         }
         else
         {

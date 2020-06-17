@@ -27,7 +27,6 @@ public:
     static void SendProtoBuffTo(ISocket *s, const google::protobuf::Message &ms);
 protected:
     int ProcessReceive(void *buf, int len, uint64_t ms);
-    void OnConnected(bool bConnected);
     void WaitSend(google::protobuf::Message *msg);
     virtual void PrcsProtoBuff(uint64_t) = 0;
     static int serialize(const google::protobuf::Message &ms, char*buf, int sz);

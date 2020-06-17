@@ -205,11 +205,11 @@ ISocketManager *GXClinetManager::GetSocketManager() const
 
 void GXClinetManager::PushEvent(ObjectGXClinet *o)
 {
-    if (o && m_mtx)
+    if (o && m_mtxM)
     {
-        m_mtx->Lock();
+        m_mtxM->Lock();
         m_events.Push(o);
-        m_mtx->Unlock();
+        m_mtxM->Unlock();
     }
 }
 
@@ -261,7 +261,7 @@ void GXClinetManager::ProcessLogin(const std::string sender, int sendTy, bool bL
         if (obj)
         { 
             AddObject(obj);
-            obj->SetMutex(m_mtx);
+            obj->SetMutex(m_mtxM);
         }
     }
 

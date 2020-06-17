@@ -48,9 +48,10 @@ public:
     void SetMutex(IMutex *m);
     void SetThread(BussinessThread *t);
     BussinessThread *GetThread()const;
-    void processSocket(ISocket *s, BussinessThread &t);
+    void processSocket(ISocket &s, BussinessThread &t);
 protected:
     SHARED_DECL virtual void SetSocket(ISocket *s);
+    SHARED_DECL virtual void FreshLogin(uint64_t ms);
     SHARED_DECL void SetBuffSize(uint16_t sz);
     SHARED_DECL bool ChangeLogind(bool b);
     SHARED_DECL virtual void OnLogined(bool suc, ISocket *s = NULL);
@@ -63,10 +64,9 @@ protected:
     SHARED_DECL bool WaitSin();
     SHARED_DECL void PostSin();
 protected:
-    uint64_t                m_tmLastInfo;
     ISocket                 *m_sock;
     LoopQueBuff             *m_recv;
-    IMutex                  *m_mtx;
+    IMutex                  *m_mtxS;
     BussinessThread         *m_thread;
     bool                    m_bLogined;
     bool                    m_bChanged;
@@ -192,6 +192,7 @@ protected:
     SHARED_DECL bool Exist(IObject *obj)const;
     const StringList &getMessageSubcribes(IMessage *msg);
     void PrcsSubcribes();
+    void SubcribesProcess(IMessage *msg);
 protected:
     BussinessThread *GetPropertyThread()const;
 protected:
@@ -199,7 +200,7 @@ protected:
 protected:
     friend class ObjectManagers;
     ILog                            *m_log;
-    IMutex                          *m_mtx;
+    IMutex                          *m_mtxM;
     std::list<BussinessThread*>     m_lsThread;
     MapObjects                      m_objects;
     MessageQue                      m_messages;         //接收消息队列

@@ -155,14 +155,6 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
     }
 }
 
-void ObjectManagers::OnSocketClose(ISocket *s)
-{
-    for (auto itr = m_managersMap.begin(); itr != m_managersMap.end(); ++itr)
-    {
-        itr->second->OnSocketClose(s);
-    }
-}
-
 void ObjectManagers::PrcsMessages()
 {
     while (!m_mgrsRemove.IsEmpty())

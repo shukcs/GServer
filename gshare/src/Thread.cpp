@@ -77,13 +77,13 @@ bool Thread::IsRunning()const
  	return m_running;
 }
 
-void Thread::SetRunning(bool x)
+void Thread::SetRunning(bool bRun)
 {
-    if (m_running == x)
+    if (m_running == bRun)
         return;
 
- 	m_running = x;
-    if (m_running)
+    m_running = bRun;
+    if (bRun)
     {
 #if defined _WIN32 || defined _WIN64
         //m_thread = ::CreateThread(NULL, 0, StartThread, this, 0, &m_dwThreadId);

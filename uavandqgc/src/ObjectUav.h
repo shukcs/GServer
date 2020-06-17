@@ -60,6 +60,7 @@ protected:
     void InitObject();
     void _respondLogin(int seq, int res);
     void OnLogined(bool suc, ISocket *s=NULL);
+    void FreshLogin(uint64_t ms);
 protected:
     static IMessage *AckControl2Uav(const das::proto::PostControl2Uav &msg, int res, ObjectUav *obj = NULL);
 private:

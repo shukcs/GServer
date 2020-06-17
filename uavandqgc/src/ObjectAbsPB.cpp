@@ -16,7 +16,7 @@ using namespace std;
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
 ObjectAbsPB::ObjectAbsPB(const std::string &id): IObject(id)
-, ILink(), m_p(NULL)
+, ILink(), m_p(new ProtoMsg)
 {
 }
 
@@ -53,16 +53,6 @@ int ObjectAbsPB::ProcessReceive(void *buf, int len, uint64_t ms)
     }
     pos += l;
     return pos;
-}
-
-void ObjectAbsPB::OnConnected(bool bConnected)
-{
-    if (bConnected)
-    {
-        if (!m_p)
-            m_p = new ProtoMsg;
-        return;
-    }
 }
 
 void ObjectAbsPB::send(google::protobuf::Message *msg)

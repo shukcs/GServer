@@ -50,6 +50,7 @@ protected:
     void OnLogined(bool suc, ISocket *s = NULL);
     bool IsAllowRelease()const;
     ILink *GetLink();
+    void FreshLogin(uint64_t ms);
 private:
     void _prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
     void _prcsOperationInformation(das::proto::PostOperationInformation *msg, uint64_t ms);
