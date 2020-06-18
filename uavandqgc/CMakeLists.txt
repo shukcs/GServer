@@ -37,6 +37,8 @@ set(SRC_LIST
 	src/ProtoMsg.h
 	src/UavManager.cpp
 	src/UavManager.h
+	src/UavMission.cpp
+	src/UavMission.h
 )
 
 add_library(${PACKAGE_NAME} SHARED ${SRC_LIST})

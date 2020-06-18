@@ -23,6 +23,7 @@
     <ClInclude Include="src\ObjectUav.h" />
     <ClInclude Include="src\ProtoMsg.h" />
     <ClInclude Include="src\UavManager.h" />
+    <ClInclude Include="src\UavMission.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="proto\das.pb.cc" />
@@ -37,6 +38,7 @@
     <ClCompile Include="src\ObjectUav.cpp" />
     <ClCompile Include="src\ProtoMsg.cpp" />
     <ClCompile Include="src\UavManager.cpp" />
+    <ClCompile Include="src\UavMission.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{871ACB39-A058-4472-9B43-9176F07853CC}</ProjectGuid>

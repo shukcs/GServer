@@ -24,6 +24,7 @@ namespace das {
     }
 }
 
+class UavMission;
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
@@ -75,45 +76,23 @@ private:
     void processBaseInfo(const DBMessage &msg);
 
     bool _isBind(const std::string &gs)const;
-    bool _hasMission(const das::proto::RequestRouteMissions &req)const;
-    void _notifyUavUOR(const das::proto::OperationRoute &ort);
     int _checkPos(double lat, double lon, double alt);
-    void _prcsGps(const das::proto::GpsInformation &gps, const std::string &mod);
 private:
-    bool _parsePostOr(const das::proto::OperationRoute &sor);
-    int32_t getCurRidgeByItem(int curItem);    //最新飞完垄
-    void _missionFinish(int curItem);
     void savePos();
     void saveBind(bool bBind, const std::string &gs, bool bForce=false);
     void sendBindAck(int ack, int res, bool bind, const std::string &gs);
-    void mavLinkfilter(const das::proto::PostStatus2GroundStation &msg);
-    double genRidgeLength(int idx);
-    float calculateOpArea(double opedNext)const;
-    int _getOprRidge(int curItem)const;
-    double _getOprLength(int curItem)const;
-    void _saveMission(bool bSuspend, float acrage);
-    bool isOtherSuspend(int lat, int lon)const;
 private:
     friend class UavManager;
+    UavMission                      *m_mission;
     std::string                     m_strSim;
     bool                            m_bBind;
-    uint32_t                        m_lastORNotify;
     double                          m_lat;
     double                          m_lon;
     int64_t                         m_tmLastBind;
     uint64_t                        m_tmLastPos;
     int64_t                         m_tmValidLast;
-    das::proto::OperationRoute      *m_mission;
-    int                             m_nCurRidge;
-    bool                            m_bSys;
-    bool                            m_bSuspend;
-    double                          m_disBeg;
-    double                          m_allLength;
-    int                             m_latSuspend;
-    int                             m_lonSuspend;
     std::string                     m_lastBinder;
     std::string                     m_authCheck;
-    std::map<int32_t, RidgeDat>     m_ridges;   //地垄key:itemseq
 };
 
 #ifdef SOCKETS_NAMESPACE
