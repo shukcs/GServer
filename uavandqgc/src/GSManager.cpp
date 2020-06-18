@@ -49,6 +49,7 @@ int GSManager::AddDatabaseUser(const string &user, const string &pswd, ObjectGS 
         msg->SetWrite("user", user);
         msg->SetWrite("pswd", pswd);
         msg->SetWrite("auth", auth);
+        msg->SetWrite("regTm", (int64_t)Utility::secTimeCount());
         SendMsg(msg);
         return 1;
     }

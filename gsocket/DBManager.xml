@@ -7,6 +7,7 @@
 					<field name="user" type="char(32)" constraint="primary key"/>
 					<field name="pswd" type="char(32)" />
 					<field name="auth" type="INT" constraint="DEFAULT '1'"/>
+					<field name="regTm" type="BIGINT" />	
 				</table>	
 				<table name="GSFrienfs">
 					<field name="id" type="char(64)" constraint="primary key"/>
@@ -67,6 +68,7 @@
 					<item name="user" type="Write" />
 					<item name="pswd" type="Write" />
 					<item name="auth" ref="GSInfo" type="Write" />
+					<item name="regTm" ref="GSInfo" type="Write" />
 				</SQL>
 				<SQL name="queryGSInfo" table="GSInfo" type="Select" >
 					<item name="pswd" ref="GSInfo" type="Read" />

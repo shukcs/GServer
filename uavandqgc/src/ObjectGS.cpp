@@ -915,9 +915,14 @@ void ObjectGS::CheckTimer(uint64_t ms)
     ObjectAbsPB::CheckTimer(ms);
     ms -= m_tmLastInfo;
     if (ms > 600000)
+    {
         Release();
-    else if (m_sock && ms > 10000)//超时关闭
-        m_sock->Close();
+    }
+    else if (m_sock)
+    { 
+        if (ms > 60000 || (m_check.empty() && ms > 10000))//超时关闭
+            m_sock->Close();
+    }
 }
 
 bool ObjectGS::IsAllowRelease() const
