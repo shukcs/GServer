@@ -63,6 +63,7 @@ protected:
     SHARED_DECL int GetThreadBuffLength()const;
     SHARED_DECL bool WaitSin();
     SHARED_DECL void PostSin();
+    SHARED_DECL bool IsLinkThread()const;
 protected:
     ISocket                 *m_sock;
     LoopQueBuff             *m_recv;

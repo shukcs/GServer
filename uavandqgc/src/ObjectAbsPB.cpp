@@ -55,20 +55,87 @@ int ObjectAbsPB::ProcessReceive(void *buf, int len, uint64_t ms)
     return pos;
 }
 
-void ObjectAbsPB::send(google::protobuf::Message *msg)
+void ObjectAbsPB::send()
 {
-    char *buf = GetThreadBuff();
-    int sendSz = serialize(*msg, buf, GetThreadBuffLength());
-    if (sendSz == Send(buf, sendSz))
-        delete msg;
+    if (!CanSend())
+        return;
+
+    for (auto itr = m_protosList.begin(); itr != m_protosList.end(); )
+    {
+        char *buf = GetThreadBuff();
+        int sendSz = serialize(**itr, buf, GetThreadBuffLength());
+        if (sendSz == Send(buf, sendSz))
+        {
+            delete *itr;
+            m_protosList.erase(itr);
+        }
+        return;
+    }
+    google::protobuf::Message *pb = NULL;
+    WaitSin();
+    auto itr = m_protosMap.begin();
+    for (; itr != m_protosMap.end(); ++itr)
+    {
+        if (!itr->second)
+        {
+            pb = itr->first;
+            break;
+        }
+    }
+    PostSin();
+    if (pb)
+    {
+        char *buf = GetThreadBuff();
+        int sendSz = serialize(*pb, buf, GetThreadBuffLength());
+        if (sendSz == Send(buf, sendSz))
+            itr->second = true;
+    }
+
+}
+
+void ObjectAbsPB::clearProto()
+{
+    for (auto itr = m_protosList.begin(); itr != m_protosList.end(); )
+    {
+        delete *itr;
+        itr = m_protosList.erase(itr);
+    }
+
+    WaitSin();
+    for (auto itr = m_protosMap.begin(); itr != m_protosMap.end(); ++itr)
+    {
+        itr->second = true;
+    }
+    PostSin();
 }
 
 void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
 {
-    WaitSin();
-    if(msg)
-        m_protosSend.Push(msg);
-    PostSin();
+    if (!msg)
+        return;
+
+    if (!IsLinkThread())
+    {
+        m_protosList.push_back(msg);
+    }
+    else 
+    {
+        WaitSin();
+        for (auto itr = m_protosMap.begin(); itr != m_protosMap.end(); )
+        {
+            if (itr->second)
+            {
+                delete itr->first;
+                itr = m_protosMap.erase(itr);
+            }
+            else
+            {
+                ++itr;
+            }
+        }
+        m_protosMap[msg] = false;
+        PostSin();
+    }
 }
 
 int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int sz)
@@ -109,16 +176,10 @@ void ObjectAbsPB::CheckTimer(uint64_t ms)
     ILink::CheckTimer(ms);
     if (!GetSocket())
     {
-        while (!m_protosSend.IsEmpty())
-        {
-            delete m_protosSend.Pop();
-        }
+        clearProto();
+        return;
     }
-    else if (!m_protosSend.IsEmpty() && CanSend())
-    {
-        Message *msg = m_protosSend.Pop();
-        send(msg);
-    }
+    send();
 }
 
 void ObjectAbsPB::CopyAndSend(const Message &msg)

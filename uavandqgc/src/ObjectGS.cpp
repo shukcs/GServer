@@ -875,13 +875,13 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
         }
         if (planParamsItr != planParams.end())
         {
-            OperationPlan *op = new OperationPlan;
+            auto op = new OperationPlan;
             op->ParseFromArray(planParamsItr->c_str(), planParamsItr->size());
             od->set_allocated_op(op);
             ++planParamsItr;
         }
     }
-    if (!m_protosSend.IsEmpty() && ack!=m_protosSend.Last())
+    if(ack)
         WaitSend(ack);
 }
 

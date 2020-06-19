@@ -18,6 +18,8 @@ using namespace SOCKETS_NAMESPACE;
 class ProtoMsg;
 class ObjectAbsPB : public IObject, public ILink
 {
+    typedef std::map<google::protobuf::Message*, bool> MapMessage;
+    typedef std::list<google::protobuf::Message*> MessageList;
 public:
     ObjectAbsPB(const std::string &id);
     ~ObjectAbsPB();
@@ -35,10 +37,12 @@ protected:
     void CheckTimer(uint64_t ms);
     void CopyAndSend(const google::protobuf::Message &msg);
 private:
-    void send(google::protobuf::Message *msg);
+    void send();
+    void clearProto();
 protected:
-    ProtoMsg                              *m_p;
-    LoopQueue<google::protobuf::Message*> m_protosSend;
+    ProtoMsg     *m_p;
+    MapMessage   m_protosMap;
+    MessageList  m_protosList;
 };
 
 class AbsPBManager : public IObjectManager

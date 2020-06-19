@@ -25,7 +25,7 @@ public:
 protected:
     void initNode(uint32_t elSz);
 protected:
-    char                *m_buff;
+    void                *m_buff;
     DataNode            *m_next;
 };
 
