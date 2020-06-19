@@ -161,6 +161,7 @@ void ObjectGS::ProcessMessage(IMessage *msg)
             break;
         case IMessage::SyncDeviceis:
             ackSyncDeviceis();
+            break;
         case IMessage::SuspendRslt:
             processSuspend(*(DBMessage*)msg);
             break;
