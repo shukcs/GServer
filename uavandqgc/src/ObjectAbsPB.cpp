@@ -55,15 +55,14 @@ int ObjectAbsPB::ProcessReceive(void *buf, int len, uint64_t ms)
     return pos;
 }
 
-void ObjectAbsPB::send()
+void ObjectAbsPB::send(char *buf, int len)
 {
     if (!CanSend())
         return;
 
     for (auto itr = m_protosList.begin(); itr != m_protosList.end(); )
     {
-        char *buf = GetThreadBuff();
-        int sendSz = serialize(**itr, buf, GetThreadBuffLength());
+        int sendSz = serialize(**itr, buf, len);
         if (sendSz == Send(buf, sendSz))
         {
             delete *itr;
@@ -85,8 +84,7 @@ void ObjectAbsPB::send()
     PostSin();
     if (pb)
     {
-        char *buf = GetThreadBuff();
-        int sendSz = serialize(*pb, buf, GetThreadBuffLength());
+        int sendSz = serialize(*pb, buf, len);
         if (sendSz == Send(buf, sendSz))
             itr->second = true;
     }
@@ -171,15 +169,15 @@ ILink *ObjectAbsPB::GetLink()
     return this;
 }
 
-void ObjectAbsPB::CheckTimer(uint64_t ms)
+void ObjectAbsPB::CheckTimer(uint64_t ms, char *buf, int len)
 {
-    ILink::CheckTimer(ms);
+    ILink::CheckTimer(ms, buf, len);
     if (!GetSocket())
     {
         clearProto();
         return;
     }
-    send();
+    send(buf, len);
 }
 
 void ObjectAbsPB::CopyAndSend(const Message &msg)

@@ -34,10 +34,10 @@ protected:
     static int serialize(const google::protobuf::Message &ms, char*buf, int sz);
     IObject *GetParObject();
     ILink *GetLink();
-    void CheckTimer(uint64_t ms);
+    void CheckTimer(uint64_t ms, char *buf, int len);
     void CopyAndSend(const google::protobuf::Message &msg);
 private:
-    void send();
+    void send(char *buf, int len);
     void clearProto();
 protected:
     ProtoMsg     *m_p;

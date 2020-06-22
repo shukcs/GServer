@@ -34,7 +34,7 @@ public:
     SHARED_DECL virtual ~ILink();
 
     SHARED_DECL void OnSockClose(ISocket *s);
-    SHARED_DECL virtual void CheckTimer(uint64_t ms);
+    SHARED_DECL virtual void CheckTimer(uint64_t ms, char *buf, int len);
     SHARED_DECL bool IsRealse();
     SHARED_DECL ISocket *GetSocket()const;
 public:
@@ -59,8 +59,6 @@ protected:
     SHARED_DECL int Send(const char *buf, int len); //调用需在CheckTimer中
     SHARED_DECL void ClearRecv(int n = -1);
     SHARED_DECL void Release();
-    SHARED_DECL char *GetThreadBuff()const;
-    SHARED_DECL int GetThreadBuffLength()const;
     SHARED_DECL bool WaitSin();
     SHARED_DECL void PostSin();
     SHARED_DECL bool IsLinkThread()const;

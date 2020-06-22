@@ -86,7 +86,7 @@ protected:
     void processMissions(const DBMessage &msg);
     void processMissionsAcreage(const DBMessage &msg);
     void InitObject();
-    void CheckTimer(uint64_t ms);
+    void CheckTimer(uint64_t ms, char *buf, int len);
     bool IsAllowRelease()const;
     void FreshLogin(uint64_t ms);
 private:

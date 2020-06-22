@@ -205,7 +205,7 @@ bool ILink::ChangeLogind(bool b)
     return true;
 }
 
-void ILink::CheckTimer(uint64_t)
+void ILink::CheckTimer(uint64_t, char *, int)
 {
     IObject *o = GetParObject();
     if (o)
@@ -320,7 +320,7 @@ bool ILink::PrcsBussiness(uint64_t ms, BussinessThread &t)
         ClearRecv(len);
         ret = true;
     }
-    CheckTimer(ms);
+    CheckTimer(ms, t.m_buff, t.m_szBuff);
     return ret;
 }
 
@@ -332,22 +332,6 @@ void ILink::Release()
 bool ILink::IsRealse()
 {
     return m_bRelease;
-}
-
-char *ILink::GetThreadBuff() const
-{
-    if (m_thread)
-        return m_thread->m_buff;
-
-    return NULL;
-}
-
-int ILink::GetThreadBuffLength() const
-{
-    if (m_thread)
-        return m_thread->m_szBuff;
-
-    return 0;
 }
 
 bool ILink::WaitSin()

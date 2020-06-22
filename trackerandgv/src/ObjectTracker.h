@@ -43,7 +43,7 @@ protected:
     virtual void ProcessMessage(IMessage *msg);
     void PrcsProtoBuff(uint64_t);
 
-    void CheckTimer(uint64_t ms);
+    void CheckTimer(uint64_t ms, char *buf, int len);
     void OnConnected(bool bConnected);
     void InitObject();
     void _respondLogin(int seq, int res);

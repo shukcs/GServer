@@ -62,10 +62,9 @@ void ObjectAbsPB::OnConnected(bool bConnected)
     }
 }
 
-void ObjectAbsPB::send(google::protobuf::Message *msg)
+void ObjectAbsPB::send(google::protobuf::Message *msg, char *buf, int len)
 {
-    char *buf = GetThreadBuff();
-    int sendSz = serialize(*msg, buf, GetThreadBuffLength());
+    int sendSz = serialize(*msg, buf, len);
     if (sendSz == Send(buf, sendSz))
         delete msg;
 }
@@ -111,13 +110,13 @@ ILink *ObjectAbsPB::GetLink()
     return this;
 }
 
-void ObjectAbsPB::CheckTimer(uint64_t ms)
+void ObjectAbsPB::CheckTimer(uint64_t ms, char *buf, int len)
 {
-    ILink::CheckTimer(ms);
+    ILink::CheckTimer(ms, buf, len);
     if (!m_protosSend.IsEmpty() && CanSend())
     {
         Message *msg = m_protosSend.Pop();
-        send(msg);
+        send(msg, buf, len);
     }
 }
 

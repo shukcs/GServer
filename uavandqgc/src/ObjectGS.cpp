@@ -911,9 +911,9 @@ void ObjectGS::InitObject()
     }
 }
 
-void ObjectGS::CheckTimer(uint64_t ms)
+void ObjectGS::CheckTimer(uint64_t ms, char *buf, int len)
 {
-    ObjectAbsPB::CheckTimer(ms);
+    ObjectAbsPB::CheckTimer(ms, buf, len);
     ms -= m_tmLastInfo;
     if (ms > 600000)
     {

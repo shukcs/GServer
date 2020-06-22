@@ -198,7 +198,7 @@ void ObjectUav::PrcsProtoBuff(uint64_t tm)
         _prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
 }
 
-void ObjectUav::CheckTimer(uint64_t ms)
+void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
 {
     if (!m_sock && m_bLogined)
     {
@@ -206,7 +206,7 @@ void ObjectUav::CheckTimer(uint64_t ms)
             SendMsg(ms);
     }
 
-    ObjectAbsPB::CheckTimer(ms);
+    ObjectAbsPB::CheckTimer(ms, buf, len);
     if (ms-m_tmLastPos > 600000)
     {
         Release();

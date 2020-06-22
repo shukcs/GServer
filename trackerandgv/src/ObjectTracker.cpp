@@ -184,7 +184,7 @@ void ObjectTracker::_ackPartParameters(const std::string &gv, const das::proto::
     }
 }
 
-void ObjectTracker::CheckTimer(uint64_t ms)
+void ObjectTracker::CheckTimer(uint64_t ms, char *buf, int len)
 {
     if (!m_sock && m_bLogined)
     {
@@ -193,7 +193,7 @@ void ObjectTracker::CheckTimer(uint64_t ms)
         if (auto mss = new ObjectSignal(this, ObjectGXClinet::GXClinetType(), ObjectSignal::S_Logout))
             SendMsg(mss);
     }
-    ObjectAbsPB::CheckTimer(ms);
+    ObjectAbsPB::CheckTimer(ms, buf, len);
     ms -= m_tmLast;
     if (ms > 600000)
         Release();
