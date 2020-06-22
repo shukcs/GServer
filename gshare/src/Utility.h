@@ -32,6 +32,7 @@ namespace Utility
     SHARED_DECL int64_t usTimeTick();
     SHARED_DECL int64_t msTimeTick();
     SHARED_DECL long secTimeCount();
+    SHARED_DECL std::string dateString(int64_t ms, const std::string &fmt="y-M-d h:m:s.z");
 
     //utf8 utf16 local8bit相互转换，linux Unicode为32位
     SHARED_DECL std::wstring Utf8ToUnicode(const std::string & str);

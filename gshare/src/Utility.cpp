@@ -459,6 +459,70 @@ long Utility::secTimeCount()
     return long(sec.count());
 }
 
+string Utility::dateString(int64_t ms, const std::string &fmt/*="y-M-d h-m-s"*/)
+{
+    string strData;
+    auto src = fmt.c_str();
+    int count = 0;
+    char last = 0;
+    char tmp[24];
+    char f[12] = { '%' };
+    auto sec = ms / 1000;
+    tm *tmNow = localtime(&sec);
+    for (size_t i = 0; i < fmt.length(); ++i)
+    {
+        switch (src[i])
+        {
+        case 'y':
+        case 'M':
+        case 'd':
+        case 'h':
+        case 'm':
+        case 's':
+        case 'z':
+            last = src[i]; count++; break;
+        default:
+            strData += src[i]; break;
+        }
+        if (last && (i+1==fmt.length() || last!=src[i+1]))
+        {
+            if (count > 1)
+                snprintf(f + 1, 10, "0%dd", count);
+            else
+                strcpy(f, "%d");
+            switch (last)
+            {
+            case 'y':
+                snprintf(tmp, 23, f, tmNow->tm_year + 1900);
+                strData += tmp; break;
+            case 'M':
+                snprintf(tmp, 23, f, tmNow->tm_mon + 1);
+                strData += tmp; break;
+            case 'd':
+                snprintf(tmp, 23, f, tmNow->tm_mday);
+                strData += tmp; break;
+            case 'h':
+                snprintf(tmp, 23, f, tmNow->tm_hour);
+                strData += tmp; break;
+            case 'm':
+                snprintf(tmp, 23, f, tmNow->tm_min);
+                strData += tmp; break;
+            case 's':
+                snprintf(tmp, 23, f, tmNow->tm_sec);
+                strData += tmp; break;
+            case 'z':
+                snprintf(tmp, 23, f, ms % 1000);
+                strData += tmp; break;
+            default:
+                break;
+            }
+            count = 0;
+            last = 0;
+        }
+    }
+    return strData;
+}
+
 bool Utility::isipv4(const string& str)
 {
 	int dots = 0;
