@@ -1442,13 +1442,6 @@ void Utility::Dump(const std::string &file, int sig)
         return;
 
     char szLine[512] = { 0 };
-    time_t t = time(NULL);
-    tm* now = localtime(&t);
-    int len = sprintf(szLine, "Dump(%04d-%02d-%02d %02d:%02d:%02d)crash signal number:%d]\n",
-        now->tm_year + 1900, now->tm_mon + 1, now->tm_mday, now->tm_hour,
-        now->tm_min, now->tm_sec, sig);
-    fwrite(szLine, 1, len, fd);
-
 #if !(defined _WIN32 || defined _WIN64)
     void *arrayB[MAX_STACK_FRAMES];
     size_t size = backtrace(arrayB, MAX_STACK_FRAMES);

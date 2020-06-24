@@ -293,11 +293,11 @@ void ObjectUav::_prcsRcvReqMissions(RequestRouteMissions *msg)
 
         if (SyscOperationRoutes *sys = new SyscOperationRoutes())
         {
-            int off = msg->offset();
+            int off = msg->offset()+ msg->count()/2;
             if (off < 0)
                 off = -1;
             else if (msg->boundary())
-                off += m_mission->CountItems()+1;
+                off += m_mission->CountItems();
 
             sys->set_seqno(msg->seqno());
             sys->set_result(ack->result());
