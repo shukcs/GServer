@@ -1449,7 +1449,7 @@ void Utility::Dump(const std::string &file, int sig)
     int pid = getpid();
     for (size_t i = 0; i < size; ++i)
     {
-        len = sprintf(szLine, "%s\n", strings[i]);
+        int len = sprintf(szLine, "%s\n", strings[i]);
         fwrite(szLine, 1, len, fd);
 
         char *str1 = strchr(szLine, '[');

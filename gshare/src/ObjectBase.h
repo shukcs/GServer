@@ -123,7 +123,7 @@ ProcessMessage():处理对象之间消息的
 ProcessReceive():处理网络数据，ret:已处理数据长度
 GetObjectType():连接实体类型，返回值需要与对应的IObjectManager::GetObjectType()相同
 OnConnected(bConnected):连接断开处理
-IObject(sock, id)；sock:socket;id:连接实体标识
+IObject(id) id:连接实体标识
 ********************************************************************************************/
     SHARED_DECL IObject(const std::string &id);
     SHARED_DECL virtual ~IObject();
