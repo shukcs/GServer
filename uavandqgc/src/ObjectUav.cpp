@@ -10,6 +10,7 @@
 #include "UavManager.h"
 #include "ObjectGS.h"
 #include "UavMission.h"
+#include "GXClient.h"
 
 #define WRITE_BUFFLEN  1024
 
@@ -23,7 +24,7 @@ using namespace SOCKETS_NAMESPACE;
 //ObjectUav
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectUav::ObjectUav(const string &id, const string &sim) : ObjectAbsPB(id), m_mission(NULL), m_strSim(sim)
-, m_bBind(false), m_lat(200), m_lon(0), m_tmLastBind(0), m_tmLastPos(0), m_tmValidLast(-1)
+, m_bBind(false), m_lat(200), m_lon(0), m_tmLastBind(0), m_tmLastPos(0), m_tmValidLast(-1), m_bSendGx(false)
 {
     SetBuffSize(1024 * 2);
 }
@@ -82,9 +83,14 @@ void ObjectUav::OnLogined(bool suc, ISocket *s)
     if (m_bLogined != suc)
     {
         if (suc)
+        {
             SendMsg(new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Login));
+            SendMsg(new ObjectSignal(this, GXClient::GXClinetType(), ObjectSignal::S_Login));
+        }
         else
+        {
             savePos();
+        }
     }
     ObjectAbsPB::OnLogined(suc, s);
 }
@@ -170,14 +176,21 @@ IMessage *ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectU
 
 void ObjectUav::ProcessMessage(IMessage *msg)
 {
-    if (msg->GetMessgeType() == IMessage::BindUav)
-        processBind((RequestBindUav*)msg->GetContent(), *(GS2UavMessage*)msg);
-    else if (msg->GetMessgeType() == IMessage::ControlDevice)
-        processControl2Uav((PostControl2Uav*)msg->GetContent());
-    else if (msg->GetMessgeType() == IMessage::PostOR)
-        processPostOr((PostOperationRoute*)msg->GetContent(), msg->GetSenderID());
-    else if (msg->GetMessgeType() == IMessage::DeviceQueryRslt)
-        processBaseInfo(*(DBMessage *)msg);
+    switch (msg->GetMessgeType())
+    {
+    case IMessage::BindUav:
+        processBind((RequestBindUav*)msg->GetContent(), *(GS2UavMessage*)msg); break;
+    case IMessage::ControlDevice:
+        processControl2Uav((PostControl2Uav*)msg->GetContent()); break;
+    case IMessage::PostOR:
+        processPostOr((PostOperationRoute*)msg->GetContent(), msg->GetSenderID()); break;
+    case IMessage::DeviceQueryRslt:
+        processBaseInfo(*(DBMessage *)msg); break;
+    case IMessage::GXClinetStat:
+        processGxStat(*(GX2UavMessage *)msg); break;
+    default:
+        break;
+    }
 }
 
 void ObjectUav::PrcsProtoBuff(uint64_t tm)
@@ -202,8 +215,8 @@ void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
 {
     if (!m_sock && m_bLogined)
     {
-        if (auto ms = new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Logout))
-            SendMsg(ms);
+        SendMsg(new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Logout));
+        SendMsg(new ObjectSignal(this, GXClient::GXClinetType(), ObjectSignal::S_Logout));
     }
 
     ObjectAbsPB::CheckTimer(ms, buf, len);
@@ -250,11 +263,14 @@ void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg, uint64_
     if (m_mission)
         m_mission->PrcsRcvPostOperationInfo(*msg);
 
-    if (Uav2GSMessage *ms = new Uav2GSMessage(this, m_bBind?m_lastBinder:string()))
+    if (auto ms = new Uav2GSMessage(this, m_bBind?m_lastBinder:string()))
     {
         ms->AttachProto(msg);
         SendMsg(ms);
     }
+
+    if (m_bSendGx)
+        sendGx(*msg, tm);
 
     if (auto ack = new AckOperationInformation)
     {
@@ -418,6 +434,11 @@ void ObjectUav::processBaseInfo(const DBMessage &rslt)
     }
 }
 
+void ObjectUav::processGxStat(const GX2UavMessage &msg)
+{
+    m_bSendGx = msg.GetStat() >= GXClient::St_Authed;
+}
+
 bool ObjectUav::_isBind(const std::string &gs) const
 {
     return m_bBind && m_lastBinder==gs && !m_lastBinder.empty();
@@ -491,5 +512,30 @@ void ObjectUav::sendBindAck(int ack, int res, bool bind, const std::string &gs)
         }
         ms->AttachProto(proto);
         SendMsg(ms);
+    }
+}
+
+void ObjectUav::sendGx(const das::proto::PostOperationInformation &msg, uint64_t tm)
+{
+    auto ms = new Uav2GXMessage(this);
+    auto poi = new PostOperationInformation();
+    if (ms && poi && msg.oi_size() > 0)
+    {
+        poi->set_seqno(msg.seqno());
+        const OperationInformation &pinf = msg.oi(0);
+        auto info = poi->add_oi();
+        info->set_uavid(GetObjectID());
+        info->set_timestamp(tm);
+        info->set_allocated_gps(new GpsInformation(pinf.gps()));
+        if (pinf.has_attitude())
+            info->set_allocated_attitude(new UavAttitude(pinf.attitude()));
+
+        ms->AttachProto(poi);
+        SendMsg(ms);
+    }
+    else
+    {
+        delete ms;
+        delete poi;
     }
 }

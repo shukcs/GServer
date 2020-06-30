@@ -5,6 +5,7 @@
 #include "ObjectBase.h"
 #include "ObjectGS.h"
 #include "ObjectUav.h"
+#include "GXClient.h"
 #include "Utility.h"
 
 using namespace google::protobuf;
@@ -174,7 +175,7 @@ Uav2GSMessage::Uav2GSMessage(IObjectManager *sender, const std::string &idRcv)
 {
 }
 
-IMessage::MessageType Uav2GSMessage::getMessageType(const Message &msg)
+int Uav2GSMessage::getMessageType(const Message &msg)
 {
     MessageType ret = Unknown;
     const string &name = msg.GetDescriptor()->full_name();
@@ -217,7 +218,7 @@ int GS2UavMessage::GetAuth() const
     return m_auth;
 }
 
-IMessage::MessageType GS2UavMessage::getMessageType(const google::protobuf::Message &msg)
+int GS2UavMessage::getMessageType(const google::protobuf::Message &msg)
 {
     MessageType ret = Unknown;
     const string &name = msg.GetDescriptor()->full_name();
@@ -254,7 +255,7 @@ Gs2GsMessage::Gs2GsMessage(IObjectManager *sender, const std::string &idRcv)
 {
 }
 
-IMessage::MessageType Gs2GsMessage::getMessageType(const google::protobuf::Message &msg)
+int Gs2GsMessage::getMessageType(const google::protobuf::Message &msg)
 {
     MessageType ret = Unknown;
     const string &name = msg.GetDescriptor()->full_name();
@@ -264,4 +265,46 @@ IMessage::MessageType Gs2GsMessage::getMessageType(const google::protobuf::Messa
         ret = User2UserAck;
 
     return ret;
+}
+/////////////////////////////////////////////////////////////////////////
+//Uav2GXMessage
+/////////////////////////////////////////////////////////////////////////
+Uav2GXMessage::Uav2GXMessage(ObjectUav *sender)
+: GSOrUavMessage(sender, string(), GXClient::GXClinetType())
+{
+}
+
+int Uav2GXMessage::getMessageType(const google::protobuf::Message &msg)
+{
+    int ret = Unknown;
+    const string &name = msg.GetDescriptor()->full_name();
+    if (name == d_p_ClassName(RequestUavIdentityAuthentication))
+        ret = Authentication;
+    else if (name == d_p_ClassName(PostOperationInformation))
+        ret = PushUavSndInfo;
+
+    return ret;
+}
+/////////////////////////////////////////////////////////////////////////
+//GX2UavMessage
+/////////////////////////////////////////////////////////////////////////
+GX2UavMessage::GX2UavMessage(const std::string &sender, int st)
+:IMessage(new MessageData(sender, GXClient::GXClinetType(), GXClinetStat), sender, ObjectUav::UAVType())
+, m_stat(st)
+{
+}
+
+int GX2UavMessage::GetStat() const
+{
+    return m_stat;
+}
+
+void *GX2UavMessage::GetContent() const
+{
+    return NULL;
+}
+
+int GX2UavMessage::GetContentLength() const
+{
+    return 0;
 }

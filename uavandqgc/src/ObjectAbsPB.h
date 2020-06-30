@@ -26,7 +26,7 @@ public:
 
     bool IsConnect()const;
 public:
-    static void SendProtoBuffTo(ISocket *s, const google::protobuf::Message &ms);
+    static bool SendProtoBuffTo(ISocket *s, const google::protobuf::Message &ms);
 protected:
     int ProcessReceive(void *buf, int len, uint64_t ms);
     void WaitSend(google::protobuf::Message *msg);

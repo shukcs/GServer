@@ -15,6 +15,7 @@ namespace SOCKETS_NAMESPACE {
 
 class ObjectUav;
 class ObjectGS;
+class ObjectGXClinet;
 
 class GSOrUavMessage : public IMessage
 {
@@ -32,7 +33,7 @@ public:
     static std::string GenCheckString(int len = 6);
     static bool IsGSUserValide(const std::string &user);
 protected:
-    virtual MessageType getMessageType(const google::protobuf::Message &msg) = 0;
+    virtual int getMessageType(const google::protobuf::Message &msg) = 0;
     void _copyMsg(google::protobuf::Message *c, const google::protobuf::Message &msg);
 protected:
 };
@@ -43,7 +44,7 @@ public:
     Uav2GSMessage(ObjectUav *sender, const std::string &idRcv);
     Uav2GSMessage(IObjectManager *sender, const std::string &idRcv);
 protected:
-    MessageType getMessageType(const google::protobuf::Message &msg);
+    int getMessageType(const google::protobuf::Message &msg);
 private:
 };
 
@@ -55,7 +56,7 @@ public:
 
     int GetAuth()const;
 protected:
-    MessageType getMessageType(const google::protobuf::Message &msg);
+    int getMessageType(const google::protobuf::Message &msg);
 private:
     int m_auth;
 };
@@ -66,8 +67,29 @@ public:
     Gs2GsMessage(ObjectGS *sender, const std::string &idRcv);
     Gs2GsMessage(IObjectManager *sender, const std::string &idRcv);
 protected:
-    MessageType getMessageType(const google::protobuf::Message &msg);
+    int getMessageType(const google::protobuf::Message &msg);
 private:
+};
+
+class Uav2GXMessage : public GSOrUavMessage
+{
+public:
+    Uav2GXMessage(ObjectUav *sender);
+protected:
+    int getMessageType(const google::protobuf::Message &msg);
+private:
+};
+
+class GX2UavMessage : public IMessage
+{
+public:
+    GX2UavMessage(const std::string &sender, int st);
+    int GetStat()const;
+protected:
+    void *GetContent() const;
+    int GetContentLength() const;
+private:
+    int m_stat;
 };
 
 #ifdef SOCKETS_NAMESPACE

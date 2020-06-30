@@ -30,15 +30,17 @@ bool ObjectAbsPB::IsConnect() const
     return m_bLogined;
 }
 
-void ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
+bool ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
 {
-    if (!s)
-        return;
+    if (s)
+    {
+        char buf[256] = { 0 };
+        int sz = serialize(msg, buf, 256);
+        if (sz > 0)
+            return sz == s->Send(sz, buf);
+    }
 
-    char buf[256] = { 0 };
-    int sz = serialize(msg, buf, 256);
-    if (sz>0)
-        s->Send(sz + 4, buf);
+    return false;
 }
 
 int ObjectAbsPB::ProcessReceive(void *buf, int len, uint64_t ms)

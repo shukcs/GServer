@@ -110,6 +110,8 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new RequestNewGS;                           //申请GS用户
     else if (name == d_p_ClassName(RequestIdentityAllocation))
         m_msg = new RequestIdentityAllocation;
+    else if (name == d_p_ClassName(AckUavIdentityAuthentication))
+        m_msg = new AckUavIdentityAuthentication;
     else if (name == d_p_ClassName(RequestGSIdentityAuthentication))
         m_msg = new RequestGSIdentityAuthentication;        //GS登陆
     else if (name == d_p_ClassName(RequestUavIdentityAuthentication))
@@ -140,6 +142,8 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new PostOperationRoute;                     //飞机作业
     else if (name == d_p_ClassName(PostOperationInformation))
         m_msg = new PostOperationInformation;               //GPS 位置信息
+    else if (name == d_p_ClassName(AckOperationInformation))
+        m_msg = new AckOperationInformation;                //PostOperationInformation Ack
     else if (name == d_p_ClassName(AckPostOperationRoute))
         m_msg = new AckPostOperationRoute;                 //上传航线结果
     else if (name == d_p_ClassName(SyscOperationRoutes))

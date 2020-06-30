@@ -33,6 +33,7 @@ class DBMessage;
 class ObjectGS;
 class Variant;
 class GS2UavMessage;
+class GX2UavMessage;
 class ObjectUav : public ObjectAbsPB
 {
 private:
@@ -74,6 +75,7 @@ private:
     void processControl2Uav(das::proto::PostControl2Uav *msg);
     void processPostOr(das::proto::PostOperationRoute *msg, const std::string &gs);
     void processBaseInfo(const DBMessage &msg);
+    void processGxStat(const GX2UavMessage &msg);
 
     bool _isBind(const std::string &gs)const;
     int _checkPos(double lat, double lon, double alt);
@@ -81,6 +83,7 @@ private:
     void savePos();
     void saveBind(bool bBind, const std::string &gs, bool bForce=false);
     void sendBindAck(int ack, int res, bool bind, const std::string &gs);
+    void sendGx(const das::proto::PostOperationInformation &msg, uint64_t tm);
 private:
     friend class UavManager;
     UavMission                      *m_mission;
@@ -91,6 +94,7 @@ private:
     int64_t                         m_tmLastBind;
     uint64_t                        m_tmLastPos;
     int64_t                         m_tmValidLast;
+    bool                            m_bSendGx;
     std::string                     m_lastBinder;
     std::string                     m_authCheck;
 };
