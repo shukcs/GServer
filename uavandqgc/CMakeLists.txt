@@ -39,6 +39,10 @@ set(SRC_LIST
 	src/UavManager.h
 	src/UavMission.cpp
 	src/UavMission.h
+	src/GXClient.cpp
+	src/GXClient.h
+	src/GXLink.cpp
+	src/GXLink.h
 )
 
 add_library(${PACKAGE_NAME} SHARED ${SRC_LIST})

@@ -37,7 +37,7 @@ DataNode::DataNode(uint16_t elSz) : m_buff(NULL)
 
 DataNode::~DataNode()
 {
-    delete m_buff;
+    delete (char*)m_buff;
 }
 
 bool DataNode::IsValid() const

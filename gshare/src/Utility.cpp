@@ -459,7 +459,7 @@ long Utility::secTimeCount()
     return long(sec.count());
 }
 
-string Utility::dateString(int64_t ms, const std::string &fmt/*="y-M-d h-m-s"*/)
+string Utility::dateString(int64_t ms, const string &fmt/*="y-M-d h:m:s.z"*/)
 {
     string strData;
     auto src = fmt.c_str();
@@ -486,35 +486,33 @@ string Utility::dateString(int64_t ms, const std::string &fmt/*="y-M-d h-m-s"*/)
         }
         if (last && (i+1==fmt.length() || last!=src[i+1]))
         {
-            if (count > 1)
-                snprintf(f + 1, 10, "0%dd", count);
-            else
-                strcpy(f, "%d");
+            strcpy(f, "%d");
+            if (count > 1 && count < 5)
+            {
+                f[1] = '0';
+                f[2] = '0' + count;
+                f[3] = 'd';
+                f[4] = 0;
+            }
+
+            count = -1;
             switch (last)
             {
-            case 'y':
-                snprintf(tmp, 23, f, tmNow->tm_year + 1900);
-                strData += tmp; break;
-            case 'M':
-                snprintf(tmp, 23, f, tmNow->tm_mon + 1);
-                strData += tmp; break;
-            case 'd':
-                snprintf(tmp, 23, f, tmNow->tm_mday);
-                strData += tmp; break;
-            case 'h':
-                snprintf(tmp, 23, f, tmNow->tm_hour);
-                strData += tmp; break;
-            case 'm':
-                snprintf(tmp, 23, f, tmNow->tm_min);
-                strData += tmp; break;
-            case 's':
-                snprintf(tmp, 23, f, tmNow->tm_sec);
-                strData += tmp; break;
-            case 'z':
-                snprintf(tmp, 23, f, ms % 1000);
-                strData += tmp; break;
+            case 'y': count = tmNow->tm_year + 1900;break;
+            case 'M': count = tmNow->tm_mon + 1; break;
+            case 'd': count = tmNow->tm_mday; break;
+            case 'h': count = tmNow->tm_hour; break;
+            case 'm': count = tmNow->tm_min; break;
+            case 's': count = tmNow->tm_sec; break;
+            case 'z': count = ms % 1000; break;
             default:
                 break;
+            }
+
+            if (count >= 0)
+            {
+                sprintf(tmp, f, count);
+                strData += tmp;
             }
             count = 0;
             last = 0;

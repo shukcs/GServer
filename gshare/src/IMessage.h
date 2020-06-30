@@ -43,6 +43,7 @@ public:
     enum MessageType
     {
         Unknown,
+        Authentication,
         BindUav,
         PostOR,
         ControlDevice,
