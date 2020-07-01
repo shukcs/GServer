@@ -3,6 +3,7 @@
 
 #define USINGORIGINNEW
 #include "Varient.h"
+#include <assert.h>
 
 /********************************************************************************
 *多线程的循环队列，解决生产者/消费者之间不用加锁
@@ -32,82 +33,90 @@ private:
     volatile uint16_t   m_pos[2];
 };
 
-class SHARED_DECL LoopQueueAbs
+template <class EC>
+class NodeItem
 {
+    typedef NodeItem<EC> Node;
 public:
-    LoopQueueAbs();
-    virtual ~LoopQueueAbs();
-
-    void *PushOne(const void *data);
-    void *CurrentBuff(DataNode *nd=NULL)const;
-    void PopFinish();
-    void *LastBuff()const;
-protected:
-    virtual int32_t getElementSize()const = 0;
-    bool empty()const;
-    DataNode *recyclePop();
-    DataNode *nextNode(DataNode *nd)const;
-protected:
-    DataNode    *m_dataRoot;
-    DataNode    *m_dataPush;
-    DataNode    *m_dataPops;
-    DataNode    *m_popLast;
-    int32_t     m_count;
+    NodeItem(const EC &val):m_val(val), m_next(NULL)
+    {
+    }
+    const EC &GetValue()const
+    {
+        return m_val;
+    }
+    void SetValue(const EC &v)
+    {
+        m_val = v;
+    }
+    Node *GetNext()const
+    {
+        return m_next;
+    }
+    void SetNext(Node *nd)
+    {
+        m_next = nd;
+    }
+private:
+    EC      m_val;
+    Node    *m_next;
 };
 
 template <class EC>
-class LoopQueue : protected LoopQueueAbs
+class LoopQueue
 {
+    typedef NodeItem<EC> QueNode;
 public:
-    LoopQueue() : LoopQueueAbs()
+    LoopQueue() : m_header(NULL), m_push(NULL), m_pop(NULL), m_count(0), m_nEmpty(0)
     {
     }
     ~LoopQueue()
     {
-        while (!empty())
+        auto node = m_header;
+        while (node)
         {
-            defaultDestruction((EC*)CurrentBuff());
-            PopFinish();
+            auto tmp = node->GetNext();
+            delete node;
+            node = tmp;
         }
     }
-    bool Push(const EC &d)
+    bool Push(const EC &val, uint32_t max=20)
     {
-        if (void *men = PushOne(&d))
-        {
-            defaultConstruction((EC*)men, d);
-            return true;
-        }
-        return false;
+        bool ret = !m_push ? genPush(val) : setNext(val);
+
+        if (!m_pop)
+            m_pop = m_push;
+        if (!m_header)
+            m_header = m_push;
+        if (ret)
+            m_count++;
+
+        removeMore(max);
+        return ret;
     }
     EC Pop()
     {
-        if(void *men = CurrentBuff())
-        {
-            EC ret(*(EC *)men);
-            defaultDestruction((EC*)men);
-            PopFinish();
-            return ret;
-        }
-
-        return EC();
+        if (m_count < 0)
+            assert(m_pop);
+        EC ret(m_pop->GetValue());
+        m_pop = m_pop->GetNext();
+        --m_count;
+        m_nEmpty++;
+        return ret;
     }
     bool IsEmpty()const
     {
-        return empty();
+        return m_pop==NULL;
     }
-    bool IsContains(const EC &d)const
+    bool IsContains(const EC &val)const
     {
-        DataNode *nd = m_dataRoot;
+        QueNode *nd = m_pop;
         while (nd)
         {
-            void *men = CurrentBuff(nd);
-            if (!men)
-                return false;
-            const EC &tmp = *(EC *)men;
-            if (tmp == d)
+            if (nd->GetValue() == val)
                 return true;
 
-            nd = nextNode(nd);
+            nd = nd->GetNext();
         }
         return false;
     }
@@ -117,23 +126,63 @@ public:
     }
     const EC &Last()const
     {
-        return *(EC *)LastBuff();
+        assert(m_push);
+        return m_push->GetValue();
     }
 protected:
-    static void defaultConstruction(EC *te, const EC &d)
+    QueNode *takeEmpty()
     {
-        if (TypeInfo<EC>::isComplex)
-            new (te) EC(d);
+        if (m_header && m_header != m_pop && m_header != m_push)
+        {
+            auto ret = m_header;
+            m_header = m_header->GetNext();
+            m_nEmpty--;
+            ret->SetNext(NULL);
+            return ret;
+        }
+        return NULL;
     }
-    static void defaultDestruction(EC *t)
+    void removeMore(uint32_t max)
     {
-        if (t && TypeInfo<EC>::isComplex)
-            t->~EC();
+        if (int(max) >= m_nEmpty)
+            return;
+
+        max = m_nEmpty - max;
+        for (;max>0 && m_header!=m_pop; --max)
+        {
+            delete takeEmpty();
+        }
     }
-    int32_t getElementSize()const
+    bool genPush(const EC &val)
     {
-        return sizeof(EC);
+        m_push = new QueNode(val);
+        return m_push != NULL;
     }
+    bool setNext(const EC &val)
+    {
+        if (auto tmp = takeEmpty())
+        {
+            tmp->SetValue(val);
+            m_push->SetNext(tmp);
+            m_push = tmp;
+            return true;
+        }
+
+        if (auto tmp = new QueNode(val))
+        {
+            m_push->SetNext(tmp);
+            m_push = tmp;
+            return true;
+        }
+
+        return false;
+    }
+private:
+    QueNode             *m_header;
+    QueNode             *m_push;
+    QueNode             *m_pop;
+    volatile int32_t    m_count;
+    volatile int32_t    m_nEmpty;
 };
 
 #undef USINGORIGINNEW
