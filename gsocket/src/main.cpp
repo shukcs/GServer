@@ -14,7 +14,7 @@
 static ISocketManager *sSockMgr = NULL;
 static void dump(int signo)
 {
-    auto fileName = Utility::dateString(Utility::msTimeTick()) + ".txt";
+    auto fileName = Utility::dateString(Utility::msTimeTick(), "yMMdd hhmmss") + ".txt";
     Utility::Dump("dump"+fileName, signo);
     sSockMgr->CloseServer();
     exit(-1);
@@ -91,7 +91,6 @@ int main(int argc, char *argv[])
             sSockMgr->Poll(50);
         }
         delete sSockMgr;
-        return 0;
     }
 
     for (auto itr : lsLib)
@@ -100,5 +99,5 @@ int main(int argc, char *argv[])
             itr->Unload();
         delete itr;
     }
-    return -1;
+    return 0;
 }

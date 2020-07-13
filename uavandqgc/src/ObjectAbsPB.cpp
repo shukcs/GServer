@@ -59,38 +59,35 @@ int ObjectAbsPB::ProcessReceive(void *buf, int len, uint64_t ms)
 
 void ObjectAbsPB::send(char *buf, int len)
 {
-    if (!CanSend())
+    int lenSnd = GetSendRemain();
+    if (lenSnd < 1)
         return;
 
+    WaitSin();
     for (auto itr = m_protosList.begin(); itr != m_protosList.end(); )
     {
         int sendSz = serialize(**itr, buf, len);
-        if (sendSz == Send(buf, sendSz))
-        {
-            delete *itr;
-            m_protosList.erase(itr);
-        }
-        return;
+        lenSnd -= sendSz;
+        if (lenSnd < 0)
+            return;
+
+        Send(buf, sendSz);
+        delete *itr;
+        itr = m_protosList.erase(itr);
     }
-    google::protobuf::Message *pb = NULL;
-    WaitSin();
-    auto itr = m_protosMap.begin();
-    for (; itr != m_protosMap.end(); ++itr)
+    for (auto itr = m_protosMap.begin(); itr != m_protosMap.end(); ++itr)
     {
-        if (!itr->second)
-        {
-            pb = itr->first;
+        if (itr->second)
+            continue;
+
+        int sendSz = serialize(*itr->first, buf, len);
+        lenSnd -= sendSz;
+        if (lenSnd < 0)
             break;
-        }
-    }
-    PostSin();
-    if (pb)
-    {
-        int sendSz = serialize(*pb, buf, len);
         if (sendSz == Send(buf, sendSz))
             itr->second = true;
     }
-
+    PostSin();
 }
 
 void ObjectAbsPB::clearProto()

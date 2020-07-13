@@ -214,8 +214,7 @@ bool GSocketManager::PrcsSockets()
             ISocket::SocketStat st = s->GetSocketStat();
             if (ISocket::Closing == st)
                 _close(s);
-
-            if (!s->IsListenSocket() && ISocket::Connected == st)
+            else if (!s->IsListenSocket() && ISocket::Connected == st)
                 _send(s);
         }
     }
@@ -427,7 +426,6 @@ int GSocketManager::_createSocket(int tp)
 void GSocketManager::_close(ISocket *sock, bool prcs)
 {
     _remove(sock->GetSocketHandle());
-    sock->OnClose();
     if(prcs)
     {
         int64_t t = sock->GetCheckTime();
@@ -439,6 +437,7 @@ void GSocketManager::_close(ISocket *sock, bool prcs)
                 m_socketsAccept.erase(itr);
         }
     }
+    sock->OnClose();
 }
 
 void GSocketManager::_addAcceptSocket(ISocket *sock, int64_t sec)

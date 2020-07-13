@@ -213,6 +213,11 @@ int GXClientSocket::GetSendLength() const
     return m_buffSnd ? m_buffSnd->Count() : 0;
 }
 
+int GXClientSocket::GetSendRemain() const
+{
+    return m_buffSnd ? (m_buffSnd->BuffSize() - m_buffSnd->Count()) : 0;
+}
+
 bool GXClientSocket::ResetSendBuff(uint16_t sz)
 {
     if (m_buffSnd)

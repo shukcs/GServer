@@ -45,6 +45,7 @@ public:
     virtual void OnBind(bool=true) = 0;
     virtual int CopyData(char *buff, int sz)const = 0;
     virtual int GetSendLength()const = 0;
+    virtual int GetSendRemain()const = 0;
     virtual void ClearBuff()const = 0;
     virtual bool IsAccetSock()const = 0;
     virtual bool ResetSendBuff(uint16_t sz)=0;

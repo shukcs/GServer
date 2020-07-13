@@ -57,6 +57,7 @@ protected:
     void OnBind(bool);
     int CopyData(char *buf, int sz)const;
     int GetSendLength()const;
+    int GetSendRemain()const;
     bool ResetSendBuff(uint16_t sz);
     bool IsAccetSock()const;
 

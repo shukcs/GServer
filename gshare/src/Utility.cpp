@@ -375,8 +375,7 @@ string Utility::rfc1738_decode(const string& src)
 			c2 = c2 - 48 - ((c2 >= 'A') ? 7 : 0) - ((c2 >= 'a') ? 32 : 0);
 			dst += (char)(c1 * 16 + c2);
 		}
-		else
-		if (src[i] == '+')
+		else if (src[i] == '+')
 		{
 			dst += ' ';
 		}
@@ -440,22 +439,22 @@ uint32_t Utility::fromBigendian(const void *buff)
 
 int64_t Utility::usTimeTick()
 {
-    chrono::system_clock::time_point now = chrono::system_clock::now();
-    auto ns = chrono::duration_cast<chrono::microseconds>(now.time_since_epoch());
+    auto now = system_clock::now();
+    auto ns = duration_cast<microseconds>(now.time_since_epoch());
     return ns.count();
 }
 
 int64_t Utility::msTimeTick()
 {
-    chrono::system_clock::time_point now = chrono::system_clock::now();
-    auto ms = chrono::duration_cast<chrono::milliseconds>(now.time_since_epoch());
+    auto now = system_clock::now();
+    auto ms = duration_cast<milliseconds>(now.time_since_epoch());
     return ms.count();
 }
 
 long Utility::secTimeCount()
 {
-    chrono::system_clock::time_point now = chrono::system_clock::now();
-    auto sec = chrono::duration_cast<chrono::seconds>(now.time_since_epoch());
+    auto now = system_clock::now();
+    auto sec = duration_cast<seconds>(now.time_since_epoch());
     return long(sec.count());
 }
 

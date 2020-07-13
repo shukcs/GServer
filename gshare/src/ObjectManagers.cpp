@@ -200,5 +200,7 @@ void ObjectManagers::_prcsReleaseMessages(IObjectManager *mgr)
     {
         if (IObjectManager *m = GetManagerByType(msg->GetSenderType()))
             m->PushReleaseMsg(msg);
+        else
+            delete msg;
     }
 }

@@ -4,7 +4,7 @@
     <Filter Include="src">
       <UniqueIdentifier>{c9d2b603-ee36-49f2-90fb-34e7e1fa85b0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\proto">
+    <Filter Include="proto">
       <UniqueIdentifier>{ee09e184-0dfb-4f6e-b060-17cb460f5146}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -37,7 +37,7 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="proto\das.pb.cc">
-      <Filter>src\proto</Filter>
+      <Filter>proto</Filter>
     </ClCompile>
     <ClCompile Include="src\DBManager.cpp">
       <Filter>src</Filter>
@@ -60,7 +60,7 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="proto\das.pb.h">
-      <Filter>src\proto</Filter>
+      <Filter>proto</Filter>
     </ClInclude>
     <ClInclude Include="src\ProtoMsg.h">
       <Filter>src</Filter>

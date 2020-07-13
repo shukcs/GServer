@@ -10,12 +10,15 @@
 #include "VGMysql.h"
 #include <tinyxml.h>
 #include <string.h>
+#include <chrono>
 
 #define ParamSpliter "#;#"
 #define LeftBraceCount(f) ((f&NumbLeftMask))
 #define RightBraceCount(f) ((f&NumbRightMask)>>8)
+using namespace std::chrono;
 
 static const list<FiledVal*> lsFieldEmpty;
+static const char *sRandStrTab = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789";
 ///////////////////////////////////////////////////////////////////////////////////////
 //FiledVal
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -627,6 +630,34 @@ void ExecutItem::SetRef(bool b)
 bool ExecutItem::IsRef() const
 {
     return m_bRef;
+}
+
+string ExecutItem::GenCheckString(int len)
+{
+    if (len > 16)
+        return string();
+
+    int64_t tmp = rand() + duration_cast<microseconds>(system_clock::now().time_since_epoch()).count();
+    char ret[17] = { 0 };
+    uint32_t n = uint32_t(tmp / 1023);
+    char c = '0' + n % 10;
+    ret[n % 6] = c;
+    n = uint32_t(tmp / 0xffff);
+    c = '0' + n % 10;
+    n %= 6;
+    if (ret[n] == 0)
+        ret[n] = c;
+    else if (n < 5)
+        ret[n + 1] = c;
+    else
+        ret[n - 1] = c;
+
+    for (int i = 0; i < len; ++i)
+    {
+        if (ret[i] == 0)
+            ret[i] = sRandStrTab[tmp / (19 + i) % 62];
+    }
+    return ret;
 }
 
 void ExecutItem::transformBind(FiledVal *item, MYSQL_BIND &bind, bool bRead)

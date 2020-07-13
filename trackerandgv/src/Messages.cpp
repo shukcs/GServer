@@ -14,7 +14,7 @@ using namespace std;
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
 #endif
-static const char *sRandStrTab = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789";
+
 enum 
 {
     Numb_Min = '0',
@@ -96,34 +96,6 @@ void TrackerMessage::SetPBContent(const Message &msg)
 {
     Message *msgTmp = msg.New();
     _copyMsg(msgTmp, msg);
-}
-
-string TrackerMessage::GenCheckString(int len)
-{
-    if (len > 16)
-        return string();
-
-    int64_t tmp = rand()+Utility::usTimeTick();
-    char ret[17] = { 0 };
-    uint32_t n = uint32_t(tmp / 1023);
-    char c = '0' + n % 10;
-    ret[n % 6] = c;
-    n = uint32_t(tmp / 0xffff);
-    c = '0' + n % 10;
-    n %= 6;
-    if (ret[n] == 0)
-        ret[n] = c;
-    else if(n<5)
-        ret[n+1] = c;
-    else
-        ret[n-1] = c;
-
-    for (int i = 0; i < len; ++i)
-    {
-        if (ret[i] == 0)
-            ret[i] = sRandStrTab[tmp / (19 + i) % 62];
-    }
-    return ret;
 }
 
 bool TrackerMessage::IsGSUserValide(const std::string &user)

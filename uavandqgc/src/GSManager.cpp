@@ -10,6 +10,7 @@
 #include "ObjectUav.h"
 #include "ObjectManagers.h"
 #include "FWItem.h"
+#include "DBExecItem.h"
 
 using namespace das::proto;
 using namespace google::protobuf;
@@ -192,7 +193,7 @@ IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
 
     if (o)
     {
-        o->SetCheck(GSOrUavMessage::GenCheckString());
+        o->SetCheck(ExecutItem::GenCheckString());
         o->_checkGS(userId, msg->seqno());
     }
     return o;

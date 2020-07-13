@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{246ef2f3-e583-4962-b096-51849130750e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\testDlg.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AbsLink.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LinkManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\das.pb.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UavLink.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="src\testDlg.h">
+      <Filter>src</Filter>
+    </QtMoc>
+    <QtMoc Include="src\AbsLink.h">
+      <Filter>src</Filter>
+    </QtMoc>
+    <QtMoc Include="src\LinkManager.h">
+      <Filter>src</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="src\testDlg.ui">
+      <Filter>src</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\das.pb.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UavLink.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

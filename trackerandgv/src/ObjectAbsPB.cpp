@@ -64,9 +64,11 @@ void ObjectAbsPB::OnConnected(bool bConnected)
 
 void ObjectAbsPB::send(google::protobuf::Message *msg, char *buf, int len)
 {
+    WaitSin();
     int sendSz = serialize(*msg, buf, len);
     if (sendSz == Send(buf, sendSz))
         delete msg;
+    PostSin();
 }
 
 void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
@@ -113,7 +115,7 @@ ILink *ObjectAbsPB::GetLink()
 void ObjectAbsPB::CheckTimer(uint64_t ms, char *buf, int len)
 {
     ILink::CheckTimer(ms, buf, len);
-    if (!m_protosSend.IsEmpty() && CanSend())
+    if (!m_protosSend.IsEmpty() && GetSendRemain()>0)
     {
         Message *msg = m_protosSend.Pop();
         send(msg, buf, len);

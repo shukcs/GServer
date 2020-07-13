@@ -252,6 +252,11 @@ int GSocket::GetSendLength() const
     return m_buffSocket ? m_buffSocket->Count() : 0;
 }
 
+int GSocket::GetSendRemain() const
+{
+    return m_buffSocket ? (m_buffSocket->BuffSize()- m_buffSocket->Count()) : 0;
+}
+
 bool GSocket::ResetSendBuff(uint16_t sz)
 {
     if (m_buffSocket)

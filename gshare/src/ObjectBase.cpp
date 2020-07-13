@@ -181,16 +181,24 @@ void ILink::OnLogined(bool suc, ISocket *s)
         o->GetManager()->Log(0, o->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), suc ? "logined" : "login fail");
 }
 
-bool ILink::CanSend() const
+int ILink::GetSendRemain() const
 {
     Lock l(m_mtxS);
-    return m_sock && m_sock->IsNoWriteData();
+    if (m_sock && m_sock->IsNoWriteData())
+        return m_sock->GetSendRemain();
+
+    return -1;
 }
 
 void ILink::OnSockClose(ISocket *s)
 {
     if (m_sock == s)
-        SetSocket(NULL);
+    {
+        WaitSin();
+        m_sock = NULL;
+        OnConnected(false);
+        PostSin();
+    }
 }
 
 bool ILink::ChangeLogind(bool b)
@@ -220,8 +228,7 @@ void ILink::CheckTimer(uint64_t, char *, int)
 
 int ILink::Send(const char *buf, int len)
 {
-    Lock l(m_mtxS);
-    if (buf && len && m_sock)
+    if (buf && len>0 && m_sock)
         return m_sock->Send(len, buf);
 
     return 0;
@@ -647,6 +654,7 @@ bool IObjectManager::SendMsg(IMessage *msg)
     if (auto t = GetThread(msg?msg->CreateThreadID(): -1))
         return t->m_lsMsgSend.Push(msg);
 
+    delete msg;
     return false;
 }
 
@@ -698,9 +706,9 @@ void IObjectManager::AddLoginData(ISocket *s, const void *buf, int len)
         return;
 
     Lock l(m_mtxM);
-    if (auto l = s->GetHandleLink())
+    if (auto lk = s->GetHandleLink())
     { 
-        l->Receive(buf, len);
+        lk->Receive(buf, len);
         return;
     }
 

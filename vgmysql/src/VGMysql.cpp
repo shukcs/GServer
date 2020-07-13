@@ -63,6 +63,19 @@ bool VGMySql::Execut(ExecutItem *item)
     return false;
 }
 
+bool VGMySql::Execut(const std::string &sql)
+{
+    if (sql.empty())
+        return false;
+
+    if (auto res = Query(sql))
+    {
+        mysql_free_result(res);
+        return true;
+    }
+    return false;
+}
+
 ExecutItem *VGMySql::GetResult()
 {
     if (!m_stmt || !m_execItem || !m_binds || mysql_stmt_fetch(m_stmt))
@@ -77,7 +90,7 @@ bool VGMySql::EnterDatabase(const std::string &db, const char *cset)
     if (db.empty() && m_database.empty())
         return ret;
 
-        //长期不连接database，在连接需要，需要保存
+    //长期不连接database，在连接需要，需要保存
     if (!db.empty())
     {
         m_database = db;

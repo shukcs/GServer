@@ -27,6 +27,7 @@ public:
     SHARED_SQL bool IsValid() const;
 
     SHARED_SQL bool Execut(ExecutItem *item);
+    SHARED_SQL bool Execut(const std::string &sql);
     SHARED_SQL ExecutItem *GetResult();
     SHARED_SQL bool EnterDatabase(const std::string &db=std::string(), const char *cset=NULL);
     SHARED_SQL bool ExistTable(const std::string &name);

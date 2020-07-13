@@ -9,6 +9,7 @@
 #include "GSManager.h"
 #include "FWAssist.h"
 #include "ObjectUav.h"
+#include "DBExecItem.h"
 
 enum {
     WRITE_BUFFLEN = 1024 * 8,
@@ -475,7 +476,7 @@ void ObjectGS::processCheckGS(const DBMessage &msg)
         ack->set_seqno(msg.GetSeqNomb());
         if (!bExist)
         {
-            m_check = GSOrUavMessage::GenCheckString();
+            m_check = ExecutItem::GenCheckString();
             ack->set_check(m_check);
         }
         ack->set_result(bExist ? 0 : 1);
@@ -1394,7 +1395,7 @@ void ObjectGS::_prcsReqNewGs(RequestNewGS *msg)
             ack->set_seqno(msg->seqno());
             if (1 != res || msg->check().empty())
             {
-                m_check = GSOrUavMessage::GenCheckString();
+                m_check = ExecutItem::GenCheckString();
                 ack->set_check(-3 == res ? m_check : "");
             }
             ack->set_result(res);

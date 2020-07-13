@@ -55,7 +55,7 @@ protected:
     SHARED_DECL void SetBuffSize(uint16_t sz);
     SHARED_DECL bool ChangeLogind(bool b);
     SHARED_DECL virtual void OnLogined(bool suc, ISocket *s = NULL);
-    SHARED_DECL bool CanSend()const;
+    SHARED_DECL int GetSendRemain()const;
     SHARED_DECL int Send(const char *buf, int len); //调用需在CheckTimer中
     SHARED_DECL void ClearRecv(int n = -1);
     SHARED_DECL void Release();

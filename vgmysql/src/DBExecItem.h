@@ -140,6 +140,7 @@ public:
     void SetRef(bool b);
     bool IsRef()const;
 public:
+    SHARED_SQL static std::string GenCheckString(int len = 6);
     static void transformBind(FiledVal *item, MYSQL_BIND &bind, bool=false);
     static ExecutItem *parse(const TiXmlElement *e, const MysqlDB &db);
     static ExecutType transToSqlType(const char *pro);
