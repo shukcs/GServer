@@ -24,6 +24,9 @@
     <ClCompile Include="src\UavLink.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\GSLink.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\testDlg.h">
@@ -46,6 +49,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\UavLink.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GSLink.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

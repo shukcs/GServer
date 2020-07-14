@@ -96,9 +96,7 @@ void UavLink::_parseAckInformation(const QByteArray &a)
 {
     AckOperationInformation ack;
     if (ack.ParseFromArray(a.data(), a.size()))
-    {
         m_stat = St_InfoSended;
-    }
 }
 
 void UavLink::_login()

@@ -204,6 +204,7 @@ void GSocketManager::PrcsDestroySockets()
 
 bool GSocketManager::PrcsSockets()
 {
+    bool ret = false;
     while (!m_socketsPrcs.IsEmpty())
     {
         int fd = m_socketsPrcs.Pop();
@@ -216,9 +217,10 @@ bool GSocketManager::PrcsSockets()
                 _close(s);
             else if (!s->IsListenSocket() && ISocket::Connected == st)
                 _send(s);
+            ret = true;
         }
     }
-    return true;
+    return ret;
 }
 
 ISocket *GSocketManager::GetSockByHandle(int handle) const
@@ -260,9 +262,7 @@ bool GSocketManager::SokectPoll(unsigned ms)
     if (m_maxsock <= 0)
         return ret;
     fd_set rfds = m_ep_fd;
-    struct timeval tv;
-    tv.tv_sec = ms / 1000;
-    tv.tv_usec = (ms % 1000) * 1000;
+    struct timeval tv = {0};    //windows select不会挂起线程的
     int n = select((int)(m_maxsock + 1), &rfds, NULL, NULL, &tv);
     for (int i=0; i<n; ++i)
     {

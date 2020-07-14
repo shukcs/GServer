@@ -47,7 +47,8 @@ void LinkManager::onConnectTo(const QString &host, int port, QTcpSocket *sock)
     if (m_socks.contains(sock))
     {
         sock->connectToHost(host, port);
-        sock->waitForConnected(1000);
+        if (!sock->waitForConnected(1000))
+            emit sock->disconnected();
     }
 }
 

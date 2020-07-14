@@ -31,6 +31,7 @@ public:
 
     bool ConnectTo(const QString &host, int port, LinkManager *mgr);
     virtual void CheckSndData() = 0;
+    const QString &GetId()const;
 protected slots:
     virtual void parse(const QString &name, const QByteArray &a) = 0;
     void onSockConnect();

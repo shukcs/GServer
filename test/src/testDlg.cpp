@@ -6,6 +6,7 @@
 #include <QtCore/QDateTime>
 #include "DBExecItem.h"
 #include "UavLink.h"
+#include "GSLink.h"
 #include "LinkManager.h"
 
 /*-----------------------------------------------------------------------
@@ -156,7 +157,14 @@ void TestDlg::insertUav(const QString &uav)
 
 void TestDlg::connectGS(const QString &user, const QString &pswd)
 {
-
+    if (auto mgr = getPropertyMgr())
+    {
+        if (auto link = new GSLink(user, pswd, this))
+        {
+            link->ConnectTo(m_ui->edit_host->text(), m_ui->edit_port->text().toInt(), mgr);
+            m_uavs.append(link);
+        }
+    }
 }
 
 void TestDlg::connectUav(const QString &uav)

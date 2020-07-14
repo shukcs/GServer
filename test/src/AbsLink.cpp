@@ -147,6 +147,11 @@ bool AbsLink::ConnectTo(const QString &host, int port, LinkManager *mgr)
     return m_sock != NULL;
 }
 
+const QString &AbsLink::GetId() const
+{
+    return m_id;
+}
+
 void AbsLink::onSockConnect()
 {
     m_stat = St_Connected;

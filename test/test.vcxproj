@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\das.pb.cc" />
+    <ClCompile Include="src\GSLink.cpp" />
     <ClCompile Include="src\LinkManager.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\testDlg.cpp" />
@@ -38,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\das.pb.h" />
+    <ClInclude Include="src\GSLink.h" />
     <ClInclude Include="src\UavLink.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -92,7 +94,7 @@
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(OutDir);$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
