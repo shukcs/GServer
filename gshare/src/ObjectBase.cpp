@@ -288,7 +288,10 @@ void ILink::SetThread(BussinessThread *t)
 {
     m_thread = t;
     if (!t)
+    {
         m_mtxS = NULL;
+        m_sock = NULL;
+    }
 }
 
 BussinessThread *ILink::GetThread() const
