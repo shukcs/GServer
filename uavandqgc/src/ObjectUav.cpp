@@ -529,6 +529,8 @@ void ObjectUav::sendGx(const das::proto::PostOperationInformation &msg, uint64_t
         info->set_allocated_gps(new GpsInformation(pinf.gps()));
         if (pinf.has_attitude())
             info->set_allocated_attitude(new UavAttitude(pinf.attitude()));
+        if (pinf.has_status())
+            info->set_allocated_status(new OperationStatus(pinf.status()));
 
         ms->AttachProto(poi);
         SendMsg(ms);

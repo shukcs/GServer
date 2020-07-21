@@ -257,6 +257,8 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
             oiAdd->set_allocated_gps(new GpsInformation(oi.gps()));
             if (oi.has_status())
                 oiAdd->set_allocated_status(new OperationStatus(oi.status()));
+            if (oi.has_params())
+                oiAdd->set_allocated_params(new OperationParams(oi.params()));
 
             if (m_posRecord)
             {
