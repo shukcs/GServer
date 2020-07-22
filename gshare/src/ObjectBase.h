@@ -37,6 +37,7 @@ public:
     SHARED_DECL virtual void CheckTimer(uint64_t ms, char *buf, int len);
     SHARED_DECL bool IsRealse();
     SHARED_DECL ISocket *GetSocket()const;
+    SHARED_DECL void CloseLink();
 public:
     bool PrcsBussiness(uint64_t ms, BussinessThread &t);
     virtual int ProcessReceive(void *buf, int len, uint64_t) = 0;
@@ -51,7 +52,6 @@ public:
     void processSocket(ISocket &s, BussinessThread &t);
 protected:
     SHARED_DECL virtual void SetSocket(ISocket *s);
-    SHARED_DECL virtual void FreshLogin(uint64_t ms);
     SHARED_DECL void SetBuffSize(uint16_t sz);
     SHARED_DECL bool ChangeLogind(bool b);
     SHARED_DECL virtual void OnLogined(bool suc, ISocket *s = NULL);
@@ -62,6 +62,7 @@ protected:
     SHARED_DECL bool WaitSin();
     SHARED_DECL void PostSin();
     SHARED_DECL bool IsLinkThread()const;
+    virtual void FreshLogin(uint64_t ms) = 0;
 protected:
     ISocket                 *m_sock;
     LoopQueBuff             *m_recv;

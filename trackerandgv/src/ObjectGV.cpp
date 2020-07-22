@@ -241,5 +241,4 @@ bool ObjectGV::IsAllowRelease() const
 void ObjectGV::FreshLogin(uint64_t ms)
 {
     m_tmLastInfo = ms;
-    ILink::FreshLogin(ms);
 }

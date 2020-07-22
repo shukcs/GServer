@@ -82,21 +82,20 @@ public:
     }
     bool Push(const EC &val, uint32_t max=20)
     {
-        bool ret = !m_push ? genPush(val) : setNext(val);
+        bool ret = (!m_push) ? genPush(val) : setNext(val);
 
         if (!m_pop)
             m_pop = m_push;
         if (!m_header)
             m_header = m_push;
-        if (ret)
-            m_count++;
 
+        m_count++;
         removeMore(max);
         return ret;
     }
     EC Pop()
     {
-        if (m_count < 0)
+        if (m_count <= 0)
             assert(m_pop);
         EC ret(m_pop->GetValue());
         m_pop = m_pop->GetNext();
@@ -129,10 +128,10 @@ public:
         assert(m_push);
         return m_push->GetValue();
     }
-protected:
+private:
     QueNode *takeEmpty()
     {
-        if (m_header && m_header != m_pop && m_header != m_push)
+        if (m_header && m_header->GetNext() && m_header!=m_pop && m_header!=m_push)
         {
             auto ret = m_header;
             m_header = m_header->GetNext();
@@ -150,7 +149,10 @@ protected:
         max = m_nEmpty - max;
         for (;max>0 && m_header!=m_pop; --max)
         {
-            delete takeEmpty();
+            if (auto tmp = takeEmpty())
+                delete tmp;
+            else
+                break;
         }
     }
     bool genPush(const EC &val)
@@ -167,7 +169,6 @@ protected:
             m_push = tmp;
             return true;
         }
-
         if (auto tmp = new QueNode(val))
         {
             m_push->SetNext(tmp);

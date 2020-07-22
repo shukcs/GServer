@@ -80,7 +80,6 @@ ILink *ObjectTracker::GetLink()
 void ObjectTracker::FreshLogin(uint64_t ms)
 {
     m_tmLast = ms;
-    ILink::FreshLogin(ms);
 }
 
 void ObjectTracker::SetSimId(const std::string &sim)

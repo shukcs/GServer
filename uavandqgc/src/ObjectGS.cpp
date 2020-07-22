@@ -917,14 +917,9 @@ void ObjectGS::CheckTimer(uint64_t ms, char *buf, int len)
     ObjectAbsPB::CheckTimer(ms, buf, len);
     ms -= m_tmLastInfo;
     if (ms > 600000)
-    {
         Release();
-    }
-    else if (m_sock)
-    { 
-        if (ms > 60000 || (m_check.empty() && ms > 10000))//超时关闭
-            m_sock->Close();
-    }
+    else if (ms > 60000 || (m_check.empty() && ms > 10000))//超时关闭
+        CloseLink();
 }
 
 bool ObjectGS::IsAllowRelease() const
@@ -935,7 +930,6 @@ bool ObjectGS::IsAllowRelease() const
 void ObjectGS::FreshLogin(uint64_t ms)
 {
     m_tmLastInfo = ms;
-    ILink::FreshLogin(ms);
 }
 
 void ObjectGS::SetCheck(const std::string &str)

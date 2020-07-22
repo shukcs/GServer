@@ -149,11 +149,7 @@ ILink::ILink() : m_sock(NULL), m_recv(NULL), m_mtxS(NULL), m_thread(NULL)
 
 ILink::~ILink()
 {
-    if (m_sock)
-    {
-        m_sock->SetHandleLink(NULL);
-        m_sock->Close();
-    }
+    CloseLink();
     delete m_recv;
 }
 
@@ -247,14 +243,20 @@ void ILink::SetSocket(ISocket *s)
     }
 }
 
-void ILink::FreshLogin(uint64_t)
-{
-    m_bRelease = false;
-}
-
 ISocket *ILink::GetSocket() const
 {
     return m_sock;
+}
+
+void ILink::CloseLink()
+{
+    WaitSin();
+    if (m_sock)
+    {
+        m_sock->Close();
+        m_sock = NULL;
+    }
+    PostSin();
 }
 
 bool ILink::Receive(const void *buf, int len)
@@ -287,10 +289,10 @@ void ILink::SetMutex(IMutex *m)
 void ILink::SetThread(BussinessThread *t)
 {
     m_thread = t;
-    if (!t)
+    if (m_thread == NULL)
     {
         m_mtxS = NULL;
-        m_sock = NULL;
+        CloseLink();
     }
 }
 
@@ -305,6 +307,7 @@ void ILink::processSocket(ISocket &s, BussinessThread &t)
     {
         SetSocket(&s);
         FreshLogin(Utility::msTimeTick());
+        m_bRelease = false;
         t.m_linksAdd.Push(this);
     }
     else if (m_sock != &s)
@@ -655,7 +658,11 @@ bool IObjectManager::SendMsg(IMessage *msg)
         return false;
 
     if (auto t = GetThread(msg?msg->CreateThreadID(): -1))
+    {
+        if (!t->m_lsMsgSend.IsEmpty() && t->m_lsMsgSend.Last() == msg)
+            return false;
         return t->m_lsMsgSend.Push(msg);
+    }
 
     delete msg;
     return false;

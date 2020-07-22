@@ -98,7 +98,6 @@ void ObjectUav::OnLogined(bool suc, ISocket *s)
 void ObjectUav::FreshLogin(uint64_t ms)
 {
     m_tmLastPos = ms;
-    ILink::FreshLogin(ms);
 }
 
 bool ObjectUav::IsValid() const
@@ -224,13 +223,15 @@ void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
     {
         Release();
     }
+    else if (ms-m_tmLastPos > 6000)//超时关闭
+    {
+        CloseLink();
+    }
     else if (m_sock)
     {
         auto nor = m_mission ? m_mission->GetNotifyUavUOR(uint32_t(ms)) : NULL;
         if (nor)
             WaitSend(nor);
-        else if (ms-m_tmLastPos > 6000)//超时关闭
-            m_sock->Close();
     }
 }
 
