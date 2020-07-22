@@ -82,8 +82,7 @@ public:
     }
     bool Push(const EC &val, uint32_t max=20)
     {
-        bool ret = (!m_push) ? genPush(val) : setNext(val);
-
+        bool ret = setNext(val);
         if (!m_pop)
             m_pop = m_push;
         if (!m_header)
@@ -105,7 +104,7 @@ public:
     }
     bool IsEmpty()const
     {
-        return m_pop==NULL;
+        return m_pop==NULL || m_pop==m_push->GetNext();
     }
     bool IsContains(const EC &val)const
     {
@@ -162,21 +161,23 @@ private:
     }
     bool setNext(const EC &val)
     {
+        bool ret = false;
         if (auto tmp = takeEmpty())
         {
             tmp->SetValue(val);
             m_push->SetNext(tmp);
             m_push = tmp;
-            return true;
+            ret = true;
         }
-        if (auto tmp = new QueNode(val))
+        else if (auto tmp = new QueNode(val))
         {
-            m_push->SetNext(tmp);
+            if (m_push)
+                m_push->SetNext(tmp);
             m_push = tmp;
-            return true;
+            ret = true;
         }
 
-        return false;
+        return ret;
     }
 private:
     QueNode             *m_header;

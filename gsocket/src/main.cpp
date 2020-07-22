@@ -14,7 +14,7 @@
 static ISocketManager *sSockMgr = NULL;
 static void dump(int signo)
 {
-    auto fileName = Utility::dateString(Utility::msTimeTick(), "yMMdd hhmmss") + ".txt";
+    auto fileName = Utility::dateString(Utility::msTimeTick(), "yMMdd-hhmmss") + ".txt";
     Utility::Dump("dump"+fileName, signo);
     sSockMgr->CloseServer();
     exit(-1);

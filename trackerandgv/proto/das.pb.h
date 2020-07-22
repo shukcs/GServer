@@ -36,6 +36,10 @@ void protobuf_ShutdownFile_das_2eproto();
 
 class RequestTrackerIdentityAuthentication;
 class AckTrackerIdentityAuthentication;
+class Request3rdIdentityAuthentication;
+class Ack3rdIdentityAuthentication;
+class RequestUavIdentityAuthentication;
+class AckUavIdentityAuthentication;
 class GpsInformation;
 class OperationStatus;
 class OperationParams;
@@ -290,6 +294,484 @@ class AckTrackerIdentityAuthentication : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static AckTrackerIdentityAuthentication* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Request3rdIdentityAuthentication : public ::google::protobuf::Message {
+ public:
+  Request3rdIdentityAuthentication();
+  virtual ~Request3rdIdentityAuthentication();
+
+  Request3rdIdentityAuthentication(const Request3rdIdentityAuthentication& from);
+
+  inline Request3rdIdentityAuthentication& operator=(const Request3rdIdentityAuthentication& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Request3rdIdentityAuthentication& default_instance();
+
+  void Swap(Request3rdIdentityAuthentication* other);
+
+  // implements Message ----------------------------------------------
+
+  Request3rdIdentityAuthentication* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Request3rdIdentityAuthentication& from);
+  void MergeFrom(const Request3rdIdentityAuthentication& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string identification = 2;
+  inline bool has_identification() const;
+  inline void clear_identification();
+  static const int kIdentificationFieldNumber = 2;
+  inline const ::std::string& identification() const;
+  inline void set_identification(const ::std::string& value);
+  inline void set_identification(const char* value);
+  inline void set_identification(const char* value, size_t size);
+  inline ::std::string* mutable_identification();
+  inline ::std::string* release_identification();
+  inline void set_allocated_identification(::std::string* identification);
+
+  // required string secretkey = 3;
+  inline bool has_secretkey() const;
+  inline void clear_secretkey();
+  static const int kSecretkeyFieldNumber = 3;
+  inline const ::std::string& secretkey() const;
+  inline void set_secretkey(const ::std::string& value);
+  inline void set_secretkey(const char* value);
+  inline void set_secretkey(const char* value, size_t size);
+  inline ::std::string* mutable_secretkey();
+  inline ::std::string* release_secretkey();
+  inline void set_allocated_secretkey(::std::string* secretkey);
+
+  // optional string extradata = 4;
+  inline bool has_extradata() const;
+  inline void clear_extradata();
+  static const int kExtradataFieldNumber = 4;
+  inline const ::std::string& extradata() const;
+  inline void set_extradata(const ::std::string& value);
+  inline void set_extradata(const char* value);
+  inline void set_extradata(const char* value, size_t size);
+  inline ::std::string* mutable_extradata();
+  inline ::std::string* release_extradata();
+  inline void set_allocated_extradata(::std::string* extradata);
+
+  // @@protoc_insertion_point(class_scope:das.proto.Request3rdIdentityAuthentication)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_identification();
+  inline void clear_has_identification();
+  inline void set_has_secretkey();
+  inline void clear_has_secretkey();
+  inline void set_has_extradata();
+  inline void clear_has_extradata();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* identification_;
+  ::std::string* secretkey_;
+  ::std::string* extradata_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static Request3rdIdentityAuthentication* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class Ack3rdIdentityAuthentication : public ::google::protobuf::Message {
+ public:
+  Ack3rdIdentityAuthentication();
+  virtual ~Ack3rdIdentityAuthentication();
+
+  Ack3rdIdentityAuthentication(const Ack3rdIdentityAuthentication& from);
+
+  inline Ack3rdIdentityAuthentication& operator=(const Ack3rdIdentityAuthentication& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Ack3rdIdentityAuthentication& default_instance();
+
+  void Swap(Ack3rdIdentityAuthentication* other);
+
+  // implements Message ----------------------------------------------
+
+  Ack3rdIdentityAuthentication* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const Ack3rdIdentityAuthentication& from);
+  void MergeFrom(const Ack3rdIdentityAuthentication& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required int32 result = 2;
+  inline bool has_result() const;
+  inline void clear_result();
+  static const int kResultFieldNumber = 2;
+  inline ::google::protobuf::int32 result() const;
+  inline void set_result(::google::protobuf::int32 value);
+
+  // optional string extradata = 3;
+  inline bool has_extradata() const;
+  inline void clear_extradata();
+  static const int kExtradataFieldNumber = 3;
+  inline const ::std::string& extradata() const;
+  inline void set_extradata(const ::std::string& value);
+  inline void set_extradata(const char* value);
+  inline void set_extradata(const char* value, size_t size);
+  inline ::std::string* mutable_extradata();
+  inline ::std::string* release_extradata();
+  inline void set_allocated_extradata(::std::string* extradata);
+
+  // @@protoc_insertion_point(class_scope:das.proto.Ack3rdIdentityAuthentication)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_result();
+  inline void clear_has_result();
+  inline void set_has_extradata();
+  inline void clear_has_extradata();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 result_;
+  ::std::string* extradata_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static Ack3rdIdentityAuthentication* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class RequestUavIdentityAuthentication : public ::google::protobuf::Message {
+ public:
+  RequestUavIdentityAuthentication();
+  virtual ~RequestUavIdentityAuthentication();
+
+  RequestUavIdentityAuthentication(const RequestUavIdentityAuthentication& from);
+
+  inline RequestUavIdentityAuthentication& operator=(const RequestUavIdentityAuthentication& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RequestUavIdentityAuthentication& default_instance();
+
+  void Swap(RequestUavIdentityAuthentication* other);
+
+  // implements Message ----------------------------------------------
+
+  RequestUavIdentityAuthentication* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RequestUavIdentityAuthentication& from);
+  void MergeFrom(const RequestUavIdentityAuthentication& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string uavid = 2;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 2;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
+
+  // optional string extradata = 3;
+  inline bool has_extradata() const;
+  inline void clear_extradata();
+  static const int kExtradataFieldNumber = 3;
+  inline const ::std::string& extradata() const;
+  inline void set_extradata(const ::std::string& value);
+  inline void set_extradata(const char* value);
+  inline void set_extradata(const char* value, size_t size);
+  inline ::std::string* mutable_extradata();
+  inline ::std::string* release_extradata();
+  inline void set_allocated_extradata(::std::string* extradata);
+
+  // @@protoc_insertion_point(class_scope:das.proto.RequestUavIdentityAuthentication)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
+  inline void set_has_extradata();
+  inline void clear_has_extradata();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uavid_;
+  ::std::string* extradata_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static RequestUavIdentityAuthentication* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckUavIdentityAuthentication : public ::google::protobuf::Message {
+ public:
+  AckUavIdentityAuthentication();
+  virtual ~AckUavIdentityAuthentication();
+
+  AckUavIdentityAuthentication(const AckUavIdentityAuthentication& from);
+
+  inline AckUavIdentityAuthentication& operator=(const AckUavIdentityAuthentication& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckUavIdentityAuthentication& default_instance();
+
+  void Swap(AckUavIdentityAuthentication* other);
+
+  // implements Message ----------------------------------------------
+
+  AckUavIdentityAuthentication* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckUavIdentityAuthentication& from);
+  void MergeFrom(const AckUavIdentityAuthentication& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // optional string uavid = 2;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 2;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
+
+  // required int32 result = 3;
+  inline bool has_result() const;
+  inline void clear_result();
+  static const int kResultFieldNumber = 3;
+  inline ::google::protobuf::int32 result() const;
+  inline void set_result(::google::protobuf::int32 value);
+
+  // optional uint64 deadline = 4;
+  inline bool has_deadline() const;
+  inline void clear_deadline();
+  static const int kDeadlineFieldNumber = 4;
+  inline ::google::protobuf::uint64 deadline() const;
+  inline void set_deadline(::google::protobuf::uint64 value);
+
+  // optional string authString = 5;
+  inline bool has_authstring() const;
+  inline void clear_authstring();
+  static const int kAuthStringFieldNumber = 5;
+  inline const ::std::string& authstring() const;
+  inline void set_authstring(const ::std::string& value);
+  inline void set_authstring(const char* value);
+  inline void set_authstring(const char* value, size_t size);
+  inline ::std::string* mutable_authstring();
+  inline ::std::string* release_authstring();
+  inline void set_allocated_authstring(::std::string* authstring);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckUavIdentityAuthentication)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
+  inline void set_has_result();
+  inline void clear_has_result();
+  inline void set_has_deadline();
+  inline void clear_has_deadline();
+  inline void set_has_authstring();
+  inline void clear_has_authstring();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uavid_;
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 result_;
+  ::google::protobuf::uint64 deadline_;
+  ::std::string* authstring_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckUavIdentityAuthentication* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -4465,6 +4947,736 @@ inline void AckTrackerIdentityAuthentication::set_allocated_extradata(::std::str
   } else {
     clear_has_extradata();
     extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
+// Request3rdIdentityAuthentication
+
+// required uint32 seqno = 1;
+inline bool Request3rdIdentityAuthentication::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Request3rdIdentityAuthentication::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Request3rdIdentityAuthentication::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Request3rdIdentityAuthentication::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 Request3rdIdentityAuthentication::seqno() const {
+  return seqno_;
+}
+inline void Request3rdIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string identification = 2;
+inline bool Request3rdIdentityAuthentication::has_identification() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Request3rdIdentityAuthentication::set_has_identification() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Request3rdIdentityAuthentication::clear_has_identification() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Request3rdIdentityAuthentication::clear_identification() {
+  if (identification_ != &::google::protobuf::internal::kEmptyString) {
+    identification_->clear();
+  }
+  clear_has_identification();
+}
+inline const ::std::string& Request3rdIdentityAuthentication::identification() const {
+  return *identification_;
+}
+inline void Request3rdIdentityAuthentication::set_identification(const ::std::string& value) {
+  set_has_identification();
+  if (identification_ == &::google::protobuf::internal::kEmptyString) {
+    identification_ = new ::std::string;
+  }
+  identification_->assign(value);
+}
+inline void Request3rdIdentityAuthentication::set_identification(const char* value) {
+  set_has_identification();
+  if (identification_ == &::google::protobuf::internal::kEmptyString) {
+    identification_ = new ::std::string;
+  }
+  identification_->assign(value);
+}
+inline void Request3rdIdentityAuthentication::set_identification(const char* value, size_t size) {
+  set_has_identification();
+  if (identification_ == &::google::protobuf::internal::kEmptyString) {
+    identification_ = new ::std::string;
+  }
+  identification_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Request3rdIdentityAuthentication::mutable_identification() {
+  set_has_identification();
+  if (identification_ == &::google::protobuf::internal::kEmptyString) {
+    identification_ = new ::std::string;
+  }
+  return identification_;
+}
+inline ::std::string* Request3rdIdentityAuthentication::release_identification() {
+  clear_has_identification();
+  if (identification_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = identification_;
+    identification_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void Request3rdIdentityAuthentication::set_allocated_identification(::std::string* identification) {
+  if (identification_ != &::google::protobuf::internal::kEmptyString) {
+    delete identification_;
+  }
+  if (identification) {
+    set_has_identification();
+    identification_ = identification;
+  } else {
+    clear_has_identification();
+    identification_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string secretkey = 3;
+inline bool Request3rdIdentityAuthentication::has_secretkey() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Request3rdIdentityAuthentication::set_has_secretkey() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Request3rdIdentityAuthentication::clear_has_secretkey() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Request3rdIdentityAuthentication::clear_secretkey() {
+  if (secretkey_ != &::google::protobuf::internal::kEmptyString) {
+    secretkey_->clear();
+  }
+  clear_has_secretkey();
+}
+inline const ::std::string& Request3rdIdentityAuthentication::secretkey() const {
+  return *secretkey_;
+}
+inline void Request3rdIdentityAuthentication::set_secretkey(const ::std::string& value) {
+  set_has_secretkey();
+  if (secretkey_ == &::google::protobuf::internal::kEmptyString) {
+    secretkey_ = new ::std::string;
+  }
+  secretkey_->assign(value);
+}
+inline void Request3rdIdentityAuthentication::set_secretkey(const char* value) {
+  set_has_secretkey();
+  if (secretkey_ == &::google::protobuf::internal::kEmptyString) {
+    secretkey_ = new ::std::string;
+  }
+  secretkey_->assign(value);
+}
+inline void Request3rdIdentityAuthentication::set_secretkey(const char* value, size_t size) {
+  set_has_secretkey();
+  if (secretkey_ == &::google::protobuf::internal::kEmptyString) {
+    secretkey_ = new ::std::string;
+  }
+  secretkey_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Request3rdIdentityAuthentication::mutable_secretkey() {
+  set_has_secretkey();
+  if (secretkey_ == &::google::protobuf::internal::kEmptyString) {
+    secretkey_ = new ::std::string;
+  }
+  return secretkey_;
+}
+inline ::std::string* Request3rdIdentityAuthentication::release_secretkey() {
+  clear_has_secretkey();
+  if (secretkey_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = secretkey_;
+    secretkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void Request3rdIdentityAuthentication::set_allocated_secretkey(::std::string* secretkey) {
+  if (secretkey_ != &::google::protobuf::internal::kEmptyString) {
+    delete secretkey_;
+  }
+  if (secretkey) {
+    set_has_secretkey();
+    secretkey_ = secretkey;
+  } else {
+    clear_has_secretkey();
+    secretkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string extradata = 4;
+inline bool Request3rdIdentityAuthentication::has_extradata() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void Request3rdIdentityAuthentication::set_has_extradata() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void Request3rdIdentityAuthentication::clear_has_extradata() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void Request3rdIdentityAuthentication::clear_extradata() {
+  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
+    extradata_->clear();
+  }
+  clear_has_extradata();
+}
+inline const ::std::string& Request3rdIdentityAuthentication::extradata() const {
+  return *extradata_;
+}
+inline void Request3rdIdentityAuthentication::set_extradata(const ::std::string& value) {
+  set_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    extradata_ = new ::std::string;
+  }
+  extradata_->assign(value);
+}
+inline void Request3rdIdentityAuthentication::set_extradata(const char* value) {
+  set_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    extradata_ = new ::std::string;
+  }
+  extradata_->assign(value);
+}
+inline void Request3rdIdentityAuthentication::set_extradata(const char* value, size_t size) {
+  set_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    extradata_ = new ::std::string;
+  }
+  extradata_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Request3rdIdentityAuthentication::mutable_extradata() {
+  set_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    extradata_ = new ::std::string;
+  }
+  return extradata_;
+}
+inline ::std::string* Request3rdIdentityAuthentication::release_extradata() {
+  clear_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = extradata_;
+    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void Request3rdIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
+  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
+    delete extradata_;
+  }
+  if (extradata) {
+    set_has_extradata();
+    extradata_ = extradata;
+  } else {
+    clear_has_extradata();
+    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
+// Ack3rdIdentityAuthentication
+
+// required uint32 seqno = 1;
+inline bool Ack3rdIdentityAuthentication::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void Ack3rdIdentityAuthentication::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void Ack3rdIdentityAuthentication::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void Ack3rdIdentityAuthentication::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 Ack3rdIdentityAuthentication::seqno() const {
+  return seqno_;
+}
+inline void Ack3rdIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 result = 2;
+inline bool Ack3rdIdentityAuthentication::has_result() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void Ack3rdIdentityAuthentication::set_has_result() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void Ack3rdIdentityAuthentication::clear_has_result() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void Ack3rdIdentityAuthentication::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::google::protobuf::int32 Ack3rdIdentityAuthentication::result() const {
+  return result_;
+}
+inline void Ack3rdIdentityAuthentication::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
+}
+
+// optional string extradata = 3;
+inline bool Ack3rdIdentityAuthentication::has_extradata() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void Ack3rdIdentityAuthentication::set_has_extradata() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void Ack3rdIdentityAuthentication::clear_has_extradata() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void Ack3rdIdentityAuthentication::clear_extradata() {
+  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
+    extradata_->clear();
+  }
+  clear_has_extradata();
+}
+inline const ::std::string& Ack3rdIdentityAuthentication::extradata() const {
+  return *extradata_;
+}
+inline void Ack3rdIdentityAuthentication::set_extradata(const ::std::string& value) {
+  set_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    extradata_ = new ::std::string;
+  }
+  extradata_->assign(value);
+}
+inline void Ack3rdIdentityAuthentication::set_extradata(const char* value) {
+  set_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    extradata_ = new ::std::string;
+  }
+  extradata_->assign(value);
+}
+inline void Ack3rdIdentityAuthentication::set_extradata(const char* value, size_t size) {
+  set_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    extradata_ = new ::std::string;
+  }
+  extradata_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* Ack3rdIdentityAuthentication::mutable_extradata() {
+  set_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    extradata_ = new ::std::string;
+  }
+  return extradata_;
+}
+inline ::std::string* Ack3rdIdentityAuthentication::release_extradata() {
+  clear_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = extradata_;
+    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void Ack3rdIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
+  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
+    delete extradata_;
+  }
+  if (extradata) {
+    set_has_extradata();
+    extradata_ = extradata;
+  } else {
+    clear_has_extradata();
+    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
+// RequestUavIdentityAuthentication
+
+// required uint32 seqno = 1;
+inline bool RequestUavIdentityAuthentication::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void RequestUavIdentityAuthentication::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void RequestUavIdentityAuthentication::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void RequestUavIdentityAuthentication::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 RequestUavIdentityAuthentication::seqno() const {
+  return seqno_;
+}
+inline void RequestUavIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string uavid = 2;
+inline bool RequestUavIdentityAuthentication::has_uavid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void RequestUavIdentityAuthentication::set_has_uavid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void RequestUavIdentityAuthentication::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void RequestUavIdentityAuthentication::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
+  }
+  clear_has_uavid();
+}
+inline const ::std::string& RequestUavIdentityAuthentication::uavid() const {
+  return *uavid_;
+}
+inline void RequestUavIdentityAuthentication::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void RequestUavIdentityAuthentication::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void RequestUavIdentityAuthentication::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestUavIdentityAuthentication::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  return uavid_;
+}
+inline ::std::string* RequestUavIdentityAuthentication::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestUavIdentityAuthentication::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
+  } else {
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string extradata = 3;
+inline bool RequestUavIdentityAuthentication::has_extradata() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void RequestUavIdentityAuthentication::set_has_extradata() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void RequestUavIdentityAuthentication::clear_has_extradata() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void RequestUavIdentityAuthentication::clear_extradata() {
+  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
+    extradata_->clear();
+  }
+  clear_has_extradata();
+}
+inline const ::std::string& RequestUavIdentityAuthentication::extradata() const {
+  return *extradata_;
+}
+inline void RequestUavIdentityAuthentication::set_extradata(const ::std::string& value) {
+  set_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    extradata_ = new ::std::string;
+  }
+  extradata_->assign(value);
+}
+inline void RequestUavIdentityAuthentication::set_extradata(const char* value) {
+  set_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    extradata_ = new ::std::string;
+  }
+  extradata_->assign(value);
+}
+inline void RequestUavIdentityAuthentication::set_extradata(const char* value, size_t size) {
+  set_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    extradata_ = new ::std::string;
+  }
+  extradata_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestUavIdentityAuthentication::mutable_extradata() {
+  set_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    extradata_ = new ::std::string;
+  }
+  return extradata_;
+}
+inline ::std::string* RequestUavIdentityAuthentication::release_extradata() {
+  clear_has_extradata();
+  if (extradata_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = extradata_;
+    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestUavIdentityAuthentication::set_allocated_extradata(::std::string* extradata) {
+  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
+    delete extradata_;
+  }
+  if (extradata) {
+    set_has_extradata();
+    extradata_ = extradata;
+  } else {
+    clear_has_extradata();
+    extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
+// AckUavIdentityAuthentication
+
+// required uint32 seqno = 1;
+inline bool AckUavIdentityAuthentication::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckUavIdentityAuthentication::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckUavIdentityAuthentication::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckUavIdentityAuthentication::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckUavIdentityAuthentication::seqno() const {
+  return seqno_;
+}
+inline void AckUavIdentityAuthentication::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// optional string uavid = 2;
+inline bool AckUavIdentityAuthentication::has_uavid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckUavIdentityAuthentication::set_has_uavid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckUavIdentityAuthentication::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckUavIdentityAuthentication::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
+  }
+  clear_has_uavid();
+}
+inline const ::std::string& AckUavIdentityAuthentication::uavid() const {
+  return *uavid_;
+}
+inline void AckUavIdentityAuthentication::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void AckUavIdentityAuthentication::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void AckUavIdentityAuthentication::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* AckUavIdentityAuthentication::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  return uavid_;
+}
+inline ::std::string* AckUavIdentityAuthentication::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void AckUavIdentityAuthentication::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
+  } else {
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required int32 result = 3;
+inline bool AckUavIdentityAuthentication::has_result() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void AckUavIdentityAuthentication::set_has_result() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void AckUavIdentityAuthentication::clear_has_result() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void AckUavIdentityAuthentication::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::google::protobuf::int32 AckUavIdentityAuthentication::result() const {
+  return result_;
+}
+inline void AckUavIdentityAuthentication::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
+}
+
+// optional uint64 deadline = 4;
+inline bool AckUavIdentityAuthentication::has_deadline() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void AckUavIdentityAuthentication::set_has_deadline() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void AckUavIdentityAuthentication::clear_has_deadline() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void AckUavIdentityAuthentication::clear_deadline() {
+  deadline_ = GOOGLE_ULONGLONG(0);
+  clear_has_deadline();
+}
+inline ::google::protobuf::uint64 AckUavIdentityAuthentication::deadline() const {
+  return deadline_;
+}
+inline void AckUavIdentityAuthentication::set_deadline(::google::protobuf::uint64 value) {
+  set_has_deadline();
+  deadline_ = value;
+}
+
+// optional string authString = 5;
+inline bool AckUavIdentityAuthentication::has_authstring() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void AckUavIdentityAuthentication::set_has_authstring() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void AckUavIdentityAuthentication::clear_has_authstring() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void AckUavIdentityAuthentication::clear_authstring() {
+  if (authstring_ != &::google::protobuf::internal::kEmptyString) {
+    authstring_->clear();
+  }
+  clear_has_authstring();
+}
+inline const ::std::string& AckUavIdentityAuthentication::authstring() const {
+  return *authstring_;
+}
+inline void AckUavIdentityAuthentication::set_authstring(const ::std::string& value) {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
+  }
+  authstring_->assign(value);
+}
+inline void AckUavIdentityAuthentication::set_authstring(const char* value) {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
+  }
+  authstring_->assign(value);
+}
+inline void AckUavIdentityAuthentication::set_authstring(const char* value, size_t size) {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
+  }
+  authstring_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* AckUavIdentityAuthentication::mutable_authstring() {
+  set_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    authstring_ = new ::std::string;
+  }
+  return authstring_;
+}
+inline ::std::string* AckUavIdentityAuthentication::release_authstring() {
+  clear_has_authstring();
+  if (authstring_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = authstring_;
+    authstring_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void AckUavIdentityAuthentication::set_allocated_authstring(::std::string* authstring) {
+  if (authstring_ != &::google::protobuf::internal::kEmptyString) {
+    delete authstring_;
+  }
+  if (authstring) {
+    set_has_authstring();
+    authstring_ = authstring;
+  } else {
+    clear_has_authstring();
+    authstring_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 

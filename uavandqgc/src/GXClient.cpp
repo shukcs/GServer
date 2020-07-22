@@ -76,7 +76,7 @@ void GXClient::ClearChanged()
     m_stat &= ~St_Changed;
 }
 
-int GXClient::GXClinetType()
+int GXClient::GXClientType()
 {
     return IObject::User + 3;
 }
@@ -143,7 +143,7 @@ void GXManager::OnConnect(GXClientSocket *, bool)
 
 int GXManager::GetObjectType() const
 {
-    return GXClient::GXClinetType();
+    return GXClient::GXClientType();
 }
 
 bool GXManager::PrcsPublicMsg(const IMessage &msg)

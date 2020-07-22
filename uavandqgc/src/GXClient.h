@@ -49,7 +49,7 @@ public:
     bool IsChanged()const;
     void ClearChanged();
 public:
-    static int GXClinetType();
+    static int GXClientType();
 private:
     std::string     m_id;
     int             m_stat;

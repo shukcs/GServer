@@ -53,10 +53,11 @@ protected:
 class ObjectManagers
 {
     typedef std::map<ISocket*, LoopQueBuff*> MapBuffRecieve;
-    typedef LoopQueue<int> RemoveManagerQueue;
 public:
     static ObjectManagers &Instance();
     static ILog &GetLog();
+    static bool SndMessage(IMessage *msg);
+    static bool RlsMessage(IMessage *msg);
 public:
     void AddManager(IObjectManager *m);
     void RemoveManager(int type);
@@ -68,14 +69,8 @@ protected:
 private:
     ObjectManagers();
     ~ObjectManagers();
-
-    void _prcsSendMessages(IObjectManager *mgr);
-    void _prcsReleaseMessages(IObjectManager *mgr);
 private:
-    friend class ManagerThread;
     std::map<int, IObjectManager*>      m_managersMap;
-    Thread                              *m_thread;
-    RemoveManagerQueue                  m_mgrsRemove;
     char                                m_buff[1024];
 };
 

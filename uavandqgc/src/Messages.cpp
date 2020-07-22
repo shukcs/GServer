@@ -242,7 +242,7 @@ int Gs2GsMessage::getMessageType(const google::protobuf::Message &msg)
 //Uav2GXMessage
 /////////////////////////////////////////////////////////////////////////
 Uav2GXMessage::Uav2GXMessage(ObjectUav *sender)
-: GSOrUavMessage(sender, string(), GXClient::GXClinetType())
+: GSOrUavMessage(sender, string(), GXClient::GXClientType())
 {
 }
 
@@ -261,7 +261,7 @@ int Uav2GXMessage::getMessageType(const google::protobuf::Message &msg)
 //GX2UavMessage
 /////////////////////////////////////////////////////////////////////////
 GX2UavMessage::GX2UavMessage(const std::string &sender, int st)
-:IMessage(new MessageData(sender, GXClient::GXClinetType(), GXClinetStat), sender, ObjectUav::UAVType())
+:IMessage(new MessageData(sender, GXClient::GXClientType(), GXClinetStat), sender, ObjectUav::UAVType())
 , m_stat(st)
 {
 }

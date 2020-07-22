@@ -85,7 +85,7 @@ void ObjectUav::OnLogined(bool suc, ISocket *s)
         if (suc)
         {
             SendMsg(new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Login));
-            SendMsg(new ObjectSignal(this, GXClient::GXClinetType(), ObjectSignal::S_Login));
+            SendMsg(new ObjectSignal(this, GXClient::GXClientType(), ObjectSignal::S_Login));
         }
         else
         {
@@ -215,7 +215,7 @@ void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
     if (!m_sock && m_bLogined)
     {
         SendMsg(new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Logout));
-        SendMsg(new ObjectSignal(this, GXClient::GXClinetType(), ObjectSignal::S_Logout));
+        SendMsg(new ObjectSignal(this, GXClient::GXClientType(), ObjectSignal::S_Logout));
     }
 
     ObjectAbsPB::CheckTimer(ms, buf, len);

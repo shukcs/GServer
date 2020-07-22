@@ -55,6 +55,7 @@ IMessage::IMessage(MessageData *data, const std::string &rcv, int32_t tpRc)
 IMessage::~IMessage()
 {
     delete m_data;
+    m_data = NULL;
 }
 
 int32_t IMessage::GetReceiverType() const

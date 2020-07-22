@@ -27,6 +27,18 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* AckTrackerIdentityAuthentication_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   AckTrackerIdentityAuthentication_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Request3rdIdentityAuthentication_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Request3rdIdentityAuthentication_reflection_ = NULL;
+const ::google::protobuf::Descriptor* Ack3rdIdentityAuthentication_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  Ack3rdIdentityAuthentication_reflection_ = NULL;
+const ::google::protobuf::Descriptor* RequestUavIdentityAuthentication_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  RequestUavIdentityAuthentication_reflection_ = NULL;
+const ::google::protobuf::Descriptor* AckUavIdentityAuthentication_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  AckUavIdentityAuthentication_reflection_ = NULL;
 const ::google::protobuf::Descriptor* GpsInformation_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   GpsInformation_reflection_ = NULL;
@@ -176,7 +188,78 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckTrackerIdentityAuthentication));
-  GpsInformation_descriptor_ = file->message_type(2);
+  Request3rdIdentityAuthentication_descriptor_ = file->message_type(2);
+  static const int Request3rdIdentityAuthentication_offsets_[4] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Request3rdIdentityAuthentication, seqno_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Request3rdIdentityAuthentication, identification_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Request3rdIdentityAuthentication, secretkey_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Request3rdIdentityAuthentication, extradata_),
+  };
+  Request3rdIdentityAuthentication_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      Request3rdIdentityAuthentication_descriptor_,
+      Request3rdIdentityAuthentication::default_instance_,
+      Request3rdIdentityAuthentication_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Request3rdIdentityAuthentication, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Request3rdIdentityAuthentication, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(Request3rdIdentityAuthentication));
+  Ack3rdIdentityAuthentication_descriptor_ = file->message_type(3);
+  static const int Ack3rdIdentityAuthentication_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Ack3rdIdentityAuthentication, seqno_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Ack3rdIdentityAuthentication, result_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Ack3rdIdentityAuthentication, extradata_),
+  };
+  Ack3rdIdentityAuthentication_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      Ack3rdIdentityAuthentication_descriptor_,
+      Ack3rdIdentityAuthentication::default_instance_,
+      Ack3rdIdentityAuthentication_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Ack3rdIdentityAuthentication, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Ack3rdIdentityAuthentication, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(Ack3rdIdentityAuthentication));
+  RequestUavIdentityAuthentication_descriptor_ = file->message_type(4);
+  static const int RequestUavIdentityAuthentication_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavIdentityAuthentication, seqno_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavIdentityAuthentication, uavid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavIdentityAuthentication, extradata_),
+  };
+  RequestUavIdentityAuthentication_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      RequestUavIdentityAuthentication_descriptor_,
+      RequestUavIdentityAuthentication::default_instance_,
+      RequestUavIdentityAuthentication_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavIdentityAuthentication, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestUavIdentityAuthentication, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(RequestUavIdentityAuthentication));
+  AckUavIdentityAuthentication_descriptor_ = file->message_type(5);
+  static const int AckUavIdentityAuthentication_offsets_[5] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavIdentityAuthentication, seqno_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavIdentityAuthentication, uavid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavIdentityAuthentication, result_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavIdentityAuthentication, deadline_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavIdentityAuthentication, authstring_),
+  };
+  AckUavIdentityAuthentication_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      AckUavIdentityAuthentication_descriptor_,
+      AckUavIdentityAuthentication::default_instance_,
+      AckUavIdentityAuthentication_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavIdentityAuthentication, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUavIdentityAuthentication, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(AckUavIdentityAuthentication));
+  GpsInformation_descriptor_ = file->message_type(6);
   static const int GpsInformation_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GpsInformation, longitude_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(GpsInformation, latitude_),
@@ -194,7 +277,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(GpsInformation));
-  OperationStatus_descriptor_ = file->message_type(3);
+  OperationStatus_descriptor_ = file->message_type(7);
   static const int OperationStatus_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationStatus, operationmode_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationStatus, voltage_),
@@ -213,7 +296,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationStatus));
-  OperationParams_descriptor_ = file->message_type(4);
+  OperationParams_descriptor_ = file->message_type(8);
   static const int OperationParams_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationParams, alarmvoltage_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationParams, alarmdose_),
@@ -233,7 +316,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationParams));
-  OperationInformation_descriptor_ = file->message_type(5);
+  OperationInformation_descriptor_ = file->message_type(9);
   static const int OperationInformation_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationInformation, uavid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationInformation, timestamp_),
@@ -252,7 +335,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationInformation));
-  PostOperationInformation_descriptor_ = file->message_type(6);
+  PostOperationInformation_descriptor_ = file->message_type(10);
   static const int PostOperationInformation_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationInformation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationInformation, oi_),
@@ -268,7 +351,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostOperationInformation));
-  AckOperationInformation_descriptor_ = file->message_type(7);
+  AckOperationInformation_descriptor_ = file->message_type(11);
   static const int AckOperationInformation_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckOperationInformation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckOperationInformation, result_),
@@ -284,7 +367,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckOperationInformation));
-  RequestIdentityAllocation_descriptor_ = file->message_type(8);
+  RequestIdentityAllocation_descriptor_ = file->message_type(12);
   static const int RequestIdentityAllocation_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestIdentityAllocation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestIdentityAllocation, devtype_),
@@ -301,7 +384,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestIdentityAllocation));
-  AckIdentityAllocation_descriptor_ = file->message_type(9);
+  AckIdentityAllocation_descriptor_ = file->message_type(13);
   static const int AckIdentityAllocation_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckIdentityAllocation, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckIdentityAllocation, result_),
@@ -319,7 +402,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckIdentityAllocation));
-  PostHeartBeat_descriptor_ = file->message_type(10);
+  PostHeartBeat_descriptor_ = file->message_type(14);
   static const int PostHeartBeat_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostHeartBeat, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostHeartBeat, id_),
@@ -335,7 +418,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostHeartBeat));
-  AckHeartBeat_descriptor_ = file->message_type(11);
+  AckHeartBeat_descriptor_ = file->message_type(15);
   static const int AckHeartBeat_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckHeartBeat, seqno_),
   };
@@ -350,7 +433,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckHeartBeat));
-  RequestProgramUpgrade_descriptor_ = file->message_type(12);
+  RequestProgramUpgrade_descriptor_ = file->message_type(16);
   static const int RequestProgramUpgrade_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestProgramUpgrade, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestProgramUpgrade, hardware_),
@@ -368,7 +451,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestProgramUpgrade));
-  AckProgramUpgrade_descriptor_ = file->message_type(13);
+  AckProgramUpgrade_descriptor_ = file->message_type(17);
   static const int AckProgramUpgrade_offsets_[6] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckProgramUpgrade, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckProgramUpgrade, result_),
@@ -388,7 +471,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckProgramUpgrade));
-  RequestProgramDownload_descriptor_ = file->message_type(14);
+  RequestProgramDownload_descriptor_ = file->message_type(18);
   static const int RequestProgramDownload_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestProgramDownload, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestProgramDownload, software_),
@@ -406,7 +489,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestProgramDownload));
-  AckProgramDownload_descriptor_ = file->message_type(15);
+  AckProgramDownload_descriptor_ = file->message_type(19);
   static const int AckProgramDownload_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckProgramDownload, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckProgramDownload, result_),
@@ -427,7 +510,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckProgramDownload));
-  ParameterDescription_descriptor_ = file->message_type(16);
+  ParameterDescription_descriptor_ = file->message_type(20);
   static const int ParameterDescription_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ParameterDescription, name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ParameterDescription, readonly_),
@@ -445,7 +528,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ParameterDescription));
-  QueryParameters_descriptor_ = file->message_type(17);
+  QueryParameters_descriptor_ = file->message_type(21);
   static const int QueryParameters_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(QueryParameters, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(QueryParameters, id_),
@@ -461,7 +544,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(QueryParameters));
-  AckQueryParameters_descriptor_ = file->message_type(18);
+  AckQueryParameters_descriptor_ = file->message_type(22);
   static const int AckQueryParameters_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckQueryParameters, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckQueryParameters, id_),
@@ -479,7 +562,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckQueryParameters));
-  ConfigureParameters_descriptor_ = file->message_type(19);
+  ConfigureParameters_descriptor_ = file->message_type(23);
   static const int ConfigureParameters_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ConfigureParameters, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ConfigureParameters, id_),
@@ -496,7 +579,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ConfigureParameters));
-  AckConfigurParameters_descriptor_ = file->message_type(20);
+  AckConfigurParameters_descriptor_ = file->message_type(24);
   static const int AckConfigurParameters_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckConfigurParameters, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckConfigurParameters, id_),
@@ -513,7 +596,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckConfigurParameters));
-  Coordinate_descriptor_ = file->message_type(21);
+  Coordinate_descriptor_ = file->message_type(25);
   static const int Coordinate_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Coordinate, longitude_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Coordinate, latitude_),
@@ -530,7 +613,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(Coordinate));
-  OperationSnapshot_descriptor_ = file->message_type(22);
+  OperationSnapshot_descriptor_ = file->message_type(26);
   static const int OperationSnapshot_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationSnapshot, devid_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(OperationSnapshot, timestamp_),
@@ -549,7 +632,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(OperationSnapshot));
-  PostOperationSnapshot_descriptor_ = file->message_type(23);
+  PostOperationSnapshot_descriptor_ = file->message_type(27);
   static const int PostOperationSnapshot_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationSnapshot, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostOperationSnapshot, os_),
@@ -565,7 +648,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostOperationSnapshot));
-  AckPostOperationSnapshot_descriptor_ = file->message_type(24);
+  AckPostOperationSnapshot_descriptor_ = file->message_type(28);
   static const int AckPostOperationSnapshot_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostOperationSnapshot, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostOperationSnapshot, result_),
@@ -581,7 +664,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostOperationSnapshot));
-  RequestPositionAuthentication_descriptor_ = file->message_type(25);
+  RequestPositionAuthentication_descriptor_ = file->message_type(29);
   static const int RequestPositionAuthentication_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestPositionAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestPositionAuthentication, devid_),
@@ -598,7 +681,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestPositionAuthentication));
-  AckPositionAuthentication_descriptor_ = file->message_type(26);
+  AckPositionAuthentication_descriptor_ = file->message_type(30);
   static const int AckPositionAuthentication_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPositionAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPositionAuthentication, result_),
@@ -614,7 +697,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPositionAuthentication));
-  ReportDeviceException_descriptor_ = file->message_type(27);
+  ReportDeviceException_descriptor_ = file->message_type(31);
   static const int ReportDeviceException_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ReportDeviceException, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ReportDeviceException, id_),
@@ -631,7 +714,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(ReportDeviceException));
-  AckReportDeviceException_descriptor_ = file->message_type(28);
+  AckReportDeviceException_descriptor_ = file->message_type(32);
   static const int AckReportDeviceException_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckReportDeviceException, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckReportDeviceException, result_),
@@ -647,7 +730,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckReportDeviceException));
-  RequestGVIdentityAuthentication_descriptor_ = file->message_type(29);
+  RequestGVIdentityAuthentication_descriptor_ = file->message_type(33);
   static const int RequestGVIdentityAuthentication_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestGVIdentityAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestGVIdentityAuthentication, userid_),
@@ -665,7 +748,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestGVIdentityAuthentication));
-  AckGVIdentityAuthentication_descriptor_ = file->message_type(30);
+  AckGVIdentityAuthentication_descriptor_ = file->message_type(34);
   static const int AckGVIdentityAuthentication_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckGVIdentityAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckGVIdentityAuthentication, result_),
@@ -682,7 +765,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckGVIdentityAuthentication));
-  RequestIVIdentityAuthentication_descriptor_ = file->message_type(31);
+  RequestIVIdentityAuthentication_descriptor_ = file->message_type(35);
   static const int RequestIVIdentityAuthentication_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestIVIdentityAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestIVIdentityAuthentication, userid_),
@@ -700,7 +783,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestIVIdentityAuthentication));
-  AckIVIdentityAuthentication_descriptor_ = file->message_type(32);
+  AckIVIdentityAuthentication_descriptor_ = file->message_type(36);
   static const int AckIVIdentityAuthentication_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckIVIdentityAuthentication, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckIVIdentityAuthentication, result_),
@@ -717,7 +800,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckIVIdentityAuthentication));
-  UpdateDeviceList_descriptor_ = file->message_type(33);
+  UpdateDeviceList_descriptor_ = file->message_type(37);
   static const int UpdateDeviceList_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UpdateDeviceList, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UpdateDeviceList, operation_),
@@ -734,7 +817,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(UpdateDeviceList));
-  AckUpdateDeviceList_descriptor_ = file->message_type(34);
+  AckUpdateDeviceList_descriptor_ = file->message_type(38);
   static const int AckUpdateDeviceList_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUpdateDeviceList, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUpdateDeviceList, result_),
@@ -750,7 +833,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckUpdateDeviceList));
-  SyncDeviceList_descriptor_ = file->message_type(35);
+  SyncDeviceList_descriptor_ = file->message_type(39);
   static const int SyncDeviceList_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SyncDeviceList, seqno_),
   };
@@ -765,7 +848,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(SyncDeviceList));
-  AckSyncDeviceList_descriptor_ = file->message_type(36);
+  AckSyncDeviceList_descriptor_ = file->message_type(40);
   static const int AckSyncDeviceList_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSyncDeviceList, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSyncDeviceList, result_),
@@ -798,6 +881,14 @@ void protobuf_RegisterTypes(const ::std::string&) {
     RequestTrackerIdentityAuthentication_descriptor_, &RequestTrackerIdentityAuthentication::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     AckTrackerIdentityAuthentication_descriptor_, &AckTrackerIdentityAuthentication::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    Request3rdIdentityAuthentication_descriptor_, &Request3rdIdentityAuthentication::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    Ack3rdIdentityAuthentication_descriptor_, &Ack3rdIdentityAuthentication::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    RequestUavIdentityAuthentication_descriptor_, &RequestUavIdentityAuthentication::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    AckUavIdentityAuthentication_descriptor_, &AckUavIdentityAuthentication::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     GpsInformation_descriptor_, &GpsInformation::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -877,6 +968,14 @@ void protobuf_ShutdownFile_das_2eproto() {
   delete RequestTrackerIdentityAuthentication_reflection_;
   delete AckTrackerIdentityAuthentication::default_instance_;
   delete AckTrackerIdentityAuthentication_reflection_;
+  delete Request3rdIdentityAuthentication::default_instance_;
+  delete Request3rdIdentityAuthentication_reflection_;
+  delete Ack3rdIdentityAuthentication::default_instance_;
+  delete Ack3rdIdentityAuthentication_reflection_;
+  delete RequestUavIdentityAuthentication::default_instance_;
+  delete RequestUavIdentityAuthentication_reflection_;
+  delete AckUavIdentityAuthentication::default_instance_;
+  delete AckUavIdentityAuthentication_reflection_;
   delete GpsInformation::default_instance_;
   delete GpsInformation_reflection_;
   delete OperationStatus::default_instance_;
@@ -961,85 +1060,99 @@ void protobuf_AddDesc_das_2eproto() {
     "\ttrackerid\030\002 \002(\t\022\021\n\textradata\030\003 \001(\t\"T\n A"
     "ckTrackerIdentityAuthentication\022\r\n\005seqno"
     "\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\021\n\textradata\030\003 \001("
-    "\t\"Y\n\016GpsInformation\022\021\n\tlongitude\030\001 \002(\005\022\020"
-    "\n\010latitude\030\002 \002(\005\022\020\n\010altitude\030\003 \002(\005\022\020\n\010ve"
-    "locity\030\004 \003(\002\"z\n\017OperationStatus\022\025\n\ropera"
-    "tionmode\030\001 \001(\t\022\017\n\007voltage\030\002 \001(\002\022\025\n\rsurpl"
-    "usenergy\030\003 \001(\002\022\023\n\013jetvelocity\030\004 \001(\002\022\023\n\013s"
-    "prayeddose\030\005 \001(\002\"\230\001\n\017OperationParams\022\024\n\014"
-    "alarmvoltage\030\001 \001(\002\022\021\n\talarmdose\030\002 \001(\002\022\025\n"
-    "\rsprayingwidth\030\003 \001(\002\022\027\n\017desiredaltitude\030"
-    "\004 \001(\002\022\027\n\017desiredvelocity\030\005 \001(\002\022\023\n\013jetvel"
-    "ocity\030\006 \001(\002\"\270\001\n\024OperationInformation\022\r\n\005"
-    "uavid\030\001 \002(\t\022\021\n\ttimestamp\030\002 \002(\004\022&\n\003gps\030\003 "
-    "\002(\0132\031.das.proto.GpsInformation\022*\n\006status"
-    "\030\004 \001(\0132\032.das.proto.OperationStatus\022*\n\006pa"
-    "rams\030\005 \001(\0132\032.das.proto.OperationParams\"V"
-    "\n\030PostOperationInformation\022\r\n\005seqno\030\001 \002("
-    "\r\022+\n\002oi\030\002 \003(\0132\037.das.proto.OperationInfor"
-    "mation\"8\n\027AckOperationInformation\022\r\n\005seq"
-    "no\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"N\n\031RequestIdent"
-    "ityAllocation\022\r\n\005seqno\030\001 \002(\r\022\017\n\007devtype\030"
-    "\002 \002(\t\022\021\n\textradata\030\003 \001(\t\"U\n\025AckIdentityA"
-    "llocation\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005"
-    "\022\n\n\002id\030\003 \001(\t\022\021\n\textradata\030\004 \001(\t\"*\n\rPostH"
-    "eartBeat\022\r\n\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \001(\t\"\035\n\014A"
-    "ckHeartBeat\022\r\n\005seqno\030\001 \002(\r\"]\n\025RequestPro"
-    "gramUpgrade\022\r\n\005seqno\030\001 \002(\r\022\020\n\010hardware\030\002"
-    " \002(\t\022\020\n\010software\030\003 \002(\t\022\021\n\textradata\030\004 \001("
-    "\t\"w\n\021AckProgramUpgrade\022\r\n\005seqno\030\001 \002(\r\022\016\n"
-    "\006result\030\002 \002(\005\022\020\n\010software\030\003 \002(\t\022\016\n\006lengt"
-    "h\030\004 \002(\005\022\016\n\006forced\030\005 \002(\010\022\021\n\textradata\030\006 \001"
-    "(\t\"Y\n\026RequestProgramDownload\022\r\n\005seqno\030\001 "
-    "\002(\r\022\020\n\010software\030\002 \002(\t\022\016\n\006offset\030\003 \002(\005\022\016\n"
-    "\006length\030\004 \002(\005\"\202\001\n\022AckProgramDownload\022\r\n\005"
-    "seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\020\n\010software\030"
-    "\003 \002(\t\022\016\n\006offset\030\004 \002(\005\022\016\n\006length\030\005 \002(\005\022\014\n"
-    "\004data\030\006 \001(\014\022\r\n\005crc32\030\007 \001(\r\"S\n\024ParameterD"
-    "escription\022\014\n\004name\030\001 \002(\t\022\020\n\010readonly\030\002 \002"
-    "(\010\022\014\n\004type\030\003 \002(\r\022\r\n\005value\030\004 \002(\t\",\n\017Query"
-    "Parameters\022\r\n\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \002(\t\"l\n"
-    "\022AckQueryParameters\022\r\n\005seqno\030\001 \002(\r\022\n\n\002id"
-    "\030\002 \002(\t\022\016\n\006result\030\003 \002(\005\022+\n\002pd\030\004 \003(\0132\037.das"
-    ".proto.ParameterDescription\"]\n\023Configure"
-    "Parameters\022\r\n\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \002(\t\022+\n"
-    "\002pd\030\003 \003(\0132\037.das.proto.ParameterDescripti"
-    "on\"B\n\025AckConfigurParameters\022\r\n\005seqno\030\001 \002"
-    "(\r\022\n\n\002id\030\002 \002(\t\022\016\n\006result\030\003 \002(\005\"C\n\nCoordi"
-    "nate\022\021\n\tlongitude\030\001 \002(\005\022\020\n\010latitude\030\002 \002("
-    "\005\022\020\n\010altitude\030\003 \001(\005\"t\n\021OperationSnapshot"
-    "\022\r\n\005devid\030\001 \002(\t\022\021\n\ttimestamp\030\002 \002(\004\022\"\n\003po"
-    "s\030\003 \001(\0132\025.das.proto.Coordinate\022\014\n\004size\030\004"
-    " \001(\005\022\013\n\003pic\030\005 \002(\014\"P\n\025PostOperationSnapsh"
-    "ot\022\r\n\005seqno\030\001 \002(\r\022(\n\002os\030\002 \002(\0132\034.das.prot"
-    "o.OperationSnapshot\"9\n\030AckPostOperationS"
-    "napshot\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"e"
-    "\n\035RequestPositionAuthentication\022\r\n\005seqno"
-    "\030\001 \002(\r\022\r\n\005devid\030\002 \002(\t\022&\n\003pos\030\003 \002(\0132\031.das"
-    ".proto.GpsInformation\":\n\031AckPositionAuth"
-    "entication\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002("
-    "\005\"@\n\025ReportDeviceException\022\r\n\005seqno\030\001 \002("
-    "\r\022\n\n\002id\030\002 \002(\t\022\014\n\004desc\030\003 \003(\t\"9\n\030AckReport"
-    "DeviceException\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result"
-    "\030\002 \002(\005\"e\n\037RequestGVIdentityAuthenticatio"
-    "n\022\r\n\005seqno\030\001 \002(\r\022\016\n\006userid\030\002 \002(\t\022\020\n\010pass"
-    "word\030\003 \002(\t\022\021\n\textradata\030\004 \001(\t\"O\n\033AckGVId"
-    "entityAuthentication\022\r\n\005seqno\030\001 \002(\r\022\016\n\006r"
-    "esult\030\002 \002(\005\022\021\n\textradata\030\003 \001(\t\"e\n\037Reques"
-    "tIVIdentityAuthentication\022\r\n\005seqno\030\001 \002(\r"
-    "\022\016\n\006userid\030\002 \002(\t\022\020\n\010password\030\003 \002(\t\022\021\n\tex"
-    "tradata\030\004 \001(\t\"O\n\033AckIVIdentityAuthentica"
-    "tion\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\021\n\te"
-    "xtradata\030\003 \001(\t\"@\n\020UpdateDeviceList\022\r\n\005se"
-    "qno\030\001 \002(\r\022\021\n\toperation\030\002 \002(\r\022\n\n\002id\030\003 \003(\t"
-    "\"4\n\023AckUpdateDeviceList\022\r\n\005seqno\030\001 \002(\r\022\016"
-    "\n\006result\030\002 \002(\005\"\037\n\016SyncDeviceList\022\r\n\005seqn"
-    "o\030\001 \002(\r\">\n\021AckSyncDeviceList\022\r\n\005seqno\030\001 "
-    "\002(\r\022\016\n\006result\030\002 \002(\005\022\n\n\002id\030\003 \003(\t", 3191);
+    "\t\"o\n Request3rdIdentityAuthentication\022\r\n"
+    "\005seqno\030\001 \002(\r\022\026\n\016identification\030\002 \002(\t\022\021\n\t"
+    "secretkey\030\003 \002(\t\022\021\n\textradata\030\004 \001(\t\"P\n\034Ac"
+    "k3rdIdentityAuthentication\022\r\n\005seqno\030\001 \002("
+    "\r\022\016\n\006result\030\002 \002(\005\022\021\n\textradata\030\003 \001(\t\"S\n "
+    "RequestUavIdentityAuthentication\022\r\n\005seqn"
+    "o\030\001 \002(\r\022\r\n\005uavid\030\002 \002(\t\022\021\n\textradata\030\003 \001("
+    "\t\"r\n\034AckUavIdentityAuthentication\022\r\n\005seq"
+    "no\030\001 \002(\r\022\r\n\005uavid\030\002 \001(\t\022\016\n\006result\030\003 \002(\005\022"
+    "\020\n\010deadline\030\004 \001(\004\022\022\n\nauthString\030\005 \001(\t\"Y\n"
+    "\016GpsInformation\022\021\n\tlongitude\030\001 \002(\005\022\020\n\010la"
+    "titude\030\002 \002(\005\022\020\n\010altitude\030\003 \002(\005\022\020\n\010veloci"
+    "ty\030\004 \003(\002\"z\n\017OperationStatus\022\025\n\roperation"
+    "mode\030\001 \001(\t\022\017\n\007voltage\030\002 \001(\002\022\025\n\rsurplusen"
+    "ergy\030\003 \001(\002\022\023\n\013jetvelocity\030\004 \001(\002\022\023\n\013spray"
+    "eddose\030\005 \001(\002\"\230\001\n\017OperationParams\022\024\n\014alar"
+    "mvoltage\030\001 \001(\002\022\021\n\talarmdose\030\002 \001(\002\022\025\n\rspr"
+    "ayingwidth\030\003 \001(\002\022\027\n\017desiredaltitude\030\004 \001("
+    "\002\022\027\n\017desiredvelocity\030\005 \001(\002\022\023\n\013jetvelocit"
+    "y\030\006 \001(\002\"\270\001\n\024OperationInformation\022\r\n\005uavi"
+    "d\030\001 \002(\t\022\021\n\ttimestamp\030\002 \002(\004\022&\n\003gps\030\003 \002(\0132"
+    "\031.das.proto.GpsInformation\022*\n\006status\030\004 \001"
+    "(\0132\032.das.proto.OperationStatus\022*\n\006params"
+    "\030\005 \001(\0132\032.das.proto.OperationParams\"V\n\030Po"
+    "stOperationInformation\022\r\n\005seqno\030\001 \002(\r\022+\n"
+    "\002oi\030\002 \003(\0132\037.das.proto.OperationInformati"
+    "on\"8\n\027AckOperationInformation\022\r\n\005seqno\030\001"
+    " \002(\r\022\016\n\006result\030\002 \002(\005\"N\n\031RequestIdentityA"
+    "llocation\022\r\n\005seqno\030\001 \002(\r\022\017\n\007devtype\030\002 \002("
+    "\t\022\021\n\textradata\030\003 \001(\t\"U\n\025AckIdentityAlloc"
+    "ation\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\n\n\002"
+    "id\030\003 \001(\t\022\021\n\textradata\030\004 \001(\t\"*\n\rPostHeart"
+    "Beat\022\r\n\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \001(\t\"\035\n\014AckHe"
+    "artBeat\022\r\n\005seqno\030\001 \002(\r\"]\n\025RequestProgram"
+    "Upgrade\022\r\n\005seqno\030\001 \002(\r\022\020\n\010hardware\030\002 \002(\t"
+    "\022\020\n\010software\030\003 \002(\t\022\021\n\textradata\030\004 \001(\t\"w\n"
+    "\021AckProgramUpgrade\022\r\n\005seqno\030\001 \002(\r\022\016\n\006res"
+    "ult\030\002 \002(\005\022\020\n\010software\030\003 \002(\t\022\016\n\006length\030\004 "
+    "\002(\005\022\016\n\006forced\030\005 \002(\010\022\021\n\textradata\030\006 \001(\t\"Y"
+    "\n\026RequestProgramDownload\022\r\n\005seqno\030\001 \002(\r\022"
+    "\020\n\010software\030\002 \002(\t\022\016\n\006offset\030\003 \002(\005\022\016\n\006len"
+    "gth\030\004 \002(\005\"\202\001\n\022AckProgramDownload\022\r\n\005seqn"
+    "o\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\020\n\010software\030\003 \002("
+    "\t\022\016\n\006offset\030\004 \002(\005\022\016\n\006length\030\005 \002(\005\022\014\n\004dat"
+    "a\030\006 \001(\014\022\r\n\005crc32\030\007 \001(\r\"S\n\024ParameterDescr"
+    "iption\022\014\n\004name\030\001 \002(\t\022\020\n\010readonly\030\002 \002(\010\022\014"
+    "\n\004type\030\003 \002(\r\022\r\n\005value\030\004 \002(\t\",\n\017QueryPara"
+    "meters\022\r\n\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \002(\t\"l\n\022Ack"
+    "QueryParameters\022\r\n\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \002"
+    "(\t\022\016\n\006result\030\003 \002(\005\022+\n\002pd\030\004 \003(\0132\037.das.pro"
+    "to.ParameterDescription\"]\n\023ConfigurePara"
+    "meters\022\r\n\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \002(\t\022+\n\002pd\030"
+    "\003 \003(\0132\037.das.proto.ParameterDescription\"B"
+    "\n\025AckConfigurParameters\022\r\n\005seqno\030\001 \002(\r\022\n"
+    "\n\002id\030\002 \002(\t\022\016\n\006result\030\003 \002(\005\"C\n\nCoordinate"
+    "\022\021\n\tlongitude\030\001 \002(\005\022\020\n\010latitude\030\002 \002(\005\022\020\n"
+    "\010altitude\030\003 \001(\005\"t\n\021OperationSnapshot\022\r\n\005"
+    "devid\030\001 \002(\t\022\021\n\ttimestamp\030\002 \002(\004\022\"\n\003pos\030\003 "
+    "\001(\0132\025.das.proto.Coordinate\022\014\n\004size\030\004 \001(\005"
+    "\022\013\n\003pic\030\005 \002(\014\"P\n\025PostOperationSnapshot\022\r"
+    "\n\005seqno\030\001 \002(\r\022(\n\002os\030\002 \002(\0132\034.das.proto.Op"
+    "erationSnapshot\"9\n\030AckPostOperationSnaps"
+    "hot\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"e\n\035Re"
+    "questPositionAuthentication\022\r\n\005seqno\030\001 \002"
+    "(\r\022\r\n\005devid\030\002 \002(\t\022&\n\003pos\030\003 \002(\0132\031.das.pro"
+    "to.GpsInformation\":\n\031AckPositionAuthenti"
+    "cation\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"@\n"
+    "\025ReportDeviceException\022\r\n\005seqno\030\001 \002(\r\022\n\n"
+    "\002id\030\002 \002(\t\022\014\n\004desc\030\003 \003(\t\"9\n\030AckReportDevi"
+    "ceException\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002"
+    "(\005\"e\n\037RequestGVIdentityAuthentication\022\r\n"
+    "\005seqno\030\001 \002(\r\022\016\n\006userid\030\002 \002(\t\022\020\n\010password"
+    "\030\003 \002(\t\022\021\n\textradata\030\004 \001(\t\"O\n\033AckGVIdenti"
+    "tyAuthentication\022\r\n\005seqno\030\001 \002(\r\022\016\n\006resul"
+    "t\030\002 \002(\005\022\021\n\textradata\030\003 \001(\t\"e\n\037RequestIVI"
+    "dentityAuthentication\022\r\n\005seqno\030\001 \002(\r\022\016\n\006"
+    "userid\030\002 \002(\t\022\020\n\010password\030\003 \002(\t\022\021\n\textrad"
+    "ata\030\004 \001(\t\"O\n\033AckIVIdentityAuthentication"
+    "\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\021\n\textra"
+    "data\030\003 \001(\t\"@\n\020UpdateDeviceList\022\r\n\005seqno\030"
+    "\001 \002(\r\022\021\n\toperation\030\002 \002(\r\022\n\n\002id\030\003 \003(\t\"4\n\023"
+    "AckUpdateDeviceList\022\r\n\005seqno\030\001 \002(\r\022\016\n\006re"
+    "sult\030\002 \002(\005\"\037\n\016SyncDeviceList\022\r\n\005seqno\030\001 "
+    "\002(\r\">\n\021AckSyncDeviceList\022\r\n\005seqno\030\001 \002(\r\022"
+    "\016\n\006result\030\002 \002(\005\022\n\n\002id\030\003 \003(\t", 3587);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "das.proto", &protobuf_RegisterTypes);
   RequestTrackerIdentityAuthentication::default_instance_ = new RequestTrackerIdentityAuthentication();
   AckTrackerIdentityAuthentication::default_instance_ = new AckTrackerIdentityAuthentication();
+  Request3rdIdentityAuthentication::default_instance_ = new Request3rdIdentityAuthentication();
+  Ack3rdIdentityAuthentication::default_instance_ = new Ack3rdIdentityAuthentication();
+  RequestUavIdentityAuthentication::default_instance_ = new RequestUavIdentityAuthentication();
+  AckUavIdentityAuthentication::default_instance_ = new AckUavIdentityAuthentication();
   GpsInformation::default_instance_ = new GpsInformation();
   OperationStatus::default_instance_ = new OperationStatus();
   OperationParams::default_instance_ = new OperationParams();
@@ -1077,6 +1190,10 @@ void protobuf_AddDesc_das_2eproto() {
   AckSyncDeviceList::default_instance_ = new AckSyncDeviceList();
   RequestTrackerIdentityAuthentication::default_instance_->InitAsDefaultInstance();
   AckTrackerIdentityAuthentication::default_instance_->InitAsDefaultInstance();
+  Request3rdIdentityAuthentication::default_instance_->InitAsDefaultInstance();
+  Ack3rdIdentityAuthentication::default_instance_->InitAsDefaultInstance();
+  RequestUavIdentityAuthentication::default_instance_->InitAsDefaultInstance();
+  AckUavIdentityAuthentication::default_instance_->InitAsDefaultInstance();
   GpsInformation::default_instance_->InitAsDefaultInstance();
   OperationStatus::default_instance_->InitAsDefaultInstance();
   OperationParams::default_instance_->InitAsDefaultInstance();
@@ -1747,6 +1864,1418 @@ void AckTrackerIdentityAuthentication::Swap(AckTrackerIdentityAuthentication* ot
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = AckTrackerIdentityAuthentication_descriptor_;
   metadata.reflection = AckTrackerIdentityAuthentication_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int Request3rdIdentityAuthentication::kSeqnoFieldNumber;
+const int Request3rdIdentityAuthentication::kIdentificationFieldNumber;
+const int Request3rdIdentityAuthentication::kSecretkeyFieldNumber;
+const int Request3rdIdentityAuthentication::kExtradataFieldNumber;
+#endif  // !_MSC_VER
+
+Request3rdIdentityAuthentication::Request3rdIdentityAuthentication()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void Request3rdIdentityAuthentication::InitAsDefaultInstance() {
+}
+
+Request3rdIdentityAuthentication::Request3rdIdentityAuthentication(const Request3rdIdentityAuthentication& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void Request3rdIdentityAuthentication::SharedCtor() {
+  _cached_size_ = 0;
+  seqno_ = 0u;
+  identification_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  secretkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Request3rdIdentityAuthentication::~Request3rdIdentityAuthentication() {
+  SharedDtor();
+}
+
+void Request3rdIdentityAuthentication::SharedDtor() {
+  if (identification_ != &::google::protobuf::internal::kEmptyString) {
+    delete identification_;
+  }
+  if (secretkey_ != &::google::protobuf::internal::kEmptyString) {
+    delete secretkey_;
+  }
+  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
+    delete extradata_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void Request3rdIdentityAuthentication::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Request3rdIdentityAuthentication::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Request3rdIdentityAuthentication_descriptor_;
+}
+
+const Request3rdIdentityAuthentication& Request3rdIdentityAuthentication::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
+  return *default_instance_;
+}
+
+Request3rdIdentityAuthentication* Request3rdIdentityAuthentication::default_instance_ = NULL;
+
+Request3rdIdentityAuthentication* Request3rdIdentityAuthentication::New() const {
+  return new Request3rdIdentityAuthentication;
+}
+
+void Request3rdIdentityAuthentication::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    seqno_ = 0u;
+    if (has_identification()) {
+      if (identification_ != &::google::protobuf::internal::kEmptyString) {
+        identification_->clear();
+      }
+    }
+    if (has_secretkey()) {
+      if (secretkey_ != &::google::protobuf::internal::kEmptyString) {
+        secretkey_->clear();
+      }
+    }
+    if (has_extradata()) {
+      if (extradata_ != &::google::protobuf::internal::kEmptyString) {
+        extradata_->clear();
+      }
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool Request3rdIdentityAuthentication::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required uint32 seqno = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &seqno_)));
+          set_has_seqno();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_identification;
+        break;
+      }
+
+      // required string identification = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_identification:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_identification()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->identification().data(), this->identification().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_secretkey;
+        break;
+      }
+
+      // required string secretkey = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_secretkey:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_secretkey()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->secretkey().data(), this->secretkey().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(34)) goto parse_extradata;
+        break;
+      }
+
+      // optional string extradata = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_extradata:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_extradata()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->extradata().data(), this->extradata().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void Request3rdIdentityAuthentication::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
+  }
+
+  // required string identification = 2;
+  if (has_identification()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->identification().data(), this->identification().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      2, this->identification(), output);
+  }
+
+  // required string secretkey = 3;
+  if (has_secretkey()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->secretkey().data(), this->secretkey().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      3, this->secretkey(), output);
+  }
+
+  // optional string extradata = 4;
+  if (has_extradata()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->extradata().data(), this->extradata().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      4, this->extradata(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* Request3rdIdentityAuthentication::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
+  }
+
+  // required string identification = 2;
+  if (has_identification()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->identification().data(), this->identification().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->identification(), target);
+  }
+
+  // required string secretkey = 3;
+  if (has_secretkey()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->secretkey().data(), this->secretkey().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->secretkey(), target);
+  }
+
+  // optional string extradata = 4;
+  if (has_extradata()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->extradata().data(), this->extradata().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        4, this->extradata(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int Request3rdIdentityAuthentication::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required uint32 seqno = 1;
+    if (has_seqno()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->seqno());
+    }
+
+    // required string identification = 2;
+    if (has_identification()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->identification());
+    }
+
+    // required string secretkey = 3;
+    if (has_secretkey()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->secretkey());
+    }
+
+    // optional string extradata = 4;
+    if (has_extradata()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->extradata());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Request3rdIdentityAuthentication::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const Request3rdIdentityAuthentication* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const Request3rdIdentityAuthentication*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Request3rdIdentityAuthentication::MergeFrom(const Request3rdIdentityAuthentication& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_seqno()) {
+      set_seqno(from.seqno());
+    }
+    if (from.has_identification()) {
+      set_identification(from.identification());
+    }
+    if (from.has_secretkey()) {
+      set_secretkey(from.secretkey());
+    }
+    if (from.has_extradata()) {
+      set_extradata(from.extradata());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void Request3rdIdentityAuthentication::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Request3rdIdentityAuthentication::CopyFrom(const Request3rdIdentityAuthentication& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Request3rdIdentityAuthentication::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
+
+  return true;
+}
+
+void Request3rdIdentityAuthentication::Swap(Request3rdIdentityAuthentication* other) {
+  if (other != this) {
+    std::swap(seqno_, other->seqno_);
+    std::swap(identification_, other->identification_);
+    std::swap(secretkey_, other->secretkey_);
+    std::swap(extradata_, other->extradata_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata Request3rdIdentityAuthentication::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Request3rdIdentityAuthentication_descriptor_;
+  metadata.reflection = Request3rdIdentityAuthentication_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int Ack3rdIdentityAuthentication::kSeqnoFieldNumber;
+const int Ack3rdIdentityAuthentication::kResultFieldNumber;
+const int Ack3rdIdentityAuthentication::kExtradataFieldNumber;
+#endif  // !_MSC_VER
+
+Ack3rdIdentityAuthentication::Ack3rdIdentityAuthentication()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void Ack3rdIdentityAuthentication::InitAsDefaultInstance() {
+}
+
+Ack3rdIdentityAuthentication::Ack3rdIdentityAuthentication(const Ack3rdIdentityAuthentication& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void Ack3rdIdentityAuthentication::SharedCtor() {
+  _cached_size_ = 0;
+  seqno_ = 0u;
+  result_ = 0;
+  extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+Ack3rdIdentityAuthentication::~Ack3rdIdentityAuthentication() {
+  SharedDtor();
+}
+
+void Ack3rdIdentityAuthentication::SharedDtor() {
+  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
+    delete extradata_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void Ack3rdIdentityAuthentication::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* Ack3rdIdentityAuthentication::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return Ack3rdIdentityAuthentication_descriptor_;
+}
+
+const Ack3rdIdentityAuthentication& Ack3rdIdentityAuthentication::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
+  return *default_instance_;
+}
+
+Ack3rdIdentityAuthentication* Ack3rdIdentityAuthentication::default_instance_ = NULL;
+
+Ack3rdIdentityAuthentication* Ack3rdIdentityAuthentication::New() const {
+  return new Ack3rdIdentityAuthentication;
+}
+
+void Ack3rdIdentityAuthentication::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    seqno_ = 0u;
+    result_ = 0;
+    if (has_extradata()) {
+      if (extradata_ != &::google::protobuf::internal::kEmptyString) {
+        extradata_->clear();
+      }
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool Ack3rdIdentityAuthentication::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required uint32 seqno = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &seqno_)));
+          set_has_seqno();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(16)) goto parse_result;
+        break;
+      }
+
+      // required int32 result = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_result:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &result_)));
+          set_has_result();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_extradata;
+        break;
+      }
+
+      // optional string extradata = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_extradata:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_extradata()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->extradata().data(), this->extradata().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void Ack3rdIdentityAuthentication::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
+  }
+
+  // required int32 result = 2;
+  if (has_result()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->result(), output);
+  }
+
+  // optional string extradata = 3;
+  if (has_extradata()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->extradata().data(), this->extradata().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      3, this->extradata(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* Ack3rdIdentityAuthentication::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
+  }
+
+  // required int32 result = 2;
+  if (has_result()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->result(), target);
+  }
+
+  // optional string extradata = 3;
+  if (has_extradata()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->extradata().data(), this->extradata().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->extradata(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int Ack3rdIdentityAuthentication::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required uint32 seqno = 1;
+    if (has_seqno()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->seqno());
+    }
+
+    // required int32 result = 2;
+    if (has_result()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->result());
+    }
+
+    // optional string extradata = 3;
+    if (has_extradata()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->extradata());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void Ack3rdIdentityAuthentication::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const Ack3rdIdentityAuthentication* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const Ack3rdIdentityAuthentication*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void Ack3rdIdentityAuthentication::MergeFrom(const Ack3rdIdentityAuthentication& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_seqno()) {
+      set_seqno(from.seqno());
+    }
+    if (from.has_result()) {
+      set_result(from.result());
+    }
+    if (from.has_extradata()) {
+      set_extradata(from.extradata());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void Ack3rdIdentityAuthentication::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void Ack3rdIdentityAuthentication::CopyFrom(const Ack3rdIdentityAuthentication& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool Ack3rdIdentityAuthentication::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+
+  return true;
+}
+
+void Ack3rdIdentityAuthentication::Swap(Ack3rdIdentityAuthentication* other) {
+  if (other != this) {
+    std::swap(seqno_, other->seqno_);
+    std::swap(result_, other->result_);
+    std::swap(extradata_, other->extradata_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata Ack3rdIdentityAuthentication::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = Ack3rdIdentityAuthentication_descriptor_;
+  metadata.reflection = Ack3rdIdentityAuthentication_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int RequestUavIdentityAuthentication::kSeqnoFieldNumber;
+const int RequestUavIdentityAuthentication::kUavidFieldNumber;
+const int RequestUavIdentityAuthentication::kExtradataFieldNumber;
+#endif  // !_MSC_VER
+
+RequestUavIdentityAuthentication::RequestUavIdentityAuthentication()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void RequestUavIdentityAuthentication::InitAsDefaultInstance() {
+}
+
+RequestUavIdentityAuthentication::RequestUavIdentityAuthentication(const RequestUavIdentityAuthentication& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void RequestUavIdentityAuthentication::SharedCtor() {
+  _cached_size_ = 0;
+  seqno_ = 0u;
+  uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+RequestUavIdentityAuthentication::~RequestUavIdentityAuthentication() {
+  SharedDtor();
+}
+
+void RequestUavIdentityAuthentication::SharedDtor() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (extradata_ != &::google::protobuf::internal::kEmptyString) {
+    delete extradata_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void RequestUavIdentityAuthentication::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* RequestUavIdentityAuthentication::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return RequestUavIdentityAuthentication_descriptor_;
+}
+
+const RequestUavIdentityAuthentication& RequestUavIdentityAuthentication::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
+  return *default_instance_;
+}
+
+RequestUavIdentityAuthentication* RequestUavIdentityAuthentication::default_instance_ = NULL;
+
+RequestUavIdentityAuthentication* RequestUavIdentityAuthentication::New() const {
+  return new RequestUavIdentityAuthentication;
+}
+
+void RequestUavIdentityAuthentication::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    seqno_ = 0u;
+    if (has_uavid()) {
+      if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+        uavid_->clear();
+      }
+    }
+    if (has_extradata()) {
+      if (extradata_ != &::google::protobuf::internal::kEmptyString) {
+        extradata_->clear();
+      }
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool RequestUavIdentityAuthentication::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required uint32 seqno = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &seqno_)));
+          set_has_seqno();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_uavid;
+        break;
+      }
+
+      // required string uavid = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_uavid:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_uavid()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->uavid().data(), this->uavid().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_extradata;
+        break;
+      }
+
+      // optional string extradata = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_extradata:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_extradata()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->extradata().data(), this->extradata().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void RequestUavIdentityAuthentication::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
+  }
+
+  // required string uavid = 2;
+  if (has_uavid()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->uavid().data(), this->uavid().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      2, this->uavid(), output);
+  }
+
+  // optional string extradata = 3;
+  if (has_extradata()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->extradata().data(), this->extradata().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      3, this->extradata(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* RequestUavIdentityAuthentication::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
+  }
+
+  // required string uavid = 2;
+  if (has_uavid()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->uavid().data(), this->uavid().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->uavid(), target);
+  }
+
+  // optional string extradata = 3;
+  if (has_extradata()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->extradata().data(), this->extradata().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->extradata(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int RequestUavIdentityAuthentication::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required uint32 seqno = 1;
+    if (has_seqno()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->seqno());
+    }
+
+    // required string uavid = 2;
+    if (has_uavid()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->uavid());
+    }
+
+    // optional string extradata = 3;
+    if (has_extradata()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->extradata());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void RequestUavIdentityAuthentication::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const RequestUavIdentityAuthentication* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const RequestUavIdentityAuthentication*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void RequestUavIdentityAuthentication::MergeFrom(const RequestUavIdentityAuthentication& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_seqno()) {
+      set_seqno(from.seqno());
+    }
+    if (from.has_uavid()) {
+      set_uavid(from.uavid());
+    }
+    if (from.has_extradata()) {
+      set_extradata(from.extradata());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void RequestUavIdentityAuthentication::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void RequestUavIdentityAuthentication::CopyFrom(const RequestUavIdentityAuthentication& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool RequestUavIdentityAuthentication::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+
+  return true;
+}
+
+void RequestUavIdentityAuthentication::Swap(RequestUavIdentityAuthentication* other) {
+  if (other != this) {
+    std::swap(seqno_, other->seqno_);
+    std::swap(uavid_, other->uavid_);
+    std::swap(extradata_, other->extradata_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata RequestUavIdentityAuthentication::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = RequestUavIdentityAuthentication_descriptor_;
+  metadata.reflection = RequestUavIdentityAuthentication_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int AckUavIdentityAuthentication::kSeqnoFieldNumber;
+const int AckUavIdentityAuthentication::kUavidFieldNumber;
+const int AckUavIdentityAuthentication::kResultFieldNumber;
+const int AckUavIdentityAuthentication::kDeadlineFieldNumber;
+const int AckUavIdentityAuthentication::kAuthStringFieldNumber;
+#endif  // !_MSC_VER
+
+AckUavIdentityAuthentication::AckUavIdentityAuthentication()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void AckUavIdentityAuthentication::InitAsDefaultInstance() {
+}
+
+AckUavIdentityAuthentication::AckUavIdentityAuthentication(const AckUavIdentityAuthentication& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void AckUavIdentityAuthentication::SharedCtor() {
+  _cached_size_ = 0;
+  seqno_ = 0u;
+  uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  result_ = 0;
+  deadline_ = GOOGLE_ULONGLONG(0);
+  authstring_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+AckUavIdentityAuthentication::~AckUavIdentityAuthentication() {
+  SharedDtor();
+}
+
+void AckUavIdentityAuthentication::SharedDtor() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (authstring_ != &::google::protobuf::internal::kEmptyString) {
+    delete authstring_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void AckUavIdentityAuthentication::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* AckUavIdentityAuthentication::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return AckUavIdentityAuthentication_descriptor_;
+}
+
+const AckUavIdentityAuthentication& AckUavIdentityAuthentication::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
+  return *default_instance_;
+}
+
+AckUavIdentityAuthentication* AckUavIdentityAuthentication::default_instance_ = NULL;
+
+AckUavIdentityAuthentication* AckUavIdentityAuthentication::New() const {
+  return new AckUavIdentityAuthentication;
+}
+
+void AckUavIdentityAuthentication::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    seqno_ = 0u;
+    if (has_uavid()) {
+      if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+        uavid_->clear();
+      }
+    }
+    result_ = 0;
+    deadline_ = GOOGLE_ULONGLONG(0);
+    if (has_authstring()) {
+      if (authstring_ != &::google::protobuf::internal::kEmptyString) {
+        authstring_->clear();
+      }
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool AckUavIdentityAuthentication::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required uint32 seqno = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &seqno_)));
+          set_has_seqno();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_uavid;
+        break;
+      }
+
+      // optional string uavid = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_uavid:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_uavid()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->uavid().data(), this->uavid().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(24)) goto parse_result;
+        break;
+      }
+
+      // required int32 result = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_result:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &result_)));
+          set_has_result();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(32)) goto parse_deadline;
+        break;
+      }
+
+      // optional uint64 deadline = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_deadline:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint64, ::google::protobuf::internal::WireFormatLite::TYPE_UINT64>(
+                 input, &deadline_)));
+          set_has_deadline();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(42)) goto parse_authString;
+        break;
+      }
+
+      // optional string authString = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_authString:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_authstring()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->authstring().data(), this->authstring().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void AckUavIdentityAuthentication::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
+  }
+
+  // optional string uavid = 2;
+  if (has_uavid()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->uavid().data(), this->uavid().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      2, this->uavid(), output);
+  }
+
+  // required int32 result = 3;
+  if (has_result()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->result(), output);
+  }
+
+  // optional uint64 deadline = 4;
+  if (has_deadline()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt64(4, this->deadline(), output);
+  }
+
+  // optional string authString = 5;
+  if (has_authstring()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->authstring().data(), this->authstring().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      5, this->authstring(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* AckUavIdentityAuthentication::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
+  }
+
+  // optional string uavid = 2;
+  if (has_uavid()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->uavid().data(), this->uavid().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->uavid(), target);
+  }
+
+  // required int32 result = 3;
+  if (has_result()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->result(), target);
+  }
+
+  // optional uint64 deadline = 4;
+  if (has_deadline()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt64ToArray(4, this->deadline(), target);
+  }
+
+  // optional string authString = 5;
+  if (has_authstring()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->authstring().data(), this->authstring().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        5, this->authstring(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int AckUavIdentityAuthentication::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required uint32 seqno = 1;
+    if (has_seqno()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->seqno());
+    }
+
+    // optional string uavid = 2;
+    if (has_uavid()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->uavid());
+    }
+
+    // required int32 result = 3;
+    if (has_result()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->result());
+    }
+
+    // optional uint64 deadline = 4;
+    if (has_deadline()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt64Size(
+          this->deadline());
+    }
+
+    // optional string authString = 5;
+    if (has_authstring()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->authstring());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void AckUavIdentityAuthentication::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const AckUavIdentityAuthentication* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const AckUavIdentityAuthentication*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void AckUavIdentityAuthentication::MergeFrom(const AckUavIdentityAuthentication& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_seqno()) {
+      set_seqno(from.seqno());
+    }
+    if (from.has_uavid()) {
+      set_uavid(from.uavid());
+    }
+    if (from.has_result()) {
+      set_result(from.result());
+    }
+    if (from.has_deadline()) {
+      set_deadline(from.deadline());
+    }
+    if (from.has_authstring()) {
+      set_authstring(from.authstring());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void AckUavIdentityAuthentication::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void AckUavIdentityAuthentication::CopyFrom(const AckUavIdentityAuthentication& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool AckUavIdentityAuthentication::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000005) != 0x00000005) return false;
+
+  return true;
+}
+
+void AckUavIdentityAuthentication::Swap(AckUavIdentityAuthentication* other) {
+  if (other != this) {
+    std::swap(seqno_, other->seqno_);
+    std::swap(uavid_, other->uavid_);
+    std::swap(result_, other->result_);
+    std::swap(deadline_, other->deadline_);
+    std::swap(authstring_, other->authstring_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata AckUavIdentityAuthentication::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = AckUavIdentityAuthentication_descriptor_;
+  metadata.reflection = AckUavIdentityAuthentication_reflection_;
   return metadata;
 }
 

@@ -15,7 +15,7 @@ namespace SOCKETS_NAMESPACE {
 
 class ObjectUav;
 class ObjectGS;
-class ObjectGXClinet;
+class GXClient;
 
 class GSOrUavMessage : public IMessage
 {

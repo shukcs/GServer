@@ -12,44 +12,6 @@ using namespace std;
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE
 #endif
-
-////////////////////////////////////////////////////////////
-//ManagerThread
-////////////////////////////////////////////////////////////
-class ManagerThread : public Thread
-{
-public:
-    ManagerThread() : Thread(false)
-    {
-    }
-protected:
-    bool RunLoop()
-    {
-        ObjectManagers &ms = ObjectManagers::Instance();
-        ms.PrcsMessages();
-
-        return false;
-    }
-private:
-};
-////////////////////////////////////////////////////////////////////////
-//SubcribeStruct
-////////////////////////////////////////////////////////////////////////
-class SubcribeStruct
-{
-public:
-    SubcribeStruct(const IObject &subcr, const string &sender, int msgType, bool bSubcribe)
-        : m_sender(sender), m_msgType(msgType), m_subcribeId(subcr.GetObjectID())
-        , m_subcribeType(subcr.GetObjectType()), m_bSubcribe(bSubcribe)
-    {
-    }
-public:
-    string  m_sender;
-    int     m_msgType;
-    string  m_subcribeId;
-    int     m_subcribeType;
-    bool    m_bSubcribe;
-};
 ////////////////////////////////////////////////////////////
 //ManagerAbstractItem
 ////////////////////////////////////////////////////////////
@@ -80,10 +42,8 @@ void ManagerAbstractItem::Unregister()
 ////////////////////////////////////////////////////////////
 //ObjectManagers
 ////////////////////////////////////////////////////////////
-ObjectManagers::ObjectManagers(): m_thread(new ManagerThread)
+ObjectManagers::ObjectManagers()
 {
-    if (m_thread)
-        m_thread->SetRunning();
 }
 
 ObjectManagers::~ObjectManagers()
@@ -102,6 +62,34 @@ ILog &ObjectManagers::GetLog()
     return sLog;
 }
 
+bool ObjectManagers::SndMessage(IMessage *msg)
+{
+    if (!msg || !msg->IsValid())
+        return false;
+
+    if (auto mgr = Instance().GetManagerByType(msg->GetReceiverType()))
+    {
+        mgr->PushManagerMessage(msg);
+        return true;
+    }
+
+    return false;
+}
+
+bool ObjectManagers::RlsMessage(IMessage *msg)
+{
+    if (!msg || !msg->IsValid())
+        return false;
+
+    if (auto mgr = Instance().GetManagerByType(msg->GetSenderType()))
+    {
+        mgr->PushReleaseMsg(msg);
+        return true;
+    }
+
+    return false;
+}
+
 void ObjectManagers::AddManager(IObjectManager *m)
 {
     if (m)
@@ -118,7 +106,7 @@ void ObjectManagers::AddManager(IObjectManager *m)
 
 void ObjectManagers::RemoveManager(int type)
 {
-    m_mgrsRemove.Push(type);
+    m_managersMap.erase(type);
 }
 
 IObjectManager *ObjectManagers::GetManagerByType(int tp) const
@@ -152,55 +140,5 @@ void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
             sock->ClearBuff();
             return;
         }
-    }
-}
-
-void ObjectManagers::PrcsMessages()
-{
-    while (!m_mgrsRemove.IsEmpty())
-    {
-        int type = m_mgrsRemove.Pop();
-        map<int, IObjectManager*>::iterator itr = m_managersMap.find(type);
-        if (itr != m_managersMap.end())
-            m_managersMap.erase(itr);
-    }
-
-    map<int, IObjectManager*>::iterator itr = m_managersMap.begin();
-    for (; itr != m_managersMap.end(); ++itr)
-    {
-        _prcsSendMessages(itr->second);
-        _prcsReleaseMessages(itr->second);
-    }
-}
-
-void ObjectManagers::_prcsSendMessages(IObjectManager *mgr)
-{
-    int n = 0;
-    while (MessageQue *que = mgr->GetSendQue(n++))
-    {
-        while (!que->IsEmpty())
-        {
-            IMessage *msg = que->Pop();
-            if (!msg)
-                continue;
-
-            if (IObjectManager *mgr = GetManagerByType(msg->GetReceiverType()))
-                mgr->PushManagerMessage(msg);
-            else
-                delete msg;
-        }
-    }
-}
-
-void ObjectManagers::_prcsReleaseMessages(IObjectManager *mgr)
-{
-    if (!mgr)
-        return;
-    while (IMessage *msg = mgr->PopRecycleMessage())
-    {
-        if (IObjectManager *m = GetManagerByType(msg->GetSenderType()))
-            m->PushReleaseMsg(msg);
-        else
-            delete msg;
     }
 }

@@ -116,6 +116,10 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new RequestTrackerIdentityAuthentication;    //Tracker登陆
     else if (name == d_p_ClassName(AckTrackerIdentityAuthentication))
         m_msg = new AckTrackerIdentityAuthentication;    //Tracker登陆
+    else if (name == d_p_ClassName(Request3rdIdentityAuthentication))
+        m_msg = new Request3rdIdentityAuthentication;    //一飞飞机登陆
+    else if (name == d_p_ClassName(AckUavIdentityAuthentication))
+        m_msg = new AckUavIdentityAuthentication;       //一飞飞机国欣登陆ack
     else if (name == d_p_ClassName(UpdateDeviceList))
         m_msg = new UpdateDeviceList;                       //设备更新
     else if (name == d_p_ClassName(AckUpdateDeviceList))

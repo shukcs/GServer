@@ -71,7 +71,7 @@ protected:
                 itr = m_links.erase(itr);
                 auto obj = l->GetParObject();
                 if (obj && obj->IsAllowRelease())
-                    m_lsMsgSend.Push(new ObjectSignal(obj, obj->GetObjectType()));
+                    obj->SendMsg(new ObjectSignal(obj, obj->GetObjectType()));
             }
             else
             {
@@ -119,7 +119,6 @@ private:
     char            *m_buff;
     MapLinks        m_links;
     LinksQue        m_linksAdd;
-    MessageQue      m_lsMsgSend;        //发送消息队列
     MessageQue      m_lsMsgRelease;     //释放等待队列
 };
 ////////////////////////////////////////////////////////////////////////
@@ -410,10 +409,7 @@ void IObject::PushReleaseMsg(IMessage *msg)
 
 bool IObject::SendMsg(IMessage *msg)
 {
-    if (IObjectManager *mgr = GetManager())
-        return mgr->SendMsg(msg);
-
-    return false;
+    return IObjectManager::SendMsg(msg);
 }
 
 ILink *IObject::GetLink()
@@ -465,9 +461,12 @@ void IObjectManager::PushReleaseMsg(IMessage *msg)
 {
     BussinessThread *t = msg ? GetThread(msg->CreateThreadID()) : NULL;
     if (t)
+    {
+        Lock l(t->GetMutex());
         t->m_lsMsgRelease.Push(msg);
-    else
-        delete msg;
+        return;
+    }
+    delete msg;
 }
 
 bool IObjectManager::PrcsPublicMsg(const IMessage &)
@@ -485,16 +484,16 @@ bool IObjectManager::ProcessBussiness(BussinessThread *s)
     bool ret = false;
     if (s && !m_lsThread.empty() && s==m_lsThread.front())
     {
+        PrcsSubcribes();
+        ProcessMessage();
+        ProcessEvents();
+
         if (IsReceiveData())
         {
             m_mtxM->Lock();
             ret = ProcessLogins(s);
             m_mtxM->Unlock();
         }
-
-        PrcsSubcribes();
-        ProcessMessage();
-        ProcessEvents();
     }
     return ret;
 }
@@ -555,7 +554,9 @@ void IObjectManager::ProcessMessage()
                 }
             }
         }
-        m_lsMsgRecycle.Push(msg);
+
+        if (!ObjectManagers::RlsMessage(msg))
+            delete msg;
     }
 }
 
@@ -589,19 +590,6 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
         }
     }
     return ret;
-}
-
-MessageQue *IObjectManager::GetSendQue(int idThread)const
-{
-    if (idThread >= (int)m_lsThread.size() || idThread<0)
-        return NULL;
-
-    auto itr = m_lsThread.begin();
-    for (; idThread > 0; --idThread)
-    {
-        ++itr;
-    }
-    return &(*itr)->m_lsMsgSend;
 }
 
 bool IObjectManager::IsHasReuest(const char *, int)const
@@ -641,30 +629,15 @@ void IObjectManager::PushManagerMessage(IMessage *msg)
     if (!msg)
         return;
 
+    Lock l(m_mtxM);
     m_messages.Push(msg);
-}
-
-IMessage *IObjectManager::PopRecycleMessage()
-{
-    if (m_lsMsgRecycle.IsEmpty())
-        return NULL;
-
-    return m_lsMsgRecycle.Pop();
 }
 
 bool IObjectManager::SendMsg(IMessage *msg)
 {
-    if (!msg)
-        return false;
+    if (ObjectManagers::SndMessage(msg))
+        return true;
 
-    if (auto t = GetThread(msg?msg->CreateThreadID(): -1))
-    {
-        if (!t->m_lsMsgSend.IsEmpty() && t->m_lsMsgSend.Last() == msg)
-            return false;
-        return t->m_lsMsgSend.Push(msg);
-    }
-
-    delete msg;
     return false;
 }
 
