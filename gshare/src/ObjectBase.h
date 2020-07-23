@@ -52,7 +52,9 @@ public:
     void processSocket(ISocket &s, BussinessThread &t);
 protected:
     SHARED_DECL virtual void SetSocket(ISocket *s);
+    SHARED_DECL void SetSocketBuffSize(uint16_t sz);
     SHARED_DECL void SetBuffSize(uint16_t sz);
+    SHARED_DECL bool IsConnect()const;
     SHARED_DECL bool ChangeLogind(bool b);
     SHARED_DECL virtual void OnLogined(bool suc, ISocket *s = NULL);
     SHARED_DECL int GetSendRemain()const;
@@ -63,7 +65,7 @@ protected:
     SHARED_DECL void PostSin();
     SHARED_DECL bool IsLinkThread()const;
     virtual void FreshLogin(uint64_t ms) = 0;
-protected:
+private:
     ISocket                 *m_sock;
     LoopQueBuff             *m_recv;
     IMutex                  *m_mtxS;

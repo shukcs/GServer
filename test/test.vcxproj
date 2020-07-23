@@ -11,12 +11,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\das.pb.cc" />
+    <ClCompile Include="..\uavandqgc\proto\das.pb.cc" />
+    <ClCompile Include="src\3rdLink.cpp" />
     <ClCompile Include="src\GSLink.cpp" />
     <ClCompile Include="src\LinkManager.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\testDlg.cpp" />
     <ClCompile Include="src\AbsLink.cpp" />
+    <ClCompile Include="src\TrackerLink.cpp" />
     <ClCompile Include="src\UavLink.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -38,8 +40,10 @@
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\das.pb.h" />
+    <ClInclude Include="..\uavandqgc\proto\das.pb.h" />
+    <ClInclude Include="src\3rdLink.h" />
     <ClInclude Include="src\GSLink.h" />
+    <ClInclude Include="src\TrackerLink.h" />
     <ClInclude Include="src\UavLink.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -87,7 +91,7 @@
     <ClCompile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PreprocessorDefinitions>UNICODE;_UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_POSITIONING_LIB;QT_NETWORK_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\GeneratedFiles;.;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;..\vgmysql\src;..\protobuf;..\uavandqgc\mavlink;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;..\vgmysql\src;..\protobuf;..\uavandqgc\mavlink;..\uavandqgc\proto;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -103,7 +107,7 @@
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
-      <IncludePath>.\GeneratedFiles;.;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;..\vgmysql\src;..\protobuf;..\uavandqgc\mavlink;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>.\GeneratedFiles;.;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;..\vgmysql\src;..\protobuf;..\uavandqgc\mavlink;..\uavandqgc\proto;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>UNICODE;_UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;QT_POSITIONING_LIB;QT_NETWORK_LIB;%(PreprocessorDefinitions)</Define>
     </QtMoc>
     <QtUic>

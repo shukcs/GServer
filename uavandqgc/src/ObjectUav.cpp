@@ -66,7 +66,7 @@ int ObjectUav::GetObjectType() const
 
 void ObjectUav::_respondLogin(int seq, int res)
 {
-    if(m_p && m_sock)
+    if(m_p && GetSocket())
     {
         if (auto ack = new AckUavIdentityAuthentication)
         {
@@ -80,7 +80,7 @@ void ObjectUav::_respondLogin(int seq, int res)
 
 void ObjectUav::OnLogined(bool suc, ISocket *s)
 {
-    if (m_bLogined != suc)
+    if (IsConnect() == suc)
     {
         if (suc)
         {
@@ -212,7 +212,7 @@ void ObjectUav::PrcsProtoBuff(uint64_t tm)
 
 void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
 {
-    if (!m_sock && m_bLogined)
+    if (!GetSocket() && IsConnect())
     {
         SendMsg(new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Logout));
         SendMsg(new ObjectSignal(this, GXClient::GXClientType(), ObjectSignal::S_Logout));
@@ -227,7 +227,7 @@ void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
     {
         CloseLink();
     }
-    else if (m_sock)
+    else if (GetSocket())
     {
         auto nor = m_mission ? m_mission->GetNotifyUavUOR(uint32_t(ms)) : NULL;
         if (nor)
@@ -237,8 +237,8 @@ void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
 
 void ObjectUav::OnConnected(bool bConnected)
 {
-    if (m_sock && bConnected)
-        m_sock->ResizeBuff(WRITE_BUFFLEN);
+    if (bConnected)
+        SetSocketBuffSize(WRITE_BUFFLEN);
 }
 
 void ObjectUav::InitObject()

@@ -5,9 +5,11 @@
 #include "VGMysql.h"
 #include <QtCore/QDateTime>
 #include "DBExecItem.h"
+#include "LinkManager.h"
 #include "UavLink.h"
 #include "GSLink.h"
-#include "LinkManager.h"
+#include "3rdLink.h"
+#include "TrackerLink.h"
 
 /*-----------------------------------------------------------------------
 TestCloud
@@ -57,6 +59,11 @@ void TestDlg::onBtnDB()
 
 void TestDlg::onBtnTest()
 {
+    if (m_ui->cb_3rd->isChecked())
+        connect3rds();
+    if (m_ui->cb_tracker->isChecked())
+        connectTrackers();
+
     QString file = m_ui->edit_uav->text();
     if (!file.isEmpty() && m_ui->cb_uav->isChecked())
         parseUav(file, false);
@@ -175,6 +182,54 @@ void TestDlg::connectUav(const QString &uav)
         {
             link->ConnectTo(m_ui->edit_host->text(), m_ui->edit_port->text().toInt(), mgr);
             m_uavs.append(link);
+        }
+    }
+}
+
+void TestDlg::connectTrackers()
+{
+    QFile f("trackers.txt");
+    if (!f.open(QIODevice::ReadOnly))
+        return;
+
+    QTextStream stream(&f);
+    bool bSuc;
+    while (!stream.atEnd())
+    {
+        QString line = stream.readLine(256);
+        QStringList strLs = line.split(":", QString::SkipEmptyParts);
+        if (strLs.size() != 2 || strLs.first() != "VIGAT" || strLs.last().length() != 8 || strLs.last().toInt(&bSuc, 16) == 0)
+            continue;
+
+        if (auto mgr = getPropertyMgr())
+        {
+            if (auto link = new TrackerLink(line, this))
+            {
+                link->ConnectTo(m_ui->edit_host->text(), m_ui->edit_port->text().toInt(), mgr);
+                m_trackers.append(link);
+            }
+        }
+    }
+}
+
+void TestDlg::connect3rds()
+{
+    QFile f("3rd.txt");
+    if (!f.open(QIODevice::ReadOnly))
+        return;
+
+    QTextStream stream(&f);
+    bool bSuc;
+    while (!stream.atEnd())
+    {
+        QString line = stream.readLine(256);
+        if (auto mgr = getPropertyMgr())
+        {
+            if (auto link = new Uav3rdLink(line, this))
+            {
+                link->ConnectTo(m_ui->edit_host->text(), m_ui->edit_port->text().toInt(), mgr);
+                m_3rds.append(link);
+            }
         }
     }
 }

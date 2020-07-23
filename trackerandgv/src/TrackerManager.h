@@ -13,12 +13,13 @@ namespace das {
     namespace proto {
         class PostOperationInformation;
         class RequestTrackerIdentityAuthentication;
+        class Request3rdIdentityAuthentication;
         class RequestProgramUpgrade;
     }
 }
 
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE;
 #endif
 
 class ProtoMsg;
@@ -35,6 +36,7 @@ public:
     bool CanFlight(double lat, double lon, double alt);
 public:
     static uint32_t toIntID(const std::string &uavid);
+    static bool IsValid3rdID(const std::string &id, const std::string &key);
 protected:
     int GetObjectType()const;
     IObject *PrcsProtoBuff(ISocket *s);
@@ -43,12 +45,10 @@ protected:
     bool IsHasReuest(const char *buf, int len)const;
 private:
     IObject *_checkLogin(ISocket *s, const das::proto::RequestTrackerIdentityAuthentication &uia);
+    IObject *_check3rdLogin(ISocket *s, const das::proto::Request3rdIdentityAuthentication &uia);
     IObject *_checkProgram(ISocket *s, const das::proto::RequestProgramUpgrade &rpu);
 private:
 };
 
-#ifdef SOCKETS_NAMESPACE
-}
-#endif
 #endif//__UAV_MANAGER_H__
 

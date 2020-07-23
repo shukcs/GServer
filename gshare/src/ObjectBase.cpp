@@ -109,6 +109,11 @@ protected:
             l->SetMutex(GetMutex());
         }
     }
+    bool PushRelaseMsg(IMessage *ms)
+    {
+        Lock l(GetMutex());
+        return m_lsMsgRelease.Push(ms);
+    }
 private:
     friend class ILink;
     friend class IObject;
@@ -196,6 +201,11 @@ void ILink::OnSockClose(ISocket *s)
     }
 }
 
+bool ILink::IsConnect() const
+{
+    return m_bLogined;
+}
+
 bool ILink::ChangeLogind(bool b)
 {
     if (m_sock && b)
@@ -240,6 +250,12 @@ void ILink::SetSocket(ISocket *s)
         if (s)
             s->SetHandleLink(this);
     }
+}
+
+void ILink::SetSocketBuffSize(uint16_t sz)
+{
+    if (m_sock)
+        m_sock->ResizeBuff(sz);
 }
 
 ISocket *ILink::GetSocket() const
@@ -460,13 +476,8 @@ void IObjectManager::LoadConfig()
 void IObjectManager::PushReleaseMsg(IMessage *msg)
 {
     BussinessThread *t = msg ? GetThread(msg->CreateThreadID()) : NULL;
-    if (t)
-    {
-        Lock l(t->GetMutex());
-        t->m_lsMsgRelease.Push(msg);
-        return;
-    }
-    delete msg;
+    if (t==NULL || !t->PushRelaseMsg(msg))
+        delete msg;
 }
 
 bool IObjectManager::PrcsPublicMsg(const IMessage &)

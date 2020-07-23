@@ -38,15 +38,31 @@ int ObjectTracker::GetObjectType() const
     return TrackerType();
 }
 
-void ObjectTracker::_respondLogin(int seq, int res)
+void ObjectTracker::_respondLogin(const RequestTrackerIdentityAuthentication &ra)
 {
-    if(m_p && m_sock)
+    if(GetSocket())
     {
         OnLogined(true);
+        auto id = Utility::Upper(ra.trackerid());
         if (auto ack = new AckTrackerIdentityAuthentication)
         {
-            ack->set_seqno(seq);
-            ack->set_result(res);
+            ack->set_seqno(ra.seqno());
+            ack->set_result(id==GetObjectID()?1:0);
+            WaitSend(ack);
+        }
+    }
+}
+
+void ObjectTracker::_respond3rdLogin(const Request3rdIdentityAuthentication &ra)
+{
+    if (GetSocket())
+    {
+        OnLogined(true);
+        auto uav = Utility::Upper(ra.identification());
+        if (auto ack = new Ack3rdIdentityAuthentication)
+        {
+            ack->set_seqno(ra.seqno());
+            ack->set_result(uav==GetObjectID() ? 1 : 0);
             WaitSend(ack);
         }
     }
@@ -54,11 +70,11 @@ void ObjectTracker::_respondLogin(int seq, int res)
 
 void ObjectTracker::OnLogined(bool suc, ISocket *s)
 {
-    if (m_bLogined != suc && suc)
+    if (IsConnect() != suc && suc)
     {
         if (auto ms = new ObjectSignal(this, ObjectGV::GVType(), ObjectSignal::S_Login))
             SendMsg(ms);
-        if (auto ms = new ObjectSignal(this, ObjectGXClinet::GXClinetType(), ObjectSignal::S_Login))
+        if (auto ms = new ObjectSignal(this, GXClient::GXClientType(), ObjectSignal::S_Login))
             SendMsg(ms);
     }
     ObjectAbsPB::OnLogined(suc, s);
@@ -118,7 +134,9 @@ void ObjectTracker::PrcsProtoBuff(uint64_t ms)
     m_tmLast = ms;
     const string &name = m_p->GetMsgName();
     if (name == d_p_ClassName(RequestTrackerIdentityAuthentication))
-        _respondLogin(((RequestTrackerIdentityAuthentication*)m_p->GetProtoMessage())->seqno(), 1);
+        _respondLogin(*(RequestTrackerIdentityAuthentication*)m_p->GetProtoMessage());
+    if (name == d_p_ClassName(Request3rdIdentityAuthentication))
+        _respond3rdLogin(*(Request3rdIdentityAuthentication*)m_p->GetProtoMessage());
     else if (name == d_p_ClassName(RequestPositionAuthentication))
         _prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
     else if (name == d_p_ClassName(PostOperationInformation))
@@ -185,26 +203,26 @@ void ObjectTracker::_ackPartParameters(const std::string &gv, const das::proto::
 
 void ObjectTracker::CheckTimer(uint64_t ms, char *buf, int len)
 {
-    if (!m_sock && m_bLogined)
+    if (!GetSocket() && IsConnect())
     {
         if (auto mss = new ObjectSignal(this, ObjectGV::GVType(), ObjectSignal::S_Logout))
             SendMsg(mss);
-        if (auto mss = new ObjectSignal(this, ObjectGXClinet::GXClinetType(), ObjectSignal::S_Logout))
+        if (auto mss = new ObjectSignal(this, GXClient::GXClientType(), ObjectSignal::S_Logout))
             SendMsg(mss);
     }
     ObjectAbsPB::CheckTimer(ms, buf, len);
     ms -= m_tmLast;
     if (ms > 600000)
         Release();
-    else if (m_sock && ms>10000)//超时关闭
-        m_sock->Close();
+    else if (ms>10000)//超时关闭
+        CloseLink();
 }
 
 void ObjectTracker::OnConnected(bool bConnected)
 {
     ObjectAbsPB::OnConnected(bConnected);
-    if (m_sock && bConnected)
-        m_sock->ResizeBuff(WRITE_BUFFLEN);
+    if (bConnected)
+        SetSocketBuffSize(WRITE_BUFFLEN);
     
     if (!bConnected && m_posRecord)
     {
@@ -217,7 +235,12 @@ void ObjectTracker::InitObject()
 {
     if (m_stInit == IObject::Uninitial)
     {
-        _respondLogin(1, 1);
+        if (auto ack = new AckTrackerIdentityAuthentication)
+        {
+            ack->set_seqno(1);
+            ack->set_result(1);
+            WaitSend(ack);
+        }
         m_stInit = IObject::Initialed;
     }
 }

@@ -22,11 +22,6 @@ ObjectAbsPB::~ObjectAbsPB()
     delete m_p;
 }
 
-bool ObjectAbsPB::IsConnect() const
-{
-    return m_bLogined;
-}
-
 bool ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
 {
     if (!s)
@@ -126,7 +121,7 @@ void ObjectAbsPB::CheckTimer(uint64_t ms, char *buf, int len)
 
 void ObjectAbsPB::CopyAndSend(const google::protobuf::Message &msg)
 {
-    if (!m_bLogined)
+    if (!IsConnect())
         return;
 
     if (Message *ms = msg.New())

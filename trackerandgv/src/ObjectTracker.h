@@ -14,11 +14,13 @@ namespace das {
         class AckConfigurParameters;
         class RequestProgramUpgrade;
         class QueryParameters;
+        class RequestTrackerIdentityAuthentication;
+        class Request3rdIdentityAuthentication;
     }
 }
 
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE;
 #endif
 
 class ObjectGS;
@@ -46,7 +48,8 @@ protected:
     void CheckTimer(uint64_t ms, char *buf, int len);
     void OnConnected(bool bConnected);
     void InitObject();
-    void _respondLogin(int seq, int res);
+    void _respondLogin(const das::proto::RequestTrackerIdentityAuthentication &ra);
+    void _respond3rdLogin(const das::proto::Request3rdIdentityAuthentication &ra);
     void OnLogined(bool suc, ISocket *s = NULL);
     bool IsAllowRelease()const;
     ILink *GetLink();
@@ -71,8 +74,5 @@ private:
     std::string                     m_strFile;
 };
 
-#ifdef SOCKETS_NAMESPACE
-}
-#endif
 #endif//__OBJECT_UAV_H__
 

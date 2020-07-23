@@ -15,7 +15,7 @@ namespace SOCKETS_NAMESPACE {
 
 class ObjectTracker;
 class ObjectGV;
-class ObjectGXClinet;
+class GXClient;
 
 class TrackerMessage : public IMessage
 {
@@ -70,7 +70,7 @@ private:
 class GX2TrackerMessage : public IMessage
 {
 public:
-    GX2TrackerMessage(ObjectGXClinet *sender, int st);
+    GX2TrackerMessage(const std::string &sender, int st);
     int GetStat()const;
 protected:
     void *GetContent() const;

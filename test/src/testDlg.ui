@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>387</width>
-    <height>459</height>
+    <width>392</width>
+    <height>422</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,6 +23,19 @@
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <property name="horizontalSpacing">
+       <number>10</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>I&amp;P:</string>
+        </property>
+        <property name="buddy">
+         <cstring>edit_ip</cstring>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
        <widget class="QLineEdit" name="edit_ip">
         <property name="inputMask">
@@ -33,24 +46,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>&amp;Database:</string>
-        </property>
-        <property name="buddy">
-         <cstring>edit_db</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="edit_user">
-        <property name="text">
-         <string>root</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
+      <item row="0" column="2">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>P&amp;ort:</string>
@@ -60,13 +56,46 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_4">
+      <item row="0" column="3">
+       <widget class="QSpinBox" name="spinBox">
+        <property name="minimum">
+         <number>1000</number>
+        </property>
+        <property name="maximum">
+         <number>65535</number>
+        </property>
+        <property name="value">
+         <number>3306</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4" rowspan="3">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>I&amp;P:</string>
+         <string>&amp;Database:</string>
         </property>
         <property name="buddy">
-         <cstring>edit_ip</cstring>
+         <cstring>edit_db</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="edit_db">
+        <property name="text">
+         <string>gsuav</string>
         </property>
        </widget>
       </item>
@@ -80,7 +109,14 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="edit_user">
+        <property name="text">
+         <string>root</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
        <widget class="QLabel" name="label_7">
         <property name="text">
          <string>P&amp;assword:</string>
@@ -90,41 +126,8 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="2" column="3">
        <widget class="QLineEdit" name="edit_pswd"/>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="edit_db">
-        <property name="text">
-         <string>gsuav</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="spinBox">
-        <property name="minimum">
-         <number>1000</number>
-        </property>
-        <property name="maximum">
-         <number>65535</number>
-        </property>
-        <property name="value">
-         <number>3306</number>
-        </property>
-       </widget>
       </item>
      </layout>
     </widget>
@@ -215,9 +218,78 @@
      <property name="flat">
       <bool>true</bool>
      </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="2" column="0" colspan="2">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string>Host:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="edit_host">
+          <property name="inputMask">
+           <string>000.000.000.000</string>
+          </property>
+          <property name="text">
+           <string>127.0.0.1</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>10</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Port:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="edit_port">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="inputMask">
+           <string>00000</string>
+          </property>
+          <property name="text">
+           <string>8198</string>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="spacing">
+         <number>10</number>
+        </property>
         <item>
          <widget class="QCheckBox" name="cb_uav">
           <property name="text">
@@ -238,50 +310,37 @@
           </property>
          </widget>
         </item>
+        <item>
+         <widget class="QCheckBox" name="cb_tracker">
+          <property name="text">
+           <string>Tracker</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cb_3rd">
+          <property name="text">
+           <string>3rd</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
        </layout>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_9">
-        <property name="text">
-         <string>Port:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="edit_port">
-        <property name="inputMask">
-         <string>00000</string>
-        </property>
-        <property name="text">
-         <string>8198</string>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="edit_host">
-        <property name="inputMask">
-         <string>000.000.000.000</string>
-        </property>
-        <property name="text">
-         <string>127.0.0.1</string>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>Host:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="3">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
         <item>
          <spacer name="horizontalSpacer_4">
           <property name="orientation">
@@ -303,19 +362,6 @@
          </widget>
         </item>
        </layout>
-      </item>
-      <item row="0" column="3" rowspan="2">
-       <spacer name="horizontalSpacer_5">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </widget>
@@ -349,9 +395,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>edit_ip</tabstop>
-  <tabstop>spinBox</tabstop>
-  <tabstop>edit_user</tabstop>
-  <tabstop>edit_pswd</tabstop>
   <tabstop>edit_db</tabstop>
   <tabstop>edit_gs</tabstop>
   <tabstop>btn_gs</tabstop>

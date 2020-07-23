@@ -88,7 +88,6 @@ public:
         if (!m_header)
             m_header = m_push;
 
-        m_count++;
         removeMore(max);
         return ret;
     }
@@ -98,7 +97,7 @@ public:
             assert(m_pop);
         EC ret(m_pop->GetValue());
         m_pop = m_pop->GetNext();
-        --m_count;
+        m_count--;
         m_nEmpty++;
         return ret;
     }
@@ -130,7 +129,7 @@ public:
 private:
     QueNode *takeEmpty()
     {
-        if (m_header && m_header->GetNext() && m_header!=m_pop && m_header!=m_push)
+        if (m_nEmpty>0 && m_header && m_header->GetNext() && m_header!=m_pop && m_header!=m_push)
         {
             auto ret = m_header;
             m_header = m_header->GetNext();
@@ -142,11 +141,7 @@ private:
     }
     void removeMore(uint32_t max)
     {
-        if (int(max) >= m_nEmpty)
-            return;
-
-        max = m_nEmpty - max;
-        for (;max>0 && m_header!=m_pop; --max)
+        while (m_nEmpty > (int32_t)max)
         {
             if (auto tmp = takeEmpty())
                 delete tmp;
@@ -166,6 +161,7 @@ private:
         {
             tmp->SetValue(val);
             m_push->SetNext(tmp);
+            ++m_count;
             m_push = tmp;
             ret = true;
         }
@@ -173,6 +169,7 @@ private:
         {
             if (m_push)
                 m_push->SetNext(tmp);
+            ++m_count;
             m_push = tmp;
             ret = true;
         }

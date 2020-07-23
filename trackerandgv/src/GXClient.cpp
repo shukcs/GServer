@@ -12,20 +12,20 @@
 #include "Lock.h"
 #include "ProtoMsg.h"
 
-#define GXHost "101.201.234.242"
-#define GXPort 8297
-
-#ifdef SOCKETS_NAMESPACE
-using namespace SOCKETS_NAMESPACE;
-#endif
-
 using namespace std;
 using namespace das::proto;
-class GXLinkThread : public Thread
+
+#define GXHost "101.201.234.242"
+#define GXPort 8297
+static const string sTrackerFlag = "VIGAT:";
+
+class GXThread : public Thread
 {
 public:
-    GXLinkThread(ISocketManager *mgr) :Thread(true), m_mgr(mgr)
+    GXThread(ISocketManager *mgr)
+        :Thread(), m_mgr(mgr)
     {
+        SetRunning();
     }
 protected:
     bool RunLoop()
@@ -39,265 +39,312 @@ private:
     ISocketManager  *m_mgr;
 };
 ////////////////////////////////////////////////////////////////////////////////
-//ObjectGXClinet
+//GXClient
 ////////////////////////////////////////////////////////////////////////////////
-ObjectGXClinet::ObjectGXClinet(const std::string &id) : IObject(id)
-, m_gxClient(NULL), m_seq(1), m_bConnect(false), m_mtx(NULL)
-, m_stat(St_Unknow), m_p(new ProtoMsg)
+GXClient::GXClient(const std::string &id, GX_Stat st) : m_id(id), m_stat(st)
 {
-    m_buff.ReSize(2048);
 }
 
-ObjectGXClinet::~ObjectGXClinet()
+GXClient::~GXClient()
 {
-    delete m_gxClient;
-    delete m_p;
 }
 
-void ObjectGXClinet::OnRead(ISocket *s, const void *buff, int len)
+const std::string &GXClient::GetID() const
 {
-    if (m_gxClient == s && buff && len>0)
-    {
-        m_buff.Push(buff, len);
-        _prcsRcv();
-    }
+    return m_id;
 }
 
-void ObjectGXClinet::Login(bool b)
+void GXClient::SetStat(GX_Stat st)
 {
-    if (b)
-    {
-        if (!m_gxClient)
-        {
-            m_gxClient = new GXClientSocket(this);
-            if (m_gxClient)
-            {
-                m_gxClient->ConnectTo(GXHost, GXPort);
-                if (auto sg = ((GXClinetManager*)GetManager())->GetSocketManager())
-                    sg->AddSocket(m_gxClient);
-            }
-        }
-        else
-        {
-            m_gxClient->Reconnect();
-        }
-    }
-    else if (m_gxClient)
-    {
-        m_gxClient->Close();
-    }
+    if ((m_stat & 0xff) !=st)
+        m_stat = st | St_Changed;
 }
 
-void ObjectGXClinet::OnConnect(bool b)
+GXClient::GX_Stat GXClient::GetStat() const
 {
-    SetStat(b ? St_Connect : St_Unknow);
-    m_bConnect = b;
+    return GX_Stat(m_stat&0xff);
 }
 
-void ObjectGXClinet::Send(const google::protobuf::Message &msg)
+bool GXClient::IsChanged() const
 {
-    if (m_gxClient)
-    {
-        Lock l(m_mtx);
-        if (m_bConnect)
-            ObjectAbsPB::SendProtoBuffTo(m_gxClient, msg);
-        else
-            m_gxClient->Reconnect();
-    }
+    return St_Changed == (m_stat & St_Changed);
 }
 
-void ObjectGXClinet::SetMutex(IMutex *mtx)
+void GXClient::ClearChanged()
 {
-    m_mtx = mtx;
+    m_stat &= ~St_Changed;
 }
 
-int ObjectGXClinet::GetObjectType() const
+int GXClient::GXClientType()
 {
-    return GXClinetType();
+    return IObject::User + 3;
 }
-
-void ObjectGXClinet::InitObject()
-{
-    if (m_stInit != Uninitial)
-        return;
-
-    m_stInit = IObject::Initialed;
-}
-
-void ObjectGXClinet::SetStat(GXLink_Stat st)
-{
-    if (m_stat != st)
-    {
-        m_stat = st;
-        auto mgr = (GXClinetManager*)GetManager();
-        mgr->PushEvent(this);
-    }
-}
-
-void ObjectGXClinet::ProcessMessage(IMessage *)
-{
-    if (m_stInit == Uninitial)
-        InitObject();
-}
-
-void ObjectGXClinet::_prcsRcv()
-{
-    auto mgr = (GXClinetManager*)GetManager();
-    char *buf = mgr->GetBuff();
-    uint32_t rd = m_buff.CopyData(buf, mgr->BuffLength());
-    if (m_p)
-    {
-        int pos = 0;
-        uint32_t tmp = rd;
-        while (tmp > 18 && m_p->Parse((char*)buf + pos, tmp))
-        {
-            pos += tmp;
-            tmp = rd - pos;
-            const string &name = m_p->GetMsgName();
-            if (name == d_p_ClassName(AckTrackerIdentityAuthentication))
-            {
-                SetStat(((AckTrackerIdentityAuthentication*)m_p->GetProtoMessage())->result() == 1 ? St_Authed : St_AuthFail);
-            }
-            if (name == d_p_ClassName(AckOperationInformation))
-            {
-                SetStat(St_AcceptPos);
-            }
-        }
-        pos += tmp;
-        rd = pos;
-    }
-    m_buff.Clear(rd);
-}
-
-int ObjectGXClinet::GXClinetType()
-{
-    return IObject::User + 2;
-}
-////////////////////////////////////////////////////////////////////////////////
-//GXClinetManager
-////////////////////////////////////////////////////////////////////////////////
-GXClinetManager::GXClinetManager():IObjectManager()
-, m_sockMgr(GSocketManager::CreateManager(0,10000))
+///////////////////////////////////////////////////////////////////////////////////////////
+//GXManager
+///////////////////////////////////////////////////////////////////////////////////////////
+GXManager::GXManager() :IObjectManager(), m_sockMgr(GSocketManager::CreateManager(0,10000))
+, m_parse(new ProtoMsg), m_tmCheck(0), m_seq(1)
 {
     if (m_sockMgr)
-        m_thread = new GXLinkThread(m_sockMgr);
+        m_thread = new GXThread(m_sockMgr);
 }
 
-GXClinetManager::~GXClinetManager()
+GXManager::~GXManager()
 {
     delete m_sockMgr;
 }
 
-char *GXClinetManager::GetBuff()
+char *GXManager::GetBuff()
 {
     return m_bufPublic;
 }
 
-int GXClinetManager::BuffLength() const
+int GXManager::BuffLength() const
 {
     return 1024;
 }
 
-ISocketManager *GXClinetManager::GetSocketManager() const
+ISocketManager *GXManager::GetSocketManager() const
 {
     return m_sockMgr;
 }
 
-void GXClinetManager::PushEvent(ObjectGXClinet *o)
+void GXManager::PushEvent(const std::string &id, GXClient::GX_Stat st)
 {
-    if (o && m_mtxM)
+    if (m_mtxM)
     {
         m_mtxM->Lock();
-        m_events.Push(o);
+        m_events.push_back(GXEvent(id, st));
         m_mtxM->Unlock();
     }
 }
 
-int GXClinetManager::GetObjectType() const
+void GXManager::OnRead(GXClientSocket &s)
 {
-    return ObjectGXClinet::GXClinetType();
+    int len = s.CopyRcv(m_bufPublic, sizeof(m_bufPublic));
+    int pos = 0;
+    uint32_t tmp = len;
+    while (m_parse && len > 18 && m_parse->Parse(m_bufPublic + pos, tmp))
+    {
+        pos += tmp;
+        tmp = len - pos;
+        PrcsProtoBuff();
+    }
+    pos += tmp;
+    s.ClearRcv(pos);
 }
 
-bool GXClinetManager::PrcsPublicMsg(const IMessage &msg)
+void GXManager::OnConnect(GXClientSocket *, bool)
 {
-    switch (msg.GetMessgeType())
+    PushEvent(string(), GXClient::St_Connect);
+}
+
+int GXManager::GetObjectType() const
+{
+    return GXClient::GXClientType();
+}
+
+bool GXManager::PrcsPublicMsg(const IMessage &msg)
+{
+    int tp = msg.GetMessgeType();
+    switch (tp)
     {
     case ObjectSignal::S_Login:
-        ProcessLogin(msg.GetSenderID(), msg.GetSenderType(), true); break;
     case ObjectSignal::S_Logout:
-        ProcessLogin(msg.GetSenderID(), msg.GetSenderType(), false); break;
+        ProcessLogin(msg.GetSenderID(), tp==ObjectSignal::S_Login); break;
     case IMessage::PushUavSndInfo:
-        ProcessPostInfo(*(TrackerMessage*)&msg); break;
+        ProcessPostInfo(*(Tracker2GXMessage*)&msg); break;
     default:
         break;
     }
     return true;
 }
 
-IObject *GXClinetManager::PrcsNotObjectReceive(ISocket *, const char *, int)
+IObject *GXManager::PrcsNotObjectReceive(ISocket *, const char *, int)
 {
     return NULL;
 }
 
-void GXClinetManager::LoadConfig()
+void GXManager::PrcsProtoBuff()
+{
+    if (!m_parse)
+        return;
+
+    string strMsg = m_parse->GetMsgName();
+    if (strMsg == d_p_ClassName(AckUavIdentityAuthentication))
+        _prcsLoginAck((AckUavIdentityAuthentication*)m_parse->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(AckOperationInformation))
+        _prcsInformationAck((AckOperationInformation*)m_parse->GetProtoMessage());
+}
+
+void GXManager::LoadConfig()
 {
     InitThread(1, 0);
 }
 
-bool GXClinetManager::IsReceiveData() const
+bool GXManager::IsReceiveData() const
 {
     return false;
 }
 
-void GXClinetManager::ProcessLogin(const std::string sender, int sendTy, bool bLogin)
+void GXManager::ProcessLogin(const std::string &id, bool bLogin)
 {
-    if (sendTy != ObjectTracker::TrackerType() || sender.empty())
+    if (id.empty())
         return;
 
-    auto obj = (ObjectGXClinet*)GetObjectByID(sender);
-    if (!obj && bLogin)
+    auto itr = m_objects.find(id);
+    if (bLogin)
     {
-        obj = new ObjectGXClinet(sender);
-        if (obj)
-        { 
-            AddObject(obj);
-            obj->SetMutex(m_mtxM);
+        if (auto o = new GXClient(id))
+        {
+            m_objects[id] = new GXClient(id);
+            prepareSocket(o);
         }
     }
-
-    if (obj)
-        obj->Login(bLogin);
+    else if (itr!=m_objects.end())
+    {
+        delete itr->second;
+        m_objects.erase(itr);
+    }
 }
 
-void GXClinetManager::ProcessPostInfo(const TrackerMessage &msg)
+void GXManager::ProcessPostInfo(const Tracker2GXMessage &msg)
 {
     if (msg.GetSenderType() != ObjectTracker::TrackerType())
         return;
 
-    if (auto obj = (ObjectGXClinet*)GetObjectByID(msg.GetSenderID()))
-        obj->Send(*msg.GetProtobuf());
+    auto ms = msg.GetProtobuf();
+    ms = ms ? ms->New() : NULL;
+    if (ms)
+    {
+        ms->CopyFrom(*msg.GetProtobuf());
+        m_protoSnds.push_back(ms);
+    }
 }
 
-void GXClinetManager::ProcessEvents()
+void GXManager::ProcessEvents()
 {
-    while (!m_events.IsEmpty())
+    Lock l(m_mtxM);
+    for (auto itr =m_events.begin(); itr!=m_events.end();)
     {
-        if (auto oGx = m_events.Pop())
+        if (itr->first.empty() && itr->second==GXClient::St_Connect)
         {
-            if (ObjectGXClinet::St_Connect == oGx->m_stat)
+            uavLoginGx();
+        }
+        else
+        {
+            auto itrO = m_objects.find(itr->first);
+            if (itrO != m_objects.end())
             {
-                RequestTrackerIdentityAuthentication req;
-                req.set_seqno(oGx->m_seq++);
-                req.set_trackerid(oGx->GetObjectID());
-                ObjectAbsPB::SendProtoBuffTo(oGx->m_gxClient, req);
-                oGx->m_stat = ObjectGXClinet::St_Authing;
+                auto o = itrO->second;
+                o->SetStat(itr->second);
+                if (o->IsChanged())
+                {
+                    o->ClearChanged();
+                    SendMsg(new GX2TrackerMessage(o->GetID(), o->GetStat()));
+                }
             }
+        }
+        itr = m_events.erase(itr);
+    }
+    sendPositionInfo();
+    checkSocket(Utility::msTimeTick());
+}
 
-            if (auto msg = new GX2TrackerMessage(oGx, oGx->m_stat))
-                SendMsg(msg);
+void GXManager::_prcsLoginAck(AckUavIdentityAuthentication *ack)
+{
+    if (!ack)
+        return;
+
+    PushEvent(ack->uavid(), ack->result() == 1 ? GXClient::St_Authed : GXClient::St_AuthFail);
+}
+
+void GXManager::_prcsInformationAck(AckOperationInformation *)
+{
+}
+
+void GXManager::prepareSocket(GXClient *o)
+{
+    if (m_sockets.empty() || (m_sockets.size() < 10 && m_protoSnds.size() > 10))
+    {
+        if (auto s = new GXClientSocket(this))
+        {
+            s->ConnectTo(GXHost, GXPort);
+            m_sockMgr->AddSocket(s);
+            m_sockets.push_back(s);
+        }
+    }
+    else if(o && sendUavLogin(o->GetID()))
+    {
+        o->SetStat(GXClient::St_Authing);
+    }
+}
+
+void GXManager::uavLoginGx()
+{
+    for (const pair<string, GXClient*> &itr : m_objects)
+    {
+        if (itr.second->GetStat() != GXClient::St_Unknow)
+            continue;
+
+        if (sendUavLogin(itr.second->GetID()))
+            itr.second->SetStat(GXClient::St_Authing);
+        else
+            break;
+    }
+}
+
+void GXManager::sendPositionInfo()
+{
+    auto itr = m_protoSnds.begin();
+    if (itr == m_protoSnds.end())
+        return;
+
+    for (auto sock : m_sockets)
+    {
+        if (sock->IsConnect())
+        {
+            while (itr != m_protoSnds.end())
+            {
+                if (ObjectAbsPB::SendProtoBuffTo(sock, **itr))
+                    itr = m_protoSnds.erase(itr);
+                else
+                    break;
+
+                if (itr == m_protoSnds.end())
+                    return;
+            }
         }
     }
 }
 
+bool GXManager::sendUavLogin(const std::string &id)
+{
+    RequestTrackerIdentityAuthentication req;
+    req.set_seqno(m_seq++);
+    req.set_trackerid(id);
+    for (auto sock : m_sockets)
+    {
+        if (sock->IsConnect())
+        {
+            if (ObjectAbsPB::SendProtoBuffTo(sock, req))
+                return true;
+        }
+    }
+    return false;
+}
 
-DECLARE_MANAGER_ITEM(GXClinetManager)
+void GXManager::checkSocket(uint64_t ms)
+{
+    if (ms - m_tmCheck < 1000)
+        return;
+
+    m_tmCheck = ms;
+    for (auto sock : m_sockets)
+    {
+        if (!sock->IsConnect())
+            sock->Reconnect();
+    }
+}
+
+DECLARE_MANAGER_ITEM(GXManager)

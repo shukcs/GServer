@@ -18,13 +18,19 @@
     <ClCompile Include="src\LinkManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\das.pb.cc">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\UavLink.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\GSLink.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\3rdLink.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\uavandqgc\proto\das.pb.cc">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TrackerLink.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -45,13 +51,19 @@
     </QtUic>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\das.pb.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\UavLink.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\GSLink.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\3rdLink.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\uavandqgc\proto\das.pb.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TrackerLink.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

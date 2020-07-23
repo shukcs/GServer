@@ -194,12 +194,12 @@ IMessage::MessageType GV2TrackerMessage::getMessageType(const google::protobuf::
 //Tracker2GXMessage
 /////////////////////////////////////////////////////////////////////////////////////////////
 Tracker2GXMessage::Tracker2GXMessage(ObjectTracker *sender)
-: TrackerMessage(sender, string(), ObjectGXClinet::GXClinetType())
+: TrackerMessage(sender, string(), GXClient::GXClientType())
 {
 }
 
 Tracker2GXMessage::Tracker2GXMessage(IObjectManager *sender)
-: TrackerMessage(sender, string(), ObjectGXClinet::GXClinetType())
+: TrackerMessage(sender, string(), GXClient::GXClientType())
 {
 }
 
@@ -216,8 +216,8 @@ IMessage::MessageType Tracker2GXMessage::getMessageType(const google::protobuf::
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //GX2TrackerMessage
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-GX2TrackerMessage::GX2TrackerMessage(ObjectGXClinet *sender, int st)
-:IMessage(new MessageData(sender, GXClinetStat), sender?sender->GetObjectID():string(), ObjectTracker::TrackerType())
+GX2TrackerMessage::GX2TrackerMessage(const std::string &sender, int st)
+:IMessage(new MessageData(sender, GXClient::GXClientType(), GXClinetStat), sender, ObjectTracker::TrackerType())
 , m_stat(st)
 {
 }

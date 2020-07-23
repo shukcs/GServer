@@ -7,16 +7,16 @@
 using namespace SOCKETS_NAMESPACE
 #endif
 
-GXClientSocket::GXClientSocket(ObjectGXClinet *parent): m_parent(parent)
+GXClientSocket::GXClientSocket(GXManager *parent): m_parent(parent)
 ,m_mgrPrcs(NULL), m_fd(-1), m_stat(UnConnected), m_address(NULL)
-, m_buffSocket(new LoopQueBuff(1024))
+, m_buffSnd(new LoopQueBuff(1024)), m_buffRcv(new LoopQueBuff(1024))
 {
 }
 
 GXClientSocket::~GXClientSocket()
 {
     delete m_address;
-    delete m_buffSocket;
+    delete m_buffSnd;
 }
 
 ILink *GXClientSocket::GetHandleLink() const
@@ -39,7 +39,7 @@ bool GXClientSocket::ConnectTo(const std::string &hostRemote, int port)
     {
         m_address = new Ipv4Address(hostRemote, port);
         m_stat = Connecting;
-        m_buffSocket->ReSize(2048);
+        m_buffSnd->ReSize(2048);
         return true;
     }
     return false;
@@ -52,7 +52,7 @@ int GXClientSocket::Send(int len, const void *buff)
 
     int ret = len;
     if(buff)
-        ret = m_buffSocket->Push(buff, len) ? len : 0;
+        ret = m_buffSnd->Push(buff, len) ? len : 0;
 
     if (ret>0 && m_mgrPrcs)
         m_mgrPrcs->AddWaitPrcsSocket(this);
@@ -62,8 +62,8 @@ int GXClientSocket::Send(int len, const void *buff)
 
 void GXClientSocket::ClearBuff() const
 {
-    if (m_buffSocket)
-        m_buffSocket->Clear();
+    if (m_buffSnd)
+        m_buffSnd->Clear();
 }
 
 bool GXClientSocket::IsListenSocket() const
@@ -79,6 +79,19 @@ void GXClientSocket::Close()
         if (m_mgrPrcs)
             m_mgrPrcs->AddWaitPrcsSocket(this);
     }
+}
+
+int GXClientSocket::CopyRcv(char *buf, int sz) const
+{
+    if (buf && m_buffRcv && sz > 0 && m_buffRcv->Count() > 0)
+        return m_buffRcv->CopyData(buf, sz);
+    return 0;
+}
+
+void GXClientSocket::ClearRcv(int len)
+{
+    if(m_buffRcv)
+        m_buffRcv->Clear(len);
 }
 
 std::string GXClientSocket::GetHost() const
@@ -132,8 +145,8 @@ bool GXClientSocket::IsReconnectable() const
 
 bool GXClientSocket::IsWriteEnabled() const
 {
-    if (m_buffSocket)
-        return m_buffSocket->BuffSize() > m_buffSocket->Count();
+    if (m_buffSnd)
+        return m_buffSnd->BuffSize() > m_buffSnd->Count();
 
     return false;
 }
@@ -144,12 +157,12 @@ void GXClientSocket::EnableWrite(bool)
 
 void GXClientSocket::OnWrite(int len)
 {
-    if (len > 0 && m_buffSocket)
+    if (len > 0 && m_buffSnd)
     {
-        int nTmp = m_buffSocket->Count();
+        int nTmp = m_buffSnd->Count();
         if (nTmp>0)
         {
-            m_buffSocket->Clear(len);
+            m_buffSnd->Clear(len);
             len -= nTmp;
         }
     }
@@ -157,8 +170,9 @@ void GXClientSocket::OnWrite(int len)
 
 void GXClientSocket::OnRead(const void *buf, int len)
 {
+    m_buffRcv->Push(buf, len);
     if (m_parent)
-        m_parent->OnRead(this, buf, len);
+        m_parent->OnRead(*this);
 }
 
 void GXClientSocket::OnClose()
@@ -172,12 +186,14 @@ void GXClientSocket::OnConnect(bool b)
     m_stat = b ? Connected : Closed;
     if (!b)
     {
-        if (m_buffSocket)
-            m_buffSocket->Clear();
+        if (m_buffSnd)
+            m_buffSnd->Clear();
+        if (m_buffRcv)
+            m_buffRcv->Clear();
     }
 
     if (m_parent)
-        m_parent->OnConnect(b);
+        m_parent->OnConnect(this, b);
 }
 
 void GXClientSocket::OnBind(bool binded)
@@ -187,25 +203,27 @@ void GXClientSocket::OnBind(bool binded)
 
 int GXClientSocket::CopyData(char *buf, int sz) const
 {
-    if (buf && m_buffSocket && sz> 0 && m_buffSocket->Count()>0)
-        return m_buffSocket->CopyData(buf, sz);
+    if (buf && m_buffSnd && sz> 0 && m_buffSnd->Count()>0)
+        return m_buffSnd->CopyData(buf, sz);
     return 0;
 }
 
 int GXClientSocket::GetSendLength() const
 {
-    return m_buffSocket ? m_buffSocket->Count() : 0;
+    return m_buffSnd ? m_buffSnd->Count() : 0;
 }
 
 int GXClientSocket::GetSendRemain() const
 {
-    return m_buffSocket ? (m_buffSocket->BuffSize() - m_buffSocket->Count()) : 0;
+    return m_buffSnd ? (m_buffSnd->BuffSize() - m_buffSnd->Count()) : 0;
 }
 
 bool GXClientSocket::ResetSendBuff(uint16_t sz)
 {
-    if (m_buffSocket)
-        return m_buffSocket->ReSize(sz);
+    if (m_buffSnd)
+        return m_buffSnd->ReSize(sz);
+    if (m_buffRcv)
+        return m_buffRcv->ReSize(sz);
 
     return false;
 }
@@ -227,15 +245,15 @@ ISocketManager *GXClientSocket::GetPrcsManager() const
 
 bool GXClientSocket::ResizeBuff(int sz)
 {
-    if (m_buffSocket)
-        return m_buffSocket->ReSize(sz);
+    if (m_buffSnd)
+        return m_buffSnd->ReSize(sz);
 
     return false;
 }
 
 bool GXClientSocket::IsNoWriteData() const
 {
-    return m_buffSocket && m_buffSocket->Count() == 0;
+    return m_buffSnd && m_buffSnd->Count() == 0;
 }
 
 bool GXClientSocket::Reconnect()

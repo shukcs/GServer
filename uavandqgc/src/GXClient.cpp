@@ -25,8 +25,9 @@ class GXLinkThread : public Thread
 {
 public:
     GXLinkThread(ISocketManager *mgr)
-        :Thread(true), m_mgr(mgr)
+        :Thread(false), m_mgr(mgr)
     {
+        SetRunning();
     }
 protected:
     bool RunLoop()
@@ -78,7 +79,7 @@ void GXClient::ClearChanged()
 
 int GXClient::GXClientType()
 {
-    return IObject::User + 3;
+    return IObject::User;
 }
 ////////////////////////////////////////////////////////////////////////////////
 //GXManager

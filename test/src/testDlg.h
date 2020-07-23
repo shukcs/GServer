@@ -33,12 +33,16 @@ private:
     void insertUav(const QString &uav);
     void connectGS(const QString &user, const QString &pswd);
     void connectUav(const QString &uav);
+    void connectTrackers();
+    void connect3rds();
 private:
     Ui::testDlg         *m_ui;
     VGMySql             *m_sql;
     int                 m_idTm;
     QList<AbsLink*>     m_uavs;
     QList<AbsLink*>     m_users;
+    QList<AbsLink*>     m_trackers;
+    QList<AbsLink*>     m_3rds;
     QList<LinkManager*> m_mgrs;
 };
 

@@ -40,8 +40,8 @@ ObjectGS::~ObjectGS()
 
 void ObjectGS::OnConnected(bool bConnected)
 {
-    if (bConnected && m_sock)
-        m_sock->ResizeBuff(WRITE_BUFFLEN);
+    if (bConnected)
+        SetSocketBuffSize(WRITE_BUFFLEN);
 
     if (!bConnected && !m_check.empty())
         Release();

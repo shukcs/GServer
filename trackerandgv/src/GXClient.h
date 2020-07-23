@@ -9,88 +9,99 @@ namespace google {
     }
 }
 
+namespace das {
+    namespace proto {
+        class AckUavIdentityAuthentication;
+        class AckOperationInformation;
+    }
+}
+
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE;
 #endif
 
 class ISocketManager;
-class GXLinkThread;
-class TrackerMessage;
+class GXThread;
+class Tracker2GXMessage;
 class IMutex;
 class ProtoMsg;
-class GXClinetManager;
+class GXClientSocket;
 
-class ObjectGXClinet : public IObject
+class GXClient
 {
 public:
-    enum GXLink_Stat
+    enum GX_Stat
     {
         St_Unknow,
         St_Connect,
         St_Authing,
         St_AuthFail,
         St_Authed,
-        St_AcceptPos,
+        St_Changed = 0x0100,
     };
 public:
-    ObjectGXClinet(const std::string &id);
-    ~ObjectGXClinet();
+    GXClient(const std::string &id, GX_Stat st=St_Unknow);
+    ~GXClient();
 
-    void OnRead(ISocket *s, const void *buff, int len);
-    void Login(bool b);
-    void OnConnect(bool b);
-    void Send(const google::protobuf::Message &msg);
-    void SetMutex(IMutex *mtx);
+    const std::string &GetID()const;
+    void SetStat(GX_Stat st);
+    GX_Stat GetStat()const;
+    bool IsChanged()const;
+    void ClearChanged();
 public:
-    static int GXClinetType();
-protected:
-    int GetObjectType()const;
-    void InitObject();
-    void SetStat(GXLink_Stat st);
-
-    void ProcessMessage(IMessage *msg);
-    void _prcsRcv();
+    static int GXClientType();
 private:
-    friend class GXClinetManager;
-    ISocket     *m_gxClient;
-    LoopQueBuff m_buff;
-    int         m_seq;
-    bool        m_bConnect;
-    IMutex      *m_mtx;
-    GXLink_Stat m_stat;
-    ProtoMsg    *m_p;
+    std::string     m_id;
+    int             m_stat;
 };
 
-class GXClinetManager : public IObjectManager
+class GXManager : public IObjectManager
 {
-    typedef LoopQueue<ObjectGXClinet*> EventsQue;
+    typedef std::pair<std::string, GXClient::GX_Stat> GXEvent;
+    typedef std::list<GXEvent> EventsQue;
+    typedef std::list<google::protobuf::Message *> ProtoSendQue;
+    typedef std::map<std::string, GXClient*> GXClinetMap;
 public:
-    GXClinetManager();
-    ~GXClinetManager();
+    GXManager();
+    ~GXManager();
 
     char *GetBuff();
     int BuffLength()const;
     ISocketManager *GetSocketManager()const;
-    void PushEvent(ObjectGXClinet *);
+    void PushEvent(const std::string &id, GXClient::GX_Stat st);
+    void OnRead(GXClientSocket &s);
+    void OnConnect(GXClientSocket *s, bool b);
 protected:
     int GetObjectType()const;
     bool PrcsPublicMsg(const IMessage &msg);
     IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
+    void PrcsProtoBuff();
     void LoadConfig();
     bool IsReceiveData()const;
 
-    void ProcessLogin(const std::string sender, int sendTy, bool bLogin);
-    void ProcessPostInfo(const TrackerMessage &msg);
+    void ProcessLogin(const std::string &id, bool bLogin);
+    void ProcessPostInfo(const Tracker2GXMessage &msg);
     void ProcessEvents();
 private:
-    ISocketManager  *m_sockMgr;
-    GXLinkThread    *m_thread;
-    char            m_bufPublic[1024];
-    EventsQue       m_events;
+    void _prcsLoginAck(das::proto::AckUavIdentityAuthentication *prt);
+    void _prcsInformationAck(das::proto::AckOperationInformation *prt);
+    void prepareSocket(GXClient *o);
+    void uavLoginGx();
+    void sendPositionInfo();
+    bool sendUavLogin(const std::string &i);
+    void checkSocket(uint64_t ms);
+private:
+    ISocketManager              *m_sockMgr;
+    ProtoMsg                    *m_parse;
+    GXThread                    *m_thread;
+    uint64_t                    m_tmCheck;
+    uint32_t                    m_seq;
+    char                        m_bufPublic[1024];
+    EventsQue                   m_events;
+    std::list<GXClientSocket*>  m_sockets;
+    GXClinetMap                 m_objects;
+    ProtoSendQue                m_protoSnds;
 };
 
-#ifdef SOCKETS_NAMESPACE
-}
-#endif
 #endif//__GX_CLINENT_H__
 

@@ -14,10 +14,6 @@
 
 using namespace std;
 using namespace das::proto;
-using namespace ::google::protobuf;
-#ifdef SOCKETS_NAMESPACE
-using namespace SOCKETS_NAMESPACE;
-#endif
 ////////////////////////////////////////////////////////////////////////////////
 //TrackerManager
 ////////////////////////////////////////////////////////////////////////////////
@@ -38,16 +34,21 @@ uint32_t TrackerManager::toIntID(const std::string &uavid)
 {
     StringList strLs = Utility::SplitString(uavid, ":");
     if (strLs.size() != 2
-        || !Utility::Compare(strLs.front(), "VIGAU", false)
+        || !Utility::Compare(strLs.front(), "VIGAT", false)
         || strLs.back().length() != 8)
         return 0;
 
     return (uint32_t)Utility::str2int(strLs.back(), 16);
 }
 
+bool TrackerManager::IsValid3rdID(const std::string &id, const std::string &key)
+{
+    return !id.empty() && !key.empty();
+}
+
 int TrackerManager::GetObjectType() const
 {
-    return IObject::User+1;
+    return ObjectTracker::TrackerType();
 }
 
 IObject *TrackerManager::PrcsProtoBuff(ISocket *s)
@@ -57,10 +58,14 @@ IObject *TrackerManager::PrcsProtoBuff(ISocket *s)
 
     if (m_p->GetMsgName() == d_p_ClassName(RequestTrackerIdentityAuthentication))
     {
-        RequestTrackerIdentityAuthentication *rua = (RequestTrackerIdentityAuthentication *)m_p->GetProtoMessage();
+        auto *rua = (RequestTrackerIdentityAuthentication *)m_p->GetProtoMessage();
         return _checkLogin(s, *rua);
     }
-
+    if (m_p->GetMsgName() == d_p_ClassName(Request3rdIdentityAuthentication))
+    {
+        auto *rua = (Request3rdIdentityAuthentication *)m_p->GetProtoMessage();
+        return _check3rdLogin(s, *rua);
+    }
     if (m_p->GetMsgName() == d_p_ClassName(RequestProgramUpgrade))
     {
        return _checkProgram(s, *(RequestProgramUpgrade*)m_p->GetProtoMessage());
@@ -112,12 +117,16 @@ void TrackerManager::LoadConfig()
 bool TrackerManager::IsHasReuest(const char *buf, int len) const
 {
     return Utility::FindString(buf, len, d_p_ClassName(RequestTrackerIdentityAuthentication)) >= 8
+        || Utility::FindString(buf, len, d_p_ClassName(Request3rdIdentityAuthentication)) >= 8
         || Utility::FindString(buf, len, d_p_ClassName(RequestProgramUpgrade)) >= 8;
 }
 
 IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAuthentication &uia)
 {
     string uavid = Utility::Upper(uia.trackerid());
+    if (toIntID(uavid) < 1)
+        return NULL;
+
     ObjectTracker *ret = (ObjectTracker *)GetObjectByID(uavid);
     string sim = uia.has_extradata() ? uia.extradata() : "";
     Log(0, uavid, 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestTrackerIdentityAuthentication!");
@@ -127,6 +136,42 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
             return ret;
 
         AckTrackerIdentityAuthentication ack;
+        ack.set_seqno(uia.seqno());
+        if (!ret->GetSocket())
+        {
+            ack.set_result(1);
+            ret->OnLogined(true, s);
+            ret->SetSimId(sim);
+        }
+        else
+        {
+            ack.set_result(0);
+            Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
+        }
+
+        ObjectAbsPB::SendProtoBuffTo(s, ack);
+    }
+    else
+    {
+        ret = new ObjectTracker(uavid, sim);
+    }
+    return ret;
+}
+
+IObject *TrackerManager::_check3rdLogin(ISocket *s, const Request3rdIdentityAuthentication &uia)
+{
+    string uavid = Utility::Upper(uia.identification());
+    string sim = uia.secretkey();
+    if (!IsValid3rdID(uavid, sim))
+        return NULL;
+
+    ObjectTracker *ret = (ObjectTracker *)GetObjectByID(uavid);
+    if (ret)
+    {
+        if (ret->GetSocket() == s)
+            return ret;
+
+        Ack3rdIdentityAuthentication ack;
         ack.set_seqno(uia.seqno());
         if (!ret->GetSocket())
         {

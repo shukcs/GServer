@@ -38,8 +38,8 @@ ObjectGV::~ObjectGV()
 void ObjectGV::OnConnected(bool bConnected)
 {
     ObjectAbsPB::OnConnected(bConnected);
-    if (bConnected && m_sock)
-        m_sock->ResizeBuff(WRITE_BUFFLEN);
+    if (bConnected)
+        SetSocketBuffSize(WRITE_BUFFLEN);
 }
 
 void ObjectGV::SetPswd(const std::string &pswd)
@@ -69,7 +69,7 @@ void ObjectGV::SetSeq(int seq)
 
 int ObjectGV::GVType()
 {
-    return IObject::User;
+    return IObject::User+2;
 }
 
 ObjectGV *ObjectGV::ParseObjecy(const TiXmlElement &e)
@@ -203,7 +203,7 @@ void ObjectGV::process2GsMsg(const google::protobuf::Message *msg)
 
 void ObjectGV::processEvent(const IMessage &msg, int tp)
 {
-    if (   !m_bLogined
+    if (   !IsConnect()
         || msg.GetSenderType() != ObjectTracker::TrackerType()
         || (ObjectSignal::S_Login!=tp && ObjectSignal::S_Logout!=tp) )
         return;
@@ -229,8 +229,8 @@ void ObjectGV::CheckTimer(uint64_t ms, char *buf, int len)
     ms -= m_tmLastInfo;
     if (ms > 60000)
         Release();
-    else if (m_sock && ms > 30000)//超时关闭
-        m_sock->Close();
+    else if (ms > 30000)//超时关闭
+        CloseLink();
 }
 
 bool ObjectGV::IsAllowRelease() const

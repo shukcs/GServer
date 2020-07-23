@@ -221,6 +221,43 @@ message AckUavIdentityAuthentication {
 }
 
 //=================================================================================================
+//RequestTrackerIdentityAuthentication
+//=================================================================================================
+message RequestTrackerIdentityAuthentication {
+	required uint32 seqno    		= 1;	//本包的包序号
+	required string trackerid    	= 2;	//农机的唯一标识
+	optional string	extradata 		= 3;	//扩展备用数据
+}
+
+//=================================================================================================
+//AckTrackerIdentityAuthentication
+//=================================================================================================
+message AckTrackerIdentityAuthentication {
+	required uint32 seqno    		= 1;	//本包的包序号
+	required int32 	result			= 2;	//身份认证结果
+	optional string	extradata 		= 3;	//扩展备用数据
+}
+
+//=================================================================================================
+//Request3rdIdentityAuthentication
+//=================================================================================================
+message Request3rdIdentityAuthentication {
+    required uint32  seqno          = 1;    //本包的包序号
+    required string  identification = 2;    //第三方身份ID
+    required string  secretkey      = 3;    //第三方密钥
+    optional string  extradata      = 4;    //扩展备用数据
+}
+
+//=================================================================================================
+//Ack3rdIdentityAuthentication
+//=================================================================================================
+message Ack3rdIdentityAuthentication {
+    required uint32 seqno       = 1;     //本包的包序号
+    required int32  result      = 2;     //身份认证结果
+    optional string extradata   = 3;     //扩展备用数据
+}
+
+//=================================================================================================
 //RequestNewGS
 //=================================================================================================
 message RequestNewGS {

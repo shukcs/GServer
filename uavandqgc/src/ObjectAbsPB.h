@@ -23,8 +23,6 @@ class ObjectAbsPB : public IObject, public ILink
 public:
     ObjectAbsPB(const std::string &id);
     ~ObjectAbsPB();
-
-    bool IsConnect()const;
 public:
     static bool SendProtoBuffTo(ISocket *s, const google::protobuf::Message &ms);
 protected:

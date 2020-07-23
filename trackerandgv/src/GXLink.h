@@ -8,14 +8,14 @@ class LoopQueBuff;
 using namespace SOCKETS_NAMESPACE
 #endif
 
-class ObjectGXClinet;
+class GXManager;
 class SocketAddress;
 class ILog;
 
 class GXClientSocket : public ISocket
 {
 public:
-    GXClientSocket(ObjectGXClinet *gx);
+    GXClientSocket(GXManager *gx);
     ~GXClientSocket();
 
     //无限制调用函数
@@ -24,6 +24,10 @@ public:
     uint16_t GetPort()const;
     std::string GetHost()const;
     void Close();
+    int CopyRcv(char *buf, int sz)const;
+    void ClearRcv(int len);
+    bool IsConnect()const;
+    bool Reconnect();
 protected:
     //事务处理调用函数
     ILink *GetHandleLink()const;
@@ -34,7 +38,6 @@ protected:
     //无限制调用函数
     SocketStat GetSocketStat()const;
     bool IsListenSocket()const;
-    bool IsConnect()const;
 
     //GSockM
     SocketAddress *GetAddress()const;
@@ -63,17 +66,17 @@ protected:
     bool ResizeBuff(int sz);
     bool IsNoWriteData()const;
 
-    bool Reconnect();
     void SetLogin(IObjectManager *);
     void SetCheckTime(int64_t);
     int64_t GetCheckTime()const;
 protected:
-    ObjectGXClinet  *m_parent;
+    GXManager       *m_parent;
     ISocketManager  *m_mgrPrcs;
     int             m_fd;
     SocketStat      m_stat;
     SocketAddress   *m_address;
-    LoopQueBuff     *m_buffSocket;
+    LoopQueBuff     *m_buffSnd;
+    LoopQueBuff     *m_buffRcv;
 };
 
 #endif // !__GX_LINK_H__
