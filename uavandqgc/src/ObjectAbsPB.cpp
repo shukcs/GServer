@@ -58,7 +58,6 @@ void ObjectAbsPB::send(char *buf, int len)
     if (lenSnd < 1)
         return;
 
-    WaitSin();
     for (auto itr = m_protosList.begin(); itr != m_protosList.end(); )
     {
         int sendSz = serialize(**itr, buf, len);
@@ -70,6 +69,7 @@ void ObjectAbsPB::send(char *buf, int len)
         delete *itr;
         itr = m_protosList.erase(itr);
     }
+    WaitSin();
     for (auto itr = m_protosMap.begin(); itr != m_protosMap.end(); ++itr)
     {
         if (itr->second)
@@ -106,7 +106,7 @@ void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
     if (!msg)
         return;
 
-    if (!IsLinkThread())
+    if (IsLinkThread())
     {
         m_protosList.push_back(msg);
     }

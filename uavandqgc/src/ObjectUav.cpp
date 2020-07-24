@@ -80,7 +80,7 @@ void ObjectUav::_respondLogin(int seq, int res)
 
 void ObjectUav::OnLogined(bool suc, ISocket *s)
 {
-    if (IsConnect() == suc)
+    if (IsConnect() != suc)
     {
         if (suc)
         {

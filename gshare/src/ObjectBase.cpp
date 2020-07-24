@@ -23,7 +23,7 @@ class BussinessThread : public Thread
 {
 public:
     BussinessThread(IObjectManager *mgr) :Thread(true), m_mgr(mgr)
-    , m_mtx(NULL), m_szBuff(0), m_buff(NULL)
+    , m_mtx(NULL), m_mtxQue(new Mutex), m_szBuff(0), m_buff(NULL)
     {
     }
     ~BussinessThread() 
@@ -111,7 +111,7 @@ protected:
     }
     bool PushRelaseMsg(IMessage *ms)
     {
-        Lock l(GetMutex());
+        Lock l(m_mtxQue);
         return m_lsMsgRelease.Push(ms);
     }
 private:
@@ -120,6 +120,7 @@ private:
     friend class IObjectManager;
     IObjectManager  *m_mgr;
     IMutex          *m_mtx;
+    IMutex          *m_mtxQue;
     int             m_szBuff;
     char            *m_buff;
     MapLinks        m_links;
@@ -455,7 +456,8 @@ IObjectManager *IObject::GetManagerByType(int tp)
 ///////////////////////////////////////////////////////////////////
 //IObjectManager
 ///////////////////////////////////////////////////////////////////
-IObjectManager::IObjectManager() : m_log(NULL), m_mtxM(new Mutex())
+IObjectManager::IObjectManager() : m_log(NULL), m_mtxBs(new Mutex())
+, m_mtxQue(new Mutex())
 {
 }
 
@@ -501,9 +503,9 @@ bool IObjectManager::ProcessBussiness(BussinessThread *s)
 
         if (IsReceiveData())
         {
-            m_mtxM->Lock();
+            m_mtxBs->Lock();
             ret = ProcessLogins(s);
-            m_mtxM->Unlock();
+            m_mtxBs->Unlock();
         }
     }
     return ret;
@@ -640,7 +642,7 @@ void IObjectManager::PushManagerMessage(IMessage *msg)
     if (!msg)
         return;
 
-    Lock l(m_mtxM);
+    Lock l(m_mtxQue);
     m_messages.Push(msg);
 }
 
@@ -686,11 +688,11 @@ void IObjectManager::OnSocketClose(ISocket *s)
     if (!IsReceiveData())
         return;
 
-    if (m_mtxM && s)
+    if (m_mtxBs && s)
     {
-        m_mtxM->Lock();
+        m_mtxBs->Lock();
         m_loginSockets.erase(s);
-        m_mtxM->Unlock();
+        m_mtxBs->Unlock();
     }
 }
 
@@ -699,7 +701,7 @@ void IObjectManager::AddLoginData(ISocket *s, const void *buf, int len)
     if (!s)
         return;
 
-    Lock l(m_mtxM);
+    Lock l(m_mtxBs);
     if (auto lk = s->GetHandleLink())
     { 
         lk->Receive(buf, len);
@@ -786,27 +788,27 @@ const StringList &IObjectManager::getMessageSubcribes(IMessage *msg)
 
 void IObjectManager::Subcribe(const string &dsub, const std::string &sender, int tpMsg)
 {
-    if (!m_mtxM || dsub.empty() || sender.empty() || tpMsg < 0)
+    if (!m_mtxQue || dsub.empty() || sender.empty() || tpMsg < 0)
         return;
 
     if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, tpMsg, true))
     {
-        m_mtxM->Lock();
+        m_mtxQue->Lock();
         m_subcribeQue.Push(sub);
-        m_mtxM->Unlock();
+        m_mtxQue->Unlock();
     }
 }
 
 void IObjectManager::Unsubcribe(const string &dsub, const std::string &sender, int tpMsg)
 {
-    if (!m_mtxM || dsub.empty() || sender.empty() || tpMsg < 0)
+    if (!m_mtxQue || dsub.empty() || sender.empty() || tpMsg < 0)
         return;
 
     if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, tpMsg, false))
     {
-        m_mtxM->Lock();
+        m_mtxQue->Lock();
         m_subcribeQue.Push(sub);
-        m_mtxM->Unlock();
+        m_mtxQue->Unlock();
     }
 }
 

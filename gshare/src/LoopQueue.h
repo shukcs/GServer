@@ -160,16 +160,16 @@ private:
         if (auto tmp = takeEmpty())
         {
             tmp->SetValue(val);
-            m_push->SetNext(tmp);
             ++m_count;
+            m_push->SetNext(tmp);
             m_push = tmp;
             ret = true;
         }
         else if (auto tmp = new QueNode(val))
         {
+            ++m_count;
             if (m_push)
                 m_push->SetNext(tmp);
-            ++m_count;
             m_push = tmp;
             ret = true;
         }

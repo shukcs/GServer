@@ -200,7 +200,8 @@ protected:
 protected:
     friend class ObjectManagers;
     ILog                            *m_log;
-    IMutex                          *m_mtxM;
+    IMutex                          *m_mtxBs;
+    IMutex                          *m_mtxQue;
     std::list<BussinessThread*>     m_lsThread;
     MapObjects                      m_objects;
     MessageQue                      m_messages;         //接收消息队列

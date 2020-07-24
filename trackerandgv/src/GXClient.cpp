@@ -111,11 +111,11 @@ ISocketManager *GXManager::GetSocketManager() const
 
 void GXManager::PushEvent(const std::string &id, GXClient::GX_Stat st)
 {
-    if (m_mtxM)
+    if (m_mtxBs)
     {
-        m_mtxM->Lock();
+        m_mtxBs->Lock();
         m_events.push_back(GXEvent(id, st));
-        m_mtxM->Unlock();
+        m_mtxBs->Unlock();
     }
 }
 
@@ -224,7 +224,7 @@ void GXManager::ProcessPostInfo(const Tracker2GXMessage &msg)
 
 void GXManager::ProcessEvents()
 {
-    Lock l(m_mtxM);
+    Lock l(m_mtxBs);
     for (auto itr =m_events.begin(); itr!=m_events.end();)
     {
         if (itr->first.empty() && itr->second==GXClient::St_Connect)
