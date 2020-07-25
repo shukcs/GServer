@@ -41,9 +41,9 @@ uint32_t TrackerManager::toIntID(const std::string &uavid)
     return (uint32_t)Utility::str2int(strLs.back(), 16);
 }
 
-bool TrackerManager::IsValid3rdID(const std::string &id, const std::string &key)
+bool TrackerManager::IsValid3rdID(const std::string &id, const std::string &)
 {
-    return !id.empty() && !key.empty();
+    return !id.empty();
 }
 
 int TrackerManager::GetObjectType() const
@@ -74,27 +74,8 @@ IObject *TrackerManager::PrcsProtoBuff(ISocket *s)
     return NULL;
 }
 
-bool TrackerManager::PrcsPublicMsg(const IMessage &msg)
+bool TrackerManager::PrcsPublicMsg(const IMessage &)
 {
-    if (msg.GetMessgeType() == IMessage::SyncDeviceis)
-    {
-        const GV2TrackerMessage &ms = *(GV2TrackerMessage*)&msg;
-        if (auto ack = new Tracker2GVMessage(this, msg.GetSenderID()))
-        {
-            auto dls = new AckSyncDeviceList;
-            dls->set_seqno(((SyncDeviceList*)ms.GetProtobuf())->seqno());
-            dls->set_result(1);
-            for (auto itr = m_objects.begin(); itr!=m_objects.end(); ++itr)
-            {
-                const string &id = itr->first;
-                auto tracker = (ObjectTracker *)itr->second;
-                if (tracker && tracker->IsConnect())
-                    dls->add_id(id);
-            }
-            ack->AttachProto(dls);
-            SendMsg(ack);
-        }
-    }
     return true;
 }
 

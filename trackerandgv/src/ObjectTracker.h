@@ -16,6 +16,7 @@ namespace das {
         class QueryParameters;
         class RequestTrackerIdentityAuthentication;
         class Request3rdIdentityAuthentication;
+        class PostHeartBeat;
     }
 }
 
@@ -60,6 +61,7 @@ private:
     void _prcsAckQueryParameters(das::proto::AckQueryParameters *msg);
     void _prcsAckConfigurParameters(das::proto::AckConfigurParameters *msg);
     void _prcsProgramUpgrade(das::proto::RequestProgramUpgrade *msg);
+    void _prcsHeartBeat(const das::proto::PostHeartBeat &msg);
     int _checkPos(double lat, double lon, double alt);
     void _checkFile();
     void _ackPartParameters(const std::string &gv, const das::proto::QueryParameters &qp);
@@ -70,6 +72,7 @@ private:
     double                          m_lon;
     FILE*                           m_posRecord;
     int64_t                         m_tmLast;
+    int64_t                         m_tmPos;
     int                             m_statGX;
     std::string                     m_strFile;
 };

@@ -88,6 +88,14 @@ void TestDlg::timerEvent(QTimerEvent *e)
     {
         l->CheckSndData();
     }
+    for (AbsLink *l : m_3rds)
+    {
+        l->CheckSndData();
+    }
+    for (AbsLink *l : m_trackers)
+    {
+        l->CheckSndData();
+    }
 }
 
 LinkManager *TestDlg::getPropertyMgr()
@@ -188,7 +196,7 @@ void TestDlg::connectUav(const QString &uav)
 
 void TestDlg::connectTrackers()
 {
-    QFile f("trackers.txt");
+    QFile f("Ztrackers.txt");
     if (!f.open(QIODevice::ReadOnly))
         return;
 
@@ -214,7 +222,7 @@ void TestDlg::connectTrackers()
 
 void TestDlg::connect3rds()
 {
-    QFile f("3rd.txt");
+    QFile f("Z3rd.txt");
     if (!f.open(QIODevice::ReadOnly))
         return;
 

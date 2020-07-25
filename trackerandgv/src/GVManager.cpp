@@ -26,6 +26,11 @@ GVManager::~GVManager()
 {
 }
 
+const StringList &GVManager::OnLineTrackers() const
+{
+    return m_trackers;
+}
+
 string GVManager::CatString(const string &s1, const string &s2)
 {
     return s1 < s2 ? s1 + ":" + s2 : s2 + ":" + s1;
@@ -54,8 +59,13 @@ bool GVManager::PrcsPublicMsg(const IMessage &ms)
     switch (ms.GetMessgeType())
     {
     case IMessage::PushUavSndInfo:
+        return false;
     case ObjectSignal::S_Login:
+        m_trackers.push_back(ms.GetSenderID());
+        return false;
     case ObjectSignal::S_Logout:
+        m_trackers.remove(ms.GetSenderID());
+        return false;
     case IMessage::ControlUser:
         return false;
     default:

@@ -11,6 +11,7 @@
 #include "IMutex.h"
 #include "Lock.h"
 #include "ProtoMsg.h"
+#include "TrackerManager.h"
 
 using namespace std;
 using namespace das::proto;
@@ -18,6 +19,21 @@ using namespace das::proto;
 #define GXHost "101.201.234.242"
 #define GXPort 8297
 static const string sTrackerFlag = "VIGAT:";
+
+google::protobuf::Message *GenLoginReq(const string &id, int seq)
+{
+    if (TrackerManager::toIntID(id))
+    {
+        static RequestTrackerIdentityAuthentication req;
+        req.set_seqno(seq);
+        req.set_trackerid(id);
+        return &req;
+    }
+    static RequestUavIdentityAuthentication reqUav;
+    reqUav.set_seqno(seq);
+    reqUav.set_uavid(id);
+    return &reqUav;
+}
 
 class GXThread : public Thread
 {
@@ -320,14 +336,12 @@ void GXManager::sendPositionInfo()
 
 bool GXManager::sendUavLogin(const std::string &id)
 {
-    RequestTrackerIdentityAuthentication req;
-    req.set_seqno(m_seq++);
-    req.set_trackerid(id);
+    auto req = GenLoginReq(id, m_seq++);
     for (auto sock : m_sockets)
     {
         if (sock->IsConnect())
         {
-            if (ObjectAbsPB::SendProtoBuffTo(sock, req))
+            if (ObjectAbsPB::SendProtoBuffTo(sock, *req))
                 return true;
         }
     }

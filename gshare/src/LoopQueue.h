@@ -67,7 +67,8 @@ class LoopQueue
 {
     typedef NodeItem<EC> QueNode;
 public:
-    LoopQueue() : m_header(NULL), m_push(NULL), m_pop(NULL), m_count(0), m_nEmpty(0)
+    LoopQueue() : m_push(new QueNode(EC())), m_header(m_push)
+        , m_pop(m_push), m_count(0), m_nEmpty(0)
     {
     }
     ~LoopQueue()
@@ -83,32 +84,28 @@ public:
     bool Push(const EC &val, uint32_t max=20)
     {
         bool ret = setNext(val);
-        if (!m_pop)
-            m_pop = m_push;
-        if (!m_header)
-            m_header = m_push;
-
         removeMore(max);
         return ret;
     }
-    EC Pop()
+    bool Pop(EC &val)
     {
-        if (m_count <= 0)
-            assert(m_pop);
-        EC ret(m_pop->GetValue());
+        if (m_pop == m_push)
+            return false;
+
+        val = m_pop->GetValue();
         m_pop = m_pop->GetNext();
         m_count--;
         m_nEmpty++;
-        return ret;
+        return true;
     }
     bool IsEmpty()const
     {
-        return m_pop==NULL || m_pop==m_push->GetNext();
+        return m_pop==NULL || m_pop == m_push;
     }
     bool IsContains(const EC &val)const
     {
         QueNode *nd = m_pop;
-        while (nd)
+        while (nd != m_push)
         {
             if (nd->GetValue() == val)
                 return true;
@@ -129,7 +126,7 @@ public:
 private:
     QueNode *takeEmpty()
     {
-        if (m_nEmpty>0 && m_header && m_header->GetNext() && m_header!=m_pop && m_header!=m_push)
+        if (m_nEmpty>0 && m_header!=m_pop && m_header->GetNext()!=m_push)
         {
             auto ret = m_header;
             m_header = m_header->GetNext();
@@ -156,29 +153,23 @@ private:
     }
     bool setNext(const EC &val)
     {
-        bool ret = false;
-        if (auto tmp = takeEmpty())
-        {
-            tmp->SetValue(val);
-            ++m_count;
-            m_push->SetNext(tmp);
-            m_push = tmp;
-            ret = true;
-        }
-        else if (auto tmp = new QueNode(val))
+        m_push->SetValue(val);
+        auto tmp = takeEmpty();
+        if (!tmp)
+            tmp = new QueNode(val);
+
+        m_push->SetNext(tmp);
+        if (tmp)
         {
             ++m_count;
-            if (m_push)
-                m_push->SetNext(tmp);
             m_push = tmp;
-            ret = true;
         }
 
-        return ret;
+        return tmp!=NULL;
     }
 private:
-    QueNode             *m_header;
     QueNode             *m_push;
+    QueNode             *m_header;
     QueNode             *m_pop;
     volatile int32_t    m_count;
     volatile int32_t    m_nEmpty;

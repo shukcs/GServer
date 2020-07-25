@@ -39,6 +39,22 @@ UavLink::~UavLink()
 {
 }
 
+GpsInformation *UavLink::GenGps(double lat, double lon, double alt)
+{
+    if (auto gps = new GpsInformation())
+    {
+        gps->set_latitude(lat*1e7);
+        gps->set_longitude(lon*1e7);
+        gps->set_altitude(alt*1000);
+        for (int i=0; i<3; ++i)
+        {
+            gps->add_velocity(0);
+        }
+        return gps;
+    }
+    return NULL;
+}
+
 void UavLink::parse(const QString &name, const QByteArray &a)
 {
     if (name == d_p_ClassName(AckUavIdentityAuthentication))
@@ -116,12 +132,9 @@ void UavLink::_posInfo()
     {
         info->set_uavid(m_id.toStdString());
         info->set_timestamp(QDateTime::currentMSecsSinceEpoch());
-        if (auto gps = new GpsInformation())
+        if (auto gps = GenGps(28.243140, 112.992856, 10))
         {
-            gps->set_altitude(10000);
-            gps->set_latitude(28.243140*1e7);
-            gps->set_longitude(112.992856*1e7);
-            for (int i = 0; i<7; ++i)
+            for (int i = 3; i<7; ++i)
             {
                 gps->add_velocity(sAdVal.tmp[i]);
             }

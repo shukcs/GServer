@@ -50,9 +50,10 @@ public:
 protected:
     void ReleasePrcsdMsg()
     {
-        while (!m_lsMsgRelease.IsEmpty())
+        IMessage *tmp = NULL;
+        while (m_lsMsgRelease.Pop(tmp))
         {
-            delete m_lsMsgRelease.Pop();
+            delete tmp;
         }
     }
     bool CheckLinks()
@@ -94,9 +95,9 @@ protected:
     }
     void ProcessAddLinks()
     {
-        while (!m_linksAdd.IsEmpty())
+        ILink *l = NULL;
+        while (m_linksAdd.Pop(l))
         {
-            ILink *l = m_linksAdd.Pop();
             if (!l || l->GetThread())
                 continue;
 
@@ -174,12 +175,11 @@ void ILink::OnLogined(bool suc, ISocket *s)
         s = m_sock;
 
     m_bLogined = suc;
-    if (!suc && s)
-        s->Close();
-
     IObject *o = GetParObject();
     if (s && o)
         o->GetManager()->Log(0, o->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), suc ? "logined" : "login fail");
+    if (!suc)
+        CloseLink();
 }
 
 int ILink::GetSendRemain() const
@@ -193,12 +193,11 @@ int ILink::GetSendRemain() const
 
 void ILink::OnSockClose(ISocket *s)
 {
+    Lock l(m_mtxS);
     if (m_sock == s)
     {
-        WaitSin();
         m_sock = NULL;
         OnConnected(false);
-        PostSin();
     }
 }
 
@@ -242,12 +241,11 @@ int ILink::Send(const char *buf, int len)
 
 void ILink::SetSocket(ISocket *s)
 {
+    Lock l(m_mtxS);
     if (m_sock != s)
     {
-        WaitSin();
         m_sock = s;
         OnConnected(s != NULL);
-        PostSin();
         if (s)
             s->SetHandleLink(this);
     }
@@ -531,9 +529,9 @@ void IObjectManager::Log(int err, const std::string &obj, int evT, const char *f
 
 void IObjectManager::ProcessMessage()
 {
-    while (!m_messages.IsEmpty())
+    IMessage *msg = NULL;
+    while (m_messages.Pop(msg))
     {
-        IMessage *msg = m_messages.Pop();
         if (!msg)
             continue;
 
@@ -727,9 +725,9 @@ IObjectManager *IObjectManager::MangerOfType(int type)
 
 void IObjectManager::PrcsSubcribes()
 {
-    while (!m_subcribeQue.IsEmpty())
+    SubcribeStruct *sub = NULL;
+    while (m_subcribeQue.Pop(sub))
     {
-        SubcribeStruct *sub = m_subcribeQue.Pop();
         if (sub->m_bSubcribe)
         {
             StringList &ls = m_subcribes[sub->m_sender][sub->m_msgType];

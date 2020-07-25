@@ -20,7 +20,7 @@ using namespace SOCKETS_NAMESPACE;
 //ObjectTracker
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectTracker::ObjectTracker(const string &id, const string &sim) : ObjectAbsPB(id), m_strSim(sim),
-m_lat(200), m_lon(0), m_posRecord(NULL), m_tmLast(-1), m_statGX(0)
+m_lat(200), m_lon(0), m_posRecord(NULL), m_tmLast(-1), m_tmPos(-1), m_statGX(0)
 {
     SetBuffSize(1024 * 2);
     string name = id;
@@ -96,6 +96,7 @@ ILink *ObjectTracker::GetLink()
 void ObjectTracker::FreshLogin(uint64_t ms)
 {
     m_tmLast = ms;
+    m_tmPos = ms;
 }
 
 void ObjectTracker::SetSimId(const std::string &sim)
@@ -147,6 +148,8 @@ void ObjectTracker::PrcsProtoBuff(uint64_t ms)
         _prcsAckConfigurParameters((AckConfigurParameters *)m_p->DeatachProto());
     else if (name == d_p_ClassName(RequestProgramUpgrade))
         _prcsProgramUpgrade((RequestProgramUpgrade *)m_p->GetProtoMessage());
+    else if (name == d_p_ClassName(PostHeartBeat))
+        _prcsHeartBeat(*(PostHeartBeat *)m_p->GetProtoMessage());
 }
 
 int ObjectTracker::_checkPos(double lat, double lon, double alt)
@@ -220,7 +223,6 @@ void ObjectTracker::CheckTimer(uint64_t ms, char *buf, int len)
 
 void ObjectTracker::OnConnected(bool bConnected)
 {
-    ObjectAbsPB::OnConnected(bConnected);
     if (bConnected)
         SetSocketBuffSize(WRITE_BUFFLEN);
     
@@ -267,12 +269,20 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
         return;
 
     _checkFile();
-    if ((int64_t)ms - m_tmLast > 2000 && msg->oi_size()>0)
+    if ((int64_t)ms - m_tmPos > 2000 && msg->oi_size()>0)
     {
-        if (auto poi = new PostOperationInformation())
+        const OperationInformation &oi = msg->oi(0);
+        if (m_posRecord)
         {
-            poi->set_seqno(msg->seqno());
-            const OperationInformation &oi = msg->oi(0);    
+            fprintf(m_posRecord, "%s\t", Utility::bigint2string(ms).c_str());
+            fprintf(m_posRecord, "%s\t", Utility::l2string(oi.gps().latitude()).c_str());
+            fprintf(m_posRecord, "%s\t", Utility::l2string(oi.gps().longitude()).c_str());
+            fprintf(m_posRecord, "%s\n", Utility::l2string(oi.gps().altitude()).c_str());
+        }
+        if (GXClient::St_Authed == m_statGX)
+        {
+            auto poi = new PostOperationInformation();
+            poi->set_seqno(msg->seqno()); 
             auto oiAdd = poi->add_oi();
             oiAdd->set_timestamp(ms);
             oiAdd->set_uavid(m_id);
@@ -281,14 +291,6 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
                 oiAdd->set_allocated_status(new OperationStatus(oi.status()));
             if (oi.has_params())
                 oiAdd->set_allocated_params(new OperationParams(oi.params()));
-
-            if (m_posRecord)
-            {
-                fprintf(m_posRecord, "%s\t", Utility::bigint2string(ms).c_str());
-                fprintf(m_posRecord, "%s\t", Utility::l2string(oiAdd->gps().latitude()).c_str());
-                fprintf(m_posRecord, "%s\t", Utility::l2string(oiAdd->gps().longitude()).c_str());
-                fprintf(m_posRecord, "%s\n", Utility::l2string(oiAdd->gps().altitude()).c_str());
-            }
 
             if (auto *msGx = new Tracker2GXMessage(this))
             {
@@ -299,8 +301,8 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
             {
                 delete poi;
             }
-            m_tmLast = ms;
         }
+        m_tmPos = ms;
     }
 
     if (Tracker2GVMessage *msGV = new Tracker2GVMessage(this, string()))
@@ -363,5 +365,14 @@ void ObjectTracker::_prcsProgramUpgrade(das::proto::RequestProgramUpgrade *msg)
         ack->set_length(0);
         ack->set_forced(false);
         WaitSend(ack);
+    }
+}
+
+void ObjectTracker::_prcsHeartBeat(const PostHeartBeat &msg)
+{
+    if (auto ahb = new AckHeartBeat)
+    {
+        ahb->set_seqno(msg.seqno());
+        WaitSend(ahb);
     }
 }

@@ -37,7 +37,6 @@ ObjectGV::~ObjectGV()
 
 void ObjectGV::OnConnected(bool bConnected)
 {
-    ObjectAbsPB::OnConnected(bConnected);
     if (bConnected)
         SetSocketBuffSize(WRITE_BUFFLEN);
 }
@@ -121,11 +120,8 @@ void ObjectGV::_prcsHeartBeat(PostHeartBeat *msg)
 
 void ObjectGV::_prcsSyncDevice(SyncDeviceList *ms)
 {
-    if (auto msg = new GV2TrackerMessage(this, string()))
-    {
-        msg->AttachProto(ms);
+    if (auto msg = new ObjectSignal(this, GVType(), IMessage::SyncDeviceis, GetObjectID()))
         SendMsg(msg);
-    }
 }
 
 void ObjectGV::_prcsQueryParameters(das::proto::QueryParameters *pb)
@@ -158,8 +154,8 @@ void ObjectGV::ProcessMessage(IMessage *msg)
     case IMessage::PushUavSndInfo:
         process2GsMsg(((TrackerMessage *)msg)->GetProtobuf());
         break;
-    case IMessage::SyncDeviceisRslt:
-        process2GsMsg(((TrackerMessage *)msg)->GetProtobuf());
+    case IMessage::SyncDeviceis:
+        ackSyncDeviceis();
         break;
     case ObjectSignal::S_Login:
     case ObjectSignal::S_Logout:
@@ -199,6 +195,31 @@ void ObjectGV::process2GsMsg(const google::protobuf::Message *msg)
         ms->CopyFrom(*msg);
         WaitSend(ms);
     }
+}
+
+void ObjectGV::ackSyncDeviceis()
+{
+    auto mgr = (GVManager *)GetManager();
+    AckSyncDeviceList ack;
+    ack.set_seqno(m_seq);
+    ack.set_result(1);
+    int i = 0;
+
+    for (const string &itr : mgr->OnLineTrackers())
+    {
+        if (++i < 100)
+        {
+            ack.add_id(itr);
+            continue;
+        }
+        CopyAndSend(ack);
+        ack.clear_id();
+        i = 0;
+    }
+    if (ack.id_size() > 0)
+        CopyAndSend(ack);
+
+    m_seq = -1;
 }
 
 void ObjectGV::processEvent(const IMessage &msg, int tp)

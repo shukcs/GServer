@@ -167,9 +167,9 @@ void GSocketManager::InitThread(int nThread)
 
 void GSocketManager::PrcsAddSockets(int64_t sec)
 {
-    while (!m_socketsAdd.IsEmpty())
+    ISocket *s = NULL;
+    while (m_socketsAdd.Pop(s))
     {
-        ISocket *s = m_socketsAdd.Pop();
         int handle = s->GetSocketHandle();
         ISocket::SocketStat st = s->GetSocketStat();
         switch (st)
@@ -196,18 +196,19 @@ void GSocketManager::PrcsAddSockets(int64_t sec)
 
 void GSocketManager::PrcsDestroySockets()
 {
-    while (!m_socketsRemove.IsEmpty())
+    ISocket *s;
+    while (m_socketsRemove.Pop(s))
     {
-        delete m_socketsRemove.Pop();
+        delete s;
     }
 }
 
 bool GSocketManager::PrcsSockets()
 {
     bool ret = false;
-    while (!m_socketsPrcs.IsEmpty())
+    int fd;
+    while (m_socketsPrcs.Pop(fd))
     {
-        int fd = m_socketsPrcs.Pop();
         map<int, ISocket*>::iterator itr = m_sockets.find(fd);
         if (itr != m_sockets.end())
         {

@@ -16,6 +16,7 @@ enum {
     MaxSend = 3 * 1024,
     MAXLANDRECORDS = 200,
     MAXPLANRECORDS = 200,
+    NODATARELEASETM = 600000
 };
 
 using namespace das::proto;
@@ -225,7 +226,6 @@ void ObjectGS::PrcsProtoBuff(uint64_t ms)
     if (!m_p)
         return;
 
-    m_tmLastInfo = ms;
     string strMsg = m_p->GetMsgName();
     if (strMsg == d_p_ClassName(RequestGSIdentityAuthentication))
         _prcsLogin((RequestGSIdentityAuthentication*)m_p->GetProtoMessage());
@@ -269,6 +269,9 @@ void ObjectGS::PrcsProtoBuff(uint64_t ms)
         _prcsReqMissonsAcreage(*(RequestUavMissionAcreage*)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(RequestMissionSuspend))
         _prcsReqSuspend(*(RequestMissionSuspend*)m_p->GetProtoMessage());
+
+    if (m_stInit == IObject::Initialed)
+        m_tmLastInfo = ms;
 }
 
 void ObjectGS::processGs2Gs(const Message &msg, int tp)
@@ -436,10 +439,7 @@ void ObjectGS::processGSInfo(const DBMessage &msg)
     m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : InitialFail;
     string pswd = msg.GetRead("pswd").ToString();
     m_auth = msg.GetRead("auth").ToInt32();
-    bool bLogin = pswd == m_pswd;
-    if (!bLogin)
-        Release();
-
+    bool bLogin = pswd == m_pswd && !pswd.empty();
     OnLogined(bLogin);
     if (auto ack = new AckGSIdentityAuthentication)
     {
@@ -466,6 +466,8 @@ void ObjectGS::processGSInfo(const DBMessage &msg)
             SendMsg(msg);
         }
     }
+    if (Initialed != m_stInit)
+        m_tmLastInfo = Utility::msTimeTick() - NODATARELEASETM + 50;
 }
 
 void ObjectGS::processCheckGS(const DBMessage &msg)
@@ -482,7 +484,10 @@ void ObjectGS::processCheckGS(const DBMessage &msg)
         ack->set_result(bExist ? 0 : 1);
         WaitSend(ack);
         if (bExist)
-            Release();
+        {
+            CloseLink();
+            m_tmLastInfo = Utility::msTimeTick() - NODATARELEASETM + 50;
+        }
     }
 }
 

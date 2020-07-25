@@ -13,6 +13,7 @@
 #include "GXClient.h"
 
 #define WRITE_BUFFLEN  1024
+#define NODATARELEASETM  600000
 
 using namespace std;
 using namespace das::proto;
@@ -219,7 +220,7 @@ void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
     }
 
     ObjectAbsPB::CheckTimer(ms, buf, len);
-    if (ms-m_tmLastPos > 600000)
+    if (ms-m_tmLastPos > NODATARELEASETM)
     {
         Release();
     }
@@ -260,7 +261,8 @@ void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg, uint64_
     if (!msg)
         return;
 
-    m_tmLastPos = tm;
+    if (m_stInit == IObject::Initialed)
+        m_tmLastPos = tm;
     if (m_mission)
         m_mission->PrcsRcvPostOperationInfo(*msg);
 
@@ -423,8 +425,6 @@ void ObjectUav::processBaseInfo(const DBMessage &rslt)
     m_stInit = suc ? Initialed : InitialFail;
     if (suc)
         InitialUAV(rslt, *this);
-    else
-        Release();
 
     OnLogined(suc);
     if (auto ack = new AckUavIdentityAuthentication)
@@ -433,6 +433,9 @@ void ObjectUav::processBaseInfo(const DBMessage &rslt)
         ack->set_result(suc ? 1 : 0);
         WaitSend(ack);
     }
+
+    if (!suc)
+        m_tmLastPos = Utility::msTimeTick() - NODATARELEASETM + 50;
 }
 
 void ObjectUav::processGxStat(const GX2UavMessage &msg)

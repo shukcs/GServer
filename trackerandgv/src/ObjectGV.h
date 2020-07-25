@@ -51,6 +51,7 @@ protected:
     void PrcsProtoBuff(uint64_t);
 
     void process2GsMsg(const google::protobuf::Message *msg);
+    void ackSyncDeviceis();
     void processEvent(const IMessage &msg, int tp);
     void InitObject();
     void CheckTimer(uint64_t ms, char *buf, int len);
