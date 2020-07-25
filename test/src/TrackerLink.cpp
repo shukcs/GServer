@@ -93,7 +93,7 @@ void TrackerLink::_login()
 {
     RequestTrackerIdentityAuthentication req;
     req.set_seqno(++m_seq);
-    req.set_uavid(m_id.toStdString());
+    req.set_trackerid(m_id.toStdString());
     Send(req);
     m_stat = AbsLink::St_Logining;
 }
