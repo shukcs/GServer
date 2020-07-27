@@ -61,7 +61,7 @@ void TrackerLink::CheckSndData()
 
 void TrackerLink::_parseAckUavAuth(const QByteArray &a)
 {
-    AckUavIdentityAuthentication ack;
+    AckTrackerIdentityAuthentication ack;
     if (ack.ParseFromArray(a.data(), a.size()))
     {
         m_stat = ack.result() == 1 ? St_Logined : St_LoginFail;

@@ -222,6 +222,7 @@ void GSocket::OnClose()
 
     if (m_parent)
         m_parent->ReleaseSocket(this);
+    m_mgrLogin = NULL;
     m_object = NULL;
 }
 

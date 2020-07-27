@@ -435,7 +435,7 @@ void ObjectUav::processBaseInfo(const DBMessage &rslt)
     }
 
     if (!suc)
-        m_tmLastPos = Utility::msTimeTick() - NODATARELEASETM + 50;
+        Release();
 }
 
 void ObjectUav::processGxStat(const GX2UavMessage &msg)

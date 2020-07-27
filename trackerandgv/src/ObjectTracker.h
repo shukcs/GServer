@@ -71,8 +71,7 @@ private:
     double                          m_lat;
     double                          m_lon;
     FILE*                           m_posRecord;
-    int64_t                         m_tmLast;
-    int64_t                         m_tmPos;
+    uint64_t                        m_tmPos;
     int                             m_statGX;
     std::string                     m_strFile;
 };

@@ -20,7 +20,7 @@ using namespace SOCKETS_NAMESPACE;
 //ObjectTracker
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectTracker::ObjectTracker(const string &id, const string &sim) : ObjectAbsPB(id), m_strSim(sim),
-m_lat(200), m_lon(0), m_posRecord(NULL), m_tmLast(-1), m_tmPos(-1), m_statGX(0)
+m_lat(200), m_lon(0), m_posRecord(NULL), m_tmPos(-1), m_statGX(0)
 {
     SetBuffSize(1024 * 2);
     string name = id;
@@ -95,7 +95,6 @@ ILink *ObjectTracker::GetLink()
 
 void ObjectTracker::FreshLogin(uint64_t ms)
 {
-    m_tmLast = ms;
     m_tmPos = ms;
 }
 
@@ -132,7 +131,6 @@ void ObjectTracker::PrcsProtoBuff(uint64_t ms)
     if (!m_p)
         return;
 
-    m_tmLast = ms;
     const string &name = m_p->GetMsgName();
     if (name == d_p_ClassName(RequestTrackerIdentityAuthentication))
         _respondLogin(*(RequestTrackerIdentityAuthentication*)m_p->GetProtoMessage());
@@ -214,7 +212,7 @@ void ObjectTracker::CheckTimer(uint64_t ms, char *buf, int len)
             SendMsg(mss);
     }
     ObjectAbsPB::CheckTimer(ms, buf, len);
-    ms -= m_tmLast;
+    ms -= m_tmPos;
     if (ms > 600000)
         Release();
     else if (ms>10000)//³¬Ê±¹Ø±Õ
@@ -268,10 +266,10 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
     if (!msg)
         return;
 
-    _checkFile();
     if ((int64_t)ms - m_tmPos > 2000 && msg->oi_size()>0)
     {
         const OperationInformation &oi = msg->oi(0);
+        _checkFile();
         if (m_posRecord)
         {
             fprintf(m_posRecord, "%s\t", Utility::bigint2string(ms).c_str());

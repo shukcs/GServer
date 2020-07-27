@@ -16,7 +16,6 @@ enum {
     MaxSend = 3 * 1024,
     MAXLANDRECORDS = 200,
     MAXPLANRECORDS = 200,
-    NODATARELEASETM = 600000
 };
 
 using namespace das::proto;
@@ -467,7 +466,7 @@ void ObjectGS::processGSInfo(const DBMessage &msg)
         }
     }
     if (Initialed != m_stInit)
-        m_tmLastInfo = Utility::msTimeTick() - NODATARELEASETM + 50;
+        Release();
 }
 
 void ObjectGS::processCheckGS(const DBMessage &msg)
@@ -484,10 +483,7 @@ void ObjectGS::processCheckGS(const DBMessage &msg)
         ack->set_result(bExist ? 0 : 1);
         WaitSend(ack);
         if (bExist)
-        {
-            CloseLink();
-            m_tmLastInfo = Utility::msTimeTick() - NODATARELEASETM + 50;
-        }
+            Release();
     }
 }
 

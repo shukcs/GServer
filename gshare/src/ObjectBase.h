@@ -29,6 +29,12 @@ typedef LoopQueue<IMessage*> MessageQue;
 
 class ILink
 {
+    enum LinkStat {
+        Stat_Link = 0,
+        Stat_Close = 1,
+        Stat_Release = Stat_Close << 1,
+        Stat_CloseAndRealese
+    };
 public:
     SHARED_DECL ILink();
     SHARED_DECL virtual ~ILink();
@@ -51,7 +57,6 @@ public:
     BussinessThread *GetThread()const;
     void processSocket(ISocket &s, BussinessThread &t);
 protected:
-    SHARED_DECL virtual void SetSocket(ISocket *s);
     SHARED_DECL void SetSocketBuffSize(uint16_t sz);
     SHARED_DECL void SetBuffSize(uint16_t sz);
     SHARED_DECL bool IsConnect()const;
@@ -65,6 +70,8 @@ protected:
     SHARED_DECL void PostSin();
     SHARED_DECL bool IsLinkThread()const;
     virtual void FreshLogin(uint64_t ms) = 0;
+protected:
+    void SetSocket(ISocket *s);
 private:
     ISocket                 *m_sock;
     LoopQueBuff             *m_recv;
@@ -72,7 +79,7 @@ private:
     BussinessThread         *m_thread;
     bool                    m_bLogined;
     bool                    m_bChanged;
-    bool                    m_bRelease;
+    uint32_t                m_Stat;
 };
 
 class IObject

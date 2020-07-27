@@ -149,13 +149,13 @@ public:
 //SocketHandle
 ///////////////////////////////////////////////////////////////////////////////////////
 ILink::ILink() : m_sock(NULL), m_recv(NULL), m_mtxS(NULL), m_thread(NULL)
-, m_bLogined(false), m_bChanged(false), m_bRelease(false)
+, m_bLogined(false), m_bChanged(false), m_Stat(Stat_Link)
 {
 }
 
 ILink::~ILink()
 {
-    CloseLink();
+    Release();
     delete m_recv;
 }
 
@@ -196,6 +196,7 @@ void ILink::OnSockClose(ISocket *s)
     Lock l(m_mtxS);
     if (m_sock == s)
     {
+        m_Stat |= Stat_Close;
         m_sock = NULL;
         OnConnected(false);
     }
@@ -321,7 +322,7 @@ void ILink::processSocket(ISocket &s, BussinessThread &t)
     {
         SetSocket(&s);
         FreshLogin(Utility::msTimeTick());
-        m_bRelease = false;
+        m_Stat = Stat_Link;
         t.m_linksAdd.Push(this);
     }
     else if (m_sock != &s)
@@ -353,12 +354,13 @@ bool ILink::PrcsBussiness(uint64_t ms, BussinessThread &t)
 
 void ILink::Release()
 {
-    m_bRelease = true;
+    CloseLink();
+    m_Stat |= Stat_Release;
 }
 
 bool ILink::IsRealse()
 {
-    return m_bRelease;
+    return Stat_CloseAndRealese == (m_Stat&Stat_CloseAndRealese);
 }
 
 bool ILink::WaitSin()
