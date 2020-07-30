@@ -100,7 +100,7 @@ public:
     }
     bool IsEmpty()const
     {
-        return m_pop==NULL || m_pop == m_push;
+        return m_pop==NULL || m_pop==m_push;
     }
     bool IsContains(const EC &val)const
     {
@@ -117,11 +117,6 @@ public:
     int ElementCount()const
     {
         return m_count;
-    }
-    const EC &Last()const
-    {
-        assert(m_push);
-        return m_push->GetValue();
     }
 private:
     QueNode *takeEmpty()

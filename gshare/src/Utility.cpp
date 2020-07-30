@@ -520,6 +520,19 @@ string Utility::dateString(int64_t ms, const string &fmt/*="y-M-d h:m:s.z"*/)
     return strData;
 }
 
+int64_t Utility::timeStamp(int y, int m, int d, int h, int nM, int s, int ms)
+{
+    tm tmLac = { 0 };
+    tmLac.tm_year = y - 1900;
+    tmLac.tm_mon = m - 1;
+    tmLac.tm_mday = d;
+    tmLac.tm_hour = h;
+    tmLac.tm_min = nM;
+    tmLac.tm_sec = s;
+    int64_t ret = mktime(&tmLac);
+    return ret * 1000 + ms;
+}
+
 bool Utility::isipv4(const string& str)
 {
 	int dots = 0;

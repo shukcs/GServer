@@ -917,9 +917,9 @@ void ObjectGS::CheckTimer(uint64_t ms, char *buf, int len)
 {
     ObjectAbsPB::CheckTimer(ms, buf, len);
     ms -= m_tmLastInfo;
-    if (ms > 600000)
+    if (ms > 600000 || (!m_check.empty() && ms > 60000))
         Release();
-    else if (ms > 60000 || (m_check.empty() && ms > 10000))//超时关闭
+    else if (m_check.empty() && ms > 10000)//超时关闭
         CloseLink();
 }
 

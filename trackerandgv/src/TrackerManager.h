@@ -36,7 +36,7 @@ public:
     bool CanFlight(double lat, double lon, double alt);
 public:
     static uint32_t toIntID(const std::string &uavid);
-    static bool IsValid3rdID(const std::string &id, const std::string &key);
+    static bool IsValid3rdID(const std::string &id);
 protected:
     int GetObjectType()const;
     IObject *PrcsProtoBuff(ISocket *s);

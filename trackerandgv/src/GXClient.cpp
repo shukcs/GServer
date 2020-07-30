@@ -205,8 +205,12 @@ bool GXManager::IsReceiveData() const
 
 void GXManager::ProcessLogin(const std::string &id, bool bLogin)
 {
-    if (id.empty())
+    if (id.empty() || TrackerManager::IsValid3rdID(id))
+    {
+        prepareSocket(NULL);
+        SendMsg(new GX2TrackerMessage(id, bLogin ? GXClient::St_Authed:GXClient::St_Unknow));
         return;
+    }
 
     auto itr = m_objects.find(id);
     if (bLogin)

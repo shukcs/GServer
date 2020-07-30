@@ -79,7 +79,7 @@ void Uav3rdLink::_login()
 {
     Request3rdIdentityAuthentication req;
     req.set_seqno(++m_seq);
-    req.set_identification(m_id.toStdString());
+    req.set_identification("YIFEI:SERVER");
     req.set_secretkey("123");
     Send(req);
     m_stat = AbsLink::St_Logining;

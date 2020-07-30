@@ -41,9 +41,9 @@ uint32_t TrackerManager::toIntID(const std::string &uavid)
     return (uint32_t)Utility::str2int(strLs.back(), 16);
 }
 
-bool TrackerManager::IsValid3rdID(const std::string &id, const std::string &)
+bool TrackerManager::IsValid3rdID(const std::string &id)
 {
-    return !id.empty();
+    return id == "YIFEI:SERVER";
 }
 
 int TrackerManager::GetObjectType() const
@@ -143,7 +143,7 @@ IObject *TrackerManager::_check3rdLogin(ISocket *s, const Request3rdIdentityAuth
 {
     string uavid = Utility::Upper(uia.identification());
     string sim = uia.secretkey();
-    if (!IsValid3rdID(uavid, sim))
+    if (!IsValid3rdID(uavid))
         return NULL;
 
     ObjectTracker *ret = (ObjectTracker *)GetObjectByID(uavid);

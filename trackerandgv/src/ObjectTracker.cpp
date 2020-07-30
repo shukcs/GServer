@@ -16,6 +16,8 @@ using namespace ::google::protobuf;
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
 #endif
+
+static uint64_t sValidTm = Utility::timeStamp(2015);
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //ObjectTracker
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -266,41 +268,36 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uin
     if (!msg)
         return;
 
-    if ((int64_t)ms - m_tmPos > 2000 && msg->oi_size()>0)
+    for (int i = 0; (int64_t)ms - m_tmPos > 2000 && i < msg->oi_size(); ++i)
     {
-        const OperationInformation &oi = msg->oi(0);
+        auto oi = msg->mutable_oi(i);
         _checkFile();
+        if (!oi)
+            continue;
+        if (oi->timestamp() < sValidTm)
+            oi->set_timestamp(ms);
         if (m_posRecord)
         {
+            fprintf(m_posRecord, "%s\t", oi->uavid().c_str());
             fprintf(m_posRecord, "%s\t", Utility::bigint2string(ms).c_str());
-            fprintf(m_posRecord, "%s\t", Utility::l2string(oi.gps().latitude()).c_str());
-            fprintf(m_posRecord, "%s\t", Utility::l2string(oi.gps().longitude()).c_str());
-            fprintf(m_posRecord, "%s\n", Utility::l2string(oi.gps().altitude()).c_str());
-        }
-        if (GXClient::St_Authed == m_statGX)
-        {
-            auto poi = new PostOperationInformation();
-            poi->set_seqno(msg->seqno()); 
-            auto oiAdd = poi->add_oi();
-            oiAdd->set_timestamp(ms);
-            oiAdd->set_uavid(m_id);
-            oiAdd->set_allocated_gps(new GpsInformation(oi.gps()));
-            if (oi.has_status())
-                oiAdd->set_allocated_status(new OperationStatus(oi.status()));
-            if (oi.has_params())
-                oiAdd->set_allocated_params(new OperationParams(oi.params()));
-
-            if (auto *msGx = new Tracker2GXMessage(this))
-            {
-                msGx->AttachProto(poi);
-                SendMsg(msGx);
-            }
-            else
-            {
-                delete poi;
-            }
-        }
+            fprintf(m_posRecord, "%s\t", Utility::l2string(oi->gps().latitude()).c_str());
+            fprintf(m_posRecord, "%s\t", Utility::l2string(oi->gps().longitude()).c_str());
+            fprintf(m_posRecord, "%s\n", Utility::l2string(oi->gps().altitude()).c_str());
+        }     
         m_tmPos = ms;
+    }
+    if (GXClient::St_Authed == m_statGX)
+    {
+        auto poi = new PostOperationInformation(*msg);
+        if (auto *msGx = new Tracker2GXMessage(this))
+        {
+            msGx->AttachProto(poi);
+            SendMsg(msGx);
+        }
+        else
+        {
+            delete poi;
+        }
     }
 
     if (Tracker2GVMessage *msGV = new Tracker2GVMessage(this, string()))
