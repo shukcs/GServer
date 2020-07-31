@@ -655,7 +655,7 @@ void ObjectGS::processGSInsert(const DBMessage &msg)
     if (!bSuc)
         m_stInit = IObject::Uninitial;
 
-    m_auth = 0xff;
+    m_auth = 0x100;
     m_tmLastInfo = Utility::msTimeTick();
 }
 
