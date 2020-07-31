@@ -127,11 +127,10 @@ ISocketManager *GXManager::GetSocketManager() const
 
 void GXManager::PushEvent(const std::string &id, GXClient::GX_Stat st)
 {
-    if (m_mtxBs)
+    if (WaitMgrSin())
     {
-        m_mtxBs->Lock();
         m_events.push_back(GXEvent(id, st));
-        m_mtxBs->Unlock();
+        PostMgrSin();
     }
 }
 
@@ -244,31 +243,34 @@ void GXManager::ProcessPostInfo(const Tracker2GXMessage &msg)
 
 void GXManager::ProcessEvents()
 {
-    Lock l(m_mtxBs);
-    for (auto itr =m_events.begin(); itr!=m_events.end();)
+    if (WaitMgrSin())
     {
-        if (itr->first.empty() && itr->second==GXClient::St_Connect)
+        for (auto itr = m_events.begin(); itr != m_events.end();)
         {
-            uavLoginGx();
-        }
-        else
-        {
-            auto itrO = m_objects.find(itr->first);
-            if (itrO != m_objects.end())
+            if (itr->first.empty() && itr->second == GXClient::St_Connect)
             {
-                auto o = itrO->second;
-                o->SetStat(itr->second);
-                if (o->IsChanged())
+                uavLoginGx();
+            }
+            else
+            {
+                auto itrO = m_objects.find(itr->first);
+                if (itrO != m_objects.end())
                 {
-                    o->ClearChanged();
-                    SendMsg(new GX2TrackerMessage(o->GetID(), o->GetStat()));
+                    auto o = itrO->second;
+                    o->SetStat(itr->second);
+                    if (o->IsChanged())
+                    {
+                        o->ClearChanged();
+                        SendMsg(new GX2TrackerMessage(o->GetID(), o->GetStat()));
+                    }
                 }
             }
+            itr = m_events.erase(itr);
         }
-        itr = m_events.erase(itr);
+        sendPositionInfo();
+        checkSocket(Utility::msTimeTick());
+        PostMgrSin();
     }
-    sendPositionInfo();
-    checkSocket(Utility::msTimeTick());
 }
 
 void GXManager::_prcsLoginAck(AckUavIdentityAuthentication *ack)

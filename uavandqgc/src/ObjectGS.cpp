@@ -42,8 +42,7 @@ void ObjectGS::OnConnected(bool bConnected)
 {
     if (bConnected)
         SetSocketBuffSize(WRITE_BUFFLEN);
-
-    if (!bConnected && !m_check.empty())
+    else if (!m_check.empty())
         Release();
 }
 
@@ -653,9 +652,11 @@ void ObjectGS::processGSInsert(const DBMessage &msg)
         ack->set_result(bSuc ? 1 : -1);
         WaitSend(ack);
     }
-    m_check.clear();
     if (!bSuc)
         m_stInit = IObject::Uninitial;
+
+    m_auth = 0xff;
+    m_tmLastInfo = Utility::msTimeTick();
 }
 
 void ObjectGS::processMissions(const DBMessage &msg)
@@ -917,10 +918,12 @@ void ObjectGS::CheckTimer(uint64_t ms, char *buf, int len)
 {
     ObjectAbsPB::CheckTimer(ms, buf, len);
     ms -= m_tmLastInfo;
-    if (ms > 600000 || (!m_check.empty() && ms > 60000))
+    if(m_auth > Type_ALL && ms>50)
+        Release();
+    else if (ms > 600000 || (!m_check.empty() && ms > 60000))
         Release();
     else if (m_check.empty() && ms > 10000)//³¬Ê±¹Ø±Õ
-        CloseLink();
+        CloseLink();   
 }
 
 bool ObjectGS::IsAllowRelease() const
@@ -1119,10 +1122,8 @@ int ObjectGS::_addDatabaseUser(const std::string &user, const std::string &pswd,
         ret = mgr->AddDatabaseUser(user, pswd, this, seq) > 0 ? 2 : -1;
 
     if (ret > 0)
-    {
-        m_check.clear();
         m_pswd = pswd;
-    }
+
     return ret;
 }
 

@@ -197,6 +197,8 @@ protected:
     SHARED_DECL virtual bool IsHasReuest(const char *buf, int len)const;
     SHARED_DECL virtual void ProcessEvents();
     SHARED_DECL bool Exist(IObject *obj)const;
+    SHARED_DECL bool WaitMgrSin();
+    SHARED_DECL void PostMgrSin();
     const StringList &getMessageSubcribes(IMessage *msg);
     void PrcsSubcribes();
     void SubcribesProcess(IMessage *msg);
@@ -204,7 +206,7 @@ protected:
     BussinessThread *GetPropertyThread()const;
 protected:
     virtual IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len) = 0;
-protected:
+private:
     friend class ObjectManagers;
     ILog                            *m_log;
     IMutex                          *m_mtxBs;

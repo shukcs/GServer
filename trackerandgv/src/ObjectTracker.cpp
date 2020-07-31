@@ -9,7 +9,7 @@
 #include "ObjectGV.h"
 #include "GXClient.h"
 
-#define WRITE_BUFFLEN 1024
+#define WRITE_BUFFLEN 2048
 using namespace std;
 using namespace das::proto;
 using namespace ::google::protobuf;

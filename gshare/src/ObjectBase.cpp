@@ -193,13 +193,13 @@ int ILink::GetSendRemain() const
 
 void ILink::OnSockClose(ISocket *s)
 {
-    Lock l(m_mtxS);
-    if (m_sock == s)
+    if (m_sock==s && WaitSin())
     {
-        m_Stat |= Stat_Close;
         m_sock = NULL;
-        OnConnected(false);
+        PostSin();
     }
+    m_Stat |= Stat_Close;
+    OnConnected(false);
 }
 
 bool ILink::IsConnect() const
@@ -366,11 +366,8 @@ bool ILink::IsRealse()
 bool ILink::WaitSin()
 {
     if (m_mtxS)
-    {
         m_mtxS->Lock();
-        return true;
-    }
-    return false;
+    return m_mtxS != NULL;
 }
 
 void ILink::PostSin()
@@ -517,6 +514,19 @@ bool IObjectManager::Exist(IObject *obj) const
         return false;
 
     return m_objects.find(obj->GetObjectID()) != m_objects.end();
+}
+
+bool IObjectManager::WaitMgrSin()
+{
+    if (m_mtxBs)
+        m_mtxBs->Lock();
+    return m_mtxBs != NULL;
+}
+
+void IObjectManager::PostMgrSin()
+{
+    if (m_mtxBs)
+        m_mtxBs->Unlock();
 }
 
 void IObjectManager::Log(int err, const std::string &obj, int evT, const char *fmt, ...)
