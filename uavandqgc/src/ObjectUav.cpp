@@ -24,8 +24,9 @@ using namespace SOCKETS_NAMESPACE;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-ObjectUav::ObjectUav(const string &id, const string &sim) : ObjectAbsPB(id), m_mission(NULL), m_strSim(sim)
-, m_bBind(false), m_lat(200), m_lon(0), m_tmLastBind(0), m_tmLastPos(0), m_tmValidLast(-1), m_bSendGx(false)
+ObjectUav::ObjectUav(const string &id, const string &sim) : ObjectAbsPB(id), m_mission(new UavMission(this))
+, m_strSim(sim), m_bBind(false), m_lat(200), m_lon(0), m_tmLastBind(0), m_tmLastPos(0), m_tmValidLast(-1)
+, m_bSendGx(false)
 {
     SetBuffSize(1024 * 2);
 }
@@ -116,6 +117,18 @@ void ObjectUav::SetSimId(const std::string &sim)
     m_strSim = sim;
 }
 
+void ObjectUav::BinderProcess(const google::protobuf::Message &pb)
+{
+    if (m_bBind && !m_lastBinder.empty())
+    {
+        if (Uav2GSMessage *ms = new Uav2GSMessage(this, m_lastBinder))
+        {
+            ms->SetPBContent(pb);
+            SendMsg(ms);
+        }
+    }
+}
+
 int ObjectUav::UAVType()
 {
     return IObject::Plant;
@@ -176,12 +189,17 @@ IMessage *ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectU
 
 void ObjectUav::ProcessMessage(IMessage *msg)
 {
+    if (!msg)
+        return;
+
     switch (msg->GetMessgeType())
     {
     case IMessage::BindUav:
         processBind((RequestBindUav*)msg->GetContent(), *(GS2UavMessage*)msg); break;
     case IMessage::ControlDevice:
         processControl2Uav((PostControl2Uav*)msg->GetContent()); break;
+    case IMessage::ControlDevice2:
+        processRequestPost((Message*)msg->GetContent(), msg->GetSenderID()); break;
     case IMessage::PostOR:
         processPostOr((PostOperationRoute*)msg->GetContent(), msg->GetSenderID()); break;
     case IMessage::DeviceQueryRslt:
@@ -205,6 +223,12 @@ void ObjectUav::PrcsProtoBuff(uint64_t tm)
         _prcsRcvPostOperationInfo((PostOperationInformation *)m_p->DeatachProto(), tm);
     else if (name == d_p_ClassName(PostStatus2GroundStation))
         _prcsRcvPost2Gs((PostStatus2GroundStation *)m_p->GetProtoMessage());
+    else if (name == d_p_ClassName(PostOperationAssist))
+        _prcsAssist((PostOperationAssist *)m_p->DeatachProto());
+    else if (name == d_p_ClassName(PostABPoint))
+        _prcsABPoint((PostABPoint *)m_p->DeatachProto());
+    else if (name == d_p_ClassName(PostOperationReturn))
+        _prcsReturn((PostOperationReturn *)m_p->DeatachProto());
     else if (name == d_p_ClassName(RequestRouteMissions))
         _prcsRcvReqMissions((RequestRouteMissions *)m_p->GetProtoMessage());
     else if (name == d_p_ClassName(RequestPositionAuthentication))
@@ -223,6 +247,8 @@ void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
     if (ms-m_tmLastPos > NODATARELEASETM)
     {
         Release();
+        if (m_mission)
+            m_mission->Clear();
     }
     else if (ms-m_tmLastPos > 6000)//超时关闭
     {
@@ -263,8 +289,6 @@ void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg, uint64_
 
     if (m_stInit == IObject::Initialed)
         m_tmLastPos = tm;
-    if (m_mission)
-        m_mission->PrcsRcvPostOperationInfo(*msg);
 
     if (auto ms = new Uav2GSMessage(this, m_bBind?m_lastBinder:string()))
     {
@@ -285,17 +309,71 @@ void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg, uint64_
 
 void ObjectUav::_prcsRcvPost2Gs(PostStatus2GroundStation *msg)
 {
-    if (m_mission)
-        m_mission->MavLinkfilter(*msg);
-
-    if (!msg || !m_bBind || m_lastBinder.length() < 1)
+    if (!msg)
         return;
 
-    if (Uav2GSMessage *ms = new Uav2GSMessage(this, m_lastBinder))
+    if (m_mission && m_mission->MavLinkfilter(*msg))
+        return;
+
+    BinderProcess(*msg);
+}
+
+void ObjectUav::_prcsAssist(PostOperationAssist *msg)
+{
+    if (!msg)
+        return;
+
+    BinderProcess(*msg);
+    if (auto ack = new AckOperationReturn)
     {
-        ms->SetPBContent(*msg);
-        SendMsg(ms);
+        ack->set_seqno(msg->seqno());
+        ack->set_result(1);
+        WaitSend(ack);
     }
+
+    if (m_mission)
+        m_mission->PrcsPostAssists(msg);
+    else
+        delete msg;
+}
+
+void ObjectUav::_prcsABPoint(PostABPoint *msg)
+{
+    if (!msg)
+        return;
+
+    BinderProcess(*msg);
+    if (auto ack = new AckPostABPoint)
+    {
+        ack->set_seqno(msg->seqno());
+        ack->set_result(1);
+        WaitSend(ack);
+    }
+
+    if (m_mission)
+        m_mission->PrcsPostABPoint(msg);
+    else
+        delete msg;
+}
+
+void ObjectUav::_prcsReturn(PostOperationReturn *msg)
+{
+
+    if (!msg)
+        return;
+
+    BinderProcess(*msg);
+    if (auto ack = new AckOperationReturn)
+    {
+        ack->set_seqno(msg->seqno());
+        ack->set_result(1);
+        WaitSend(ack);
+    }
+
+    if (m_mission)
+        m_mission->PrcsPostReturn(msg);
+    else
+        delete msg;
 }
 
 void ObjectUav::_prcsRcvReqMissions(RequestRouteMissions *msg)
@@ -345,8 +423,6 @@ void ObjectUav::_prcsPosAuth(RequestPositionAuthentication *msg)
         GetManager()->Log(0, GetObjectID(), 0, "Arm!");
         ack->set_devid(GetObjectID());
         WaitSend(ack);
-        if (m_mission)
-            m_mission->ProcessArm(n==1);
     }
 }
 
@@ -392,6 +468,16 @@ void ObjectUav::processControl2Uav(PostControl2Uav *msg)
     }
     
     SendMsg(AckControl2Uav(*msg, res, this));
+}
+
+void ObjectUav::processRequestPost(Message *msg, const string &gs)
+{
+    if (!msg || !m_mission || gs.empty())
+        return;
+
+    Message *pb = UavMission::AckRequestPost(*m_mission, msg);
+    if (pb)
+        BinderProcess(*pb);
 }
 
 void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)

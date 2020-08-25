@@ -133,6 +133,15 @@ class AckPostUavProductInfos;
 class PostControl2Uav;
 class AckPostControl2Uav;
 class PostStatus2GroundStation;
+class PostOperationAssist;
+class AckOperationAssist;
+class RequestOperationAssist;
+class PostABPoint;
+class AckPostABPoint;
+class RequestABPoint;
+class PostOperationReturn;
+class AckOperationReturn;
+class RequestOperationReturn;
 
 enum GSMsgType {
   DeleteFriend = 1,
@@ -160,11 +169,12 @@ inline bool GSMsgType_Parse(
 enum SurveryPrecision {
   LOW = 1,
   MEDIUM = 2,
-  HIGH = 3
+  HIGH = 3,
+  MAYBE = 4
 };
 bool SurveryPrecision_IsValid(int value);
 const SurveryPrecision SurveryPrecision_MIN = LOW;
-const SurveryPrecision SurveryPrecision_MAX = HIGH;
+const SurveryPrecision SurveryPrecision_MAX = MAYBE;
 const int SurveryPrecision_ARRAYSIZE = SurveryPrecision_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* SurveryPrecision_descriptor();
@@ -6913,10 +6923,26 @@ class AckRequestParcelDescriptions : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 result() const;
   inline void set_result(::google::protobuf::int32 value);
 
-  // repeated .das.proto.ParcelDescription pds = 3;
+  // repeated string pdids = 3;
+  inline int pdids_size() const;
+  inline void clear_pdids();
+  static const int kPdidsFieldNumber = 3;
+  inline const ::std::string& pdids(int index) const;
+  inline ::std::string* mutable_pdids(int index);
+  inline void set_pdids(int index, const ::std::string& value);
+  inline void set_pdids(int index, const char* value);
+  inline void set_pdids(int index, const char* value, size_t size);
+  inline ::std::string* add_pdids();
+  inline void add_pdids(const ::std::string& value);
+  inline void add_pdids(const char* value);
+  inline void add_pdids(const char* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& pdids() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_pdids();
+
+  // repeated .das.proto.ParcelDescription pds = 4;
   inline int pds_size() const;
   inline void clear_pds();
-  static const int kPdsFieldNumber = 3;
+  static const int kPdsFieldNumber = 4;
   inline const ::das::proto::ParcelDescription& pds(int index) const;
   inline ::das::proto::ParcelDescription* mutable_pds(int index);
   inline ::das::proto::ParcelDescription* add_pds();
@@ -6936,10 +6962,11 @@ class AckRequestParcelDescriptions : public ::google::protobuf::Message {
 
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 result_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> pdids_;
   ::google::protobuf::RepeatedPtrField< ::das::proto::ParcelDescription > pds_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -7986,10 +8013,26 @@ class AckRequestOperationDescriptions : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 result() const;
   inline void set_result(::google::protobuf::int32 value);
 
-  // repeated .das.proto.OperationDescription ods = 3;
+  // repeated string odids = 3;
+  inline int odids_size() const;
+  inline void clear_odids();
+  static const int kOdidsFieldNumber = 3;
+  inline const ::std::string& odids(int index) const;
+  inline ::std::string* mutable_odids(int index);
+  inline void set_odids(int index, const ::std::string& value);
+  inline void set_odids(int index, const char* value);
+  inline void set_odids(int index, const char* value, size_t size);
+  inline ::std::string* add_odids();
+  inline void add_odids(const ::std::string& value);
+  inline void add_odids(const char* value);
+  inline void add_odids(const char* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& odids() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_odids();
+
+  // repeated .das.proto.OperationDescription ods = 4;
   inline int ods_size() const;
   inline void clear_ods();
-  static const int kOdsFieldNumber = 3;
+  static const int kOdsFieldNumber = 4;
   inline const ::das::proto::OperationDescription& ods(int index) const;
   inline ::das::proto::OperationDescription* mutable_ods(int index);
   inline ::das::proto::OperationDescription* add_ods();
@@ -8009,10 +8052,11 @@ class AckRequestOperationDescriptions : public ::google::protobuf::Message {
 
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 result_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> odids_;
   ::google::protobuf::RepeatedPtrField< ::das::proto::OperationDescription > ods_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -8854,17 +8898,17 @@ class UploadOperationRoutes : public ::google::protobuf::Message {
   inline ::std::string* release_uavid();
   inline void set_allocated_uavid(::std::string* uavid);
 
-  // required string userid = 3;
-  inline bool has_userid() const;
-  inline void clear_userid();
-  static const int kUseridFieldNumber = 3;
-  inline const ::std::string& userid() const;
-  inline void set_userid(const ::std::string& value);
-  inline void set_userid(const char* value);
-  inline void set_userid(const char* value, size_t size);
-  inline ::std::string* mutable_userid();
-  inline ::std::string* release_userid();
-  inline void set_allocated_userid(::std::string* userid);
+  // required string msid = 3;
+  inline bool has_msid() const;
+  inline void clear_msid();
+  static const int kMsidFieldNumber = 3;
+  inline const ::std::string& msid() const;
+  inline void set_msid(const ::std::string& value);
+  inline void set_msid(const char* value);
+  inline void set_msid(const char* value, size_t size);
+  inline ::std::string* mutable_msid();
+  inline ::std::string* release_msid();
+  inline void set_allocated_msid(::std::string* msid);
 
   // required uint64 timestamp = 4;
   inline bool has_timestamp() const;
@@ -8893,8 +8937,8 @@ class UploadOperationRoutes : public ::google::protobuf::Message {
   inline void clear_has_seqno();
   inline void set_has_uavid();
   inline void clear_has_uavid();
-  inline void set_has_userid();
-  inline void clear_has_userid();
+  inline void set_has_msid();
+  inline void clear_has_msid();
   inline void set_has_timestamp();
   inline void clear_has_timestamp();
   inline void set_has_countmission();
@@ -8905,7 +8949,7 @@ class UploadOperationRoutes : public ::google::protobuf::Message {
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* uavid_;
-  ::std::string* userid_;
+  ::std::string* msid_;
   ::google::protobuf::uint32 seqno_;
   ::google::protobuf::int32 countmission_;
   ::google::protobuf::uint64 timestamp_;
@@ -11943,6 +11987,959 @@ class PostStatus2GroundStation : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static PostStatus2GroundStation* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class PostOperationAssist : public ::google::protobuf::Message {
+ public:
+  PostOperationAssist();
+  virtual ~PostOperationAssist();
+
+  PostOperationAssist(const PostOperationAssist& from);
+
+  inline PostOperationAssist& operator=(const PostOperationAssist& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PostOperationAssist& default_instance();
+
+  void Swap(PostOperationAssist* other);
+
+  // implements Message ----------------------------------------------
+
+  PostOperationAssist* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const PostOperationAssist& from);
+  void MergeFrom(const PostOperationAssist& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string uavid = 2;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 2;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
+
+  // optional .das.proto.Coordinate enter = 3;
+  inline bool has_enter() const;
+  inline void clear_enter();
+  static const int kEnterFieldNumber = 3;
+  inline const ::das::proto::Coordinate& enter() const;
+  inline ::das::proto::Coordinate* mutable_enter();
+  inline ::das::proto::Coordinate* release_enter();
+  inline void set_allocated_enter(::das::proto::Coordinate* enter);
+
+  // optional .das.proto.Coordinate return = 4;
+  inline bool has_return_() const;
+  inline void clear_return_();
+  static const int kReturnFieldNumber = 4;
+  inline const ::das::proto::Coordinate& return_() const;
+  inline ::das::proto::Coordinate* mutable_return_();
+  inline ::das::proto::Coordinate* release_return_();
+  inline void set_allocated_return_(::das::proto::Coordinate* return_);
+
+  // @@protoc_insertion_point(class_scope:das.proto.PostOperationAssist)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
+  inline void set_has_enter();
+  inline void clear_has_enter();
+  inline void set_has_return_();
+  inline void clear_has_return_();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uavid_;
+  ::das::proto::Coordinate* enter_;
+  ::das::proto::Coordinate* return__;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static PostOperationAssist* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckOperationAssist : public ::google::protobuf::Message {
+ public:
+  AckOperationAssist();
+  virtual ~AckOperationAssist();
+
+  AckOperationAssist(const AckOperationAssist& from);
+
+  inline AckOperationAssist& operator=(const AckOperationAssist& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckOperationAssist& default_instance();
+
+  void Swap(AckOperationAssist* other);
+
+  // implements Message ----------------------------------------------
+
+  AckOperationAssist* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckOperationAssist& from);
+  void MergeFrom(const AckOperationAssist& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required int32 result = 2;
+  inline bool has_result() const;
+  inline void clear_result();
+  static const int kResultFieldNumber = 2;
+  inline ::google::protobuf::int32 result() const;
+  inline void set_result(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckOperationAssist)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_result();
+  inline void clear_has_result();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 result_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckOperationAssist* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class RequestOperationAssist : public ::google::protobuf::Message {
+ public:
+  RequestOperationAssist();
+  virtual ~RequestOperationAssist();
+
+  RequestOperationAssist(const RequestOperationAssist& from);
+
+  inline RequestOperationAssist& operator=(const RequestOperationAssist& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RequestOperationAssist& default_instance();
+
+  void Swap(RequestOperationAssist* other);
+
+  // implements Message ----------------------------------------------
+
+  RequestOperationAssist* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RequestOperationAssist& from);
+  void MergeFrom(const RequestOperationAssist& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string uavid = 2;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 2;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
+
+  // @@protoc_insertion_point(class_scope:das.proto.RequestOperationAssist)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uavid_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static RequestOperationAssist* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class PostABPoint : public ::google::protobuf::Message {
+ public:
+  PostABPoint();
+  virtual ~PostABPoint();
+
+  PostABPoint(const PostABPoint& from);
+
+  inline PostABPoint& operator=(const PostABPoint& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PostABPoint& default_instance();
+
+  void Swap(PostABPoint* other);
+
+  // implements Message ----------------------------------------------
+
+  PostABPoint* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const PostABPoint& from);
+  void MergeFrom(const PostABPoint& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string uavid = 2;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 2;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
+
+  // optional .das.proto.Coordinate pointA = 3;
+  inline bool has_pointa() const;
+  inline void clear_pointa();
+  static const int kPointAFieldNumber = 3;
+  inline const ::das::proto::Coordinate& pointa() const;
+  inline ::das::proto::Coordinate* mutable_pointa();
+  inline ::das::proto::Coordinate* release_pointa();
+  inline void set_allocated_pointa(::das::proto::Coordinate* pointa);
+
+  // optional .das.proto.Coordinate pointB = 4;
+  inline bool has_pointb() const;
+  inline void clear_pointb();
+  static const int kPointBFieldNumber = 4;
+  inline const ::das::proto::Coordinate& pointb() const;
+  inline ::das::proto::Coordinate* mutable_pointb();
+  inline ::das::proto::Coordinate* release_pointb();
+  inline void set_allocated_pointb(::das::proto::Coordinate* pointb);
+
+  // @@protoc_insertion_point(class_scope:das.proto.PostABPoint)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
+  inline void set_has_pointa();
+  inline void clear_has_pointa();
+  inline void set_has_pointb();
+  inline void clear_has_pointb();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uavid_;
+  ::das::proto::Coordinate* pointa_;
+  ::das::proto::Coordinate* pointb_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static PostABPoint* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckPostABPoint : public ::google::protobuf::Message {
+ public:
+  AckPostABPoint();
+  virtual ~AckPostABPoint();
+
+  AckPostABPoint(const AckPostABPoint& from);
+
+  inline AckPostABPoint& operator=(const AckPostABPoint& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckPostABPoint& default_instance();
+
+  void Swap(AckPostABPoint* other);
+
+  // implements Message ----------------------------------------------
+
+  AckPostABPoint* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckPostABPoint& from);
+  void MergeFrom(const AckPostABPoint& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required int32 result = 2;
+  inline bool has_result() const;
+  inline void clear_result();
+  static const int kResultFieldNumber = 2;
+  inline ::google::protobuf::int32 result() const;
+  inline void set_result(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckPostABPoint)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_result();
+  inline void clear_has_result();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 result_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckPostABPoint* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class RequestABPoint : public ::google::protobuf::Message {
+ public:
+  RequestABPoint();
+  virtual ~RequestABPoint();
+
+  RequestABPoint(const RequestABPoint& from);
+
+  inline RequestABPoint& operator=(const RequestABPoint& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RequestABPoint& default_instance();
+
+  void Swap(RequestABPoint* other);
+
+  // implements Message ----------------------------------------------
+
+  RequestABPoint* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RequestABPoint& from);
+  void MergeFrom(const RequestABPoint& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string uavid = 2;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 2;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
+
+  // @@protoc_insertion_point(class_scope:das.proto.RequestABPoint)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uavid_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static RequestABPoint* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class PostOperationReturn : public ::google::protobuf::Message {
+ public:
+  PostOperationReturn();
+  virtual ~PostOperationReturn();
+
+  PostOperationReturn(const PostOperationReturn& from);
+
+  inline PostOperationReturn& operator=(const PostOperationReturn& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PostOperationReturn& default_instance();
+
+  void Swap(PostOperationReturn* other);
+
+  // implements Message ----------------------------------------------
+
+  PostOperationReturn* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const PostOperationReturn& from);
+  void MergeFrom(const PostOperationReturn& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string uavid = 2;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 2;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
+
+  // required bool mission = 3;
+  inline bool has_mission() const;
+  inline void clear_mission();
+  static const int kMissionFieldNumber = 3;
+  inline bool mission() const;
+  inline void set_mission(bool value);
+
+  // required int32 msItem = 4;
+  inline bool has_msitem() const;
+  inline void clear_msitem();
+  static const int kMsItemFieldNumber = 4;
+  inline ::google::protobuf::int32 msitem() const;
+  inline void set_msitem(::google::protobuf::int32 value);
+
+  // required string msid = 5;
+  inline bool has_msid() const;
+  inline void clear_msid();
+  static const int kMsidFieldNumber = 5;
+  inline const ::std::string& msid() const;
+  inline void set_msid(const ::std::string& value);
+  inline void set_msid(const char* value);
+  inline void set_msid(const char* value, size_t size);
+  inline ::std::string* mutable_msid();
+  inline ::std::string* release_msid();
+  inline void set_allocated_msid(::std::string* msid);
+
+  // optional .das.proto.Coordinate suspend = 6;
+  inline bool has_suspend() const;
+  inline void clear_suspend();
+  static const int kSuspendFieldNumber = 6;
+  inline const ::das::proto::Coordinate& suspend() const;
+  inline ::das::proto::Coordinate* mutable_suspend();
+  inline ::das::proto::Coordinate* release_suspend();
+  inline void set_allocated_suspend(::das::proto::Coordinate* suspend);
+
+  // @@protoc_insertion_point(class_scope:das.proto.PostOperationReturn)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
+  inline void set_has_mission();
+  inline void clear_has_mission();
+  inline void set_has_msitem();
+  inline void clear_has_msitem();
+  inline void set_has_msid();
+  inline void clear_has_msid();
+  inline void set_has_suspend();
+  inline void clear_has_suspend();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uavid_;
+  ::google::protobuf::uint32 seqno_;
+  bool mission_;
+  ::std::string* msid_;
+  ::das::proto::Coordinate* suspend_;
+  ::google::protobuf::int32 msitem_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static PostOperationReturn* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckOperationReturn : public ::google::protobuf::Message {
+ public:
+  AckOperationReturn();
+  virtual ~AckOperationReturn();
+
+  AckOperationReturn(const AckOperationReturn& from);
+
+  inline AckOperationReturn& operator=(const AckOperationReturn& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckOperationReturn& default_instance();
+
+  void Swap(AckOperationReturn* other);
+
+  // implements Message ----------------------------------------------
+
+  AckOperationReturn* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckOperationReturn& from);
+  void MergeFrom(const AckOperationReturn& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required int32 result = 2;
+  inline bool has_result() const;
+  inline void clear_result();
+  static const int kResultFieldNumber = 2;
+  inline ::google::protobuf::int32 result() const;
+  inline void set_result(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckOperationReturn)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_result();
+  inline void clear_has_result();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 result_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckOperationReturn* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class RequestOperationReturn : public ::google::protobuf::Message {
+ public:
+  RequestOperationReturn();
+  virtual ~RequestOperationReturn();
+
+  RequestOperationReturn(const RequestOperationReturn& from);
+
+  inline RequestOperationReturn& operator=(const RequestOperationReturn& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RequestOperationReturn& default_instance();
+
+  void Swap(RequestOperationReturn* other);
+
+  // implements Message ----------------------------------------------
+
+  RequestOperationReturn* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RequestOperationReturn& from);
+  void MergeFrom(const RequestOperationReturn& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string uavid = 2;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 2;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
+
+  // @@protoc_insertion_point(class_scope:das.proto.RequestOperationReturn)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uavid_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static RequestOperationReturn* default_instance_;
 };
 // ===================================================================
 
@@ -20771,7 +21768,51 @@ inline void AckRequestParcelDescriptions::set_result(::google::protobuf::int32 v
   result_ = value;
 }
 
-// repeated .das.proto.ParcelDescription pds = 3;
+// repeated string pdids = 3;
+inline int AckRequestParcelDescriptions::pdids_size() const {
+  return pdids_.size();
+}
+inline void AckRequestParcelDescriptions::clear_pdids() {
+  pdids_.Clear();
+}
+inline const ::std::string& AckRequestParcelDescriptions::pdids(int index) const {
+  return pdids_.Get(index);
+}
+inline ::std::string* AckRequestParcelDescriptions::mutable_pdids(int index) {
+  return pdids_.Mutable(index);
+}
+inline void AckRequestParcelDescriptions::set_pdids(int index, const ::std::string& value) {
+  pdids_.Mutable(index)->assign(value);
+}
+inline void AckRequestParcelDescriptions::set_pdids(int index, const char* value) {
+  pdids_.Mutable(index)->assign(value);
+}
+inline void AckRequestParcelDescriptions::set_pdids(int index, const char* value, size_t size) {
+  pdids_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* AckRequestParcelDescriptions::add_pdids() {
+  return pdids_.Add();
+}
+inline void AckRequestParcelDescriptions::add_pdids(const ::std::string& value) {
+  pdids_.Add()->assign(value);
+}
+inline void AckRequestParcelDescriptions::add_pdids(const char* value) {
+  pdids_.Add()->assign(value);
+}
+inline void AckRequestParcelDescriptions::add_pdids(const char* value, size_t size) {
+  pdids_.Add()->assign(reinterpret_cast<const char*>(value), size);
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+AckRequestParcelDescriptions::pdids() const {
+  return pdids_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+AckRequestParcelDescriptions::mutable_pdids() {
+  return &pdids_;
+}
+
+// repeated .das.proto.ParcelDescription pds = 4;
 inline int AckRequestParcelDescriptions::pds_size() const {
   return pds_.size();
 }
@@ -22165,7 +23206,51 @@ inline void AckRequestOperationDescriptions::set_result(::google::protobuf::int3
   result_ = value;
 }
 
-// repeated .das.proto.OperationDescription ods = 3;
+// repeated string odids = 3;
+inline int AckRequestOperationDescriptions::odids_size() const {
+  return odids_.size();
+}
+inline void AckRequestOperationDescriptions::clear_odids() {
+  odids_.Clear();
+}
+inline const ::std::string& AckRequestOperationDescriptions::odids(int index) const {
+  return odids_.Get(index);
+}
+inline ::std::string* AckRequestOperationDescriptions::mutable_odids(int index) {
+  return odids_.Mutable(index);
+}
+inline void AckRequestOperationDescriptions::set_odids(int index, const ::std::string& value) {
+  odids_.Mutable(index)->assign(value);
+}
+inline void AckRequestOperationDescriptions::set_odids(int index, const char* value) {
+  odids_.Mutable(index)->assign(value);
+}
+inline void AckRequestOperationDescriptions::set_odids(int index, const char* value, size_t size) {
+  odids_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* AckRequestOperationDescriptions::add_odids() {
+  return odids_.Add();
+}
+inline void AckRequestOperationDescriptions::add_odids(const ::std::string& value) {
+  odids_.Add()->assign(value);
+}
+inline void AckRequestOperationDescriptions::add_odids(const char* value) {
+  odids_.Add()->assign(value);
+}
+inline void AckRequestOperationDescriptions::add_odids(const char* value, size_t size) {
+  odids_.Add()->assign(reinterpret_cast<const char*>(value), size);
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+AckRequestOperationDescriptions::odids() const {
+  return odids_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+AckRequestOperationDescriptions::mutable_odids() {
+  return &odids_;
+}
+
+// repeated .das.proto.OperationDescription ods = 4;
 inline int AckRequestOperationDescriptions::ods_size() const {
   return ods_.size();
 }
@@ -23319,73 +24404,73 @@ inline void UploadOperationRoutes::set_allocated_uavid(::std::string* uavid) {
   }
 }
 
-// required string userid = 3;
-inline bool UploadOperationRoutes::has_userid() const {
+// required string msid = 3;
+inline bool UploadOperationRoutes::has_msid() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void UploadOperationRoutes::set_has_userid() {
+inline void UploadOperationRoutes::set_has_msid() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void UploadOperationRoutes::clear_has_userid() {
+inline void UploadOperationRoutes::clear_has_msid() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void UploadOperationRoutes::clear_userid() {
-  if (userid_ != &::google::protobuf::internal::kEmptyString) {
-    userid_->clear();
+inline void UploadOperationRoutes::clear_msid() {
+  if (msid_ != &::google::protobuf::internal::kEmptyString) {
+    msid_->clear();
   }
-  clear_has_userid();
+  clear_has_msid();
 }
-inline const ::std::string& UploadOperationRoutes::userid() const {
-  return *userid_;
+inline const ::std::string& UploadOperationRoutes::msid() const {
+  return *msid_;
 }
-inline void UploadOperationRoutes::set_userid(const ::std::string& value) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
+inline void UploadOperationRoutes::set_msid(const ::std::string& value) {
+  set_has_msid();
+  if (msid_ == &::google::protobuf::internal::kEmptyString) {
+    msid_ = new ::std::string;
   }
-  userid_->assign(value);
+  msid_->assign(value);
 }
-inline void UploadOperationRoutes::set_userid(const char* value) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
+inline void UploadOperationRoutes::set_msid(const char* value) {
+  set_has_msid();
+  if (msid_ == &::google::protobuf::internal::kEmptyString) {
+    msid_ = new ::std::string;
   }
-  userid_->assign(value);
+  msid_->assign(value);
 }
-inline void UploadOperationRoutes::set_userid(const char* value, size_t size) {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
+inline void UploadOperationRoutes::set_msid(const char* value, size_t size) {
+  set_has_msid();
+  if (msid_ == &::google::protobuf::internal::kEmptyString) {
+    msid_ = new ::std::string;
   }
-  userid_->assign(reinterpret_cast<const char*>(value), size);
+  msid_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* UploadOperationRoutes::mutable_userid() {
-  set_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
-    userid_ = new ::std::string;
+inline ::std::string* UploadOperationRoutes::mutable_msid() {
+  set_has_msid();
+  if (msid_ == &::google::protobuf::internal::kEmptyString) {
+    msid_ = new ::std::string;
   }
-  return userid_;
+  return msid_;
 }
-inline ::std::string* UploadOperationRoutes::release_userid() {
-  clear_has_userid();
-  if (userid_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* UploadOperationRoutes::release_msid() {
+  clear_has_msid();
+  if (msid_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = userid_;
-    userid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = msid_;
+    msid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void UploadOperationRoutes::set_allocated_userid(::std::string* userid) {
-  if (userid_ != &::google::protobuf::internal::kEmptyString) {
-    delete userid_;
+inline void UploadOperationRoutes::set_allocated_msid(::std::string* msid) {
+  if (msid_ != &::google::protobuf::internal::kEmptyString) {
+    delete msid_;
   }
-  if (userid) {
-    set_has_userid();
-    userid_ = userid;
+  if (msid) {
+    set_has_msid();
+    msid_ = msid;
   } else {
-    clear_has_userid();
-    userid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_msid();
+    msid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 
@@ -27753,6 +28838,1030 @@ PostStatus2GroundStation::data() const {
 inline ::google::protobuf::RepeatedPtrField< ::std::string>*
 PostStatus2GroundStation::mutable_data() {
   return &data_;
+}
+
+// -------------------------------------------------------------------
+
+// PostOperationAssist
+
+// required uint32 seqno = 1;
+inline bool PostOperationAssist::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void PostOperationAssist::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void PostOperationAssist::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void PostOperationAssist::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 PostOperationAssist::seqno() const {
+  return seqno_;
+}
+inline void PostOperationAssist::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string uavid = 2;
+inline bool PostOperationAssist::has_uavid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void PostOperationAssist::set_has_uavid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void PostOperationAssist::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void PostOperationAssist::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
+  }
+  clear_has_uavid();
+}
+inline const ::std::string& PostOperationAssist::uavid() const {
+  return *uavid_;
+}
+inline void PostOperationAssist::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void PostOperationAssist::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void PostOperationAssist::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* PostOperationAssist::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  return uavid_;
+}
+inline ::std::string* PostOperationAssist::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void PostOperationAssist::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
+  } else {
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional .das.proto.Coordinate enter = 3;
+inline bool PostOperationAssist::has_enter() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void PostOperationAssist::set_has_enter() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void PostOperationAssist::clear_has_enter() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void PostOperationAssist::clear_enter() {
+  if (enter_ != NULL) enter_->::das::proto::Coordinate::Clear();
+  clear_has_enter();
+}
+inline const ::das::proto::Coordinate& PostOperationAssist::enter() const {
+  return enter_ != NULL ? *enter_ : *default_instance_->enter_;
+}
+inline ::das::proto::Coordinate* PostOperationAssist::mutable_enter() {
+  set_has_enter();
+  if (enter_ == NULL) enter_ = new ::das::proto::Coordinate;
+  return enter_;
+}
+inline ::das::proto::Coordinate* PostOperationAssist::release_enter() {
+  clear_has_enter();
+  ::das::proto::Coordinate* temp = enter_;
+  enter_ = NULL;
+  return temp;
+}
+inline void PostOperationAssist::set_allocated_enter(::das::proto::Coordinate* enter) {
+  delete enter_;
+  enter_ = enter;
+  if (enter) {
+    set_has_enter();
+  } else {
+    clear_has_enter();
+  }
+}
+
+// optional .das.proto.Coordinate return = 4;
+inline bool PostOperationAssist::has_return_() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void PostOperationAssist::set_has_return_() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void PostOperationAssist::clear_has_return_() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void PostOperationAssist::clear_return_() {
+  if (return__ != NULL) return__->::das::proto::Coordinate::Clear();
+  clear_has_return_();
+}
+inline const ::das::proto::Coordinate& PostOperationAssist::return_() const {
+  return return__ != NULL ? *return__ : *default_instance_->return__;
+}
+inline ::das::proto::Coordinate* PostOperationAssist::mutable_return_() {
+  set_has_return_();
+  if (return__ == NULL) return__ = new ::das::proto::Coordinate;
+  return return__;
+}
+inline ::das::proto::Coordinate* PostOperationAssist::release_return_() {
+  clear_has_return_();
+  ::das::proto::Coordinate* temp = return__;
+  return__ = NULL;
+  return temp;
+}
+inline void PostOperationAssist::set_allocated_return_(::das::proto::Coordinate* return_) {
+  delete return__;
+  return__ = return_;
+  if (return_) {
+    set_has_return_();
+  } else {
+    clear_has_return_();
+  }
+}
+
+// -------------------------------------------------------------------
+
+// AckOperationAssist
+
+// required uint32 seqno = 1;
+inline bool AckOperationAssist::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckOperationAssist::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckOperationAssist::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckOperationAssist::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckOperationAssist::seqno() const {
+  return seqno_;
+}
+inline void AckOperationAssist::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 result = 2;
+inline bool AckOperationAssist::has_result() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckOperationAssist::set_has_result() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckOperationAssist::clear_has_result() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckOperationAssist::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::google::protobuf::int32 AckOperationAssist::result() const {
+  return result_;
+}
+inline void AckOperationAssist::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// RequestOperationAssist
+
+// required uint32 seqno = 1;
+inline bool RequestOperationAssist::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void RequestOperationAssist::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void RequestOperationAssist::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void RequestOperationAssist::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 RequestOperationAssist::seqno() const {
+  return seqno_;
+}
+inline void RequestOperationAssist::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string uavid = 2;
+inline bool RequestOperationAssist::has_uavid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void RequestOperationAssist::set_has_uavid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void RequestOperationAssist::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void RequestOperationAssist::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
+  }
+  clear_has_uavid();
+}
+inline const ::std::string& RequestOperationAssist::uavid() const {
+  return *uavid_;
+}
+inline void RequestOperationAssist::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void RequestOperationAssist::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void RequestOperationAssist::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestOperationAssist::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  return uavid_;
+}
+inline ::std::string* RequestOperationAssist::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestOperationAssist::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
+  } else {
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
+// PostABPoint
+
+// required uint32 seqno = 1;
+inline bool PostABPoint::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void PostABPoint::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void PostABPoint::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void PostABPoint::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 PostABPoint::seqno() const {
+  return seqno_;
+}
+inline void PostABPoint::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string uavid = 2;
+inline bool PostABPoint::has_uavid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void PostABPoint::set_has_uavid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void PostABPoint::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void PostABPoint::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
+  }
+  clear_has_uavid();
+}
+inline const ::std::string& PostABPoint::uavid() const {
+  return *uavid_;
+}
+inline void PostABPoint::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void PostABPoint::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void PostABPoint::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* PostABPoint::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  return uavid_;
+}
+inline ::std::string* PostABPoint::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void PostABPoint::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
+  } else {
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional .das.proto.Coordinate pointA = 3;
+inline bool PostABPoint::has_pointa() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void PostABPoint::set_has_pointa() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void PostABPoint::clear_has_pointa() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void PostABPoint::clear_pointa() {
+  if (pointa_ != NULL) pointa_->::das::proto::Coordinate::Clear();
+  clear_has_pointa();
+}
+inline const ::das::proto::Coordinate& PostABPoint::pointa() const {
+  return pointa_ != NULL ? *pointa_ : *default_instance_->pointa_;
+}
+inline ::das::proto::Coordinate* PostABPoint::mutable_pointa() {
+  set_has_pointa();
+  if (pointa_ == NULL) pointa_ = new ::das::proto::Coordinate;
+  return pointa_;
+}
+inline ::das::proto::Coordinate* PostABPoint::release_pointa() {
+  clear_has_pointa();
+  ::das::proto::Coordinate* temp = pointa_;
+  pointa_ = NULL;
+  return temp;
+}
+inline void PostABPoint::set_allocated_pointa(::das::proto::Coordinate* pointa) {
+  delete pointa_;
+  pointa_ = pointa;
+  if (pointa) {
+    set_has_pointa();
+  } else {
+    clear_has_pointa();
+  }
+}
+
+// optional .das.proto.Coordinate pointB = 4;
+inline bool PostABPoint::has_pointb() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void PostABPoint::set_has_pointb() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void PostABPoint::clear_has_pointb() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void PostABPoint::clear_pointb() {
+  if (pointb_ != NULL) pointb_->::das::proto::Coordinate::Clear();
+  clear_has_pointb();
+}
+inline const ::das::proto::Coordinate& PostABPoint::pointb() const {
+  return pointb_ != NULL ? *pointb_ : *default_instance_->pointb_;
+}
+inline ::das::proto::Coordinate* PostABPoint::mutable_pointb() {
+  set_has_pointb();
+  if (pointb_ == NULL) pointb_ = new ::das::proto::Coordinate;
+  return pointb_;
+}
+inline ::das::proto::Coordinate* PostABPoint::release_pointb() {
+  clear_has_pointb();
+  ::das::proto::Coordinate* temp = pointb_;
+  pointb_ = NULL;
+  return temp;
+}
+inline void PostABPoint::set_allocated_pointb(::das::proto::Coordinate* pointb) {
+  delete pointb_;
+  pointb_ = pointb;
+  if (pointb) {
+    set_has_pointb();
+  } else {
+    clear_has_pointb();
+  }
+}
+
+// -------------------------------------------------------------------
+
+// AckPostABPoint
+
+// required uint32 seqno = 1;
+inline bool AckPostABPoint::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckPostABPoint::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckPostABPoint::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckPostABPoint::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckPostABPoint::seqno() const {
+  return seqno_;
+}
+inline void AckPostABPoint::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 result = 2;
+inline bool AckPostABPoint::has_result() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckPostABPoint::set_has_result() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckPostABPoint::clear_has_result() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckPostABPoint::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::google::protobuf::int32 AckPostABPoint::result() const {
+  return result_;
+}
+inline void AckPostABPoint::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// RequestABPoint
+
+// required uint32 seqno = 1;
+inline bool RequestABPoint::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void RequestABPoint::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void RequestABPoint::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void RequestABPoint::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 RequestABPoint::seqno() const {
+  return seqno_;
+}
+inline void RequestABPoint::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string uavid = 2;
+inline bool RequestABPoint::has_uavid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void RequestABPoint::set_has_uavid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void RequestABPoint::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void RequestABPoint::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
+  }
+  clear_has_uavid();
+}
+inline const ::std::string& RequestABPoint::uavid() const {
+  return *uavid_;
+}
+inline void RequestABPoint::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void RequestABPoint::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void RequestABPoint::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestABPoint::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  return uavid_;
+}
+inline ::std::string* RequestABPoint::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestABPoint::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
+  } else {
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
+// PostOperationReturn
+
+// required uint32 seqno = 1;
+inline bool PostOperationReturn::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void PostOperationReturn::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void PostOperationReturn::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void PostOperationReturn::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 PostOperationReturn::seqno() const {
+  return seqno_;
+}
+inline void PostOperationReturn::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string uavid = 2;
+inline bool PostOperationReturn::has_uavid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void PostOperationReturn::set_has_uavid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void PostOperationReturn::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void PostOperationReturn::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
+  }
+  clear_has_uavid();
+}
+inline const ::std::string& PostOperationReturn::uavid() const {
+  return *uavid_;
+}
+inline void PostOperationReturn::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void PostOperationReturn::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void PostOperationReturn::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* PostOperationReturn::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  return uavid_;
+}
+inline ::std::string* PostOperationReturn::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void PostOperationReturn::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
+  } else {
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required bool mission = 3;
+inline bool PostOperationReturn::has_mission() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void PostOperationReturn::set_has_mission() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void PostOperationReturn::clear_has_mission() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void PostOperationReturn::clear_mission() {
+  mission_ = false;
+  clear_has_mission();
+}
+inline bool PostOperationReturn::mission() const {
+  return mission_;
+}
+inline void PostOperationReturn::set_mission(bool value) {
+  set_has_mission();
+  mission_ = value;
+}
+
+// required int32 msItem = 4;
+inline bool PostOperationReturn::has_msitem() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void PostOperationReturn::set_has_msitem() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void PostOperationReturn::clear_has_msitem() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void PostOperationReturn::clear_msitem() {
+  msitem_ = 0;
+  clear_has_msitem();
+}
+inline ::google::protobuf::int32 PostOperationReturn::msitem() const {
+  return msitem_;
+}
+inline void PostOperationReturn::set_msitem(::google::protobuf::int32 value) {
+  set_has_msitem();
+  msitem_ = value;
+}
+
+// required string msid = 5;
+inline bool PostOperationReturn::has_msid() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void PostOperationReturn::set_has_msid() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void PostOperationReturn::clear_has_msid() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void PostOperationReturn::clear_msid() {
+  if (msid_ != &::google::protobuf::internal::kEmptyString) {
+    msid_->clear();
+  }
+  clear_has_msid();
+}
+inline const ::std::string& PostOperationReturn::msid() const {
+  return *msid_;
+}
+inline void PostOperationReturn::set_msid(const ::std::string& value) {
+  set_has_msid();
+  if (msid_ == &::google::protobuf::internal::kEmptyString) {
+    msid_ = new ::std::string;
+  }
+  msid_->assign(value);
+}
+inline void PostOperationReturn::set_msid(const char* value) {
+  set_has_msid();
+  if (msid_ == &::google::protobuf::internal::kEmptyString) {
+    msid_ = new ::std::string;
+  }
+  msid_->assign(value);
+}
+inline void PostOperationReturn::set_msid(const char* value, size_t size) {
+  set_has_msid();
+  if (msid_ == &::google::protobuf::internal::kEmptyString) {
+    msid_ = new ::std::string;
+  }
+  msid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* PostOperationReturn::mutable_msid() {
+  set_has_msid();
+  if (msid_ == &::google::protobuf::internal::kEmptyString) {
+    msid_ = new ::std::string;
+  }
+  return msid_;
+}
+inline ::std::string* PostOperationReturn::release_msid() {
+  clear_has_msid();
+  if (msid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = msid_;
+    msid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void PostOperationReturn::set_allocated_msid(::std::string* msid) {
+  if (msid_ != &::google::protobuf::internal::kEmptyString) {
+    delete msid_;
+  }
+  if (msid) {
+    set_has_msid();
+    msid_ = msid;
+  } else {
+    clear_has_msid();
+    msid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional .das.proto.Coordinate suspend = 6;
+inline bool PostOperationReturn::has_suspend() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void PostOperationReturn::set_has_suspend() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void PostOperationReturn::clear_has_suspend() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void PostOperationReturn::clear_suspend() {
+  if (suspend_ != NULL) suspend_->::das::proto::Coordinate::Clear();
+  clear_has_suspend();
+}
+inline const ::das::proto::Coordinate& PostOperationReturn::suspend() const {
+  return suspend_ != NULL ? *suspend_ : *default_instance_->suspend_;
+}
+inline ::das::proto::Coordinate* PostOperationReturn::mutable_suspend() {
+  set_has_suspend();
+  if (suspend_ == NULL) suspend_ = new ::das::proto::Coordinate;
+  return suspend_;
+}
+inline ::das::proto::Coordinate* PostOperationReturn::release_suspend() {
+  clear_has_suspend();
+  ::das::proto::Coordinate* temp = suspend_;
+  suspend_ = NULL;
+  return temp;
+}
+inline void PostOperationReturn::set_allocated_suspend(::das::proto::Coordinate* suspend) {
+  delete suspend_;
+  suspend_ = suspend;
+  if (suspend) {
+    set_has_suspend();
+  } else {
+    clear_has_suspend();
+  }
+}
+
+// -------------------------------------------------------------------
+
+// AckOperationReturn
+
+// required uint32 seqno = 1;
+inline bool AckOperationReturn::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckOperationReturn::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckOperationReturn::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckOperationReturn::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckOperationReturn::seqno() const {
+  return seqno_;
+}
+inline void AckOperationReturn::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 result = 2;
+inline bool AckOperationReturn::has_result() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckOperationReturn::set_has_result() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckOperationReturn::clear_has_result() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckOperationReturn::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::google::protobuf::int32 AckOperationReturn::result() const {
+  return result_;
+}
+inline void AckOperationReturn::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// RequestOperationReturn
+
+// required uint32 seqno = 1;
+inline bool RequestOperationReturn::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void RequestOperationReturn::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void RequestOperationReturn::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void RequestOperationReturn::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 RequestOperationReturn::seqno() const {
+  return seqno_;
+}
+inline void RequestOperationReturn::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string uavid = 2;
+inline bool RequestOperationReturn::has_uavid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void RequestOperationReturn::set_has_uavid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void RequestOperationReturn::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void RequestOperationReturn::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
+  }
+  clear_has_uavid();
+}
+inline const ::std::string& RequestOperationReturn::uavid() const {
+  return *uavid_;
+}
+inline void RequestOperationReturn::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void RequestOperationReturn::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void RequestOperationReturn::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* RequestOperationReturn::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  return uavid_;
+}
+inline ::std::string* RequestOperationReturn::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void RequestOperationReturn::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
+  } else {
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
 }
 
 

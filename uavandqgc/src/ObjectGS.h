@@ -29,6 +29,9 @@ namespace das {
         class GroundStationsMessage;
         class RequestFriends;
         class SyncDeviceList;
+        class RequestOperationAssist;
+        class RequestABPoint;
+        class RequestOperationReturn;
     }
 }
 class FWItem;
@@ -111,6 +114,9 @@ private:
     void _prcsReqMissons(das::proto::RequestUavMission &msg);
     void _prcsReqMissonsAcreage(das::proto::RequestUavMissionAcreage &msg);
     void _prcsReqSuspend(das::proto::RequestMissionSuspend &msg);
+    void _prcsReqAssists(das::proto::RequestOperationAssist *msg);
+    void _prcsReqABPoint(das::proto::RequestABPoint *msg);
+    void _prcsReqReturn(das::proto::RequestOperationReturn *msg);
 private:
     void _checkGS(const std::string &user, int ack);
     void initFriend();

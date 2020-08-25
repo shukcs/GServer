@@ -174,6 +174,18 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new RequestUavMissionAcreage;               //查询作业面积
     else if (name == d_p_ClassName(RequestUavMission))
         m_msg = new RequestUavMission;                     //飞机作业查询
+    else if (name == d_p_ClassName(PostOperationAssist))
+        m_msg = new PostOperationAssist;                    //辅助点
+    else if (name == d_p_ClassName(RequestOperationAssist))
+        m_msg = new RequestOperationAssist;                 //地面站请求辅助点
+    else if (name == d_p_ClassName(PostABPoint))
+        m_msg = new PostABPoint;                            //AB点
+    else if (name == d_p_ClassName(RequestABPoint))
+        m_msg = new RequestABPoint;                         //地面站请求AB点
+    else if (name == d_p_ClassName(PostOperationReturn))
+        m_msg = new PostOperationReturn;                    //断点点
+    else if (name == d_p_ClassName(RequestOperationReturn))
+        m_msg = new RequestOperationReturn;                 //请求断点
 
     if (m_msg)
         return m_msg->ParseFromArray(buff, len);

@@ -2,6 +2,7 @@
 #include "das.pb.h"
 #include "Utility.h"
 #include "DBMessages.h"
+#include "ProtoMsg.h"
 #include "common/mavlink.h"
 #include <math.h>
 
@@ -44,6 +45,7 @@ typedef union {
 
 using namespace std;
 using namespace das::proto;
+static string sEmptyStr;
 
 static double geoDistance(int lat1, int lon1, int lat2, int lon2)
 {
@@ -74,29 +76,38 @@ static bool getGeo(const string &buff, int &lat, int &lon)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //UavMission
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-UavMission::UavMission(ObjectUav *obj) : m_parent(obj), m_mission(NULL), m_nCurRidge(-1)
-, m_bSys(false), m_bSuspend(false), m_disBeg(0), m_allLength(0)
-, m_latSuspend(INVALIDLat), m_lastORNotify(0)
+UavMission::UavMission(ObjectUav *obj) : m_parent(obj), m_mission(NULL), m_assists(NULL), m_abPoints(NULL)
+, m_return(NULL), m_bSys(false), m_disBeg(0), m_allLength(0), m_lastORNotify(0)
 {
 }
 
 UavMission::~UavMission()
 {
     delete m_mission;
+    Clear();
 }
 
-void UavMission::PrcsRcvPostOperationInfo(const PostOperationInformation &msg)
+void UavMission::PrcsPostAssists(PostOperationAssist *msg)
 {
-    int nCount = msg.oi_size();
-    if (m_nCurRidge>=0)
-    {
-        for (int i = 0; i < nCount; i++)
-        {
-            const OperationInformation &oi = msg.oi(i);
-            if (oi.has_gps() && oi.has_status())
-                _prcsGps(oi.gps(), oi.status().operationmode());
-        }
-    }
+    ReleasePointer(m_assists);
+    m_assists = msg;
+}
+
+void UavMission::PrcsPostABPoint(PostABPoint *msg)
+{
+    ReleasePointer(m_abPoints);
+    m_abPoints = msg;
+}
+
+void UavMission::PrcsPostReturn(PostOperationReturn *msg)
+{
+    if (!msg)
+        return;
+
+    ReleasePointer(m_return);
+    m_return = msg;
+    if (m_mission && m_return && m_mission->rpid() == msg->msid() && msg->mission())
+        _missionFinish(msg->msitem());
 }
 
 google::protobuf::Message *UavMission::PrcsRcvReqMissions(const RequestRouteMissions &msg)
@@ -124,12 +135,6 @@ google::protobuf::Message *UavMission::PrcsRcvReqMissions(const RequestRouteMiss
     return ack;
 }
 
-void UavMission::ProcessArm(bool bArm)
-{
-    if (bArm && m_nCurRidge && m_bSys && m_mission && m_mission->beg() <= m_mission->end())
-        m_nCurRidge = 0;
-}
-
 bool UavMission::_hasMission(const das::proto::RequestRouteMissions &req) const
 {
     if (!m_mission || req.offset()<0 || req.count()<=0)
@@ -149,40 +154,13 @@ google::protobuf::Message *UavMission::GetNotifyUavUOR(uint32_t ms)
     {
         upload->set_seqno(sSeqno++);
         upload->set_uavid(m_mission->uavid());
-        upload->set_userid(m_mission->gsid());
+        upload->set_msid(m_mission->rpid());
         upload->set_timestamp(m_mission->createtime());
         upload->set_countmission(m_mission->missions_size());
         upload->set_countboundary(m_mission->boundarys_size());
         return upload;
     }
     return NULL;
-}
-
-void UavMission::_prcsGps(const GpsInformation &gps, const string &mod)
-{
-    if (MagMission == mod)
-    {
-        m_nCurRidge = -1;
-    }
-    else if (mod == ReturmMod || mod == MissionMod || m_bSuspend)
-    {
-        GpsAdtionValue gpsAdt = { 0 };
-        int count = (sizeof(GpsAdtionValue) + sizeof(float) - 1) / sizeof(float);
-        for (int i = 0; i < gps.velocity_size() && i < count; ++i)
-        {
-            gpsAdt.tmp[i] = gps.velocity(i);
-        }
-        int cur = getCurRidgeByItem(gpsAdt.curMs);
-        if (cur > 0)
-            m_nCurRidge = cur;
-
-        if (m_mission->end() == cur || m_bSuspend)
-        {
-            _missionFinish(gpsAdt.curMs);
-            m_nCurRidge = -1;
-            m_bSuspend = false;
-        }
-    }
 }
 
 bool UavMission::ParsePostOr(const OperationRoute &sor)
@@ -212,55 +190,45 @@ bool UavMission::ParsePostOr(const OperationRoute &sor)
         dat.idx = beg + i;
         m_allLength += dat.length;
     }
-    m_latSuspend = INVALIDLat;
 
     return true;
 }
 
-int32_t UavMission::getCurRidgeByItem(int curItem)
-{
-    if (m_ridges.size() < 0 || curItem >= m_mission->missions_size())
-        return -1;
-
-    for (const pair<int32_t, RidgeDat> &itr : m_ridges)
-    {
-        if (curItem <= itr.first)
-            return itr.second.idx-1;
-    }
-    return m_mission->end();
-}
-
 void UavMission::_missionFinish(int curItem)
 {
-    int ridgeFlying = _getOprRidge(curItem);
-    if (!m_mission || ridgeFlying<m_mission->beg())
+    bool bFinish;
+    int ridgeCur = getCurRidge(curItem, bFinish);
+    if (!m_mission || ridgeCur<m_mission->beg())
         return;
 
-    bool bRemain = m_bSuspend && ridgeFlying>m_nCurRidge;
+    bool bRemain = m_return && m_return->has_suspend() && bFinish;
     double flied = bRemain ? _getOprLength(curItem) : 0;
     if (bRemain)
     {
         int latT = INVALIDLat, lonT = INVALIDLat;
         if (getGeo(m_mission->missions(curItem), latT, latT))
-            flied -= geoDistance(m_latSuspend, m_lonSuspend, latT, lonT);
+            flied -= geoDistance(m_return->suspend().latitude(), m_return->suspend().longitude(), latT, lonT);
 
-        if (ridgeFlying==m_mission->beg() && flied<m_disBeg)
+        if (ridgeCur==m_mission->beg() && flied<m_disBeg)
             return;		          //没有飞到断点之前不要统计
 
         if (flied < 0)
             flied = 0;
     }
 
-    _saveMission(ridgeFlying > m_nCurRidge, calculateOpArea(flied));
+    _saveMission(!bFinish, calculateOpArea(flied, curItem), bFinish?ridgeCur:ridgeCur-1);
     m_disBeg = flied;
-    m_mission->set_beg(m_nCurRidge + 1);
+    if (bFinish)
+        ridgeCur++;
+    m_mission->set_beg(ridgeCur);
 }
 
-void UavMission::MavLinkfilter(const PostStatus2GroundStation &msg)
+bool UavMission::MavLinkfilter(PostStatus2GroundStation &pb)
 {
-    for (int i = 0; i < msg.data_size(); ++i)
+    bool ret = true;
+    for (int i = 0; i < pb.data_size(); ++i)
     {
-        const ::std::string &dt = msg.data(i);
+        const ::std::string &dt = pb.data(i);
         if (dt.size() < 3)
             continue;
 
@@ -275,16 +243,15 @@ void UavMission::MavLinkfilter(const PostStatus2GroundStation &msg)
 
             mavlink_assist_position_t supports;
             mavlink_msg_assist_position_decode(&msg, &supports);
-            if (  m_nCurRidge >= 0
-               && (supports.assist_state & 4) == 4
-               && isOtherSuspend(supports.int_latitude, supports.int_longitude) )
-            {
-                m_latSuspend = supports.int_latitude;
-                m_lonSuspend = supports.int_longitude;
-                m_bSuspend = true;
-            }
+            if ((supports.assist_state & 3))
+                saveOtherAssists(supports.start_latitude, supports.start_longitude, supports.end_latitude, supports.end_longitude, supports.assist_state);
+            else
+                saveOtherABPoints(supports.start_latitude, supports.start_longitude, supports.end_latitude, supports.end_longitude, (supports.assist_state&0x10)!=0);
+            continue;
         }
+        ret = false;
     }
+    return ret;
 }
 
 int UavMission::CountAll() const
@@ -300,6 +267,72 @@ int UavMission::CountItems() const
         return  m_mission->missions_size();
 
     return 0;
+}
+
+void UavMission::Clear()
+{
+    ReleasePointer(m_assists);
+    ReleasePointer(m_abPoints);
+    ReleasePointer(m_return);
+}
+
+const std::string &UavMission::GetParentID()const
+{
+    if (m_parent)
+        return m_parent->GetObjectID();
+
+    return sEmptyStr;
+}
+
+google::protobuf::Message *UavMission::AckRequestPost(UavMission &ms, google::protobuf::Message *msg)
+{
+    if (!msg)
+        return NULL;
+
+    const string &name = msg->GetDescriptor()->full_name();
+    if (name == d_p_ClassName(RequestOperationAssist))
+    {
+        auto seq = ((RequestOperationAssist*)msg)->seqno();
+        if (ms.m_assists)
+        {
+            ms.m_assists->set_seqno(seq);
+            return ms.m_assists;
+        }
+
+        static PostOperationAssist sAst;
+        sAst.set_seqno(seq);
+        sAst.set_uavid(ms.GetParentID());
+        return &sAst;
+    }
+    if (name == d_p_ClassName(RequestABPoint))
+    {
+        auto seq = ((RequestABPoint*)msg)->seqno();
+        if (ms.m_abPoints)
+        {
+            ms.m_abPoints->set_seqno(seq);
+            return ms.m_abPoints;
+        }
+
+        static PostABPoint sAB;
+        sAB.set_seqno(seq);
+        sAB.set_uavid(ms.GetParentID());
+        return &sAB;
+    }
+    if (name == d_p_ClassName(RequestOperationReturn))
+    {
+        auto seq = ((RequestOperationReturn*)msg)->seqno();
+        if (ms.m_return)
+        {
+            ms.m_return->set_seqno(seq);
+            return ms.m_return;
+        }
+
+        static PostOperationReturn sRet;
+        sRet.set_seqno(seq);
+        sRet.set_uavid(ms.GetParentID());
+        return &sRet;
+    }
+    return NULL;
 }
 
 double UavMission::genRidgeLength(int idx)
@@ -318,7 +351,7 @@ double UavMission::genRidgeLength(int idx)
     return 0;
 }
 
-float UavMission::calculateOpArea(double flied)const
+float UavMission::calculateOpArea(double flied, int curItem)const
 {
     if (!m_mission)
         return 0;
@@ -327,7 +360,7 @@ float UavMission::calculateOpArea(double flied)const
     for (const pair<int32_t, RidgeDat> &itr : m_ridges)
     {
         int idx = itr.second.idx;
-        if (m_mission->beg()<= idx && idx <=m_nCurRidge)
+        if (m_mission->beg()<= idx && itr.first<curItem)
             oped += itr.second.length;
     }
 
@@ -338,13 +371,24 @@ float UavMission::calculateOpArea(double flied)const
     return float(m_mission->acreage()*oped / m_allLength);
 }
 
-int UavMission::_getOprRidge(int curItem) const
+int UavMission::getCurRidge(int curItem, bool &bFinish) const
 {
-    auto itr = m_ridges.find(curItem);
-    if (itr == m_ridges.end())
-        return m_nCurRidge;
+    int idx = 0;
+    for (auto itr = m_ridges.begin(); itr != m_ridges.end(); ++itr)
+    {
+        idx = itr->second.idx;
+        if (curItem <= itr->first)
+        {
+            bFinish = curItem < itr->first;//判断是否开始本垄
+            if (bFinish)
+                idx--;
+ 
+            return idx;
+        }
+    }
 
-    return itr->second.idx;
+    bFinish = true;
+    return idx;
 }
 
 double UavMission::_getOprLength(int curItem) const
@@ -356,7 +400,7 @@ double UavMission::_getOprLength(int curItem) const
     return itr->second.length;
 }
 
-void UavMission::_saveMission(bool bSuspend, float acrage)
+void UavMission::_saveMission(bool bSuspend, float acrage, int finshed)
 {
     if (!m_parent)
         return;
@@ -374,21 +418,87 @@ void UavMission::_saveMission(bool bSuspend, float acrage)
         msg->SetWrite("createTime", m_mission->createtime());
         msg->SetWrite("finishTime", Utility::msTimeTick());
 
-        if (bSuspend)
+        if (bSuspend && m_return && m_return->has_suspend())
         {
-            msg->SetWrite("continiuLat", m_latSuspend);
-            msg->SetWrite("continiuLon", m_lonSuspend);
+            msg->SetWrite("continiuLat", m_return->suspend().latitude());
+            msg->SetWrite("continiuLon", m_return->suspend().longitude());
         }
 
         if (m_mission->has_beg())
             msg->SetWrite("begin", m_mission->beg());
-        msg->SetWrite("end", m_nCurRidge);
+        msg->SetWrite("end", finshed);
         msg->SetWrite("acreage", acrage);
         m_parent->SendMsg(msg);
     }
 }
 
-bool UavMission::isOtherSuspend(int lat, int lon) const
+void UavMission::saveOtherAssists(int latE, int lonE, int latR, int lonR, int stat)
 {
-    return m_latSuspend != lat || m_lonSuspend != lon;
+    if (!m_parent)
+        return;
+
+    if (!m_assists)
+    {
+        m_assists = new PostOperationAssist;
+        if (!m_assists)
+            return;
+
+        m_assists->set_seqno(m_assists->seqno() + 1);
+        m_assists->set_uavid(m_parent->GetObjectID());
+    }
+    auto coor = (stat & 1) ? new Coordinate() : NULL;
+    if (coor)
+    {
+        coor->set_latitude(latE);
+        coor->set_longitude(lonE);
+    }
+    m_assists->set_allocated_enter(coor);
+
+    coor = (stat & 1) ? new Coordinate() : NULL;
+    if (coor)
+    {
+        coor->set_latitude(latR);
+        coor->set_longitude(lonR);
+    }
+    m_assists->set_allocated_return_(coor);
+    m_parent->BinderProcess(*m_assists);
+}
+
+void UavMission::saveOtherABPoints(int latA, int lonA, int latB, int lonB, bool bHas)
+{
+    if (!m_parent)
+        return;
+
+    if (!bHas && m_abPoints)
+    {
+        m_abPoints->set_allocated_pointa(NULL);
+        m_abPoints->set_allocated_pointb(NULL);
+    }
+    else if (bHas)
+    {
+        if (!m_abPoints)
+        {
+            m_abPoints = new PostABPoint;
+            if (!m_abPoints)
+                return;
+
+            m_abPoints->set_seqno(1);
+            m_abPoints->set_uavid(m_parent->GetObjectID());
+        }
+        if (auto coor = new Coordinate())
+        {
+            coor->set_latitude(latA);
+            coor->set_longitude(lonA);
+            m_abPoints->set_allocated_pointa(coor);
+        }
+
+        if (auto coor = new Coordinate())
+        {
+            coor->set_latitude(latB);
+            coor->set_longitude(lonB);
+            m_abPoints->set_allocated_pointb(coor);
+        }
+    }
+    if (m_abPoints)
+        m_parent->BinderProcess(*m_abPoints);
 }

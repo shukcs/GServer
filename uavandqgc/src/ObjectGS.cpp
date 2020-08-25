@@ -267,6 +267,12 @@ void ObjectGS::PrcsProtoBuff(uint64_t ms)
         _prcsReqMissonsAcreage(*(RequestUavMissionAcreage*)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(RequestMissionSuspend))
         _prcsReqSuspend(*(RequestMissionSuspend*)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(RequestOperationAssist))
+        _prcsReqAssists((RequestOperationAssist*)m_p->DeatachProto());
+    else if (strMsg == d_p_ClassName(RequestABPoint))
+        _prcsReqABPoint((RequestABPoint*)m_p->DeatachProto());
+    else if (strMsg == d_p_ClassName(RequestOperationReturn))
+        _prcsReqReturn((RequestOperationReturn*)m_p->DeatachProto());
 
     if (m_stInit == IObject::Initialed)
         m_tmLastInfo = ms;
@@ -1513,6 +1519,51 @@ void ObjectGS::_prcsReqSuspend(das::proto::RequestMissionSuspend &msg)
     msgDb->SetCondition("max.uavID", msg.uav());
     msgDb->SetCondition("max.planID", msg.planid());
     SendMsg(msgDb);
+}
+
+void ObjectGS::_prcsReqAssists(RequestOperationAssist *msg)
+{
+    if (!msg)
+        return;
+
+    GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid());
+    if (!ms)
+    {
+        delete msg;
+        return;
+    }
+    ms->AttachProto(msg);
+    SendMsg(ms);
+}
+
+void ObjectGS::_prcsReqABPoint(RequestABPoint *msg)
+{
+    if (!msg)
+        return;
+
+    GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid());
+    if (!ms)
+    {
+        delete msg;
+        return;
+    }
+    ms->AttachProto(msg);
+    SendMsg(ms);
+}
+
+void ObjectGS::_prcsReqReturn(RequestOperationReturn *msg)
+{
+    if (!msg)
+        return;
+
+    GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid());
+    if (!ms)
+    {
+        delete msg;
+        return;
+    }
+    ms->AttachProto(msg);
+    SendMsg(ms);
 }
 
 void ObjectGS::_checkGS(const string &user, int ack)

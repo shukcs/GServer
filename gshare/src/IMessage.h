@@ -47,6 +47,7 @@ public:
         BindUav,
         PostOR,
         ControlDevice,
+        ControlDevice2,
         SychMission,
         QueryDevice,
         DeviceAllocation,

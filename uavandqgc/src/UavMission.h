@@ -17,37 +17,39 @@ private:
 public:
     UavMission(ObjectUav *obj);
     ~UavMission();
-
 public:
-    void ProcessArm(bool bArm);
     google::protobuf::Message *PrcsRcvReqMissions(const das::proto::RequestRouteMissions &);
     google::protobuf::Message *GetNotifyUavUOR(uint32_t ms);
     bool ParsePostOr(const das::proto::OperationRoute &sor);
-    void PrcsRcvPostOperationInfo(const das::proto::PostOperationInformation &msg);
-    void MavLinkfilter(const das::proto::PostStatus2GroundStation &msg);
+    bool MavLinkfilter(das::proto::PostStatus2GroundStation &msg);
+    void PrcsPostAssists(das::proto::PostOperationAssist *msg);
+    void PrcsPostABPoint(das::proto::PostABPoint *msg);
+    void PrcsPostReturn(das::proto::PostOperationReturn *msg);
     int CountAll()const;
     int CountItems()const;
+    void Clear();
+    const std::string &GetParentID()const;
+public:
+    static google::protobuf::Message *AckRequestPost(UavMission &ms, google::protobuf::Message *msg);
 private:
-    int32_t getCurRidgeByItem(int curItem);    //最新飞完垄
+    int32_t getCurRidge(int curItem, bool &bFinish)const;    //最新飞完垄
     bool _hasMission(const das::proto::RequestRouteMissions &req)const;
-    void _prcsGps(const das::proto::GpsInformation &gps, const std::string &mod);
     void _missionFinish(int curItem);
     double genRidgeLength(int idx);
-    float calculateOpArea(double opedNext)const;
-    int _getOprRidge(int curItem)const;
+    float calculateOpArea(double opedNext, int curItem)const;
     double _getOprLength(int curItem)const;
-    void _saveMission(bool bSuspend, float acrage);
-    bool isOtherSuspend(int lat, int lon)const;
+    void _saveMission(bool bSuspend, float acrage, int finshed);
+    void saveOtherAssists(int latE, int lonE, int latR, int lonR, int stat);
+    void saveOtherABPoints(int latA, int lonA, int latB, int lonB, bool bHas);
 private:
     ObjectUav                       *m_parent;
     das::proto::OperationRoute      *m_mission;
-    int                             m_nCurRidge;
+    das::proto::PostOperationAssist *m_assists;
+    das::proto::PostABPoint         *m_abPoints;
+    das::proto::PostOperationReturn *m_return;
     bool                            m_bSys;
-    bool                            m_bSuspend;
     double                          m_disBeg;
     double                          m_allLength;
-    int                             m_latSuspend;
-    int                             m_lonSuspend;
     uint32_t                        m_lastORNotify;
     std::map<int32_t, RidgeDat>     m_ridges;   //地垄key:itemseq
 };

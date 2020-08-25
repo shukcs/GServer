@@ -3,6 +3,11 @@
 
 #include "ObjectAbsPB.h"
 
+namespace google {
+    namespace protobuf {
+        class Message;
+    }
+}
 namespace das {
     namespace proto {
         class RequestBindUav;
@@ -11,6 +16,9 @@ namespace das {
         class PostOperationRoute;
         class PostStatus2GroundStation;
         class PostControl2Uav;
+        class PostOperationAssist;
+        class PostABPoint;
+        class PostOperationReturn;
         class RequestUavIdentityAuthentication;
         class RequestUavStatus;
         class RequestRouteMissions;
@@ -49,6 +57,7 @@ public:
     bool IsValid()const;
     void SetValideTime(int64_t tmV);
     void SetSimId(const std::string &sim);
+    void BinderProcess(const google::protobuf::Message &pb);
 public:
     static int UAVType();
     static void InitialUAV(const DBMessage &msg, ObjectUav &uav);
@@ -68,11 +77,15 @@ protected:
 private:
     void _prcsRcvPostOperationInfo(das::proto::PostOperationInformation *msg, uint64_t tm);
     void _prcsRcvPost2Gs(das::proto::PostStatus2GroundStation *msg);
+    void _prcsAssist(das::proto::PostOperationAssist *msg);
+    void _prcsABPoint(das::proto::PostABPoint *msg);
+    void _prcsReturn(das::proto::PostOperationReturn *msg);
     void _prcsRcvReqMissions(das::proto::RequestRouteMissions *msg);
     void _prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
 
     void processBind(das::proto::RequestBindUav *rbu, const GS2UavMessage &msg);
     void processControl2Uav(das::proto::PostControl2Uav *msg);
+    void processRequestPost(google::protobuf::Message *msg, const std::string &gs);
     void processPostOr(das::proto::PostOperationRoute *msg, const std::string &gs);
     void processBaseInfo(const DBMessage &msg);
     void processGxStat(const GX2UavMessage &msg);

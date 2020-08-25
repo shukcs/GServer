@@ -464,9 +464,10 @@ message Outline{                             //地块轮廓信息
 //SurveryPrecision
 //=================================================================================================
 enum SurveryPrecision {
-    LOW		= 1;	//低
-    MEDIUM	= 2;	//中
-    HIGH	= 3;	//高
+    LOW	      = 1;	//低,手绘制
+    MEDIUM    = 2;	//中,北斗伴侣
+    HIGH      = 3;	//高,踩点器
+    MAYBE     = 4;	//不确定，飞机
 }
 
 //=================================================================================================
@@ -583,9 +584,10 @@ message RequestParcelDescriptions {
 //AckRequestParcelDescriptions
 //=================================================================================================
 message AckRequestParcelDescriptions {
-	required uint32 seqno    		= 1;	//本包的包序号
-	required int32  result			= 2;	//请求结果
-	repeated ParcelDescription pds  = 3;    //地块描述信息
+    required uint32 seqno           = 1;    //本包的包序号
+    required int32  result          = 2;    //请求结果
+    repeated string pdids           = 3;    //符合条件的地块ID
+    repeated ParcelDescription pds  = 4;    //地块
 }
 
 //=================================================================================================
@@ -672,10 +674,11 @@ message RequestOperationDescriptions {  //规划下载
 //=================================================================================================
 //AckRequestOperationDescriptions
 //=================================================================================================
-message AckRequestOperationDescriptions {//规划下载结果
-    required uint32 seqno             = 1;		//本包的包序号
-    required int32  result            = 2;		//查询结果
-    repeated OperationDescription ods = 3;		//作业描述
+message AckRequestOperationDescriptions {       //规划下载结果
+    required uint32 seqno               = 1;    //本包的包序号
+    required int32  result              = 2;    //查询结果
+    repeated string odids               = 3;    //规划ID
+    repeated OperationDescription ods   = 4;    //作业描述
 }
 
 //=================================================================================================
@@ -747,7 +750,7 @@ message AckPostOperationRoute {
 message UploadOperationRoutes {//UAV消息
     required uint32    seqno     = 1;    //本包的包序号
     required string    uavid     = 2;    //无人机ID
-    required string    userid    = 3;    //操作员ID
+    required string    msid      = 3;    //任务ID
     required uint64    timestamp = 4;    //航线的最后修改时间
     required int32  countmission = 5;    //航点总数
     required int32 countboundary = 6;    //航点总数
@@ -1001,4 +1004,84 @@ message PostStatus2GroundStation {
     required uint32 seqno           = 1;    //本包的包序号
     required string uavid           = 2;    //无人机id
     repeated bytes  data            = 3;    //mavlink协议数据
+}
+
+//=================================================================================================
+//PostOperationAssist
+//=================================================================================================
+message PostOperationAssist {          //作业辅助点
+    required uint32 seqno      = 1;    //本包的包序号
+    required string uavid      = 2;    //无人机id
+    optional Coordinate enter  = 3;    //起飞辅助点
+    optional Coordinate return = 4;    //返航辅助点
+}
+
+//=================================================================================================
+//AckOperationAssist
+//=================================================================================================
+message AckOperationAssist {
+    required uint32 seqno      = 1;    //本包的包序号
+    required int32  result     = 2;    //接受0：false; 1:true
+}
+
+//=================================================================================================
+//RequestOperationAssist
+//=================================================================================================
+message RequestOperationAssist {       //作业辅助点
+    required uint32 seqno      = 1;    //本包的包序号
+    required string uavid      = 2;    //无人机id
+}
+
+//=================================================================================================
+//PostABPoint
+//=================================================================================================
+message PostABPoint {                  //AB点
+    required uint32 seqno      = 1;    //本包的包序号
+    required string uavid      = 2;    //无人机id
+    optional Coordinate pointA = 3;    //起飞辅助点
+    optional Coordinate pointB = 4;    //返航辅助点
+}
+
+//=================================================================================================
+//AckPostABPoint
+//=================================================================================================
+message AckPostABPoint {
+    required uint32 seqno      = 1;    //本包的包序号
+    required int32  result     = 2;    //接受0：false; 1:true
+}
+
+//=================================================================================================
+//RequestABPoint
+//=================================================================================================
+message RequestABPoint {       //作业辅助点
+    required uint32 seqno      = 1;    //本包的包序号
+    required string uavid      = 2;    //无人机id
+}
+
+//=================================================================================================
+//PostOperationReturn
+//=================================================================================================
+message PostOperationReturn {           //作业航程
+    required uint32 seqno       = 1;    //本包的包序号
+    required string uavid       = 2;    //无人机id
+    required bool mission       = 3;    //是否是自主作业 false:表示是AB点作业
+    required int32  msItem      = 4;    //当前任务点
+    required string msid        = 5;    //任务ID
+    optional Coordinate suspend = 6;    //断点
+}
+
+//=================================================================================================
+//AckOperationReturn
+//=================================================================================================
+message AckOperationReturn {
+    required uint32 seqno       = 1;    //本包的包序号
+    required int32  result      = 2;    //接受0：false; 1:true
+}
+
+//=================================================================================================
+//RequestOperationReturn
+//=================================================================================================
+message RequestOperationReturn {       //作业辅助点
+    required uint32 seqno       = 1;    //本包的包序号
+    required string uavid       = 2;    //无人机id
 }

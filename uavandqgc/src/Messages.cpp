@@ -163,6 +163,12 @@ int Uav2GSMessage::getMessageType(const Message &msg)
         ret = PushUavSndInfo;
     else if (name == d_p_ClassName(PostStatus2GroundStation))
         ret = ControlUser;
+    else if (name == d_p_ClassName(PostOperationAssist))
+        ret = ControlUser;
+    else if (name == d_p_ClassName(PostABPoint))
+        ret = ControlUser;
+    else if (name == d_p_ClassName(PostOperationReturn))
+        ret = ControlUser;
     else if (name == d_p_ClassName(AckRequestUavStatus))
         ret = QueryDeviceRslt;
     else if (name == d_p_ClassName(AckIdentityAllocation))
@@ -210,6 +216,12 @@ int GS2UavMessage::getMessageType(const google::protobuf::Message &msg)
         ret = DeviceAllocation;
     else if (name == d_p_ClassName(NotifyProgram))
         ret = NotifyFWUpdate;
+    else if (name == d_p_ClassName(RequestOperationAssist))
+        ret = ControlDevice2;
+    else if (name == d_p_ClassName(RequestABPoint))
+        ret = ControlDevice2;
+    else if (name == d_p_ClassName(RequestOperationReturn))
+        ret = ControlDevice2;
 
     return ret;
 }
