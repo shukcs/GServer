@@ -186,6 +186,8 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         m_msg = new PostOperationReturn;                    //断点点
     else if (name == d_p_ClassName(RequestOperationReturn))
         m_msg = new RequestOperationReturn;                 //请求断点
+    else if (name == d_p_ClassName(PostBlocks))
+        m_msg = new PostBlocks;                             //障碍物
 
     if (m_msg)
         return m_msg->ParseFromArray(buff, len);

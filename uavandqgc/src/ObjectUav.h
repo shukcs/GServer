@@ -29,6 +29,7 @@ namespace das {
         class AckPositionAuthentication;
         class GpsInformation;
         class UavRoute;
+        class PostBlocks;
     }
 }
 
@@ -82,6 +83,7 @@ private:
     void _prcsReturn(das::proto::PostOperationReturn *msg);
     void _prcsRcvReqMissions(das::proto::RequestRouteMissions *msg);
     void _prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
+    void _prcsPostBlocks(das::proto::PostBlocks *msg);
 
     void processBind(das::proto::RequestBindUav *rbu, const GS2UavMessage &msg);
     void processControl2Uav(das::proto::PostControl2Uav *msg);

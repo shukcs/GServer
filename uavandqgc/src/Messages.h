@@ -2,6 +2,7 @@
 #define __MESSGES_H__
 
 #include "IMessage.h"
+#include <map>
 
 namespace google {
     namespace protobuf {

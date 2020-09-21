@@ -142,6 +142,8 @@ class RequestABPoint;
 class PostOperationReturn;
 class AckOperationReturn;
 class RequestOperationReturn;
+class PostBlocks;
+class AckBlocks;
 
 enum GSMsgType {
   DeleteFriend = 1,
@@ -12940,6 +12942,208 @@ class RequestOperationReturn : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static RequestOperationReturn* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class PostBlocks : public ::google::protobuf::Message {
+ public:
+  PostBlocks();
+  virtual ~PostBlocks();
+
+  PostBlocks(const PostBlocks& from);
+
+  inline PostBlocks& operator=(const PostBlocks& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PostBlocks& default_instance();
+
+  void Swap(PostBlocks* other);
+
+  // implements Message ----------------------------------------------
+
+  PostBlocks* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const PostBlocks& from);
+  void MergeFrom(const PostBlocks& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string uavid = 2;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 2;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
+
+  // repeated int32 blocks = 3;
+  inline int blocks_size() const;
+  inline void clear_blocks();
+  static const int kBlocksFieldNumber = 3;
+  inline ::google::protobuf::int32 blocks(int index) const;
+  inline void set_blocks(int index, ::google::protobuf::int32 value);
+  inline void add_blocks(::google::protobuf::int32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
+      blocks() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
+      mutable_blocks();
+
+  // @@protoc_insertion_point(class_scope:das.proto.PostBlocks)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uavid_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::int32 > blocks_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static PostBlocks* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckBlocks : public ::google::protobuf::Message {
+ public:
+  AckBlocks();
+  virtual ~AckBlocks();
+
+  AckBlocks(const AckBlocks& from);
+
+  inline AckBlocks& operator=(const AckBlocks& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckBlocks& default_instance();
+
+  void Swap(AckBlocks* other);
+
+  // implements Message ----------------------------------------------
+
+  AckBlocks* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckBlocks& from);
+  void MergeFrom(const AckBlocks& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required int32 result = 2;
+  inline bool has_result() const;
+  inline void clear_result();
+  static const int kResultFieldNumber = 2;
+  inline ::google::protobuf::int32 result() const;
+  inline void set_result(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckBlocks)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_result();
+  inline void clear_has_result();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 result_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckBlocks* default_instance_;
 };
 // ===================================================================
 
@@ -29862,6 +30066,175 @@ inline void RequestOperationReturn::set_allocated_uavid(::std::string* uavid) {
     clear_has_uavid();
     uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
+}
+
+// -------------------------------------------------------------------
+
+// PostBlocks
+
+// required uint32 seqno = 1;
+inline bool PostBlocks::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void PostBlocks::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void PostBlocks::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void PostBlocks::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 PostBlocks::seqno() const {
+  return seqno_;
+}
+inline void PostBlocks::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string uavid = 2;
+inline bool PostBlocks::has_uavid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void PostBlocks::set_has_uavid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void PostBlocks::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void PostBlocks::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
+  }
+  clear_has_uavid();
+}
+inline const ::std::string& PostBlocks::uavid() const {
+  return *uavid_;
+}
+inline void PostBlocks::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void PostBlocks::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void PostBlocks::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* PostBlocks::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  return uavid_;
+}
+inline ::std::string* PostBlocks::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void PostBlocks::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
+  } else {
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// repeated int32 blocks = 3;
+inline int PostBlocks::blocks_size() const {
+  return blocks_.size();
+}
+inline void PostBlocks::clear_blocks() {
+  blocks_.Clear();
+}
+inline ::google::protobuf::int32 PostBlocks::blocks(int index) const {
+  return blocks_.Get(index);
+}
+inline void PostBlocks::set_blocks(int index, ::google::protobuf::int32 value) {
+  blocks_.Set(index, value);
+}
+inline void PostBlocks::add_blocks(::google::protobuf::int32 value) {
+  blocks_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
+PostBlocks::blocks() const {
+  return blocks_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
+PostBlocks::mutable_blocks() {
+  return &blocks_;
+}
+
+// -------------------------------------------------------------------
+
+// AckBlocks
+
+// required uint32 seqno = 1;
+inline bool AckBlocks::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckBlocks::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckBlocks::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckBlocks::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckBlocks::seqno() const {
+  return seqno_;
+}
+inline void AckBlocks::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 result = 2;
+inline bool AckBlocks::has_result() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckBlocks::set_has_result() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckBlocks::clear_has_result() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckBlocks::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::google::protobuf::int32 AckBlocks::result() const {
+  return result_;
+}
+inline void AckBlocks::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
 }
 
 

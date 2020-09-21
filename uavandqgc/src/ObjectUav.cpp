@@ -233,6 +233,8 @@ void ObjectUav::PrcsProtoBuff(uint64_t tm)
         _prcsRcvReqMissions((RequestRouteMissions *)m_p->GetProtoMessage());
     else if (name == d_p_ClassName(RequestPositionAuthentication))
         _prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
+    else if (name == d_p_ClassName(RequestPositionAuthentication))
+        _prcsPostBlocks((PostBlocks *)m_p->GetProtoMessage());
 }
 
 void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
@@ -424,6 +426,20 @@ void ObjectUav::_prcsPosAuth(RequestPositionAuthentication *msg)
         ack->set_devid(GetObjectID());
         WaitSend(ack);
     }
+}
+
+void ObjectUav::_prcsPostBlocks(das::proto::PostBlocks *msg)
+{
+    if (!msg || Utility::Upper(msg->uavid()) != GetObjectID())
+        return;
+
+    if (auto ack = new AckPositionAuthentication)
+    {
+        ack->set_seqno(msg->seqno());
+        ack->set_result(1);
+        WaitSend(ack);
+    }
+    BinderProcess(*msg);
 }
 
 void ObjectUav::processBind(RequestBindUav *msg, const GS2UavMessage &g2u)
