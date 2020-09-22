@@ -233,7 +233,7 @@ void ObjectUav::PrcsProtoBuff(uint64_t tm)
         _prcsRcvReqMissions((RequestRouteMissions *)m_p->GetProtoMessage());
     else if (name == d_p_ClassName(RequestPositionAuthentication))
         _prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
-    else if (name == d_p_ClassName(RequestPositionAuthentication))
+    else if (name == d_p_ClassName(PostBlocks))
         _prcsPostBlocks((PostBlocks *)m_p->GetProtoMessage());
 }
 

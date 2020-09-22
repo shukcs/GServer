@@ -118,7 +118,7 @@ void ObjectGV::_prcsHeartBeat(PostHeartBeat *msg)
     }
 }
 
-void ObjectGV::_prcsSyncDevice(SyncDeviceList *ms)
+void ObjectGV::_prcsSyncDevice(SyncDeviceList *)
 {
     if (auto msg = new ObjectSignal(this, GVType(), IMessage::SyncDeviceis, GetObjectID()))
         SendMsg(msg);

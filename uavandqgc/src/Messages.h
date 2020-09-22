@@ -33,50 +33,46 @@ public:
 public:
     static bool IsGSUserValide(const std::string &user);
 protected:
-    virtual int getMessageType(const google::protobuf::Message &msg) = 0;
+    int getMessageType(const google::protobuf::Message &msg);
     void _copyMsg(google::protobuf::Message *c, const google::protobuf::Message &msg);
 protected:
 };
 
 class Uav2GSMessage : public GSOrUavMessage
 {
+    CLASS_INFO(Uav2GSMessage)
 public:
     Uav2GSMessage(ObjectUav *sender, const std::string &idRcv);
     Uav2GSMessage(IObjectManager *sender, const std::string &idRcv);
-protected:
-    int getMessageType(const google::protobuf::Message &msg);
 private:
 };
 
 class GS2UavMessage : public GSOrUavMessage
 {
+    CLASS_INFO(GS2UavMessage)
 public:
     GS2UavMessage(ObjectGS *sender, const std::string &idRcv);
     GS2UavMessage(IObjectManager *sender, const std::string &idRcv);
 
     int GetAuth()const;
-protected:
-    int getMessageType(const google::protobuf::Message &msg);
 private:
     int m_auth;
 };
 
 class Gs2GsMessage : public GSOrUavMessage
 {
+    CLASS_INFO(Gs2GsMessage)
 public:
     Gs2GsMessage(ObjectGS *sender, const std::string &idRcv);
     Gs2GsMessage(IObjectManager *sender, const std::string &idRcv);
-protected:
-    int getMessageType(const google::protobuf::Message &msg);
 private:
 };
 
 class Uav2GXMessage : public GSOrUavMessage
 {
+    CLASS_INFO(Uav2GXMessage)
 public:
     Uav2GXMessage(ObjectUav *sender);
-protected:
-    int getMessageType(const google::protobuf::Message &msg);
 private:
 };
 

@@ -4,6 +4,13 @@
 #include <string>
 #include "stdconfig.h"
 
+#define SymbolString(sb) #sb
+#define CLASS_INFO(sb) \
+protected: \
+virtual const std::string &_className()const { \
+    static std::string ret(SymbolString(sb)); \
+    return ret; \
+}
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
@@ -39,6 +46,7 @@ tpMsg:消息类型
 **************************************************************************/
 class IMessage
 {
+    CLASS_INFO(IMessage)
 public:
     enum MessageType
     {

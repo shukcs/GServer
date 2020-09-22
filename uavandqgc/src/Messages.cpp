@@ -24,49 +24,52 @@ enum
     Char_Max = 'z',
 };
 
-map<string, int> &getGS2UavProtoTypes()
+const map<string, int> &getProtoTypes(const string &className)
 {
-    static map<string, int> mapProtoType;
-    if (!mapProtoType.empty())
-        return mapProtoType;
+    static map<string, map<string, int>> sProtoType;
+    if (sProtoType.empty())
+    {
+        map<string, int> &sGsProtoType = sProtoType[SymbolString(GS2UavMessage)];
+        sGsProtoType[d_p_ClassName(RequestBindUav)] = IMessage::BindUav;
+        sGsProtoType[d_p_ClassName(PostOperationRoute)] = IMessage::PostOR;
+        sGsProtoType[d_p_ClassName(PostControl2Uav)] = IMessage::ControlDevice;
+        sGsProtoType[d_p_ClassName(RequestRouteMissions)] = IMessage::SychMission;
+        sGsProtoType[d_p_ClassName(RequestUavStatus)] = IMessage::QueryDevice;
+        sGsProtoType[d_p_ClassName(RequestIdentityAllocation)] = IMessage::DeviceAllocation;
+        sGsProtoType[d_p_ClassName(RequestIdentityAllocation)] = IMessage::DeviceAllocation;
+        sGsProtoType[d_p_ClassName(NotifyProgram)] = IMessage::NotifyFWUpdate;
+        sGsProtoType[d_p_ClassName(RequestOperationAssist)] = IMessage::ControlDevice2;
+        sGsProtoType[d_p_ClassName(RequestABPoint)] = IMessage::ControlDevice2;
+        sGsProtoType[d_p_ClassName(RequestOperationReturn)] = IMessage::ControlDevice2;
 
-    mapProtoType[d_p_ClassName(RequestBindUav)] = IMessage::BindUav;
-    mapProtoType[d_p_ClassName(PostOperationRoute)] = IMessage::PostOR;
-    mapProtoType[d_p_ClassName(PostControl2Uav)] = IMessage::ControlDevice;
-    mapProtoType[d_p_ClassName(RequestRouteMissions)] = IMessage::SychMission;
-    mapProtoType[d_p_ClassName(RequestUavStatus)] = IMessage::QueryDevice;
-    mapProtoType[d_p_ClassName(RequestIdentityAllocation)] = IMessage::DeviceAllocation;
-    mapProtoType[d_p_ClassName(RequestIdentityAllocation)] = IMessage::DeviceAllocation;
-    mapProtoType[d_p_ClassName(NotifyProgram)] = IMessage::NotifyFWUpdate;
-    mapProtoType[d_p_ClassName(RequestOperationAssist)] = IMessage::ControlDevice2;
-    mapProtoType[d_p_ClassName(RequestABPoint)] = IMessage::ControlDevice2;
-    mapProtoType[d_p_ClassName(RequestOperationReturn)] = IMessage::ControlDevice2;
+        map<string, int> &sUavProtoType = sProtoType[SymbolString(Uav2GSMessage)];
+        sUavProtoType[d_p_ClassName(AckRequestBindUav)] = IMessage::BindUavRslt;
+        sUavProtoType[d_p_ClassName(AckPostControl2Uav)] = IMessage::ControlDeviceRslt;
+        sUavProtoType[d_p_ClassName(SyscOperationRoutes)] = IMessage::SychMissionRslt;
+        sUavProtoType[d_p_ClassName(AckPostOperationRoute)] = IMessage::PostORRslt;
+        sUavProtoType[d_p_ClassName(PostOperationInformation)] = IMessage::PushUavSndInfo;
+        sUavProtoType[d_p_ClassName(PostStatus2GroundStation)] = IMessage::ControlUser;
+        sUavProtoType[d_p_ClassName(PostOperationAssist)] = IMessage::ControlUser;
+        sUavProtoType[d_p_ClassName(PostABPoint)] = IMessage::ControlUser;
+        sUavProtoType[d_p_ClassName(PostOperationReturn)] = IMessage::ControlUser;
+        sUavProtoType[d_p_ClassName(AckRequestUavStatus)] = IMessage::QueryDeviceRslt;
+        sUavProtoType[d_p_ClassName(AckIdentityAllocation)] = IMessage::DeviceAllocationRslt;
+        sUavProtoType[d_p_ClassName(PostBlocks)] = IMessage::ControlUser;
 
-    return mapProtoType;
+        map<string, int> &sGs2GsProtoType = sProtoType[SymbolString(Gs2GsMessage)];
+        sGs2GsProtoType[d_p_ClassName(GroundStationsMessage)] = IMessage::User2User;
+        sGs2GsProtoType[d_p_ClassName(AckGroundStationsMessage)] = IMessage::User2UserAck;
+
+        map<string, int> &sGs2GXProtoType = sProtoType[SymbolString(Uav2GXMessage)];
+        sGs2GXProtoType[d_p_ClassName(RequestUavIdentityAuthentication)] = IMessage::Authentication;
+        sGs2GXProtoType[d_p_ClassName(PostOperationInformation)] = IMessage::PushUavSndInfo;
+    }
+
+    return sProtoType[className];
 }
-
-map<string, int> &getUav2GSProtoTypes()
-{
-    static map<string, int> mapProtoType;
-    if (!mapProtoType.empty())
-        return mapProtoType;
-
-    mapProtoType[d_p_ClassName(AckRequestBindUav)] = IMessage::BindUavRslt;
-    mapProtoType[d_p_ClassName(AckPostControl2Uav)] = IMessage::ControlDeviceRslt;
-    mapProtoType[d_p_ClassName(SyscOperationRoutes)] = IMessage::SychMissionRslt;
-    mapProtoType[d_p_ClassName(AckPostOperationRoute)] = IMessage::PostORRslt;
-    mapProtoType[d_p_ClassName(PostOperationInformation)] = IMessage::PushUavSndInfo;
-    mapProtoType[d_p_ClassName(PostStatus2GroundStation)] = IMessage::ControlUser;
-    mapProtoType[d_p_ClassName(PostOperationAssist)] = IMessage::ControlUser;
-    mapProtoType[d_p_ClassName(PostABPoint)] = IMessage::ControlUser;
-    mapProtoType[d_p_ClassName(PostOperationReturn)] = IMessage::ControlUser;
-    mapProtoType[d_p_ClassName(AckRequestUavStatus)] = IMessage::QueryDeviceRslt;
-    mapProtoType[d_p_ClassName(AckIdentityAllocation)] = IMessage::DeviceAllocationRslt;
-    mapProtoType[d_p_ClassName(PostBlocks)] = IMessage::ControlUser;
-
-    return mapProtoType;
-}
-
+//////////////////////////////////////////////////////////////////
+//GSOrUav
+//////////////////////////////////////////////////////////////////
 class GSOrUav : public MessageData
 {
 public:
@@ -165,6 +168,16 @@ bool GSOrUavMessage::IsGSUserValide(const std::string &user)
     return true;
 }
 
+int GSOrUavMessage::getMessageType(const google::protobuf::Message &msg)
+{
+    const map<string, int> &protoType = getProtoTypes(_className());
+    auto itr = protoType.find(msg.GetDescriptor()->full_name());
+    if (itr != protoType.end())
+        return itr->second;
+
+    return Unknown;
+}
+
 void GSOrUavMessage::_copyMsg(Message *c, const Message &msg)
 {
     SetMessgeType(getMessageType(msg));
@@ -189,15 +202,6 @@ Uav2GSMessage::Uav2GSMessage(IObjectManager *sender, const std::string &idRcv)
     : GSOrUavMessage(sender, idRcv, IObject::GroundStation)
 {
 }
-
-int Uav2GSMessage::getMessageType(const Message &msg)
-{
-    auto itr = getUav2GSProtoTypes().find(msg.GetDescriptor()->full_name());
-    if (itr != getUav2GSProtoTypes().end())
-        return itr->second;
-
-    return Unknown;
-}
 /////////////////////////////////////////////////////////////////////////////
 //GS2UavMessage
 /////////////////////////////////////////////////////////////////////////////
@@ -217,15 +221,6 @@ int GS2UavMessage::GetAuth() const
 {
     return m_auth;
 }
-
-int GS2UavMessage::getMessageType(const google::protobuf::Message &msg)
-{
-    auto itr = getGS2UavProtoTypes().find(msg.GetDescriptor()->full_name());
-    if (itr != getGS2UavProtoTypes().end())
-        return itr->second;
-
-    return Unknown;
-}
 /////////////////////////////////////////////////////////////////////////////
 //GS2UavMessage
 /////////////////////////////////////////////////////////////////////////////
@@ -238,36 +233,12 @@ Gs2GsMessage::Gs2GsMessage(IObjectManager *sender, const std::string &idRcv)
     : GSOrUavMessage(sender, idRcv, IObject::GroundStation)
 {
 }
-
-int Gs2GsMessage::getMessageType(const google::protobuf::Message &msg)
-{
-    MessageType ret = Unknown;
-    const string &name = msg.GetDescriptor()->full_name();
-    if (name == d_p_ClassName(GroundStationsMessage))
-        ret = User2User;
-    if (name == d_p_ClassName(AckGroundStationsMessage))
-        ret = User2UserAck;
-
-    return ret;
-}
 /////////////////////////////////////////////////////////////////////////
 //Uav2GXMessage
 /////////////////////////////////////////////////////////////////////////
 Uav2GXMessage::Uav2GXMessage(ObjectUav *sender)
 : GSOrUavMessage(sender, string(), GXClient::GXClientType())
 {
-}
-
-int Uav2GXMessage::getMessageType(const google::protobuf::Message &msg)
-{
-    int ret = Unknown;
-    const string &name = msg.GetDescriptor()->full_name();
-    if (name == d_p_ClassName(RequestUavIdentityAuthentication))
-        ret = Authentication;
-    else if (name == d_p_ClassName(PostOperationInformation))
-        ret = PushUavSndInfo;
-
-    return ret;
 }
 /////////////////////////////////////////////////////////////////////////
 //GX2UavMessage
