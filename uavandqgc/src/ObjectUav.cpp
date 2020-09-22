@@ -433,7 +433,7 @@ void ObjectUav::_prcsPostBlocks(das::proto::PostBlocks *msg)
     if (!msg || Utility::Upper(msg->uavid()) != GetObjectID())
         return;
 
-    if (auto ack = new AckPositionAuthentication)
+    if (auto ack = new AckBlocks)
     {
         ack->set_seqno(msg->seqno());
         ack->set_result(1);
