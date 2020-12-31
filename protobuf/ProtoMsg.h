@@ -2,6 +2,7 @@
 #define __PROTO_MSG_H__
 
 #include <string>
+#include <map>
 
 namespace google {
     namespace protobuf {
@@ -19,6 +20,31 @@ class ISocket;
 
 #define PROTOFLAG "das.proto."
 #define d_p_ClassName(_cls) _cls::descriptor()->full_name()
+
+class PBAbSFactoryItem
+{
+public:
+    PBAbSFactoryItem(const std::string &name);
+    virtual~PBAbSFactoryItem() {}
+    virtual google::protobuf::Message *Create()const = 0;
+public:
+    static google::protobuf::Message *createMessage(const std::string &name);
+};
+
+template<class C>
+class PBFactoryItem : public PBAbSFactoryItem
+{
+public:
+    PBFactoryItem() : PBAbSFactoryItem(C::descriptor()->full_name()) {}
+protected:
+    google::protobuf::Message *Create()const
+    {
+        return new C;
+    }
+};
+
+#define DeclareRcvPB(msg) static PBFactoryItem<msg> g_pb##msg;
+
 class ProtoMsg
 {
 public:

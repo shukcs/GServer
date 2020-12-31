@@ -144,6 +144,8 @@ class AckOperationReturn;
 class RequestOperationReturn;
 class PostBlocks;
 class AckBlocks;
+class PostABOperation;
+class AckABOperation;
 
 enum GSMsgType {
   DeleteFriend = 1,
@@ -13144,6 +13146,218 @@ class AckBlocks : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static AckBlocks* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class PostABOperation : public ::google::protobuf::Message {
+ public:
+  PostABOperation();
+  virtual ~PostABOperation();
+
+  PostABOperation(const PostABOperation& from);
+
+  inline PostABOperation& operator=(const PostABOperation& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PostABOperation& default_instance();
+
+  void Swap(PostABOperation* other);
+
+  // implements Message ----------------------------------------------
+
+  PostABOperation* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const PostABOperation& from);
+  void MergeFrom(const PostABOperation& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string uavid = 2;
+  inline bool has_uavid() const;
+  inline void clear_uavid();
+  static const int kUavidFieldNumber = 2;
+  inline const ::std::string& uavid() const;
+  inline void set_uavid(const ::std::string& value);
+  inline void set_uavid(const char* value);
+  inline void set_uavid(const char* value, size_t size);
+  inline ::std::string* mutable_uavid();
+  inline ::std::string* release_uavid();
+  inline void set_allocated_uavid(::std::string* uavid);
+
+  // optional float sw = 3;
+  inline bool has_sw() const;
+  inline void clear_sw();
+  static const int kSwFieldNumber = 3;
+  inline float sw() const;
+  inline void set_sw(float value);
+
+  // repeated int32 points = 4;
+  inline int points_size() const;
+  inline void clear_points();
+  static const int kPointsFieldNumber = 4;
+  inline ::google::protobuf::int32 points(int index) const;
+  inline void set_points(int index, ::google::protobuf::int32 value);
+  inline void add_points(::google::protobuf::int32 value);
+  inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
+      points() const;
+  inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
+      mutable_points();
+
+  // @@protoc_insertion_point(class_scope:das.proto.PostABOperation)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_uavid();
+  inline void clear_has_uavid();
+  inline void set_has_sw();
+  inline void clear_has_sw();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* uavid_;
+  ::google::protobuf::uint32 seqno_;
+  float sw_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::int32 > points_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static PostABOperation* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckABOperation : public ::google::protobuf::Message {
+ public:
+  AckABOperation();
+  virtual ~AckABOperation();
+
+  AckABOperation(const AckABOperation& from);
+
+  inline AckABOperation& operator=(const AckABOperation& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckABOperation& default_instance();
+
+  void Swap(AckABOperation* other);
+
+  // implements Message ----------------------------------------------
+
+  AckABOperation* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckABOperation& from);
+  void MergeFrom(const AckABOperation& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required int32 result = 2;
+  inline bool has_result() const;
+  inline void clear_result();
+  static const int kResultFieldNumber = 2;
+  inline ::google::protobuf::int32 result() const;
+  inline void set_result(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckABOperation)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_result();
+  inline void clear_has_result();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 result_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckABOperation* default_instance_;
 };
 // ===================================================================
 
@@ -30233,6 +30447,197 @@ inline ::google::protobuf::int32 AckBlocks::result() const {
   return result_;
 }
 inline void AckBlocks::set_result(::google::protobuf::int32 value) {
+  set_has_result();
+  result_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// PostABOperation
+
+// required uint32 seqno = 1;
+inline bool PostABOperation::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void PostABOperation::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void PostABOperation::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void PostABOperation::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 PostABOperation::seqno() const {
+  return seqno_;
+}
+inline void PostABOperation::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string uavid = 2;
+inline bool PostABOperation::has_uavid() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void PostABOperation::set_has_uavid() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void PostABOperation::clear_has_uavid() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void PostABOperation::clear_uavid() {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    uavid_->clear();
+  }
+  clear_has_uavid();
+}
+inline const ::std::string& PostABOperation::uavid() const {
+  return *uavid_;
+}
+inline void PostABOperation::set_uavid(const ::std::string& value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void PostABOperation::set_uavid(const char* value) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(value);
+}
+inline void PostABOperation::set_uavid(const char* value, size_t size) {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  uavid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* PostABOperation::mutable_uavid() {
+  set_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    uavid_ = new ::std::string;
+  }
+  return uavid_;
+}
+inline ::std::string* PostABOperation::release_uavid() {
+  clear_has_uavid();
+  if (uavid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = uavid_;
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void PostABOperation::set_allocated_uavid(::std::string* uavid) {
+  if (uavid_ != &::google::protobuf::internal::kEmptyString) {
+    delete uavid_;
+  }
+  if (uavid) {
+    set_has_uavid();
+    uavid_ = uavid;
+  } else {
+    clear_has_uavid();
+    uavid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional float sw = 3;
+inline bool PostABOperation::has_sw() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void PostABOperation::set_has_sw() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void PostABOperation::clear_has_sw() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void PostABOperation::clear_sw() {
+  sw_ = 0;
+  clear_has_sw();
+}
+inline float PostABOperation::sw() const {
+  return sw_;
+}
+inline void PostABOperation::set_sw(float value) {
+  set_has_sw();
+  sw_ = value;
+}
+
+// repeated int32 points = 4;
+inline int PostABOperation::points_size() const {
+  return points_.size();
+}
+inline void PostABOperation::clear_points() {
+  points_.Clear();
+}
+inline ::google::protobuf::int32 PostABOperation::points(int index) const {
+  return points_.Get(index);
+}
+inline void PostABOperation::set_points(int index, ::google::protobuf::int32 value) {
+  points_.Set(index, value);
+}
+inline void PostABOperation::add_points(::google::protobuf::int32 value) {
+  points_.Add(value);
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::int32 >&
+PostABOperation::points() const {
+  return points_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::int32 >*
+PostABOperation::mutable_points() {
+  return &points_;
+}
+
+// -------------------------------------------------------------------
+
+// AckABOperation
+
+// required uint32 seqno = 1;
+inline bool AckABOperation::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckABOperation::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckABOperation::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckABOperation::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckABOperation::seqno() const {
+  return seqno_;
+}
+inline void AckABOperation::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 result = 2;
+inline bool AckABOperation::has_result() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckABOperation::set_has_result() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckABOperation::clear_has_result() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckABOperation::clear_result() {
+  result_ = 0;
+  clear_has_result();
+}
+inline ::google::protobuf::int32 AckABOperation::result() const {
+  return result_;
+}
+inline void AckABOperation::set_result(::google::protobuf::int32 value) {
   set_has_result();
   result_ = value;
 }

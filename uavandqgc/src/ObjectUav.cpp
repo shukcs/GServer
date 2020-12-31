@@ -117,7 +117,7 @@ void ObjectUav::SetSimId(const std::string &sim)
     m_strSim = sim;
 }
 
-void ObjectUav::BinderProcess(const google::protobuf::Message &pb)
+void ObjectUav::SndBinder(const google::protobuf::Message &pb)
 {
     if (m_bBind && !m_lastBinder.empty())
     {
@@ -127,6 +127,11 @@ void ObjectUav::BinderProcess(const google::protobuf::Message &pb)
             SendMsg(ms);
         }
     }
+}
+
+const string &ObjectUav::GetBinder() const
+{
+    return m_bBind ? m_lastBinder : Utility::EmptyStr();
 }
 
 int ObjectUav::UAVType()
@@ -139,9 +144,8 @@ void ObjectUav::InitialUAV(const DBMessage &rslt, ObjectUav &uav)
     const Variant &binded = rslt.GetRead("binded");
     if (!binded.IsNull())
         uav.m_bBind = binded.ToInt8() != 0;
-    const Variant &binder = rslt.GetRead("binder");
-    if (binder.GetType() == Variant::Type_string)
-        uav.m_lastBinder = binder.ToString();
+
+    uav.m_lastBinder = rslt.GetRead("binder").ToString();
     const Variant &lat = rslt.GetRead("lat");
     if (lat.GetType() == Variant::Type_double)
         uav.m_lat = lat.ToDouble();
@@ -149,17 +153,15 @@ void ObjectUav::InitialUAV(const DBMessage &rslt, ObjectUav &uav)
     if (lon.GetType() == Variant::Type_double)
         uav.m_lon = lon.ToDouble();
     const Variant &timeBind = rslt.GetRead("timeBind");
-    if (timeBind.IsNull())
+    if (!timeBind.IsNull())
         uav.m_tmLastBind = timeBind.ToInt64();
     const Variant &timePos = rslt.GetRead("timePos");
-    if (timePos.IsNull())
+    if (!timePos.IsNull())
         uav.m_tmLastBind = timePos.ToInt64();
     const Variant &valid = rslt.GetRead("valid");
-    if (valid.IsNull())
+    if (!valid.IsNull())
         uav.m_tmValidLast = valid.ToInt64();
-    const Variant &authCheck = rslt.GetRead("authCheck");
-    if (authCheck.GetType() == Variant::Type_string)
-        uav.m_authCheck = authCheck.ToString();
+    uav.m_authCheck = rslt.GetRead("authCheck").ToString();
 }
 
 IMessage *ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *obj)
@@ -235,6 +237,8 @@ void ObjectUav::PrcsProtoBuff(uint64_t tm)
         _prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
     else if (name == d_p_ClassName(PostBlocks))
         _prcsPostBlocks((PostBlocks *)m_p->GetProtoMessage());
+    else if (name == d_p_ClassName(PostABOperation))
+        _prcsABOperation((PostABOperation *)m_p->GetProtoMessage());
 }
 
 void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
@@ -314,10 +318,11 @@ void ObjectUav::_prcsRcvPost2Gs(PostStatus2GroundStation *msg)
     if (!msg)
         return;
 
-    if (m_mission && m_mission->MavLinkfilter(*msg))
-        return;
+    if (m_mission)
+        m_mission->MavLinkfilter(*msg);
 
-    BinderProcess(*msg);
+    if (msg->data_size() > 0)
+        SndBinder(*msg);
 }
 
 void ObjectUav::_prcsAssist(PostOperationAssist *msg)
@@ -325,7 +330,7 @@ void ObjectUav::_prcsAssist(PostOperationAssist *msg)
     if (!msg)
         return;
 
-    BinderProcess(*msg);
+    SndBinder(*msg);
     if (auto ack = new AckOperationReturn)
     {
         ack->set_seqno(msg->seqno());
@@ -344,7 +349,7 @@ void ObjectUav::_prcsABPoint(PostABPoint *msg)
     if (!msg)
         return;
 
-    BinderProcess(*msg);
+    SndBinder(*msg);
     if (auto ack = new AckPostABPoint)
     {
         ack->set_seqno(msg->seqno());
@@ -364,7 +369,7 @@ void ObjectUav::_prcsReturn(PostOperationReturn *msg)
     if (!msg)
         return;
 
-    BinderProcess(*msg);
+    SndBinder(*msg);
     if (auto ack = new AckOperationReturn)
     {
         ack->set_seqno(msg->seqno());
@@ -439,7 +444,22 @@ void ObjectUav::_prcsPostBlocks(das::proto::PostBlocks *msg)
         ack->set_result(1);
         WaitSend(ack);
     }
-    BinderProcess(*msg);
+    SndBinder(*msg);
+}
+
+void ObjectUav::_prcsABOperation(PostABOperation *msg)
+{
+    if (!msg || Utility::Upper(msg->uavid()) != GetObjectID())
+        return;
+
+    if (auto ack = new AckABOperation)
+    {
+        ack->set_seqno(msg->seqno());
+        ack->set_result(1);
+        WaitSend(ack);
+    }
+    if (m_mission)
+        m_mission->PrcsABOperation(msg);
 }
 
 void ObjectUav::processBind(RequestBindUav *msg, const GS2UavMessage &g2u)
@@ -493,7 +513,7 @@ void ObjectUav::processRequestPost(Message *msg, const string &gs)
 
     Message *pb = UavMission::AckRequestPost(*m_mission, msg);
     if (pb)
-        BinderProcess(*pb);
+        SndBinder(*pb);
 }
 
 void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)

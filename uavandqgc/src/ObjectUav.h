@@ -30,6 +30,7 @@ namespace das {
         class GpsInformation;
         class UavRoute;
         class PostBlocks;
+        class PostABOperation;
     }
 }
 
@@ -45,11 +46,6 @@ class GS2UavMessage;
 class GX2UavMessage;
 class ObjectUav : public ObjectAbsPB
 {
-private:
-    typedef struct _RidgeDat{
-        int     idx;
-        double  length;
-    } RidgeDat;
 public:
     ObjectUav(const std::string &id, const std::string &sim="");
     ~ObjectUav();
@@ -58,7 +54,8 @@ public:
     bool IsValid()const;
     void SetValideTime(int64_t tmV);
     void SetSimId(const std::string &sim);
-    void BinderProcess(const google::protobuf::Message &pb);
+    void SndBinder(const google::protobuf::Message &pb);
+    const std::string &GetBinder()const;
 public:
     static int UAVType();
     static void InitialUAV(const DBMessage &msg, ObjectUav &uav);
@@ -84,6 +81,7 @@ private:
     void _prcsRcvReqMissions(das::proto::RequestRouteMissions *msg);
     void _prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
     void _prcsPostBlocks(das::proto::PostBlocks *msg);
+    void _prcsABOperation(das::proto::PostABOperation *msg);
 
     void processBind(das::proto::RequestBindUav *rbu, const GS2UavMessage &msg);
     void processControl2Uav(das::proto::PostControl2Uav *msg);

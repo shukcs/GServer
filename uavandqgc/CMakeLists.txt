@@ -13,6 +13,7 @@ INCLUDE_DIRECTORIES(
 	../tinyxml
 )
 set(SRC_LIST
+	../protobuf/ProtoMsg.h
 	proto/das.pb.cc
 	proto/das.pb.h
 	src/DBManager.cpp
@@ -34,7 +35,6 @@ set(SRC_LIST
 	src/ObjectUav.cpp
 	src/ObjectUav.h
 	src/ProtoMsg.cpp
-	src/ProtoMsg.h
 	src/UavManager.cpp
 	src/UavManager.h
 	src/UavMission.cpp

@@ -50,12 +50,12 @@
 					<foreign name="planuser" foreign="user" ref="GSInfo" />
 				</table>
 				<table name="MissionInfo" keys="uavID,finishTime">
-					<field name="userID" type="char(24)"/>
 					<field name="uavID" type="char(16)"/>
+					<field name="finishTime" type="BIGINT"/>
+					<field name="userID" type="char(24)"/>
 					<field name="landId" type="BIGINT" constraint="DEFAULT 0"/>
 					<field name="planID" type="BIGINT" constraint="DEFAULT 0"/>
 					<field name="createTime" type="BIGINT"/>
-					<field name="finishTime" type="BIGINT"/>
 					<field name="begin" type="Int" />
 					<field name="end" type="Int" />
 					<field name="acreage" type="float" />
@@ -264,6 +264,7 @@
 							<item name="max(finishTime)" type="Read" />
 							<item name="uavID" type="Condition" />
 							<item name="planID" type="Condition" />
+							<!--item name="mission" paramVal="1" type="Condition" /-->
 						</SQL>
 					</item>
 				</SQL>

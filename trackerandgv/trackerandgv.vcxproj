@@ -19,7 +19,6 @@
     <ClInclude Include="src\ObjectAbsPB.h" />
     <ClInclude Include="src\ObjectGV.h" />
     <ClInclude Include="src\ObjectTracker.h" />
-    <ClInclude Include="src\ProtoMsg.h" />
     <ClInclude Include="src\TrackerManager.h" />
   </ItemGroup>
   <ItemGroup>

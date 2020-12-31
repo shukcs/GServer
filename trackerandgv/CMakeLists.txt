@@ -12,6 +12,7 @@ INCLUDE_DIRECTORIES(
 	../tinyxml
 )
 set(SRC_LIST
+	../protobuf/ProtoMsg.h
 	proto/das.pb.cc
 	proto/das.pb.h
 	src/GVManager.cpp
@@ -29,7 +30,6 @@ set(SRC_LIST
 	src/ObjectTracker.cpp
 	src/ObjectTracker.h
 	src/ProtoMsg.cpp
-	src/ProtoMsg.h
 	src/TrackerManager.cpp
 	src/TrackerManager.h
 )

@@ -44,9 +44,6 @@
     <ClInclude Include="proto\das.pb.h">
       <Filter>src\proto</Filter>
     </ClInclude>
-    <ClInclude Include="src\ProtoMsg.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\Messages.h">
       <Filter>src</Filter>
     </ClInclude>

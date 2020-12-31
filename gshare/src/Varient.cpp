@@ -1,11 +1,12 @@
 ﻿#include "Varient.h"
+#include "Utility.h"
 
 using namespace std;
 const static StringList sEmptyStrLs;
 ////////////////////////////////////////////////////////////////////////////////
 //Variant
 ////////////////////////////////////////////////////////////////////////////////
-Variant::Variant(VariantType tp) : m_tp(tp), m_nU64(0)
+Variant::Variant(VariantType tp) : m_tp(tp), m_bValide(false), m_nU64(0)
 {
     ensureConstruction(tp);
 }
@@ -15,51 +16,51 @@ Variant::Variant(const Variant &oth) : m_tp(Type_Unknow)
     *this = oth;
 }
 
-Variant::Variant(const std::string &str) : m_tp(Type_string), m_list(new string(str))
+Variant::Variant(const std::string &str) : m_tp(Type_string), m_bValide(true), m_list(new string(str))
 {
 }
 
-Variant::Variant(int sz, const char *buf) : m_tp(Type_buff), m_list(new string(buf, sz))
+Variant::Variant(int sz, const char *buf) : m_tp(Type_buff), m_bValide(true), m_list(new string(buf, sz))
 {
 }
 
-Variant::Variant(int32_t v) : m_tp(Type_int32), m_nS(v)
+Variant::Variant(int32_t v) : m_tp(Type_int32), m_bValide(true), m_nS(v)
 {
 }
 
-Variant::Variant(uint32_t v) : m_tp(Type_uint32), m_nU(v)
+Variant::Variant(uint32_t v) : m_tp(Type_uint32), m_bValide(true), m_nU(v)
 {
 }
 
-Variant::Variant(int16_t v) : m_tp(Type_int16), m_nS16(v)
+Variant::Variant(int16_t v) : m_tp(Type_int16), m_bValide(true), m_nS16(v)
 {
 }
 
-Variant::Variant(uint16_t v) : m_tp(Type_uint16), m_nU16(v)
+Variant::Variant(uint16_t v) : m_tp(Type_uint16), m_bValide(true), m_nU16(v)
 {
 }
 
-Variant::Variant(int8_t v) : m_tp(Type_int8), m_nS8(v)
+Variant::Variant(int8_t v) : m_tp(Type_int8), m_bValide(true), m_nS8(v)
 {
 }
 
-Variant::Variant(uint8_t v) : m_tp(Type_uint8), m_nU8(v)
+Variant::Variant(uint8_t v) : m_tp(Type_uint8), m_bValide(true), m_nU8(v)
 {
 }
 
-Variant::Variant(int64_t v) : m_tp(Type_int64), m_nS64(v)
+Variant::Variant(int64_t v) : m_tp(Type_int64), m_bValide(true), m_nS64(v)
 {
 }
 
-Variant::Variant(uint64_t v) : m_tp(Type_uint64), m_nU64(v)
+Variant::Variant(uint64_t v) : m_tp(Type_uint64), m_bValide(true), m_nU64(v)
 {
 }
 
-Variant::Variant(double v) : m_tp(Type_double), m_f64(v)
+Variant::Variant(double v) : m_tp(Type_double), m_bValide(true), m_f64(v)
 {
 }
 
-Variant::Variant(float v) : m_tp(Type_float), m_f32(v)
+Variant::Variant(float v) : m_tp(Type_float), m_bValide(true), m_f32(v)
 {
 }
 
@@ -67,7 +68,7 @@ Variant::Variant(bool v) : m_tp(Type_bool), m_bool(v)
 {
 }
 
-Variant::Variant(const StringList &v) : m_tp(Type_StringList), m_list(new StringList(v))
+Variant::Variant(const StringList &v) : m_tp(Type_StringList), m_bValide(true), m_list(new StringList(v))
 {
 }
 
@@ -88,28 +89,21 @@ bool Variant::Add(const Variant&v)
     {
     case Variant::Type_string:
         ((StringList*)m_list)->push_back(v.ToString()); break;
-    case Variant::Type_int32:
-        ((list<int32_t>*)m_list)->push_back(v.m_nS); break;
-    case Variant::Type_uint32:
-        ((list<uint32_t>*)m_list)->push_back(v.m_nU); break;
-    case Variant::Type_int16:
-        ((list<int16_t>*)m_list)->push_back(v.m_nS16); break;
-    case Variant::Type_uint16:
-        ((list<uint16_t>*)m_list)->push_back(v.m_nU16); break;
-    case Variant::Type_int8:
-        ((list<int8_t>*)m_list)->push_back(v.m_nS8); break;
-    case Variant::Type_uint8:
-        ((list<uint8_t>*)m_list)->push_back(v.m_nU8); break;
-    case Variant::Type_int64:
-        ((list<int64_t>*)m_list)->push_back(v.m_nS64); break;
-    case Variant::Type_uint64:
-        ((list<uint64_t>*)m_list)->push_back(v.m_nU64); break;
-    case Variant::Type_double:
-        ((list<double>*)m_list)->push_back(v.m_f64); break;
-    case Variant::Type_float:
-        ((list<float>*)m_list)->push_back(v.m_f32); break;
     case Variant::Type_buff:
         ((StringList*)m_list)->push_back(*(string*)v.m_list); break;
+    case Variant::Type_int32:
+    case Variant::Type_uint32:
+    case Variant::Type_int16:
+    case Variant::Type_uint16:
+    case Variant::Type_int8:
+    case Variant::Type_uint8:
+    case Variant::Type_int64:
+    case Variant::Type_uint64:
+    case Variant::Type_double:
+    case Variant::Type_float:
+        m_bValide = true;
+        ((list<Variant>*)m_list)->push_back(v);
+        break;
     default:
         break;
     }
@@ -126,8 +120,7 @@ const string &Variant::ToString() const
     if (Type_string == m_tp)
         return *(string*)m_list;
 
-    const static string sEmpryStr;
-    return sEmpryStr;
+    return Utility::EmptyStr();
 }
 
 int32_t Variant::ToInt32() const
@@ -248,6 +241,50 @@ bool Variant::IsNull() const
     return m_tp == Type_Unknow;
 }
 
+const list<Variant> &Variant::GetVarList() const
+{
+    if (m_tp >= Type_StringList && m_tp <= Type_ListF32)
+        return *(list<Variant>*)m_list;
+    static list<Variant> sEmpty;
+    return sEmpty;
+}
+
+std::string Variant::Val2String() const
+{
+    if (IsNull())
+        return string();
+
+    switch (m_tp)
+    {
+    case Type_int8:
+        return Utility::l2string(ToInt8());
+    case Type_uint8:
+        return Utility::l2string(ToInt8());
+    case Type_int16:
+        return Utility::l2string(ToInt16());
+    case Type_uint16:
+        return Utility::l2string(ToUint16());
+    case Type_int32:
+        return Utility::l2string(ToInt32());
+    case Type_uint32:
+        return Utility::bigint2string((uint64_t)ToUint32());
+    case Type_int64:
+        return Utility::bigint2string(ToInt64());
+    case Type_uint64:
+        return Utility::bigint2string(ToUint64());
+    case Type_float:
+        return string("float");
+    case Type_double:
+        return string("double");
+    case Type_string:
+    case Type_buff:
+        return ToString();
+    default:
+        break;
+    }
+    return string();
+}
+
 Variant &Variant::operator=(const Variant &oth)
 {
     if (m_tp != oth.m_tp)
@@ -255,7 +292,7 @@ Variant &Variant::operator=(const Variant &oth)
         ensureDestruct();
         ensureConstruction(oth.m_tp);
     }
-
+    m_bValide = oth.m_bValide;
     switch (m_tp)
     {
     case Type_string:
@@ -286,25 +323,16 @@ Variant &Variant::operator=(const Variant &oth)
     case Type_StringList:
         *(StringList*)m_list = *(StringList*)oth.m_list; break;
     case Type_ListI32:
-        *(list<int32_t>*)m_list = *(list<int32_t>*)oth.m_list; break;
     case Type_ListU32:
-        *(list<uint32_t>*)m_list = *(list<uint32_t>*)oth.m_list; break;
     case Type_ListI16:
-        *(list<int16_t>*)m_list = *(list<int16_t>*)oth.m_list; break;
     case Type_ListU16:
-        *(list<uint16_t>*)m_list = *(list<uint16_t>*)oth.m_list; break;
     case Type_ListI8:
-        *(list<int8_t>*)m_list = *(list<int8_t>*)oth.m_list; break;
     case Type_ListU8:
-        *(list<uint8_t>*)m_list = *(list<uint8_t>*)oth.m_list; break;
     case Type_ListI64:
-        *(list<int64_t>*)m_list = *(list<int64_t>*)oth.m_list; break;
     case Type_ListU64:
-        *(list<uint64_t>*)m_list = *(list<uint64_t>*)oth.m_list; break;
     case Type_ListF64:
-        *(list<double>*)m_list = *(list<double>*)oth.m_list; break;
     case Type_ListF32:
-        *(list<float>*)m_list = *(list<float>*)oth.m_list; break;
+        *(list<Variant>*)m_list = *(list<Variant>*)oth.m_list; break;
     default:
         break;
     }
@@ -321,25 +349,16 @@ void Variant::ensureConstruction(VariantType tp)
     case Variant::Type_StringList:
         m_list = new StringList;  break;
     case Variant::Type_ListI32:
-        m_list = new list<int32_t>; break;
     case Variant::Type_ListU32:
-        m_list = new list<uint32_t>; break;
     case Variant::Type_ListI16:
-        m_list = new list<int16_t>; break;
     case Variant::Type_ListU16:
-        m_list = new list<uint16_t>; break;
     case Variant::Type_ListI8:
-        m_list = new list<int8_t>; break;
     case Variant::Type_ListU8:
-        m_list = new list<uint8_t>; break;
     case Variant::Type_ListI64:
-        m_list = new list<int64_t>; break;
     case Variant::Type_ListU64:
-        m_list = new list<uint64_t>; break;
     case Variant::Type_ListF64:
-        m_list = new list<double>; break;
     case Variant::Type_ListF32:
-        m_list = new list<float>; break;
+        m_list = new list<Variant>; break;
     default:
         break;
     }
@@ -354,27 +373,18 @@ void Variant::ensureDestruct()
     case Variant::Type_buff:
         delete (string*)m_list; break;
     case Variant::Type_StringList:
-        delete (StringList*)m_list;  break;
+        delete (StringList*)m_list; break;
     case Variant::Type_ListI32:
-        delete (list<int32_t>*)m_list; break;
     case Variant::Type_ListU32:
-        delete (list<uint32_t>*)m_list; break;
     case Variant::Type_ListI16:
-        delete (list<int16_t>*)m_list; break;
     case Variant::Type_ListU16:
-        delete (list<uint16_t>*)m_list; break;
     case Variant::Type_ListI8:
-        delete (list<int8_t>*)m_list; break;
     case Variant::Type_ListU8:
-        delete (list<uint8_t>*)m_list; break;
     case Variant::Type_ListI64:
-        delete (list<int64_t>*)m_list; break;
     case Variant::Type_ListU64:
-        delete (list<uint64_t>*)m_list; break;
     case Variant::Type_ListF64:
-        delete (list<double>*)m_list; break;
     case Variant::Type_ListF32:
-        delete (list<float>*)m_list; break;
+        delete (list<Variant>*)m_list; break;
     default:
         break;
     }

@@ -23,7 +23,6 @@
     <ClInclude Include="src\ObjectAbsPB.h" />
     <ClInclude Include="src\ObjectGS.h" />
     <ClInclude Include="src\ObjectUav.h" />
-    <ClInclude Include="src\ProtoMsg.h" />
     <ClInclude Include="src\UavManager.h" />
     <ClInclude Include="src\UavMission.h" />
   </ItemGroup>

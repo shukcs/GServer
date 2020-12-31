@@ -191,41 +191,32 @@ void ObjectDB::_initFieldByVarient(FiledVal &fd, const Variant &v)
 
 void ObjectDB::_save2Message(const FiledVal &fd, DBMessage &msg)
 {
+    if (fd.IsEmpty() && !msg.IsQueryList())
+        return;
+
+    Variant v;
     switch (fd.GetParamType() & 0xff)
     {
     case FiledVal::Int32:
-        msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), fd.GetValue<int32_t>())
-            : msg.SetRead(fd.GetFieldName(), fd.GetValue<int32_t>());
-        break;
+        v = fd.IsEmpty() ? Variant(Variant::Type_int32) : fd.GetValue<int32_t>(); break;
     case FiledVal::Int64:
-        msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), fd.GetValue<int64_t>())
-            : msg.SetRead(fd.GetFieldName(), fd.GetValue<int64_t>());
-        break;
+        v = fd.IsEmpty() ? Variant(Variant::Type_int64) : fd.GetValue<int64_t>(); break;
     case FiledVal::Int16:
-        msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), fd.GetValue<int16_t>())
-            : msg.SetRead(fd.GetFieldName(), fd.GetValue<int16_t>());
-        break;
+        v = fd.IsEmpty() ? Variant(Variant::Type_int16) : fd.GetValue<int16_t>(); break;
     case FiledVal::Int8:
-        msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), fd.GetValue<int8_t>())
-            : msg.SetRead(fd.GetFieldName(), fd.GetValue<int8_t>());
-        break;
+        v = fd.IsEmpty() ? Variant(Variant::Type_int8) : fd.GetValue<int8_t>(); break;
     case FiledVal::Double:
-        msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), fd.GetValue<double>())
-            : msg.SetRead(fd.GetFieldName(), fd.GetValue<double>());
-        break;
+        v = fd.IsEmpty() ? Variant(Variant::Type_double) : fd.GetValue<double>(); break;
     case FiledVal::Float:
-        msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), fd.GetValue<float>())
-            : msg.SetRead(fd.GetFieldName(), fd.GetValue<float>());
-        break;
+        v = fd.IsEmpty() ? Variant(Variant::Type_float) : fd.GetValue<float>(); break;
     case FiledVal::String:
-        msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), string((char*)fd.GetBuff(), fd.GetValidLen()))
-            : msg.SetRead(fd.GetFieldName(), string((char*)fd.GetBuff(), fd.GetValidLen()));
-        break;
+        v = fd.IsEmpty() ? Variant(Variant::Type_string) : string((char*)fd.GetBuff(), fd.GetValidLen()); break;
     case FiledVal::Buff:
-        msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), Variant(fd.GetValidLen(), (char*)fd.GetBuff()))
-            : msg.SetRead(fd.GetFieldName(), Variant(fd.GetValidLen(), (char*)fd.GetBuff()));
+        v = fd.IsEmpty() ? Variant(Variant::Type_buff) : Variant(fd.GetValidLen(), (char*)fd.GetBuff()); break;
         break;
     }
+
+    msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), v): msg.SetRead(fd.GetFieldName(), v);
 }
 ////////////////////////////////////////////////////////////////////////////////
 //DBManager

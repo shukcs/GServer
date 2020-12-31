@@ -333,15 +333,15 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
     if (!ack)
         return;
 
-    auto ids = msg.GetRead("id").GetVarList<string>();
-    auto bindeds = msg.GetRead("binded").GetVarList<int8_t>();
-    auto binders = msg.GetRead("binder").GetVarList<string>();
-    auto lats = msg.GetRead("lat").GetVarList<double>();
-    auto lons = msg.GetRead("lon").GetVarList<double>();
-    auto timeBinds = msg.GetRead("timeBind").GetVarList<int64_t>();
-    auto valids = msg.GetRead("valid").GetVarList<int64_t>();
-    auto authChecks = msg.GetRead("authCheck").GetVarList<string>();
-    auto sims = msg.GetRead("simID").GetVarList<string>();
+    auto ids = msg.GetRead("id").GetVarList();
+    auto bindeds = msg.GetRead("binded").GetVarList();
+    auto binders = msg.GetRead("binder").GetVarList();
+    auto lats = msg.GetRead("lat").GetVarList();
+    auto lons = msg.GetRead("lon").GetVarList();
+    auto timeBinds = msg.GetRead("timeBind").GetVarList();
+    auto valids = msg.GetRead("valid").GetVarList();
+    auto authChecks = msg.GetRead("authCheck").GetVarList();
+    auto sims = msg.GetRead("simID").GetVarList();
 
     ack->set_seqno(msg.GetSeqNomb());
     auto idItr = ids.begin();
@@ -358,22 +358,19 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
     {
         UavStatus *us = ack->add_status();
         us->set_result(1);
-        us->set_uavid(*idItr);
+        us->set_uavid(idItr->ToString());
         string binder;
         if (binderItr != binders.end())
         {
-            binder = *binderItr;
+            binder = binderItr->ToString();
             us->set_binder(binder);
             ++binderItr;
         }
-        bool bBind = bindedItr != bindeds.end() ? *bindedItr == 1 : false;
+        bool bBind = bindedItr != bindeds.end() ? bindedItr->ToInt8() == 1 : false;
         if (bindedItr != bindeds.end())
-        {
-            bBind = *bindedItr == 1;
             ++bindedItr;
-        }
         us->set_binded(bBind);
-        us->set_time(timeBindItr != timeBinds.end() ? *timeBindItr : 0);
+        us->set_time(timeBindItr != timeBinds.end() ? timeBindItr->ToInt64() : 0);
         if (timeBindItr != timeBinds.end())
             ++timeBindItr;
         us->set_online(false);
@@ -381,20 +378,20 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
         bool bAuth = (binder == m_id && bBind) || GetAuth(ObjectGS::Type_UavManager);
         if (authCheckItr != authChecks.end() && bAuth)
         {
-            us->set_authstring(*authCheckItr);
+            us->set_authstring(authCheckItr->ToString());
             ++authCheckItr;
         }
         if (validItr != valids.end())
         {
-            us->set_deadline(*validItr);
+            us->set_deadline(validItr->ToInt64());
             ++validItr;
         }
 
         if (latItr != lats.end() && lonItr != lons.end())
         {
             GpsInformation *gps = new GpsInformation;
-            gps->set_latitude(int(*latItr*1e7));
-            gps->set_longitude(int(*lonItr*1e7));
+            gps->set_latitude(int(latItr->ToDouble()*1e7));
+            gps->set_longitude(int(lonItr->ToDouble()*1e7));
             gps->set_altitude(0);
             us->set_allocated_pos(gps);
             latItr++;
@@ -402,7 +399,7 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
         }
         if (simItr != sims.end())
         {
-            us->set_simid(*simItr);
+            us->set_simid(simItr->ToString());
             ++simItr;
         }
     }
@@ -516,15 +513,15 @@ void ObjectGS::processFriends(const DBMessage &msg)
     const Variant &vUsr2 = msg.GetRead("usr2");
     if (vUsr1.GetType() == Variant::Type_StringList && vUsr2.GetType() == Variant::Type_StringList)
     {
-        for (const string &itr : vUsr1.GetVarList<string>())
+        for (const Variant &itr : vUsr1.GetVarList())
         {
-            if (!itr.empty() && itr != m_id)
-                m_friends.push_back(itr);
+            if (!itr.IsNull() && itr.ToString() != m_id)
+                m_friends.push_back(itr.ToString());
         }
-        for (const string &itr : vUsr2.GetVarList<string>())
+        for (const Variant &itr : vUsr2.GetVarList())
         {
-            if (!itr.empty() && itr != m_id)
-                m_friends.push_back(itr);
+            if (!itr.IsNull() && itr.ToString() != m_id)
+                m_friends.push_back(itr.ToString());
         }
     }
 }
@@ -537,20 +534,20 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
 
     ack->set_seqno(msg.GetSeqNomb());
     ack->set_result(1);
-    auto ids = msg.GetRead("LandInfo.id").GetVarList<int64_t>();
-    StringList namesLand = msg.GetRead("LandInfo.name").ToStringList();
-    StringList users = msg.GetRead("LandInfo.gsuser").ToStringList();
-    auto lats = msg.GetRead("LandInfo.lat").GetVarList<double>();
-    auto lons = msg.GetRead("LandInfo.lon").GetVarList<double>();
-    auto acreages = msg.GetRead("LandInfo.acreage").GetVarList<float>();
-    StringList boundary = msg.GetRead("LandInfo.boundary").ToStringList();
+    const VariantList &ids = msg.GetRead("LandInfo.id").GetVarList();
+    const StringList &namesLand = msg.GetRead("LandInfo.name").ToStringList();
+    const StringList &users = msg.GetRead("LandInfo.gsuser").ToStringList();
+    const VariantList &lats = msg.GetRead("LandInfo.lat").GetVarList();
+    const VariantList &lons = msg.GetRead("LandInfo.lon").GetVarList();
+    const VariantList &acreages = msg.GetRead("LandInfo.acreage").GetVarList();
+    const StringList &boundary = msg.GetRead("LandInfo.boundary").ToStringList();
 
-    StringList namesPc = msg.GetRead("OwnerInfo.name").ToStringList();
-    auto birthdayPc = msg.GetRead("OwnerInfo.birthdate").GetVarList<int64_t>();
-    StringList addresses = msg.GetRead("OwnerInfo.address").ToStringList();
-    StringList mobilenos = msg.GetRead("OwnerInfo.mobileno").ToStringList();
-    StringList phonenos = msg.GetRead("OwnerInfo.phoneno").ToStringList();
-    StringList weixins = msg.GetRead("OwnerInfo.weixin").ToStringList();
+    const StringList &namesPc = msg.GetRead("OwnerInfo.name").ToStringList();
+    const VariantList &birthdayPc = msg.GetRead("OwnerInfo.birthdate").GetVarList();
+    const StringList &addresses = msg.GetRead("OwnerInfo.address").ToStringList();
+    const StringList &mobilenos = msg.GetRead("OwnerInfo.mobileno").ToStringList();
+    const StringList &phonenos = msg.GetRead("OwnerInfo.phoneno").ToStringList();
+    const StringList &weixins = msg.GetRead("OwnerInfo.weixin").ToStringList();
 
     auto itrNamesPc = namesPc.begin();
     auto itrbirthday = birthdayPc.begin();
@@ -585,7 +582,7 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
             ++itrNamesPc;
             if (itrbirthday !=birthdayPc.end())
             {
-                pc->set_birthdate(*itrbirthday);
+                pc->set_birthdate(itrbirthday->ToInt64());
                 ++itrbirthday;
             }
             if (itraddresses != addresses.end())
@@ -620,13 +617,13 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
             pd->set_registerid(*itrusers);
             ++itrusers;
         }
-        pd->set_acreage(itracreages!=acreages.end() ? (*itracreages) : 0);
+        pd->set_acreage(itracreages!=acreages.end() ? (itracreages->ToFloat()) : 0);
         if (itracreages != acreages.end())
             ++itracreages;
         if (itrlats != lats.end() && itrlons != lons.end())
         {
-            double lat = *itrlats++;
-            double lon = *itrlons++;
+            double lat = (itrlats++)->ToDouble();
+            double lon = (itrlons++)->ToDouble();
             Coordinate *c = new Coordinate;
             c->set_altitude(0);
             c->set_latitude(int(lat*1e7));
@@ -638,8 +635,8 @@ void ObjectGS::processQueryLands(const DBMessage &msg)
         {
             ParcelSurveyInformation *psi = new ParcelSurveyInformation;
             psi->ParseFromArray(itrboundary->c_str(), itrboundary->size());
-            psi->set_id(Utility::bigint2string(*itrids));
-            pd->set_id(Utility::bigint2string(*itrids));
+            psi->set_id(Utility::bigint2string(itrids->ToInt64()));
+            pd->set_id(Utility::bigint2string(itrids->ToInt64()));
             pd->set_allocated_psi(psi);
             ++itrboundary;
         }
@@ -672,15 +669,15 @@ void ObjectGS::processMissions(const DBMessage &msg)
         return;
 
     ack->set_seqno(msg.GetSeqNomb());
-    auto users = msg.GetRead("userID").ToStringList();
-    auto lands = msg.GetRead("landId").GetVarList<int64_t>();
-    auto uavs = msg.GetRead("uavID").ToStringList();
-    auto ftms = msg.GetRead("finishTime").GetVarList<int64_t>();
-    auto begins = msg.GetRead("begin").GetVarList<int32_t>();
-    auto ends = msg.GetRead("end").GetVarList<int32_t>();
-    auto acreage = msg.GetRead("acreage").GetVarList<float>();
-    auto lats = msg.GetRead("continiuLat").GetVarList<int32_t>();
-    auto lons = msg.GetRead("continiuLon").GetVarList<int32_t>();
+    const StringList &users = msg.GetRead("userID").ToStringList();
+    const VariantList &lands = msg.GetRead("landId").GetVarList();
+    const StringList &uavs = msg.GetRead("uavID").ToStringList();
+    const VariantList &ftms = msg.GetRead("finishTime").GetVarList();
+    const VariantList &begins = msg.GetRead("begin").GetVarList();
+    const VariantList &ends = msg.GetRead("end").GetVarList();
+    const VariantList &acreage = msg.GetRead("acreage").GetVarList();
+    const VariantList &lats = msg.GetRead("continiuLat").GetVarList();
+    const VariantList &lons = msg.GetRead("continiuLon").GetVarList();
 
     auto landsItr = lands.begin();
     auto tmItr = ftms.begin();
@@ -691,7 +688,7 @@ void ObjectGS::processMissions(const DBMessage &msg)
     auto itrUser = users.begin();
     auto itrLat = lats.begin();
     auto itrLon = lons.begin();
-    for (auto itr : msg.GetRead("planID").GetVarList<int64_t>())
+    for (const Variant &itr : msg.GetRead("planID").GetVarList())
     {
         if (   landsItr == lands.end()
             || tmItr == ftms.end()
@@ -716,19 +713,21 @@ void ObjectGS::processMissions(const DBMessage &msg)
 
         if (UavRoute *rt = ack->add_routes())
         {
-            rt->set_plan(Utility::bigint2string(itr));
+            rt->set_plan(itr.IsNull() ? string() : itr.Val2String());
             rt->set_crttm(0);
-            rt->set_optm(*tmItr);
-            rt->set_land(Utility::bigint2string(*landsItr));
-            rt->set_acreage(*areaItr);
+            rt->set_optm(tmItr->ToInt64());
+            rt->set_land(landsItr->IsNull()?string():landsItr->Val2String());
+            rt->set_acreage(areaItr->ToFloat());
             rt->set_uav(*itrUav);
-            rt->set_beg(*itrBeg);
-            rt->set_end(*itrEnd);
+            rt->set_beg(itrBeg->ToInt32());
+            rt->set_end(itrEnd->ToInt32());
             rt->set_user(*itrUser);
-            if (itrLat != lats.end() && itrLon != lons.end() && *itrLat > -1800000000 && *itrLat < 1800000000)
+
+            int lat = (itrLat != lats.end() && itrLon != lons.end()) ? itrLat->ToInt32() : 2000000000;
+            if (lat > -1800000000 && lat < 1800000000)
             {
-                rt->set_continiulat(*itrLat);
-                rt->set_continiulon(*itrLon);
+                rt->set_continiulat(itrLat->ToInt32());
+                rt->set_continiulon(lat);
                 ++itrLat;
                 ++itrLon;
             }
@@ -809,16 +808,16 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
         ack->set_result(suc ? 1 : 0);
     }
 
-    auto ids = msg.GetRead("id").GetVarList<int64_t>();
-    auto landIds = msg.GetRead("landId").GetVarList<int64_t>();
-    auto planTimes = msg.GetRead("planTime").GetVarList<int64_t>();
-    auto planusers = msg.GetRead("planuser").GetVarList<string>();
-    auto notes = msg.GetRead("notes").GetVarList<string>();
-    auto crops = msg.GetRead("crop").GetVarList<string>();
-    auto drugs = msg.GetRead("drug").GetVarList<string>();
-    auto ridgeSzs = msg.GetRead("ridgeSz").GetVarList<int>();
-    auto prizes = msg.GetRead("prize").GetVarList<float>();
-    auto planParams = msg.GetRead("planParam").GetVarList<string>();
+    const VariantList &ids = msg.GetRead("id").GetVarList();
+    const VariantList &landIds = msg.GetRead("landId").GetVarList();
+    const VariantList &planTimes = msg.GetRead("planTime").GetVarList();
+    const StringList &planusers = msg.GetRead("planuser").ToStringList();
+    const StringList &notes = msg.GetRead("notes").ToStringList();
+    const StringList &crops = msg.GetRead("crop").ToStringList();
+    const StringList &drugs = msg.GetRead("drug").ToStringList();
+    const VariantList &ridgeSzs = msg.GetRead("ridgeSz").GetVarList();
+    const VariantList &prizes = msg.GetRead("prize").GetVarList();
+    const StringList &planParams = msg.GetRead("planParam").ToStringList();
 
     auto landIdsItr = landIds.begin();
     auto planTimesItr = planTimes.begin();
@@ -841,15 +840,15 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
             ack->set_result(suc ? 1 : 0);
         }
         auto od = ack->add_ods();
-        od->set_odid(Utility::bigint2string(*idItr));
+        od->set_odid(Utility::bigint2string(idItr->ToInt64()));
         if (landIdsItr != landIds.end())
         {
-            od->set_pdid(Utility::bigint2string(*landIdsItr));
+            od->set_pdid(Utility::bigint2string(landIdsItr->ToInt64()));
             ++landIdsItr;
         }
         if (planTimesItr != planTimes.end())
         {
-            od->set_plantime(*planTimesItr);
+            od->set_plantime(planTimesItr->ToInt64());
             ++planTimesItr;
         }
         if (planusersItr != planusers.end())
@@ -869,7 +868,7 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
         }
         if (ridgeItr != ridgeSzs.end())
         {
-            od->set_ridge(*ridgeItr);
+            od->set_ridge(ridgeItr->ToInt32());
             ++ridgeItr;
         }
         if (drugsItr != drugs.end())
@@ -879,7 +878,7 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
         }
         if (prizesItr != prizes.end())
         {
-            od->set_prize(*prizesItr);
+            od->set_prize(prizesItr->ToFloat());
             ++prizesItr;
         }
         if (planParamsItr != planParams.end())

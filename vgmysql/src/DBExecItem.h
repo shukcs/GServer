@@ -41,12 +41,12 @@ public:
     SHARED_SQL const string &GetFieldName()const;
     SHARED_SQL const string &GetJudge()const;
     SHARED_SQL ExecutItem *ComplexSql()const;
+    SHARED_SQL bool IsEmpty()const;
 
     string ToConditionString(const string &str)const;
     int GetType()const;
     void SetFieldName(const string &name);
     bool IsStringParam()const;
-    bool IsEmpty()const;
     void SetEmpty();
     const string &GetParam()const;
     unsigned long &ReadLength();

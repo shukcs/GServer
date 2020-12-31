@@ -1092,13 +1092,31 @@ message RequestOperationReturn {       //作业辅助点
 message PostBlocks {                    //作业航程
     required uint32 seqno       = 1;    //本包的包序号
     required string uavid       = 2;    //无人机id
-    repeated int32  blocks      = 3;    //blocks[2i]:lat;blocks[2i+1]:lon
+    repeated int32  blocks      = 3;    //blocks[3i]~blocks[3i+2:lat;lon;angle(前16)* 100, distance(后16)*100
 }
 
 //=================================================================================================
 //AckBlocks
 //=================================================================================================
 message AckBlocks {                    //作业航程
+    required uint32 seqno       = 1;    //本包的包序号
+    required int32  result      = 2;    //接受0：false; 1:true
+}
+
+//=================================================================================================
+//PostABOperation
+//=================================================================================================
+message PostABOperation {                    //作业航程
+    required uint32 seqno       = 1;    //本包的包序号
+    required string uavid       = 2;    //无人机id
+	optional float  sw          = 3;    //喷幅
+    repeated int32  points      = 4;    //飞行端点points[4n]~~points[4n+3]:seq,lat,lon,alt
+}
+
+//=================================================================================================
+//AckABOperation
+//=================================================================================================
+message AckABOperation {                    //作业航程
     required uint32 seqno       = 1;    //本包的包序号
     required int32  result      = 2;    //接受0：false; 1:true
 }

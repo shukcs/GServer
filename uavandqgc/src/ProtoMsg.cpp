@@ -8,13 +8,73 @@
 using namespace SOCKETS_NAMESPACE;
 #endif
 
+using namespace das::proto;
+using namespace std;
 enum MyEnum
 {
     Max_PBSize = 0x4000,
 };
+////////////////////////////////////////////////////////////////////////////////
+//PBAbSFactoryItem
+////////////////////////////////////////////////////////////////////////////////
+map<string, PBAbSFactoryItem*> s_MapPbCreate;
 
-using namespace das::proto;
-using namespace std;
+PBAbSFactoryItem::PBAbSFactoryItem(const string &name)
+{
+    s_MapPbCreate[name] = this;
+}
+
+google::protobuf::Message *PBAbSFactoryItem::createMessage(const string &name)
+{
+    DeclareRcvPB(PostHeartBeat);
+    DeclareRcvPB(RequestNewGS);
+    DeclareRcvPB(RequestIdentityAllocation);
+    DeclareRcvPB(AckUavIdentityAuthentication);
+    DeclareRcvPB(RequestGSIdentityAuthentication);
+    DeclareRcvPB(RequestUavIdentityAuthentication);
+    DeclareRcvPB(PostProgram);
+    DeclareRcvPB(AckNotifyProgram);
+    DeclareRcvPB(RequestProgram);
+    DeclareRcvPB(SyncDeviceList);
+    DeclareRcvPB(AckUpdateDeviceList);
+    DeclareRcvPB(PostParcelDescription);
+    DeclareRcvPB(DeleteParcelDescription);
+    DeclareRcvPB(RequestParcelDescriptions);
+    DeclareRcvPB(PostOperationDescription);
+    DeclareRcvPB(DeleteOperationDescription);
+    DeclareRcvPB(RequestOperationDescriptions);
+    DeclareRcvPB(PostOperationRoute);
+    DeclareRcvPB(PostOperationInformation);
+    DeclareRcvPB(AckOperationInformation);
+    DeclareRcvPB(AckPostOperationRoute);
+    DeclareRcvPB(SyscOperationRoutes);
+    DeclareRcvPB(RequestRouteMissions);
+    DeclareRcvPB(RequestUavStatus);
+    DeclareRcvPB(RequestBindUav);
+    DeclareRcvPB(RequestUavProductInfos);
+    DeclareRcvPB(PostControl2Uav);
+    DeclareRcvPB(PostStatus2GroundStation);
+    DeclareRcvPB(RequestPositionAuthentication);
+    DeclareRcvPB(RequestFriends);
+    DeclareRcvPB(GroundStationsMessage);
+    DeclareRcvPB(AckGroundStationsMessage);
+    DeclareRcvPB(RequestMissionSuspend);
+    DeclareRcvPB(RequestUavMissionAcreage);
+    DeclareRcvPB(RequestUavMission);
+    DeclareRcvPB(PostOperationAssist);
+    DeclareRcvPB(RequestOperationAssist);
+    DeclareRcvPB(PostABPoint);
+    DeclareRcvPB(RequestABPoint);
+    DeclareRcvPB(PostOperationReturn);
+    DeclareRcvPB(RequestOperationReturn);
+    DeclareRcvPB(PostBlocks);
+    DeclareRcvPB(PostABOperation);
+
+    auto itr = s_MapPbCreate.find(name);
+    if (itr != s_MapPbCreate.end())
+        return itr->second->Create();
+    return NULL;
+}
 ////////////////////////////////////////////////////////////////////////////////
 //ProtoMsg
 ////////////////////////////////////////////////////////////////////////////////
@@ -103,91 +163,8 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
 {
     if (!buff || len < 0)
         return false;
-
-    if (name == d_p_ClassName(PostHeartBeat))
-        m_msg = new PostHeartBeat;                          //心跳
-    else if (name == d_p_ClassName(RequestNewGS))
-        m_msg = new RequestNewGS;                           //申请GS用户
-    else if (name == d_p_ClassName(RequestIdentityAllocation))
-        m_msg = new RequestIdentityAllocation;
-    else if (name == d_p_ClassName(AckUavIdentityAuthentication))
-        m_msg = new AckUavIdentityAuthentication;
-    else if (name == d_p_ClassName(RequestGSIdentityAuthentication))
-        m_msg = new RequestGSIdentityAuthentication;        //GS登陆
-    else if (name == d_p_ClassName(RequestUavIdentityAuthentication))
-        m_msg = new RequestUavIdentityAuthentication;       //UAV登陆
-    else if (name == d_p_ClassName(PostProgram))
-        m_msg = new PostProgram;                            //上传FW
-    else if (name == d_p_ClassName(AckNotifyProgram))
-        m_msg = new AckNotifyProgram;                       //通知Uav固件升级回复
-    else if (name == d_p_ClassName(RequestProgram))
-        m_msg = new RequestProgram;                         //Uav FW下载
-    else if (name == d_p_ClassName(SyncDeviceList))
-        m_msg = new SyncDeviceList;                         //设备同步
-    else if (name == d_p_ClassName(AckUpdateDeviceList))
-        m_msg = new AckUpdateDeviceList;                    //设备在线变化回应
-    else if (name == d_p_ClassName(PostParcelDescription))
-        m_msg = new PostParcelDescription;                  //上传地块
-    else if (name == d_p_ClassName(DeleteParcelDescription))
-        m_msg = new DeleteParcelDescription;                //删除地块
-    else if (name == d_p_ClassName(RequestParcelDescriptions))
-        m_msg = new RequestParcelDescriptions;              //查询地块
-    else if (name == d_p_ClassName(PostOperationDescription))
-        m_msg = new PostOperationDescription;               //上传规划
-    else if (name == d_p_ClassName(DeleteOperationDescription))
-        m_msg = new DeleteOperationDescription;             //删除规划
-    else if (name == d_p_ClassName(RequestOperationDescriptions))
-        m_msg = new RequestOperationDescriptions;           //查询规划
-    else if (name == d_p_ClassName(PostOperationRoute))
-        m_msg = new PostOperationRoute;                     //飞机作业
-    else if (name == d_p_ClassName(PostOperationInformation))
-        m_msg = new PostOperationInformation;               //GPS 位置信息
-    else if (name == d_p_ClassName(AckOperationInformation))
-        m_msg = new AckOperationInformation;                //PostOperationInformation Ack
-    else if (name == d_p_ClassName(AckPostOperationRoute))
-        m_msg = new AckPostOperationRoute;                 //上传航线结果
-    else if (name == d_p_ClassName(SyscOperationRoutes))
-        m_msg = new SyscOperationRoutes;                   //同步航线结果
-    else if (name == d_p_ClassName(RequestRouteMissions))
-        m_msg = new RequestRouteMissions;                  //飞机下载航线
-    else if (name == d_p_ClassName(RequestUavStatus))
-        m_msg = new RequestUavStatus;                      //查询飞机状态结果
-    else if (name == d_p_ClassName(RequestBindUav))
-        m_msg = new RequestBindUav;                        //请求绑定、解除绑定应答
-    else if (name == d_p_ClassName(RequestUavProductInfos))
-        m_msg = new RequestUavProductInfos;                //查询飞机信息结果
-    else if (name == d_p_ClassName(PostControl2Uav))
-        m_msg = new PostControl2Uav;
-    else if (name == d_p_ClassName(PostStatus2GroundStation))
-        m_msg = new PostStatus2GroundStation;
-    else if (name == d_p_ClassName(RequestPositionAuthentication))
-        m_msg = new RequestPositionAuthentication;          //查询是否禁飞位置
-    else if (name == d_p_ClassName(RequestFriends))
-        m_msg = new RequestFriends;
-    else if (name == d_p_ClassName(GroundStationsMessage))
-        m_msg = new GroundStationsMessage;                  //好友消息
-    else if (name == d_p_ClassName(AckGroundStationsMessage))
-        m_msg = new AckGroundStationsMessage;               //好友消息服务器回执
-    else if (name == d_p_ClassName(RequestMissionSuspend))
-        m_msg = new RequestMissionSuspend;                  //好友消息服务器回执
-    else if (name == d_p_ClassName(RequestUavMissionAcreage))
-        m_msg = new RequestUavMissionAcreage;               //查询作业面积
-    else if (name == d_p_ClassName(RequestUavMission))
-        m_msg = new RequestUavMission;                     //飞机作业查询
-    else if (name == d_p_ClassName(PostOperationAssist))
-        m_msg = new PostOperationAssist;                    //辅助点
-    else if (name == d_p_ClassName(RequestOperationAssist))
-        m_msg = new RequestOperationAssist;                 //地面站请求辅助点
-    else if (name == d_p_ClassName(PostABPoint))
-        m_msg = new PostABPoint;                            //AB点
-    else if (name == d_p_ClassName(RequestABPoint))
-        m_msg = new RequestABPoint;                         //地面站请求AB点
-    else if (name == d_p_ClassName(PostOperationReturn))
-        m_msg = new PostOperationReturn;                    //断点点
-    else if (name == d_p_ClassName(RequestOperationReturn))
-        m_msg = new RequestOperationReturn;                 //请求断点
-    else if (name == d_p_ClassName(PostBlocks))
-        m_msg = new PostBlocks;                             //障碍物
+  
+    m_msg = PBAbSFactoryItem::createMessage(name);
 
     if (m_msg)
         return m_msg->ParseFromArray(buff, len);

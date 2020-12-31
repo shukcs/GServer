@@ -32,17 +32,6 @@ MK_FUNDA_TYPE(uint64_t, 9)
 MK_FUNDA_TYPE(double, 10)
 MK_FUNDA_TYPE(float, 11)
 MK_FUNDA_TYPE(bool, 12)
-MK_FUNDA_TYPE(StringList, 13)
-MK_FUNDA_TYPE(std::list<uint32_t>, 14)
-MK_FUNDA_TYPE(std::list<int32_t>, 15)
-MK_FUNDA_TYPE(std::list<int16_t>, 16)
-MK_FUNDA_TYPE(std::list<uint16_t>, 17)
-MK_FUNDA_TYPE(std::list<int8_t>, 18)
-MK_FUNDA_TYPE(std::list<uint8_t>, 19)
-MK_FUNDA_TYPE(std::list<int64_t>, 20)
-MK_FUNDA_TYPE(std::list<uint64_t>, 21)
-MK_FUNDA_TYPE(std::list<double>, 22)
-MK_FUNDA_TYPE(std::list<float>, 23)
 
 template <typename T>
 class TypeInfo
@@ -60,6 +49,8 @@ public:
     };
 };
 
+class Variant;
+typedef std::list<Variant> VariantList;
 class SHARED_DECL Variant
 {
 public:
@@ -78,18 +69,18 @@ public:
         Type_double = VarTypeDef<double>::eType,
         Type_float = VarTypeDef<float>::eType,
         Type_bool = VarTypeDef<bool>::eType,
-        Type_StringList = VarTypeDef<StringList>::eType,
+        Type_StringList,
         Type_ListBuff = Type_StringList,
-        Type_ListI32 = VarTypeDef<std::list<int32_t>>::eType,
-        Type_ListU32 = VarTypeDef<std::list<uint32_t>>::eType,
-        Type_ListI16 = VarTypeDef<std::list<int16_t>>::eType,
-        Type_ListU16 = VarTypeDef<std::list<uint16_t>>::eType,
-        Type_ListI8 = VarTypeDef<std::list<int8_t>>::eType,
-        Type_ListU8 = VarTypeDef<std::list<uint8_t>>::eType,
-        Type_ListI64 = VarTypeDef<std::list<int64_t>>::eType,
-        Type_ListU64 = VarTypeDef<std::list<uint64_t>>::eType,
-        Type_ListF64 = VarTypeDef<std::list<double>>::eType,
-        Type_ListF32 = VarTypeDef<std::list<float>>::eType,
+        Type_ListI32,
+        Type_ListU32,
+        Type_ListI16,
+        Type_ListU16,
+        Type_ListI8,
+        Type_ListU8,
+        Type_ListI64,
+        Type_ListU64,
+        Type_ListF64,
+        Type_ListF32,
         Type_buff,
     };
 public:
@@ -132,21 +123,14 @@ public:
     bool IsNull()const;
     Variant &operator=(const Variant &oth);
     template<class E>
-    void SetValue(const E & val)
+    void SetValue(const E &val)
     {
         if (GetVarType<E>() == Type_Unknow)
             return;
         *this = Variant(val);
     }
-    template<typename T, typename Contianer = std::list<T> >
-    const Contianer &GetVarList()const
-    {
-        VariantType tp = GetVarType<Contianer>();
-        if (tp == m_tp && tp >= Type_StringList && tp <= Type_ListF32)
-            return *(Contianer*)m_list;
-        static Contianer sEmpty;
-        return sEmpty;
-    }
+    const VariantList &GetVarList()const;
+    std::string Val2String() const;
 public:
     template<typename T>
     static VariantType GetVarType()
@@ -160,6 +144,7 @@ private:
     VariantType elementListType()const;
 private:
     VariantType m_tp;
+    bool        m_bValide;
     union {
         int32_t             m_nS;
         uint32_t            m_nU;

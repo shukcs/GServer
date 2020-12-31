@@ -14,7 +14,43 @@ enum MyEnum
 };
 
 using namespace das::proto;
-using namespace std;
+using namespace std;////////////////////////////////////////////////////////////////////////////////
+//PBAbSFactoryItem
+////////////////////////////////////////////////////////////////////////////////
+map<string, PBAbSFactoryItem*> s_MapPbCreate;
+
+PBAbSFactoryItem::PBAbSFactoryItem(const string &name)
+{
+    s_MapPbCreate[name] = this;
+}
+
+google::protobuf::Message *PBAbSFactoryItem::createMessage(const string &name)
+{
+    DeclareRcvPB(PostHeartBeat);
+    DeclareRcvPB(RequestIdentityAllocation);
+    DeclareRcvPB(RequestGVIdentityAuthentication);
+    DeclareRcvPB(RequestIVIdentityAuthentication);
+    DeclareRcvPB(RequestTrackerIdentityAuthentication);
+    DeclareRcvPB(AckTrackerIdentityAuthentication);
+    DeclareRcvPB(Request3rdIdentityAuthentication);
+    DeclareRcvPB(AckUavIdentityAuthentication);
+    DeclareRcvPB(UpdateDeviceList);
+    DeclareRcvPB(AckUpdateDeviceList);
+    DeclareRcvPB(SyncDeviceList);
+    DeclareRcvPB(RequestPositionAuthentication);
+    DeclareRcvPB(PostOperationInformation);
+    DeclareRcvPB(AckOperationInformation);
+    DeclareRcvPB(QueryParameters);
+    DeclareRcvPB(AckQueryParameters);
+    DeclareRcvPB(ConfigureParameters);
+    DeclareRcvPB(AckConfigurParameters);
+    DeclareRcvPB(RequestProgramUpgrade);
+
+    auto itr = s_MapPbCreate.find(name);
+    if (itr != s_MapPbCreate.end())
+        return itr->second->Create();
+    return NULL;
+}
 ////////////////////////////////////////////////////////////////////////////////
 //ProtoMsg
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,44 +140,7 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
     if (!buff || len < 0)
         return false;
 
-    if (name == d_p_ClassName(PostHeartBeat))
-        m_msg = new PostHeartBeat;                                          //申请GS用户
-    else if (name == d_p_ClassName(RequestIdentityAllocation))
-        m_msg = new RequestIdentityAllocation;
-    else if (name == d_p_ClassName(RequestGVIdentityAuthentication))
-        m_msg = new RequestGVIdentityAuthentication;        //GS登陆
-    else if (name == d_p_ClassName(RequestIVIdentityAuthentication))
-        m_msg = new RequestIVIdentityAuthentication;        //GS登陆
-    else if (name == d_p_ClassName(RequestTrackerIdentityAuthentication))
-        m_msg = new RequestTrackerIdentityAuthentication;    //Tracker登陆
-    else if (name == d_p_ClassName(AckTrackerIdentityAuthentication))
-        m_msg = new AckTrackerIdentityAuthentication;    //Tracker登陆
-    else if (name == d_p_ClassName(Request3rdIdentityAuthentication))
-        m_msg = new Request3rdIdentityAuthentication;    //一飞飞机登陆
-    else if (name == d_p_ClassName(AckUavIdentityAuthentication))
-        m_msg = new AckUavIdentityAuthentication;       //一飞飞机国欣登陆ack
-    else if (name == d_p_ClassName(UpdateDeviceList))
-        m_msg = new UpdateDeviceList;                       //设备更新
-    else if (name == d_p_ClassName(AckUpdateDeviceList))
-        m_msg = new AckUpdateDeviceList;                    //设备更新
-    else if (name == d_p_ClassName(SyncDeviceList))
-        m_msg = new SyncDeviceList;                         //设备查询
-    else if (name == d_p_ClassName(RequestPositionAuthentication))
-        m_msg = new RequestPositionAuthentication;          //查询是否禁飞位置
-    else if (name == d_p_ClassName(PostOperationInformation))
-        m_msg = new PostOperationInformation;                //设备位置
-    else if (name == d_p_ClassName(AckOperationInformation))
-        m_msg = new AckOperationInformation;                //设备位置
-    else if (name == d_p_ClassName(QueryParameters))
-        m_msg = new QueryParameters;                        //参数查询
-    else if (name == d_p_ClassName(AckQueryParameters))
-        m_msg = new AckQueryParameters;                     //参数回应
-    else if (name == d_p_ClassName(ConfigureParameters))
-        m_msg = new ConfigureParameters;                        //参数修改
-    else if (name == d_p_ClassName(AckConfigurParameters))
-        m_msg = new AckConfigurParameters;                  //参数修改结果
-    else if (name == d_p_ClassName(RequestProgramUpgrade))
-        m_msg = new RequestProgramUpgrade;                  //参数修改结果
+    m_msg = PBAbSFactoryItem::createMessage(name);
 
     if (m_msg)
         return m_msg->ParseFromArray(buff, len);

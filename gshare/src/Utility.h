@@ -6,11 +6,13 @@
 #include <string>
 
 #define TWIST_LEN     624
+#define DoubleEqual(a, b) (0 == (int)(((a)-(b))*0x100000))
 
 typedef std::list<std::string> StringList;
 class SocketAddress;
 namespace Utility
 {
+    SHARED_DECL const std::string &EmptyStr();
     SHARED_DECL int FindString(const char *src, int len, const char *cnt, int cntLen = -1);
     SHARED_DECL int FindString(const char *src, int len, const std::string &str);
     SHARED_DECL StringList SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty = true);

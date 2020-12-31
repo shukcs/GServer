@@ -81,9 +81,16 @@ static uint32_t str2ipv4(const string &ip)
     }
     return u.l;
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //namespace Utility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+const std::string & Utility::EmptyStr()
+{
+    static string sEmptyStr;
+    return sEmptyStr;
+}
+
 int Utility::FindString(const char *src, int len, const char *cnt, int cntLen)
 {
     int count = cntLen<0 ? strlen(cnt) : cntLen;

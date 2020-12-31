@@ -21,31 +21,8 @@ enum
 #define ReturmMod       "Return"
 #define MagMission      "MagMsm"
 
-typedef union {
-    float tmp[7];
-    MAVPACKED(struct {
-        float velocity[3];
-        uint16_t precision;     //航线精度
-        uint16_t gndHeight;     //地面高度
-        uint16_t gpsVSpeed;     //垂直速度
-        uint16_t curMs;         //当前任务点
-        uint8_t fixType;        //定位模式及模块状态
-        uint8_t baseMode;       //飞控模块状态
-        uint8_t satellites;     //卫星数
-        uint8_t sysStat;        //飞控状态
-        uint8_t missionRes : 4; //任务状态
-        uint8_t voltageErr : 4; //电压报警
-        uint8_t sprayState : 4; //喷洒报警
-        uint8_t magneErr : 2;   //校磁报警
-        uint8_t gpsJam : 1;     //GPS干扰
-        uint8_t stDown : 1;     //下载状态 0:没有或者完成，1:正下载
-        uint8_t sysType;        //飞控类型
-    });
-} GpsAdtionValue;
-
 using namespace std;
 using namespace das::proto;
-static string sEmptyStr;
 
 static double geoDistance(int lat1, int lon1, int lat2, int lon2)
 {
@@ -74,10 +51,346 @@ static bool getGeo(const string &buff, int &lat, int &lon)
     return true;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-//UavMission
+//MissionData
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-UavMission::UavMission(ObjectUav *obj) : m_parent(obj), m_mission(NULL), m_assists(NULL), m_abPoints(NULL)
-, m_return(NULL), m_bSys(false), m_disBeg(0), m_allLength(0), m_lastORNotify(0)
+class MissionData
+{
+private:
+    typedef struct _RidgeDat {
+        int     idx;
+        double  length;
+    } RidgeDat;
+public:
+    MissionData() : m_allLength(0.0), m_disBeg(0.0), m_tmCreate(0), m_acreage(0)
+        ,m_ridgeBeg(-1), m_bSys(false), m_lastORNotify(0)
+    {}
+    ~MissionData(){}
+    float CalculateOpArea(const Coordinate *suspend, int curItem)
+    {
+        bool bFinish = false;
+        int ridgeCur = GetCurRidge(curItem, bFinish);
+        if (ridgeCur < 0 || ridgeCur < m_ridgeBeg)
+            return -1;
+
+        bool bRemain = suspend && bFinish;
+        double flied = bRemain ? _getOprLength(curItem) : 0;
+        if (bRemain)
+        {
+            int latT = INVALIDLat, lonT = INVALIDLat;
+            if (getGeo(getItem(false, curItem), latT, latT))
+                flied -= geoDistance(suspend->latitude(), suspend->longitude(), latT, lonT);
+
+            if (ridgeCur == m_disBeg && flied < m_disBeg)
+                return -1;		          //没有飞到断点之前不要统计
+
+            if (flied < 0)
+                flied = 0;
+        }
+
+        double oped = flied - m_disBeg; //下垄已经飞完的减去前次飞过的
+        for (const pair<int32_t, RidgeDat> &itr : m_ridges)
+        {
+            int idx = itr.second.idx;
+            if (m_ridgeBeg <= idx && itr.first < curItem)
+                oped += itr.second.length;
+        }
+
+        m_ridgeBeg = bFinish ? ridgeCur + 1 : ridgeCur;
+        m_disBeg = flied;
+        if (m_allLength < 0.0001)
+            return m_acreage;
+
+        return float(m_acreage*oped / m_allLength);
+    }
+    const string &GetGs()const
+    {
+        return m_user;
+    }
+    const string &GetLandId()const
+    {
+        return m_landId;
+    }
+    const string &GetPlanId()const
+    {
+        return m_rpid;
+    }
+    int64_t GetCreateTm()const
+    {
+        return m_tmCreate;
+    }
+    int GetBegRidge()const
+    {
+        return m_ridgeBeg;
+    }
+    bool ProcessRcvOpRoute(const OperationRoute &sor)
+    {
+        int rdSz = sor.ridgebeg_size();
+        m_ridgeBeg = sor.beg();
+        if (rdSz - 1 != sor.end() - m_ridgeBeg)
+            return false;
+
+        m_boundarys.clear();
+        for (int i = 0; i<sor.boundarys().size();++i)
+        {
+            m_boundarys.push_back(sor.boundarys(i));
+        }
+        m_missionItems.clear();
+        for (int i = 0; i < sor.missions().size(); ++i)
+        {
+            m_missionItems.push_back(sor.missions(i));
+        }
+        m_disBeg = 0;
+        m_bSys = false;
+        m_rpid = sor.rpid();
+        m_landId = sor.landid();
+        m_user = sor.gsid();
+        m_tmCreate = sor.createtime() == 0 ? Utility::msTimeTick() : sor.createtime();
+        m_ridges.clear();
+        m_allLength = 0;
+        m_acreage = sor.acreage();
+        for (int i = 0; i < sor.ridgebeg_size(); ++i)
+        {
+            int item = sor.ridgebeg(i);
+            RidgeDat &dat = m_ridges[item];
+            dat.length = _genRidgeLength(item);
+            dat.idx = m_ridgeBeg + i;
+            m_allLength += dat.length;
+        }
+        return true;
+    }
+    AckRequestRouteMissions *RequstMissions(int offset, int count, bool bBdr)
+    {
+        auto ack = new AckRequestRouteMissions;
+        if (!ack)
+            return NULL;
+
+        bool hasItem = _hasMission(bBdr, offset, count);
+        ack->set_result(hasItem ? 1 : 0);
+        ack->set_boundary(bBdr);
+        ack->set_offset(hasItem ? offset : -1);
+ 
+        StringList &ls = bBdr ? m_boundarys : m_missionItems;
+        auto itr = ls.begin();
+        for (int i = 0; i < offset && itr != ls.end(); ++i, ++itr);
+        for (int i = 0; i < count && itr!=ls.end(); ++i)
+        {
+            ack->add_missions(itr->c_str(), itr->size());
+            ++itr;
+        }
+
+        m_bSys = true;
+        return ack;
+    }
+    int CountMissions()const
+    {
+        return m_missionItems.size();
+    }
+    int CountBoundarys()const
+    {
+        return m_boundarys.size();
+    }
+    int GetCurRidge(int curItem, bool &bFinish) const
+    {
+        int idx = 0;
+        for (auto itr = m_ridges.begin(); itr != m_ridges.end(); ++itr)
+        {
+            idx = itr->second.idx;
+            if (curItem <= itr->first)
+            {
+                bFinish = curItem < itr->first;//判断是否开始本垄
+                if (bFinish)
+                    idx--;
+
+                return idx;
+            }
+        }
+
+        bFinish = true;
+        return idx;
+    }
+    double GetOprLength(int curItem) const
+    {
+        auto itr = m_ridges.find(curItem);
+        if (itr == m_ridges.end())
+            return 0;
+
+        return itr->second.length;
+    }
+    UploadOperationRoutes *GetNotifyRoute(int64_t ms, const string &uav)
+    {
+        if (m_bSys || ms - m_lastORNotify < 500)
+            return NULL;
+
+        m_lastORNotify = (uint32_t)ms;
+        static uint32_t sSeqno = 1;
+        if (auto upload = new UploadOperationRoutes)
+        {
+            upload->set_seqno(sSeqno++);
+            upload->set_uavid(uav);
+            upload->set_msid(m_rpid);
+            upload->set_timestamp(m_tmCreate);
+            upload->set_countmission(CountMissions());
+            upload->set_countboundary(CountBoundarys());
+            return upload;
+        }
+        return NULL;
+    }
+private:
+    double _getOprLength(int curItem) const
+    {
+        auto itr = m_ridges.find(curItem);
+        if (itr == m_ridges.end())
+            return 0;
+
+        return itr->second.length;
+    }
+    bool _hasMission(bool bBdr, int offset, int count) const
+    {
+        if (offset < 0 || count <= 0)
+            return false;
+
+        return offset+count <= int(bBdr ? m_boundarys.size() : m_missionItems.size());
+    }
+    double _genRidgeLength(int idx)
+    {
+        if (idx > 0 && idx < (int)m_missionItems.size())
+        {
+            int lat1;
+            int lon1;
+            getGeo(getItem(false, idx), lat1, lon1);
+            int lat2;
+            int lon2;
+            getGeo(getItem(false, idx), lat2, lon2);
+
+            return geoDistance(lat1, lon1, lat2, lon2);
+        }
+        return 0;
+    }
+    const string &getItem(bool bdr, int idx)const
+    {
+        const StringList &ls = bdr ? m_boundarys : m_missionItems;
+        auto itr = ls.begin();
+        if (idx >= (int)ls.size() || idx < 0)
+            return Utility::EmptyStr();
+
+        for (auto itr = ls.begin(); ; ++itr)
+        {
+            if (idx-- == 0)
+                return *itr;
+        }
+        return Utility::EmptyStr();
+    }
+private:
+    double                          m_allLength;
+    double                          m_disBeg;
+    int64_t                         m_tmCreate;
+    float                           m_acreage;
+    int32_t                         m_ridgeBeg;
+    uint32_t                        m_lastORNotify;
+    bool                            m_bSys;
+    StringList                      m_missionItems;
+    StringList                      m_boundarys;
+    string                          m_rpid;
+    string                          m_landId;
+    string                          m_user;
+    std::map<int32_t, RidgeDat>     m_ridges;       //地垄key:itemseq
+};
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+//MissionData
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+class MissionABData
+{
+private:
+    typedef struct _ABMissionItem {
+        int32_t     lat;
+        int32_t     lon;
+        int32_t     alt;
+    } ABMisnItem;
+public:
+    MissionABData() : m_sprayWidth(0.0), m_lastAbLat(0), m_lastAbLon(0), m_lastItem(0)
+    {}
+    ~MissionABData() {}
+    float CalculateOpArea(const Coordinate *suspend, int item)
+    {
+        if (m_sprayWidth < 0.1 || item<0)
+            return -1;
+
+        double oped = 0;
+        if (m_lastItem % 2 && m_abMisnItems.find(m_lastItem) != m_abMisnItems.end())
+        {
+            const ABMisnItem &item = m_abMisnItems.find(m_lastItem)->second;
+            oped += geoDistance(item.lat, item.lon, m_lastAbLat, m_lastAbLon);
+            m_lastItem++;
+        }
+        for (auto itr = m_abMisnItems.begin(); itr != m_abMisnItems.end(); itr++)
+        {
+            if (m_lastItem <= itr->first && itr->first <= item)
+            {
+                auto tmp = itr++;
+                if (itr == m_abMisnItems.end())
+                    break;
+                oped += geoDistance(tmp->second.lat, tmp->second.lon, itr->second.lat, itr->second.lon);
+            }
+        }
+        m_lastItem = item;
+        if (item % 2 == 0 && suspend)
+        {
+            m_lastItem++;
+            auto itr = m_abMisnItems.find(item);
+            if (suspend)
+            {
+                m_lastAbLat = suspend->latitude();
+                m_lastAbLon = suspend->longitude();
+            }
+            else if (itr != m_abMisnItems.end())
+            {
+                m_lastAbLat = suspend->latitude();
+                m_lastAbLon = suspend->longitude();
+            }
+            if (itr != m_abMisnItems.end())
+                oped += geoDistance(itr->second.lat, itr->second.lon, m_lastAbLat, m_lastAbLon);
+        }
+        return float(m_sprayWidth * oped * 15 / 10000); ///亩
+    }
+    void PrcsABOperation(const PostABOperation &msg)
+    {
+        if (msg.has_sw())
+            m_sprayWidth = msg.sw();
+
+        int next = m_abMisnItems.size();
+        for (int i = 0; i + 3 < msg.points_size(); i += 4)
+        {
+            int idx = msg.points(i);
+            if (0 == idx)
+            {
+                m_abMisnItems.clear();
+                m_lastItem = 0;
+            }
+            if (next++ == m_lastItem)
+            {
+                ABMisnItem &it = m_abMisnItems[idx];
+                it.lat = msg.points(i + 1);
+                it.lon = msg.points(i + 2);
+                it.alt = msg.points(i + 3);
+            }
+        }
+    }
+    int CountMissions()const
+    {
+        return m_abMisnItems.size();
+    }
+private:
+    double                          m_sprayWidth;
+    int32_t                         m_lastAbLat;
+    int32_t                         m_lastAbLon;
+    int                             m_lastItem;
+    std::map<int32_t, ABMisnItem>   m_abMisnItems;
+};
+//////////////////////////////////////////////////////////////////////////////////////////
+//UavMission
+//////////////////////////////////////////////////////////////////////////////////////////
+UavMission::UavMission(ObjectUav *obj) : m_parent(obj), m_mission(NULL), m_missionAB(NULL)
+, m_assists(NULL), m_abPoints(NULL), m_return(NULL)
 {
 }
 
@@ -106,126 +419,75 @@ void UavMission::PrcsPostReturn(PostOperationReturn *msg)
 
     ReleasePointer(m_return);
     m_return = msg;
-    if (m_mission && m_return && m_mission->rpid() == msg->msid() && msg->mission())
+    if (msg->mission() && m_mission && m_mission->GetPlanId()== msg->msid())
         _missionFinish(msg->msitem());
+    else if (!msg->mission() && m_missionAB)
+        _abMissionFinish(msg->msitem());
+}
+
+void UavMission::PrcsABOperation(das::proto::PostABOperation *msg)
+{
+    if (!msg)
+        return;
+
+    if (!m_missionAB)
+        m_missionAB = new MissionABData;
+
+    if (m_missionAB)
+        m_missionAB->PrcsABOperation(*msg);
 }
 
 google::protobuf::Message *UavMission::PrcsRcvReqMissions(const RequestRouteMissions &msg)
 {
-    auto ack = new AckRequestRouteMissions;
-    if (!ack)
-        return NULL;
-
-    bool hasItem = _hasMission(msg);
-    int offset = msg.offset();
-    ack->set_seqno(msg.seqno());
-    ack->set_result(hasItem ? 1 : 0);
-    ack->set_boundary(msg.boundary());
-    ack->set_offset(hasItem ? offset : -1);
+    AckRequestRouteMissions *ret = NULL;
     if (m_mission)
     {
-        int count = msg.boundary() ? m_mission->boundarys_size() : m_mission->missions_size();
-        for (int i = 0; i<msg.count()&&count>=offset+i; ++i)
-        {
-            const string &msItem = msg.boundary() ? m_mission->boundarys(i+offset):m_mission->missions(i+offset);
-            ack->add_missions(msItem.c_str(), msItem.size());
-        }
+        ret = m_mission->RequstMissions(msg.offset(), msg.count(), msg.boundary());
+        if (ret)
+            ret->set_seqno(msg.seqno());
     }
-    m_bSys = true;
-    return ack;
-}
 
-bool UavMission::_hasMission(const das::proto::RequestRouteMissions &req) const
-{
-    if (!m_mission || req.offset()<0 || req.count()<=0)
-        return false;
-
-    return (req.offset() + req.count()) <= (req.boundary() ? m_mission->boundarys_size() : m_mission->missions_size());
+    return ret;
 }
 
 google::protobuf::Message *UavMission::GetNotifyUavUOR(uint32_t ms)
 {
-    if (!m_mission || m_bSys || ms - m_lastORNotify < 500)
-        return NULL;
+    if (m_mission)
+        return m_mission->GetNotifyRoute(ms, GetParentID());
 
-    static uint32_t sSeqno = 1;
-    m_lastORNotify = (uint32_t)Utility::msTimeTick();
-    if (auto upload = new UploadOperationRoutes)
-    {
-        upload->set_seqno(sSeqno++);
-        upload->set_uavid(m_mission->uavid());
-        upload->set_msid(m_mission->rpid());
-        upload->set_timestamp(m_mission->createtime());
-        upload->set_countmission(m_mission->missions_size());
-        upload->set_countboundary(m_mission->boundarys_size());
-        return upload;
-    }
     return NULL;
 }
 
 bool UavMission::ParsePostOr(const OperationRoute &sor)
 {
-    int rdSz = sor.ridgebeg_size();
-    int beg = sor.beg();
-    if (rdSz-1 != sor.end()-beg)
-        return false;
-
-    ReleasePointer(m_mission);
-    m_disBeg = 0;
-    m_mission = new OperationRoute();
     if (!m_mission)
-        return false;
+        m_mission = new MissionData;
+    if (m_mission)
+        return m_mission->ProcessRcvOpRoute(sor);
 
-    m_bSys = false;
-    m_mission->CopyFrom(sor);
-    if (m_mission->createtime() == 0)
-        m_mission->set_createtime(Utility::msTimeTick());
-    m_ridges.clear();
-    m_allLength = 0;
-    for (int i = 0; i < sor.ridgebeg_size(); ++i)
-    {
-        int item = sor.ridgebeg(i);
-        RidgeDat &dat = m_ridges[item];
-        dat.length = genRidgeLength(item);
-        dat.idx = beg + i;
-        m_allLength += dat.length;
-    }
-
-    return true;
+    return false;
 }
 
 void UavMission::_missionFinish(int curItem)
 {
-    bool bFinish;
-    int ridgeCur = getCurRidge(curItem, bFinish);
-    if (!m_mission || ridgeCur<m_mission->beg())
+    bool bFinish = false;
+    int ridgeCur = m_mission ? m_mission->GetCurRidge(curItem, bFinish):-1;
+    if (!m_mission || ridgeCur < m_mission->GetBegRidge())
         return;
-
-    bool bRemain = m_return && m_return->has_suspend() && bFinish;
-    double flied = bRemain ? _getOprLength(curItem) : 0;
-    if (bRemain)
-    {
-        int latT = INVALIDLat, lonT = INVALIDLat;
-        if (getGeo(m_mission->missions(curItem), latT, latT))
-            flied -= geoDistance(m_return->suspend().latitude(), m_return->suspend().longitude(), latT, lonT);
-
-        if (ridgeCur==m_mission->beg() && flied<m_disBeg)
-            return;		          //没有飞到断点之前不要统计
-
-        if (flied < 0)
-            flied = 0;
-    }
-
-    _saveMission(!bFinish, calculateOpArea(flied, curItem), bFinish?ridgeCur:ridgeCur-1);
-    m_disBeg = flied;
-    if (bFinish)
-        ridgeCur++;
-    m_mission->set_beg(ridgeCur);
+    float acrage = m_mission->CalculateOpArea(m_return->has_suspend() ? &m_return->suspend() : NULL, curItem);
+    if (acrage > 0)
+        _saveMission(!bFinish, acrage, bFinish ? ridgeCur : ridgeCur - 1);
 }
 
-bool UavMission::MavLinkfilter(PostStatus2GroundStation &pb)
+void UavMission::_abMissionFinish(int curItem)
 {
-    bool ret = true;
+    float acrage = m_missionAB->CalculateOpArea(m_return->has_suspend() ? &m_return->suspend() : NULL, curItem);
+    if (acrage > 0)
+        _saveMission(curItem%2!=1, acrage, curItem/2, false);
+}
+
+void UavMission::MavLinkfilter(PostStatus2GroundStation &pb)
+{
     for (int i = 0; i < pb.data_size(); ++i)
     {
         const ::std::string &dt = pb.data(i);
@@ -247,24 +509,22 @@ bool UavMission::MavLinkfilter(PostStatus2GroundStation &pb)
                 saveOtherAssists(supports.start_latitude, supports.start_longitude, supports.end_latitude, supports.end_longitude, supports.assist_state);
             else
                 saveOtherABPoints(supports.start_latitude, supports.start_longitude, supports.end_latitude, supports.end_longitude, (supports.assist_state&0x10)!=0);
-            continue;
+            pb.mutable_data()->DeleteSubrange(i, 1);
         }
-        ret = false;
     }
-    return ret;
 }
 
 int UavMission::CountAll() const
 {
     if (m_mission)
-        return  m_mission->boundarys_size() + m_mission->missions_size();
+        return  m_mission->CountBoundarys() + m_mission->CountMissions();
     return 0;
 }
 
 int UavMission::CountItems() const
 {
     if (m_mission)
-        return  m_mission->missions_size();
+        return  m_mission->CountMissions();
 
     return 0;
 }
@@ -281,7 +541,7 @@ const std::string &UavMission::GetParentID()const
     if (m_parent)
         return m_parent->GetObjectID();
 
-    return sEmptyStr;
+    return Utility::EmptyStr();
 }
 
 google::protobuf::Message *UavMission::AckRequestPost(UavMission &ms, google::protobuf::Message *msg)
@@ -335,87 +595,23 @@ google::protobuf::Message *UavMission::AckRequestPost(UavMission &ms, google::pr
     return NULL;
 }
 
-double UavMission::genRidgeLength(int idx)
+void UavMission::_saveMission(bool bSuspend, float acrage, int finshed, bool bMission)
 {
-    if (m_mission && idx > 0 && idx < m_mission->missions_size())
-    {
-        int lat1;
-        int lon1;
-        getGeo(m_mission->missions(idx - 1), lat1, lon1);
-        int lat2;
-        int lon2;
-        getGeo(m_mission->missions(idx), lat2, lon2);
-
-        return geoDistance(lat1, lon1, lat2, lon2);
-    }
-    return 0;
-}
-
-float UavMission::calculateOpArea(double flied, int curItem)const
-{
-    if (!m_mission)
-        return 0;
-
-    double oped = flied; //下垄已经飞完的
-    for (const pair<int32_t, RidgeDat> &itr : m_ridges)
-    {
-        int idx = itr.second.idx;
-        if (m_mission->beg()<= idx && itr.first<curItem)
-            oped += itr.second.length;
-    }
-
-    oped -= m_disBeg;
-    if (m_allLength < 0.0001)
-        return m_mission->acreage();
-
-    return float(m_mission->acreage()*oped / m_allLength);
-}
-
-int UavMission::getCurRidge(int curItem, bool &bFinish) const
-{
-    int idx = 0;
-    for (auto itr = m_ridges.begin(); itr != m_ridges.end(); ++itr)
-    {
-        idx = itr->second.idx;
-        if (curItem <= itr->first)
-        {
-            bFinish = curItem < itr->first;//判断是否开始本垄
-            if (bFinish)
-                idx--;
- 
-            return idx;
-        }
-    }
-
-    bFinish = true;
-    return idx;
-}
-
-double UavMission::_getOprLength(int curItem) const
-{
-    auto itr = m_ridges.find(curItem);
-    if (itr == m_ridges.end())
-        return 0;
-
-    return itr->second.length;
-}
-
-void UavMission::_saveMission(bool bSuspend, float acrage, int finshed)
-{
-    if (!m_parent)
+    if (!m_parent || !m_mission)
         return;
 
     if (DBMessage *msg = new DBMessage(m_parent, IMessage::Unknown, DBMessage::DB_GS))
     {
         msg->SetSql("insertMissions");
-        msg->SetWrite("userID", m_mission->gsid());
-        if (m_mission->has_landid())
-            msg->SetWrite("landId", m_mission->landid());
-        if (m_mission->has_rpid())
-            msg->SetWrite("planID", m_mission->rpid());
+        msg->SetWrite("userID", bMission ? m_mission->GetGs() : m_parent->GetBinder());
+        if (bMission)
+        {
+            msg->SetWrite("landId", m_mission->GetLandId());
+            msg->SetWrite("planID", m_mission->GetPlanId());
+            msg->SetWrite("createTime", m_mission->GetCreateTm());
+        }
 
-        msg->SetWrite("uavID", m_mission->uavid());
-        msg->SetWrite("createTime", m_mission->createtime());
+        msg->SetWrite("uavID", m_parent->GetObjectID());
         msg->SetWrite("finishTime", Utility::msTimeTick());
 
         if (bSuspend && m_return && m_return->has_suspend())
@@ -424,8 +620,10 @@ void UavMission::_saveMission(bool bSuspend, float acrage, int finshed)
             msg->SetWrite("continiuLon", m_return->suspend().longitude());
         }
 
-        if (m_mission->has_beg())
-            msg->SetWrite("begin", m_mission->beg());
+        if (bMission)
+            msg->SetWrite("begin", m_mission->GetBegRidge());
+        else
+            msg->SetWrite("begin", 0);///
         msg->SetWrite("end", finshed);
         msg->SetWrite("acreage", acrage);
         m_parent->SendMsg(msg);
@@ -454,14 +652,14 @@ void UavMission::saveOtherAssists(int latE, int lonE, int latR, int lonR, int st
     }
     m_assists->set_allocated_enter(coor);
 
-    coor = (stat & 1) ? new Coordinate() : NULL;
+    coor = (stat & 2) ? new Coordinate() : NULL;
     if (coor)
     {
         coor->set_latitude(latR);
         coor->set_longitude(lonR);
     }
     m_assists->set_allocated_return_(coor);
-    m_parent->BinderProcess(*m_assists);
+    m_parent->SndBinder(*m_assists);
 }
 
 void UavMission::saveOtherABPoints(int latA, int lonA, int latB, int lonB, bool bHas)
@@ -500,5 +698,5 @@ void UavMission::saveOtherABPoints(int latA, int lonA, int latB, int lonB, bool 
         }
     }
     if (m_abPoints)
-        m_parent->BinderProcess(*m_abPoints);
+        m_parent->SndBinder(*m_abPoints);
 }

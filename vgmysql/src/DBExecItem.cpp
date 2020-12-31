@@ -95,6 +95,9 @@ ExecutItem *FiledVal::ComplexSql() const
 
 void FiledVal::SetParam(const string &param, FieldType tp)
 {
+    if (m_tpField & (StaticRef | StaticParam))
+        return;
+
     if(param.length() > 0 && (NoBuff==tp || StaticRef==tp || StaticParam==tp))
     {
         if(m_buff)
