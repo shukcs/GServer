@@ -136,11 +136,11 @@ void ObjectVgFZ::PrcsProtoBuff(uint64_t ms)
     if (strMsg == d_p_ClassName(RequestFZUserIdentity))
         _prcsLogin((RequestFZUserIdentity*)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(RequestNewFZUser))
-        _prcsReqNewGs((RequestNewFZUser*)m_p->GetProtoMessage());
+        _prcsReqNewFz((RequestNewFZUser*)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(AckHeartBeat))
         _prcsHeartBeat((AckHeartBeat *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(FZUserMessage))
-        _prcsGsMessage((FZUserMessage *)m_p->GetProtoMessage());
+        _prcsFzMessage((FZUserMessage *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(SyncFZUserList))
         _prcsSyncDeviceList((SyncFZUserList *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(RequestFriends))
@@ -155,7 +155,7 @@ void ObjectVgFZ::processGs2Gs(const Message &msg, int tp)
     if (tp == IMessage::User2User)
     {
         auto gsmsg = (const FZUserMessage *)&msg;
-        if (Gs2GsMessage *ms = new Gs2GsMessage(this, gsmsg->from()))
+        if (FZ2FZMessage *ms = new FZ2FZMessage(this, gsmsg->from()))
         {
             auto ack = new AckFZUserMessage;
             ack->set_seqno(gsmsg->seqno());
@@ -373,7 +373,7 @@ void ObjectVgFZ::addDBFriend(const string &user1, const string &user2)
     }
 }
 
-void ObjectVgFZ::_prcsReqNewGs(RequestNewFZUser *msg)
+void ObjectVgFZ::_prcsReqNewFz(RequestNewFZUser *msg)
 {
     if (!msg)
         return;
@@ -407,7 +407,7 @@ void ObjectVgFZ::_prcsReqNewGs(RequestNewFZUser *msg)
     }
 }
 
-void ObjectVgFZ::_prcsGsMessage(FZUserMessage *msg)
+void ObjectVgFZ::_prcsFzMessage(FZUserMessage *msg)
 {
     if (!msg)
         return;
@@ -438,7 +438,7 @@ void ObjectVgFZ::_prcsGsMessage(FZUserMessage *msg)
         }
     }
 
-    if (Gs2GsMessage *ms = new Gs2GsMessage(this, msg->to()))
+    if (FZ2FZMessage *ms = new FZ2FZMessage(this, msg->to()))
     {
         ms->AttachProto(msg);
         SendMsg(ms);

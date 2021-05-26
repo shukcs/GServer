@@ -24,7 +24,7 @@ using namespace SOCKETS_NAMESPACE;
 
 class ProtoMsg;
 class ObjectVgFZ;
-class Gs2GsMessage;
+class FZ2FZMessage;
 class VgFZManager : public AbsPBManager
 {
 public:
@@ -40,7 +40,7 @@ protected:
     IObject *PrcsProtoBuff(ISocket *s);
 
     bool PrcsPublicMsg(const IMessage &msg);
-    void processGSMessage(const Gs2GsMessage &gsM);
+    void processGSMessage(const FZ2FZMessage &gsM);
 
     IObject *prcsPBLogin(ISocket *s, const das::proto::RequestFZUserIdentity *msg);
     IObject *prcsPBNewGs(ISocket *s, const das::proto::RequestNewFZUser *msg);

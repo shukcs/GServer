@@ -39,20 +39,12 @@ protected:
 };
 
 
-class Gs2GsMessage : public GSOrUavMessage
+class FZ2FZMessage : public GSOrUavMessage
 {
-    CLASS_INFO(Gs2GsMessage)
+    CLASS_INFO(FZ2FZMessage)
 public:
-    Gs2GsMessage(ObjectVgFZ *sender, const std::string &idRcv);
-    Gs2GsMessage(IObjectManager *sender, const std::string &idRcv);
-private:
-};
-
-class Uav2GXMessage : public GSOrUavMessage
-{
-    CLASS_INFO(Uav2GXMessage)
-public:
-    Uav2GXMessage(ObjectUav *sender);
+    FZ2FZMessage(ObjectVgFZ *sender, const std::string &idRcv);
+    FZ2FZMessage(IObjectManager *sender, const std::string &idRcv);
 private:
 };
 

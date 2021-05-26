@@ -90,7 +90,7 @@ bool VgFZManager::PrcsPublicMsg(const IMessage &ms)
     switch (ms.GetMessgeType())
     {
     case IMessage::User2User:
-        processGSMessage(*(Gs2GsMessage*)&ms);
+        processGSMessage(*(FZ2FZMessage*)&ms);
         break;
     default:
         break;
@@ -98,9 +98,9 @@ bool VgFZManager::PrcsPublicMsg(const IMessage &ms)
     return true;
 }
 
-void VgFZManager::processGSMessage(const Gs2GsMessage &gsM)
+void VgFZManager::processGSMessage(const FZ2FZMessage &gsM)
 {
-    if (Gs2GsMessage *msg = new Gs2GsMessage(this, gsM.GetSenderID()))
+    if (FZ2FZMessage *msg = new FZ2FZMessage(this, gsM.GetSenderID()))
     {
         auto gsmsg = (const FZUserMessage *)gsM.GetProtobuf();
         auto ack = new AckFZUserMessage;

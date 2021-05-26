@@ -19,7 +19,7 @@ namespace SOCKETS_NAMESPACE {
 #endif
 
 class ProtoMsg;
-class Gs2GsMessage;
+class FZ2FZMessage;
 class DBMessage;
 class ObjectVgFZ : public ObjectAbsPB
 {
@@ -62,8 +62,8 @@ private:
     void _prcsLogin(das::proto::RequestFZUserIdentity *msg);
     void _prcsHeartBeat(das::proto::AckHeartBeat *msg);
     void _prcsSyncDeviceList(das::proto::SyncFZUserList *ms);
-    void _prcsReqNewGs(das::proto::RequestNewFZUser *msg);
-    void _prcsGsMessage(das::proto::FZUserMessage *msg);
+    void _prcsReqNewFz(das::proto::RequestNewFZUser *msg);
+    void _prcsFzMessage(das::proto::FZUserMessage *msg);
     void _prcsReqFriends(das::proto::RequestFriends *msg);
 private:
     void _checkGS(const std::string &user, int ack);
