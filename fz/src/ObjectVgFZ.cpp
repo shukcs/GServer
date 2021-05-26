@@ -121,6 +121,9 @@ void ObjectVgFZ::ProcessMessage(IMessage *msg)
         case IMessage::UserCheckRslt:
             processCheckUser(*(DBMessage*)msg);
             break;
+        case IMessage::FriendQueryRslt:
+            processFriends(*(DBMessage*)msg);
+            break;
         default:
             break;
         }
@@ -190,16 +193,8 @@ void ObjectVgFZ::processGSInfo(const DBMessage &msg)
     m_seq = -1;
     m_pswd = pswd;
     if (Initialed == m_stInit)
-    {
         initFriend();
-        if (DBMessage *msg = new DBMessage(this, IMessage::CountLandRslt, DBMessage::DB_FZ))
-        {
-            msg->SetSql("countLand");
-            msg->SetCondition("user", m_id);
-            SendMsg(msg);
-        }
-    }
-    if (Initialed != m_stInit)
+    else if (Initialed != m_stInit)
         Release();
 }
 
@@ -217,6 +212,25 @@ void ObjectVgFZ::processGSInsert(const DBMessage &msg)
 
     m_auth = 0x100;
     m_tmLastInfo = Utility::msTimeTick();
+}
+
+void ObjectVgFZ::processFriends(const DBMessage &msg)
+{
+    const Variant &vUsr1 = msg.GetRead("usr1");
+    const Variant &vUsr2 = msg.GetRead("usr2");
+    if (vUsr1.GetType() == Variant::Type_StringList && vUsr2.GetType() == Variant::Type_StringList)
+    {
+        for (const Variant &itr : vUsr1.GetVarList())
+        {
+            if (!itr.IsNull() && itr.ToString() != m_id)
+                m_friends.push_back(itr.ToString());
+        }
+        for (const Variant &itr : vUsr2.GetVarList())
+        {
+            if (!itr.IsNull() && itr.ToString() != m_id)
+                m_friends.push_back(itr.ToString());
+        }
+    }
 }
 
 void ObjectVgFZ::processCheckUser(const DBMessage &msg)
@@ -247,7 +261,7 @@ void ObjectVgFZ::InitObject()
             return;
         }
 
-        DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt, DBMessage::DB_FZ);
+        DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
         if (!msg)
             return;
 
@@ -351,7 +365,7 @@ void ObjectVgFZ::initFriend()
     if (m_bInitFriends)
         return;
 
-    DBMessage *msg = new DBMessage(this, IMessage::FriendQueryRslt, DBMessage::DB_FZ);
+    DBMessage *msg = new DBMessage(this, IMessage::FriendQueryRslt);
     if (!msg)
         return;
     m_bInitFriends = true;
@@ -363,7 +377,7 @@ void ObjectVgFZ::initFriend()
 
 void ObjectVgFZ::addDBFriend(const string &user1, const string &user2)
 {
-    if (DBMessage *msg = new DBMessage(this, IMessage::Unknown, DBMessage::DB_FZ))
+    if (DBMessage *msg = new DBMessage(this, IMessage::Unknown))
     {
         msg->SetSql("insertFZFriends");
         msg->SetWrite("id", VgFZManager::CatString(user1, user2));
@@ -463,7 +477,7 @@ void ObjectVgFZ::_prcsReqFriends(das::proto::RequestFriends *msg)
 
 void ObjectVgFZ::_checkGS(const string &user, int ack)
 {
-    DBMessage *msgDb = new DBMessage(this, IMessage::UserCheckRslt, DBMessage::DB_FZ);
+    DBMessage *msgDb = new DBMessage(this, IMessage::UserCheckRslt);
     if (!msgDb)
         return;
 

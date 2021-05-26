@@ -53,6 +53,7 @@ protected:
     void processGSInfo(const DBMessage &msg);
     void processGSInsert(const DBMessage &msg);
     void processCheckUser(const DBMessage &msg);
+    void processFriends(const DBMessage &msg);
 
     void InitObject();
     void CheckTimer(uint64_t ms, char *buf, int len);

@@ -358,7 +358,8 @@
 				</SQL>
 			</SQLs>
 		</Object>
-		<Object name="DBFz" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8"><Tables>
+		<Object name="DBFz" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
+			<Tables>
 				<table name="FZInfo">
 					<field name="user" type="char(32)" constraint="primary key"/>
 					<field name="pswd" type="char(32)" />
