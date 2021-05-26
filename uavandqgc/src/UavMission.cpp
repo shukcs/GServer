@@ -62,7 +62,7 @@ private:
     } RidgeDat;
 public:
     MissionData() : m_allLength(0.0), m_disBeg(0.0), m_tmCreate(0), m_acreage(0)
-        ,m_ridgeBeg(-1), m_bSys(false), m_lastORNotify(0)
+        ,m_ridgeBeg(-1), m_lastORNotify(0), m_bSys(false)
     {}
     ~MissionData(){}
     float CalculateOpArea(const Coordinate *suspend, int curItem)
@@ -269,11 +269,10 @@ private:
     const string &getItem(bool bdr, int idx)const
     {
         const StringList &ls = bdr ? m_boundarys : m_missionItems;
-        auto itr = ls.begin();
         if (idx >= (int)ls.size() || idx < 0)
             return Utility::EmptyStr();
 
-        for (auto itr = ls.begin(); ; ++itr)
+        for (auto itr = ls.begin(); itr!=ls.end(); ++itr)
         {
             if (idx-- == 0)
                 return *itr;

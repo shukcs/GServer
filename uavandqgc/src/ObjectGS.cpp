@@ -1430,7 +1430,7 @@ void ObjectGS::_prcsGsMessage(GroundStationsMessage *msg)
         m_friends.remove(msg->to());
         if (DBMessage *db = new DBMessage(this))
         {
-            db->SetSql("insertGSFriends");
+            db->SetSql("deleteGSFriends");
             db->SetCondition("id", GSManager::CatString(m_id, msg->to()));
             SendMsg(db);
         }

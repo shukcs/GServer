@@ -4,5 +4,6 @@
 	<Libs>
 		<Library name="uavandqgc" />
 		<Library name="trackerandgv" />
+		<Library name="fz" />
 	</Libs>
 </document>

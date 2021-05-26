@@ -21,6 +21,12 @@
     <ClCompile Include="src\MysqlDB.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\DBMessages.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DBManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DBExecItem.h">
@@ -36,6 +42,12 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\MysqlDB.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DBMessages.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DBManager.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

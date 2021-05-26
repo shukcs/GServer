@@ -1,4 +1,4 @@
-package(uavandqgc)
+package(fz)
 SET(CMAKE_C_FLAGS "-fPIC -O0 -Wall -g")  #c  
 SET(CMAKE_CXX_FLAGS "-fPIC -O2 -Wall -g -rdynamic")  #c++
 
@@ -6,7 +6,6 @@ INCLUDE_DIRECTORIES(
 	.
 	./src
 	./proto
-	./mavLink
 	../protobuf
 	../gshare/src
 	../vgmysql/src
@@ -16,29 +15,15 @@ set(SRC_LIST
 	../protobuf/ProtoMsg.h
 	proto/das.pb.cc
 	proto/das.pb.h
-	src/GSManager.cpp
-	src/GSManager.h
-	src/FWItem.cpp
-	src/FWItem.h
-	src/FWAssist.cpp
-	src/FWAssist.h
+	proto/ProtoMsg.cpp
 	src/Messages.cpp
 	src/Messages.h
 	src/ObjectAbsPB.cpp
 	src/ObjectAbsPB.h
-	src/ObjectGS.cpp
-	src/ObjectGS.h
-	src/ObjectUav.cpp
-	src/ObjectUav.h
-	src/ProtoMsg.cpp
-	src/UavManager.cpp
-	src/UavManager.h
-	src/UavMission.cpp
-	src/UavMission.h
-	src/GXClient.cpp
-	src/GXClient.h
-	src/GXLink.cpp
-	src/GXLink.h
+	src/ObjectVgFZ.cpp
+	src/ObjectVgFZ.h
+	src/VgFZManager.cpp
+	src/VgFZManager.h
 )
 
 add_library(${PACKAGE_NAME} SHARED ${SRC_LIST})

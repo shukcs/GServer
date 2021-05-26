@@ -1,10 +1,6 @@
 #include "DBMessages.h"
 #include "ObjectBase.h"
 #include "Utility.h"
-#include "ObjectGS.h"
-#include "ObjectUav.h"
-#include "GSManager.h"
-#include "UavManager.h"
 #include "DBManager.h"
 
 using namespace std;
@@ -14,8 +10,22 @@ using namespace SOCKETS_NAMESPACE;
 
 static Variant sVarEmpty;
 static const string sStrEmpty;
-static const char *rcvId(DBMessage::OBjectFlag f)
+static const char *rcvId(DBMessage::OBjectFlag f, int objTp)
 {
+    if (f == DBMessage::DB_Unknow)
+    {
+        switch (objTp)
+        {
+        case IObject::Plant:
+            f = DBMessage::DB_Uav; break;
+        case IObject::GroundStation:
+            f = DBMessage::DB_GS; break;
+        case IObject::VgFZ:
+            f = DBMessage::DB_FZ; break;
+        default:
+            break;
+        }
+    }
     switch (f)
     {
     case DBMessage::DB_GS:
@@ -24,6 +34,8 @@ static const char *rcvId(DBMessage::OBjectFlag f)
         return "DBUav";
     case DBMessage::DB_LOG:
         return "DBLog";
+    case DBMessage::DB_FZ:
+        return "DBFz";
     default:
         break;
     }
@@ -32,26 +44,14 @@ static const char *rcvId(DBMessage::OBjectFlag f)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //DBMessage
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-DBMessage::DBMessage(ObjectGS *sender, MessageType ack, OBjectFlag rcv)
-: IMessage(new MessageData(sender, DBExec), rcvId(rcv), IObject::DBMySql)
+DBMessage::DBMessage(IObject *sender, MessageType ack, OBjectFlag rcv)
+: IMessage(new MessageData(sender, DBExec), rcvId(rcv, sender->GetObjectType()), IObject::DBMySql)
 , m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
 {
 }
 
-DBMessage::DBMessage(ObjectUav *sender, MessageType ack, OBjectFlag rcv)
-: IMessage(new MessageData(sender, DBExec), rcvId(rcv), IObject::DBMySql)
-, m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
-{
-}
-
-DBMessage::DBMessage(GSManager *sender, MessageType ack, OBjectFlag rcv)
-: IMessage(new MessageData(sender, DBExec), rcvId(rcv), IObject::DBMySql)
-, m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
-{
-}
-
-DBMessage::DBMessage(UavManager *sender, MessageType ack, OBjectFlag rcv)
-: IMessage(new MessageData(sender, DBExec), rcvId(rcv), IObject::DBMySql)
+DBMessage::DBMessage(IObjectManager *sender, MessageType ack, OBjectFlag rcv)
+: IMessage(new MessageData(sender, DBExec), rcvId(rcv, sender->GetObjectType()), IObject::DBMySql)
 , m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
 {
 }
@@ -62,13 +62,13 @@ DBMessage::DBMessage(ObjectDB *sender, int tpMsg, int tpRcv, const std::string &
 {
 }
 
-DBMessage::DBMessage(IObjectManager *mgr)
-: IMessage(new MessageData(mgr, DBExec), rcvId(DB_LOG), IObject::DBMySql)
+DBMessage::DBMessage(IObjectManager *mgr, const string &str)
+: IMessage(new MessageData(mgr, DBExec), str, IObject::DBMySql)
 {
 }
 
 DBMessage::DBMessage(const string &sender, int tpSend, MessageType ack, OBjectFlag rcv)
-    : IMessage(new MessageData(sender, tpSend, DBExec), rcvId(rcv), IObject::DBMySql)
+    : IMessage(new MessageData(sender, tpSend, DBExec), rcvId(rcv, tpSend), IObject::DBMySql)
     , m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
 {
 }

@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\DBExecItem.cpp" />
+    <ClCompile Include="src\DBManager.cpp" />
+    <ClCompile Include="src\DBMessages.cpp" />
     <ClCompile Include="src\MysqlDB.cpp" />
     <ClCompile Include="src\VGMysql.cpp" />
     <ClCompile Include="src\VGTable.cpp" />
@@ -19,6 +21,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\DBExecItem.h" />
+    <ClInclude Include="src\DBManager.h" />
+    <ClInclude Include="src\DBMessages.h" />
     <ClInclude Include="src\MysqlDB.h" />
     <ClInclude Include="src\VGMysql.h" />
     <ClInclude Include="src\VGTable.h" />
@@ -81,7 +85,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>./src;C:\Program Files (x86)\MySQL\MySQL Connector C 6.1\include;../tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;C:\Program Files (x86)\MySQL\MySQL Connector C 6.1\include;../tinyxml;..\gshare\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>obj\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -110,7 +114,7 @@
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <SubSystem>Windows</SubSystem>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalDependencies>libmysql.lib;tinyxmlSTL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libmysql.lib;gshare.lib;tinyxmlSTL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <DefaultCharType>Unsigned</DefaultCharType>
@@ -121,13 +125,13 @@
       <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;SHARE_LIBRARY;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <QtMoc>
-      <IncludePath>./src;C:\Program Files (x86)\MySQL\MySQL Connector C 6.1\include;../tinyxml;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>./src;C:\Program Files (x86)\MySQL\MySQL Connector C 6.1\include;../tinyxml;..\gshare\src;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>_WIN32;SHARE_LIBRARY;NDEBUG;%(PreprocessorDefinitions)</Define>
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>./src;$(MYSQL)\include;../tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;$(MYSQL)\include;../tinyxml;..\gshare\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>obj\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -156,7 +160,7 @@
       <SubSystem>Windows</SubSystem>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>libmysql.lib;tinyxmlSTL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libmysql.lib;gshare.lib;tinyxmlSTL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <DefaultCharType>Unsigned</DefaultCharType>
@@ -167,7 +171,7 @@
       <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;SHARE_LIBRARY;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <QtMoc>
-      <IncludePath>./src;$(MYSQL)\include;../tinyxml;%(AdditionalIncludeDirectories)</IncludePath>
+      <IncludePath>./src;$(MYSQL)\include;../tinyxml;..\gshare\src;%(AdditionalIncludeDirectories)</IncludePath>
       <Define>_WIN32;SHARE_LIBRARY;%(PreprocessorDefinitions)</Define>
     </QtMoc>
   </ItemDefinitionGroup>

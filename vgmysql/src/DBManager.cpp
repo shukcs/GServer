@@ -1,10 +1,10 @@
 #include "DBManager.h"
-#include "ObjectManagers.h"
 #include "VGMysql.h"
 #include "DBExecItem.h"
 #include "DBMessages.h"
 #include "tinyxml.h"
 #include "Utility.h"
+#include "ObjectManagers.h"
 
 
 #ifdef SOCKETS_NAMESPACE

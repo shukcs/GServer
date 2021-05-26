@@ -1,14 +1,9 @@
 #ifndef  __DB_MANAGER_H__
 #define __DB_MANAGER_H__
 
+#include "sqlconfig.h"
 #include "ObjectBase.h"
 #include "MysqlDB.h"
-
-namespace google {
-    namespace protobuf {
-        class Message;
-    }
-}
 
 class VGMySql;
 class FiledVal;
@@ -25,10 +20,10 @@ class DBMessage;
 class ObjectDB : public IObject, MysqlDB
 {
 public:
-    ObjectDB(const std::string &id);
-    ~ObjectDB();
+    SHARED_SQL ObjectDB(const std::string &id);
+    SHARED_SQL ~ObjectDB();
 public:
-    static ObjectDB *ParseMySql(const TiXmlElement &e);
+    SHARED_SQL static ObjectDB *ParseMySql(const TiXmlElement &e);
 protected:
     int GetObjectType()const;
     void InitObject();
@@ -48,8 +43,8 @@ private:
 class DBManager : public IObjectManager
 {
 public:
-    DBManager();
-    ~DBManager();
+    SHARED_SQL DBManager();
+    SHARED_SQL ~DBManager();
 
 protected:
     int GetObjectType()const;

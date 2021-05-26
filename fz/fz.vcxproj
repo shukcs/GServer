@@ -12,37 +12,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="proto\das.pb.h" />
-    <ClInclude Include="src\FWAssist.h" />
-    <ClInclude Include="src\FWItem.h" />
-    <ClInclude Include="src\GSManager.h" />
-    <ClInclude Include="src\GXClient.h" />
-    <ClInclude Include="src\GXLink.h" />
+    <ClInclude Include="src\VgFZManager.h" />
     <ClInclude Include="src\Messages.h" />
     <ClInclude Include="src\ObjectAbsPB.h" />
-    <ClInclude Include="src\ObjectGS.h" />
-    <ClInclude Include="src\ObjectUav.h" />
-    <ClInclude Include="src\UavManager.h" />
-    <ClInclude Include="src\UavMission.h" />
+    <ClInclude Include="src\ObjectVgFZ.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="proto\das.pb.cc" />
-    <ClCompile Include="src\FWAssist.cpp" />
-    <ClCompile Include="src\FWItem.cpp" />
-    <ClCompile Include="src\GSManager.cpp" />
-    <ClCompile Include="src\GXClient.cpp" />
-    <ClCompile Include="src\GXLink.cpp" />
+    <ClCompile Include="proto\ProtoMsg.cpp" />
+    <ClCompile Include="src\VgFZManager.cpp" />
     <ClCompile Include="src\Messages.cpp" />
     <ClCompile Include="src\ObjectAbsPB.cpp" />
-    <ClCompile Include="src\ObjectGS.cpp" />
-    <ClCompile Include="src\ObjectUav.cpp" />
-    <ClCompile Include="src\ProtoMsg.cpp" />
-    <ClCompile Include="src\UavManager.cpp" />
-    <ClCompile Include="src\UavMission.cpp" />
+    <ClCompile Include="src\ObjectVgFZ.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{871ACB39-A058-4472-9B43-9176F07853CC}</ProjectGuid>
+    <ProjectGuid>{B85CD3A2-D270-4A49-BBC9-5FCDD039B490}</ProjectGuid>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>uavandqgc</ProjectName>
+    <ProjectName>fz</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -140,7 +126,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>./src;./mavLink;./proto;../gshare/src;../protobuf/;../vgmysql/src;../tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;./proto;../gshare/src;../protobuf/;../vgmysql/src;../tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>obj\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>

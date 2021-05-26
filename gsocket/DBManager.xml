@@ -358,5 +358,54 @@
 				</SQL>
 			</SQLs>
 		</Object>
+		<Object name="DBFz" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8"><Tables>
+				<table name="FZInfo">
+					<field name="user" type="char(32)" constraint="primary key"/>
+					<field name="pswd" type="char(32)" />
+					<field name="auth" type="INT" constraint="DEFAULT '1'"/>
+					<field name="regTm" type="BIGINT" />	
+				</table>	
+				<table name="FZFrienfs">
+					<field name="id" type="char(64)" constraint="primary key"/>
+					<field name="usr1" type="char(32)" />
+					<field name="usr2" type="char(32)" />
+				</table>
+			</Tables>
+			<SQLs>
+				<SQL name="insertFZInfo" table="FZInfo" type="Replace" >
+					<item name="user" type="Write" />
+					<item name="pswd" type="Write" />
+					<item name="auth" ref="FZInfo" type="Write" />
+					<item name="regTm" ref="FZInfo" type="Write" />
+				</SQL>
+				<SQL name="queryFZInfo" table="FZInfo" type="Select" >
+					<item name="pswd" ref="FZInfo" type="Read" />
+					<item name="auth" ref="FZInfo" type="Read" />
+					<item name="user" type="Condition" />
+				</SQL>
+				<SQL name="changePswd" table="FZInfo" type="Update" >
+					<item name="pswd" ref="FZInfo" type="Write" />
+					<item name="user" type="Condition" />
+				</SQL>
+				<SQL name="insertFZFriends" table="FZFrienfs" type="Replace" >
+					<item name="id" type="Write" />
+					<item name="usr1" type="Write" />
+					<item name="usr2" type="Write" />
+				</SQL>
+				<SQL name="deleteFZFriends" table="FZFrienfs" type="Delete" >
+					<item name="id" type="Condition" />
+				</SQL>
+				<SQL name="queryFZFriends" table="FZFrienfs" type="Select" condition="or" >
+					<item name="usr1" ref="FZFrienfs" type="Read" />
+					<item name="usr2" ref="FZFrienfs" type="Read" />
+					<item name="usr1" type="Condition" />
+					<item name="usr2" type="Condition" />
+				</SQL>
+				<SQL name="checkFZ" table="FZFrienfs" type="Select" >
+					<item name="count(*)" sqlTp="int" type="Read" />
+					<item name="user" type="Condition" />
+				</SQL>
+			</SQLs>
+		</Object>
 	</Manager>
 </document>

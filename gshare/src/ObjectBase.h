@@ -91,6 +91,7 @@ public:
         Plant,
         GroundStation,
         DBMySql,
+        VgFZ,
         User,
     };
     enum ObjectStat

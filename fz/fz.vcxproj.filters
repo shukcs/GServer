@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="proto\das.pb.cc">
+      <Filter>proto</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Messages.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectAbsPB.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VgFZManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectVgFZ.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="proto\ProtoMsg.cpp">
+      <Filter>proto</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="proto\das.pb.h">
+      <Filter>proto</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Messages.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectAbsPB.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VgFZManager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectVgFZ.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="proto">
+      <UniqueIdentifier>{d9d2e87f-9c5d-45af-97bb-4678430253e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{7b58aac2-37bf-48d7-ae3e-45396daaf499}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

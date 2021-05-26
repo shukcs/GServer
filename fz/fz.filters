@@ -4,42 +4,33 @@
     <Filter Include="src">
       <UniqueIdentifier>{c9d2b603-ee36-49f2-90fb-34e7e1fa85b0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="proto">
+    <Filter Include="src\proto">
       <UniqueIdentifier>{ee09e184-0dfb-4f6e-b060-17cb460f5146}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\UavManager.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\ProtoMsg.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GSManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Messages.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ObjectGS.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ObjectUav.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\ObjectAbsPB.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\FWAssist.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\FWItem.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="proto\das.pb.cc">
-      <Filter>proto</Filter>
+      <Filter>src\proto</Filter>
     </ClCompile>
-    <ClCompile Include="src\UavMission.cpp">
+    <ClCompile Include="src\ObjectGV.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GVManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TrackerManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectTracker.cpp">
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\GXClient.cpp">
@@ -50,34 +41,25 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\UavManager.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="proto\das.pb.h">
-      <Filter>proto</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GSManager.h">
-      <Filter>src</Filter>
+      <Filter>src\proto</Filter>
     </ClInclude>
     <ClInclude Include="src\Messages.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ObjectGS.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ObjectUav.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\ObjectAbsPB.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\FWAssist.h">
+    <ClInclude Include="src\ObjectGV.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\FWItem.h">
+    <ClInclude Include="src\GVManager.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\UavMission.h">
+    <ClInclude Include="src\TrackerManager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectTracker.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\GXClient.h">

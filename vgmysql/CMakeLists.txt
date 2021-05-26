@@ -7,6 +7,7 @@ add_definitions(-D SHARE_LIBRARY)
 INCLUDE_DIRECTORIES(
 	./src
 	../tinyxml
+	../gshare/src
 )
 set(SRC_LIST
 	src/DBExecItem.cpp
@@ -19,6 +20,10 @@ set(SRC_LIST
 	src/VGTable.h
 	src/VGTrigger.cpp
 	src/VGTrigger.h
+	src/DBManager.cpp
+	src/DBManager.h
+	src/DBMessages.cpp
+	src/DBMessages.h
 )
 
 add_library(${PACKAGE_NAME} SHARED ${SRC_LIST})
@@ -30,7 +35,9 @@ set_target_properties(
 	${PACKAGE_NAME}
 )
 
+target_link_libraries(${PACKAGE_NAME} gshare)
 target_link_libraries(${PACKAGE_NAME} tinyxml)
+target_link_libraries(${PACKAGE_NAME} mysqlclient)
 target_link_libraries(${PACKAGE_NAME} mysqlclient)
 #install(
 #	TARGETS
