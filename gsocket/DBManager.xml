@@ -402,7 +402,7 @@
 					<item name="usr1" type="Condition" />
 					<item name="usr2" type="Condition" />
 				</SQL>
-				<SQL name="checkFZ" table="FZFrienfs" type="Select" >
+				<SQL name="checkFZ" table="FZInfo" type="Select" >
 					<item name="count(*)" sqlTp="int" type="Read" />
 					<item name="user" type="Condition" />
 				</SQL>
