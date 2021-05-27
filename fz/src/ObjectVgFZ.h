@@ -49,7 +49,7 @@ protected:
     void ProcessMessage(IMessage *msg);
     void PrcsProtoBuff(uint64_t);
 
-    void processGs2Gs(const google::protobuf::Message &msg, int tp);
+    void processFZ2FZ(const google::protobuf::Message &msg, int tp);
     void processGSInfo(const DBMessage &msg);
     void processGSInsert(const DBMessage &msg);
     void processCheckUser(const DBMessage &msg);
@@ -67,7 +67,7 @@ private:
     void _prcsFzMessage(das::proto::FZUserMessage *msg);
     void _prcsReqFriends(das::proto::RequestFriends *msg);
 private:
-    void _checkGS(const std::string &user, int ack);
+    void _checkFZ(const std::string &user, int ack);
     void initFriend();
     void addDBFriend(const std::string &user1, const std::string &user2);
     int _addDatabaseUser(const std::string &user, const std::string &pswd, int seq);
@@ -79,6 +79,7 @@ private:
     std::string     m_check;
     bool            m_bInitFriends;
     int             m_seq;
+    bool            m_bExist;
     uint64_t        m_tmLastInfo;
     std::list<std::string> m_friends;
 };

@@ -26,7 +26,7 @@ using namespace SOCKETS_NAMESPACE;
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
 ObjectVgFZ::ObjectVgFZ(const std::string &id, int seq): ObjectAbsPB(id)
-, m_auth(1), m_bInitFriends(false), m_seq(seq)
+, m_auth(1), m_bInitFriends(false), m_seq(seq), m_bExist(false)
 {
     SetBuffSize(WRITE_BUFFLEN);
 }
@@ -106,7 +106,7 @@ void ObjectVgFZ::ProcessMessage(IMessage *msg)
         {
         case IMessage::User2User:
         case IMessage::User2UserAck:
-            processGs2Gs(*(Message*)msg->GetContent(), tp);
+            processFZ2FZ(*(Message*)msg->GetContent(), tp);
             break;
         case IMessage::SyncDeviceis:
             ackSyncDeviceis();
@@ -153,7 +153,7 @@ void ObjectVgFZ::PrcsProtoBuff(uint64_t ms)
         m_tmLastInfo = ms;
 }
 
-void ObjectVgFZ::processGs2Gs(const Message &msg, int tp)
+void ObjectVgFZ::processFZ2FZ(const Message &msg, int tp)
 {
     if (tp == IMessage::User2User)
     {
@@ -235,19 +235,14 @@ void ObjectVgFZ::processFriends(const DBMessage &msg)
 
 void ObjectVgFZ::processCheckUser(const DBMessage &msg)
 {
-    bool bExist = msg.GetRead("count(*)").ToInt32()>0;
+    m_bExist = msg.GetRead("count(*)").ToInt32()>0;
     if (auto ack = new AckNewFZUser)
     {
         ack->set_seqno(msg.GetSeqNomb());
-        if (!bExist)
-        {
-            m_check = ExecutItem::GenCheckString();
-            ack->set_check(m_check);
-        }
-        ack->set_result(bExist ? 0 : 1);
+        m_check = ExecutItem::GenCheckString();
+        ack->set_check(m_check);
+        ack->set_result(m_bExist ? 0 : 1);
         WaitSend(ack);
-        if (bExist)
-            Release();
     }
 }
 
@@ -281,7 +276,9 @@ void ObjectVgFZ::CheckTimer(uint64_t ms, char *buf, int len)
 {
     ObjectAbsPB::CheckTimer(ms, buf, len);
     ms -= m_tmLastInfo;
-    if(m_auth > Type_ALL && ms>50)
+    if (m_auth > Type_ALL && ms > 50)
+        Release();
+    else if (m_bExist && ms > 100)
         Release();
     else if (ms > 600000 || (!m_check.empty() && ms > 60000))
         Release();
@@ -399,7 +396,7 @@ void ObjectVgFZ::_prcsReqNewFz(RequestNewFZUser *msg)
     else if (!GSOrUavMessage::IsGSUserValide(user))
         res = -2;
     else if (msg->check().empty())
-        return _checkGS(m_id, msg->seqno());
+        return _checkFZ(m_id, msg->seqno());
     else if (msg->check() != m_check)
         res = -3;
     else if (msg->check() == m_check && !msg->password().empty())
@@ -475,7 +472,7 @@ void ObjectVgFZ::_prcsReqFriends(das::proto::RequestFriends *msg)
     }
 }
 
-void ObjectVgFZ::_checkGS(const string &user, int ack)
+void ObjectVgFZ::_checkFZ(const string &user, int ack)
 {
     DBMessage *msgDb = new DBMessage(this, IMessage::UserCheckRslt);
     if (!msgDb)
