@@ -437,7 +437,7 @@ void ObjectGS::processSuspend(const DBMessage &msg)
 
 void ObjectGS::processGSInfo(const DBMessage &msg)
 {
-    m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : InitialFail;
+    m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : ReleaseLater;
     string pswd = msg.GetRead("pswd").ToString();
     m_auth = msg.GetRead("auth").ToInt32();
     bool bLogin = pswd == m_pswd && !pswd.empty();
@@ -467,8 +467,6 @@ void ObjectGS::processGSInfo(const DBMessage &msg)
             SendMsg(msg);
         }
     }
-    if (Initialed != m_stInit)
-        Release();
 }
 
 void ObjectGS::processCheckGS(const DBMessage &msg)
@@ -485,7 +483,7 @@ void ObjectGS::processCheckGS(const DBMessage &msg)
         ack->set_result(bExist ? 0 : 1);
         WaitSend(ack);
         if (bExist)
-            Release();
+            m_stInit = ReleaseLater;
     }
 }
 
@@ -897,18 +895,11 @@ void ObjectGS::InitObject()
 {
     if (IObject::Uninitial == m_stInit)
     {
-        if (!m_check.empty())
-        {
-            m_stInit = IObject::Initialed;
-            return;
-        }
-
-        DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
-        if (!msg)
-            return;
-
         if (m_check.empty())
         {
+            DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
+            if (!msg)
+                return;
             msg->SetSql("queryGSInfo");
             msg->SetCondition("user", m_id);
             SendMsg(msg);
@@ -924,6 +915,8 @@ void ObjectGS::CheckTimer(uint64_t ms, char *buf, int len)
     ObjectAbsPB::CheckTimer(ms, buf, len);
     ms -= m_tmLastInfo;
     if(m_auth > Type_ALL && ms>50)
+        Release();
+    if(ReleaseLater == m_stInit && ms>100)
         Release();
     else if (ms > 600000 || (!m_check.empty() && ms > 60000))
         Release();

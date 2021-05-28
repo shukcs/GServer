@@ -100,6 +100,7 @@ public:
         Initialing,
         InitialFail,
         Initialed,
+        ReleaseLater,
     };
 public:
     SHARED_DECL const std::string &GetObjectID()const;

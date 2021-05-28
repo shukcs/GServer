@@ -50,8 +50,8 @@ protected:
     void PrcsProtoBuff(uint64_t);
 
     void processFZ2FZ(const google::protobuf::Message &msg, int tp);
-    void processGSInfo(const DBMessage &msg);
-    void processGSInsert(const DBMessage &msg);
+    void processFZInfo(const DBMessage &msg);
+    void processFZInsert(const DBMessage &msg);
     void processCheckUser(const DBMessage &msg);
     void processFriends(const DBMessage &msg);
 
@@ -79,7 +79,6 @@ private:
     std::string     m_check;
     bool            m_bInitFriends;
     int             m_seq;
-    bool            m_bExist;
     uint64_t        m_tmLastInfo;
     std::list<std::string> m_friends;
 };

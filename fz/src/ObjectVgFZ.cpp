@@ -26,7 +26,7 @@ using namespace SOCKETS_NAMESPACE;
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
 ObjectVgFZ::ObjectVgFZ(const std::string &id, int seq): ObjectAbsPB(id)
-, m_auth(1), m_bInitFriends(false), m_seq(seq), m_bExist(false)
+, m_auth(1), m_bInitFriends(false), m_seq(seq)
 {
     SetBuffSize(WRITE_BUFFLEN);
 }
@@ -113,10 +113,10 @@ void ObjectVgFZ::ProcessMessage(IMessage *msg)
             break;
             break;
         case IMessage::UserInsertRslt:
-            processGSInsert(*(DBMessage*)msg);
+            processFZInsert(*(DBMessage*)msg);
             break;
         case IMessage::UserQueryRslt:
-            processGSInfo(*(DBMessage*)msg);
+            processFZInfo(*(DBMessage*)msg);
             break;
         case IMessage::UserCheckRslt:
             processCheckUser(*(DBMessage*)msg);
@@ -177,9 +177,9 @@ void ObjectVgFZ::processFZ2FZ(const Message &msg, int tp)
     CopyAndSend(msg);
 }
 
-void ObjectVgFZ::processGSInfo(const DBMessage &msg)
+void ObjectVgFZ::processFZInfo(const DBMessage &msg)
 {
-    m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : InitialFail;
+    m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : ReleaseLater;
     string pswd = msg.GetRead("pswd").ToString();
     m_auth = msg.GetRead("auth").ToInt32();
     bool bLogin = pswd == m_pswd && !pswd.empty();
@@ -194,11 +194,9 @@ void ObjectVgFZ::processGSInfo(const DBMessage &msg)
     m_pswd = pswd;
     if (Initialed == m_stInit)
         initFriend();
-    else if (Initialed != m_stInit)
-        Release();
 }
 
-void ObjectVgFZ::processGSInsert(const DBMessage &msg)
+void ObjectVgFZ::processFZInsert(const DBMessage &msg)
 {
     bool bSuc = msg.GetRead(EXECRSLT).ToBool();
     if (auto ack = new AckNewFZUser)
@@ -235,33 +233,29 @@ void ObjectVgFZ::processFriends(const DBMessage &msg)
 
 void ObjectVgFZ::processCheckUser(const DBMessage &msg)
 {
-    m_bExist = msg.GetRead("count(*)").ToInt32()>0;
+    bool bExist = msg.GetRead("count(*)").ToInt32()>0;
     if (auto ack = new AckNewFZUser)
     {
         ack->set_seqno(msg.GetSeqNomb());
         m_check = ExecutItem::GenCheckString();
         ack->set_check(m_check);
-        ack->set_result(m_bExist ? 0 : 1);
+        ack->set_result(bExist ? 0 : 1);
         WaitSend(ack);
     }
+    if (bExist)
+        m_stInit = IObject::ReleaseLater;
 }
 
 void ObjectVgFZ::InitObject()
 {
     if (IObject::Uninitial == m_stInit)
     {
-        if (!m_check.empty())
-        {
-            m_stInit = IObject::Initialed;
-            return;
-        }
-
-        DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
-        if (!msg)
-            return;
-
         if (m_check.empty())
         {
+            DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
+            if (!msg)
+                return;
+
             msg->SetSql("queryFZInfo");
             msg->SetCondition("user", m_id);
             SendMsg(msg);
@@ -278,7 +272,7 @@ void ObjectVgFZ::CheckTimer(uint64_t ms, char *buf, int len)
     ms -= m_tmLastInfo;
     if (m_auth > Type_ALL && ms > 50)
         Release();
-    else if (m_bExist && ms > 100)
+    else if (ReleaseLater==m_stInit && ms>100)
         Release();
     else if (ms > 600000 || (!m_check.empty() && ms > 60000))
         Release();
