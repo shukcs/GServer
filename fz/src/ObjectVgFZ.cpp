@@ -186,9 +186,12 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
     ack.set_seqno(m_seq);
     ack.set_result(bLogin ? 1 : -1);
     ObjectAbsPB::SendProtoBuffTo(GetSocket(), ack);
-    OnLogined(bLogin);
+    if (m_stInit==Initialed)
+        OnLogined(bLogin);
+
     m_seq = -1;
     m_pswd = pswd;
+    m_tmLastInfo = Utility::msTimeTick();
     if (Initialed == m_stInit)
         initFriend();
 }

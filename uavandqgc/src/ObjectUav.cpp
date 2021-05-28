@@ -250,13 +250,18 @@ void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
     }
 
     ObjectAbsPB::CheckTimer(ms, buf, len);
-    if (ms-m_tmLastPos > NODATARELEASETM)
+    auto msDiff = ms - m_tmLastPos;
+    if (ReleaseLater == m_stInit && ms > 100)
+    {
+        Release();
+    }
+    if (msDiff > NODATARELEASETM)
     {
         Release();
         if (m_mission)
             m_mission->Clear();
     }
-    else if (ms-m_tmLastPos > 6000)//超时关闭
+    else if (msDiff > 6000)//超时关闭
     {
         CloseLink();
     }
@@ -544,20 +549,18 @@ void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)
 void ObjectUav::processBaseInfo(const DBMessage &rslt)
 {
     bool suc = rslt.GetRead(EXECRSLT).ToBool();
-    m_stInit = suc ? Initialed : InitialFail;
+    m_stInit = suc ? Initialed : ReleaseLater;
     if (suc)
         InitialUAV(rslt, *this);
 
-    OnLogined(suc);
+    if (Initialed == m_stInit)
+        OnLogined(suc);
     if (auto ack = new AckUavIdentityAuthentication)
     {
         ack->set_seqno(1);
         ack->set_result(suc ? 1 : 0);
         WaitSend(ack);
     }
-
-    if (!suc)
-        Release();
 }
 
 void ObjectUav::processGxStat(const GX2UavMessage &msg)
