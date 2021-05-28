@@ -182,11 +182,11 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
     string pswd = msg.GetRead("pswd").ToString();
     m_auth = msg.GetRead("auth").ToInt32();
     bool bLogin = pswd == m_pswd && !pswd.empty();
-    OnLogined(bLogin);
     AckFZUserIdentity ack;
     ack.set_seqno(m_seq);
     ack.set_result(bLogin ? 1 : -1);
     ObjectAbsPB::SendProtoBuffTo(GetSocket(), ack);
+    OnLogined(bLogin);
     m_seq = -1;
     m_pswd = pswd;
     if (Initialed == m_stInit)
