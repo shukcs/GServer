@@ -243,8 +243,17 @@ bool Variant::IsNull() const
 
 const list<Variant> &Variant::GetVarList() const
 {
-    if (m_tp >= Type_StringList && m_tp <= Type_ListF32)
+    if (m_tp > Type_StringList && m_tp <= Type_ListF32)
         return *(list<Variant>*)m_list;
+    if (Type_StringList == m_tp)
+    {
+        static list<Variant> ret;
+        ret.clear();
+        for (const string &str : *(StringList*)m_list)
+            ret.push_back(str);
+
+        return ret;
+    }
     static list<Variant> sEmpty;
     return sEmpty;
 }
