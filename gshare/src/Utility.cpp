@@ -56,6 +56,7 @@ enum
 
 using namespace std;
 // statics
+static const char *sRandStrTab = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789";
 static string s_hostName;
 static bool s_local_resolved = false;
 static ipaddr_t s_ip = 0;
@@ -85,6 +86,25 @@ static uint32_t str2ipv4(const string &ip)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //namespace Utility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+string Utility::RandString(int len /*= 6*/, bool skipLow/*=false*/)
+{
+    if (len > 16 || len<1)
+        return string();
+
+    int64_t tmp = rand() + duration_cast<microseconds>(system_clock::now().time_since_epoch()).count();
+    char ret[17] = { 0 };
+    uint32_t n = uint32_t(tmp / 1023);
+    ret[n % len] = char('0' + n % 10);
+
+    for (int i = 0; i < len; ++i)
+    {
+        if (ret[i] == 0)
+            ret[i] = sRandStrTab[tmp / (19 + i) % 62];
+    }
+
+    return skipLow ? Upper(ret) : ret;
+}
+
 const std::string & Utility::EmptyStr()
 {
     static string sEmptyStr;

@@ -273,7 +273,7 @@ void UavManager::addUavId(int seq, const std::string &uav)
         msg->SetSeqNomb(seq);
         msg->SetSql("insertUavInfo");
         msg->SetWrite("id", uav);
-        msg->SetWrite("authCheck", ExecutItem::GenCheckString(8));
+        msg->SetWrite("authCheck", Utility::RandString(8));
         SendMsg(msg);
     }
 }
@@ -294,7 +294,7 @@ void UavManager::queryUavInfo(const string &gs, int seq, const std::list<std::st
             {
                 msg->SetSql("insertUavInfo", true);
                 msg->SetWrite("id", uavs.front(), 1);
-                msg->SetWrite("authCheck", ExecutItem::GenCheckString(8), 1);
+                msg->SetWrite("authCheck", Utility::RandString(8), 1);
                 idx = 2;
                 if (id > m_lastId)
                     m_lastId = id+1;

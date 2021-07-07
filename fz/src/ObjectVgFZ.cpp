@@ -237,7 +237,7 @@ void ObjectVgFZ::processCheckUser(const DBMessage &msg)
     if (auto ack = new AckNewFZUser)
     {
         ack->set_seqno(msg.GetSeqNomb());
-        m_check = ExecutItem::GenCheckString();
+        m_check = Utility::RandString();
         ack->set_check(m_check);
         ack->set_result(bExist ? 0 : 1);
         WaitSend(ack);
@@ -403,7 +403,7 @@ void ObjectVgFZ::_prcsReqNewFz(RequestNewFZUser *msg)
             ack->set_seqno(msg->seqno());
             if (1 != res || msg->check().empty())
             {
-                m_check = ExecutItem::GenCheckString();
+                m_check = Utility::RandString();
                 ack->set_check(-3 == res ? m_check : "");
             }
             ack->set_result(res);

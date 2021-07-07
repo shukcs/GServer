@@ -12,6 +12,7 @@ typedef std::list<std::string> StringList;
 class SocketAddress;
 namespace Utility
 {
+    SHARED_DECL std::string RandString(int len = 6, bool skipLow=false);
     SHARED_DECL const std::string &EmptyStr();
     SHARED_DECL int FindString(const char *src, int len, const char *cnt, int cntLen = -1);
     SHARED_DECL int FindString(const char *src, int len, const std::string &str);
@@ -122,7 +123,6 @@ namespace Utility
 	/** wait a specified number of ms */
     SHARED_DECL void Sleep(int ms);
     SHARED_DECL void Dump(const std::string &file, int sig);
-
 }
 
 #endif // _SOCKETS_Utility_H

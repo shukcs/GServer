@@ -57,6 +57,9 @@
     <ClCompile Include="src\Varient.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\MD5lib.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\SocketAddress.h">
@@ -117,6 +120,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Varient.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MD5lib.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

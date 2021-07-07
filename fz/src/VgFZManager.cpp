@@ -162,7 +162,7 @@ IObject *VgFZManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewFZUser
 
     if (o)
     {
-        o->SetCheck(ExecutItem::GenCheckString());
+        o->SetCheck(Utility::RandString());
         o->_checkFZ(userId, msg->seqno());
     }
     return o;

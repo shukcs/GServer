@@ -165,7 +165,7 @@ void TestDlg::insertGS(const QString &gs, const QString &pswd)
 void TestDlg::insertUav(const QString &uav)
 {
     QString str = "insert UavInfo(id, authCheck) value('%1\', \'%2\')";
-    str = str.arg(uav).arg(ExecutItem::GenCheckString(8).c_str());
+    str = str.arg(uav).arg(Utility::RandString(8).c_str());
     ensureMysql();
     m_sql->Execut(str.toStdString());
 }

@@ -19,6 +19,7 @@
     <ClCompile Include="src\IMessage.cpp" />
     <ClCompile Include="src\Lock.cpp" />
     <ClCompile Include="src\LoopQueue.cpp" />
+    <ClCompile Include="src\MD5lib.cpp" />
     <ClCompile Include="src\ObjectBase.cpp" />
     <ClCompile Include="src\Ipv4Address.cpp" />
     <ClCompile Include="src\Ipv6Address.cpp" />
@@ -39,6 +40,7 @@
     <ClInclude Include="src\IMessage.h" />
     <ClInclude Include="src\Lock.h" />
     <ClInclude Include="src\LoopQueue.h" />
+    <ClInclude Include="src\MD5lib.h" />
     <ClInclude Include="src\ObjectBase.h" />
     <ClInclude Include="src\Ipv4Address.h" />
     <ClInclude Include="src\Ipv6Address.h" />

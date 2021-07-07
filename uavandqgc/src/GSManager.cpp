@@ -193,7 +193,7 @@ IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
 
     if (o)
     {
-        o->SetCheck(ExecutItem::GenCheckString());
+        o->SetCheck(Utility::RandString());
         o->_checkGS(userId, msg->seqno());
     }
     return o;
