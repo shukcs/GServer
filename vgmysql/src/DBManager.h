@@ -35,7 +35,7 @@ private:
     void _initRefField(ExecutItem &sql, const std::string &field, uint64_t idx);
     int64_t _executeSql(ExecutItem *sql, DBMessage *msg, int idx);
     static void _initFieldByVarient(FiledVal &fd, const Variant &v);
-    static void _save2Message(const FiledVal &fd, DBMessage &msg);
+    static void _save2Message(const FiledVal &fd, DBMessage &msg, int idx);
 private:
     VGMySql *m_sqlEngine;
 };

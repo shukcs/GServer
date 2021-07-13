@@ -104,6 +104,8 @@ public:
         QueryMissionsRslt,
         QueryMissionsAcreageRslt,
         SuspendRslt,
+        InserSWSNRslt,
+        UpdateSWSNRslt,
 
         DBAckEnd,
         DBMsgEnd,

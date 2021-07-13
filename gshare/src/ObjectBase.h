@@ -189,6 +189,8 @@ public:
 public:
     SHARED_DECL static IObjectManager *MangerOfType(int type);
     SHARED_DECL static bool SendMsg(IMessage *msg);
+public:
+    SHARED_DECL static std::string GetObjectFlagID(IObject *o);
 protected:
     SHARED_DECL IObjectManager();
 

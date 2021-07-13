@@ -11,11 +11,13 @@ namespace das {
         class AckHeartBeat;
         class FZUserMessage;
         class RequestFriends;
+        class AddSWKey;
+        class SWRegist;
     }
 }
 class FWItem;
 #ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
+using namespace SOCKETS_NAMESPACE;
 #endif
 
 class ProtoMsg;
@@ -24,12 +26,12 @@ class DBMessage;
 class ObjectVgFZ : public ObjectAbsPB
 {
 public:
-    enum GSAuthorizeType
+    enum AuthorizeType
     {
         Type_Common = 1,
-        Type_UavManager = Type_Common << 1,
-        Type_Admin = Type_UavManager << 1,
-        Type_ALL = Type_Common | Type_UavManager | Type_Admin,
+        Type_UserManager = Type_Common << 1,
+        Type_Admin = Type_UserManager << 1,
+        Type_ALL = Type_Common | Type_UserManager | Type_Admin,
     };
 public:
     ObjectVgFZ(const std::string &id, int seq=-1);
@@ -37,12 +39,16 @@ public:
 
     void SetPswd(const std::string &pswd);
     void SetCheck(const std::string &str);
+    void SetPcsn(const std::string &str);
+    const std::string &GetPCSn()const;
     const std::string &GetPswd()const;
     void SetAuth(int);
     int Authorize()const;
-    bool GetAuth(GSAuthorizeType auth = Type_Common)const;
+    int GetVer()const;
+    bool GetAuth(AuthorizeType auth = Type_Common)const;
 public:
     static int FZType();
+    static bool CheckSWKey(const std::string &swk);
 protected:
     void OnConnected(bool bConnected);
     int GetObjectType()const;
@@ -54,6 +60,8 @@ protected:
     void processFZInsert(const DBMessage &msg);
     void processCheckUser(const DBMessage &msg);
     void processFriends(const DBMessage &msg);
+    void processInserSWSN(const DBMessage &msg);
+    void processSWRegist(const DBMessage &msg);
 
     void InitObject();
     void CheckTimer(uint64_t ms, char *buf, int len);
@@ -66,6 +74,9 @@ private:
     void _prcsReqNewFz(das::proto::RequestNewFZUser *msg);
     void _prcsFzMessage(das::proto::FZUserMessage *msg);
     void _prcsReqFriends(das::proto::RequestFriends *msg);
+    void _prcsAddSWKey(das::proto::AddSWKey *msg);
+    void _prcsSWRegist(das::proto::SWRegist *msg);
+    void _sendHeartBeat(uint64_t ms);
 private:
     void _checkFZ(const std::string &user, int ack);
     void initFriend();
@@ -75,16 +86,16 @@ private:
 private:
     friend class VgFZManager;
     int             m_auth;
-    std::string     m_pswd;
-    std::string     m_check;
     bool            m_bInitFriends;
     int             m_seq;
+    int             m_ver;
+    uint64_t        m_tmSpace;
     uint64_t        m_tmLastInfo;
+    std::string     m_pswd;
+    std::string     m_check;
+    std::string     m_pcsn;
     std::list<std::string> m_friends;
 };
 
-#ifdef SOCKETS_NAMESPACE
-}
-#endif
 #endif // __OBJECT_UAV_H__
 

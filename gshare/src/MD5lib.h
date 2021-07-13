@@ -21,9 +21,10 @@ documentation and/or software.
 
 #include <string>
 #include "stdconfig.h"
-
-SHARED_DECL std::string MD5DigestString(const char *str, int len = -1);
-SHARED_DECL std::string MD5String (const char *str, int len = -1);
-SHARED_DECL std::string MD5File (const char *filename);
+namespace MD5 {
+    SHARED_DECL std::string MD5DigestString(const char *str, int len = -1);
+    SHARED_DECL std::string MD5String(const char *str, int len = -1);
+    SHARED_DECL std::string MD5File(const char *filename);
+}
 
 #endif //__MD5_LIB_H__

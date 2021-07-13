@@ -363,7 +363,7 @@ static void hexTransString(const unsigned char digest[16], char output[32])
 	}
 }
 
-string MD5DigestString(const char *str, int len /*= -1*/)
+string MD5::MD5DigestString(const char *str, int len /*= -1*/)
 {
     context_md5_t context;
     unsigned char digest[16];
@@ -374,10 +374,10 @@ string MD5DigestString(const char *str, int len /*= -1*/)
     MD5Update(&context, (unsigned char*)str, len);
     MD5Final(digest, &context);
 
-    return string((const char*)digest, len);
+    return string((const char*)digest, 16);
 }
 
-string MD5String (const char *string, int len)
+string MD5::MD5String (const char *string, int len)
 {
     static  char output[33] = { 0 };
     auto digest = MD5DigestString(string, len);
@@ -389,7 +389,7 @@ string MD5String (const char *string, int len)
 
 /* Digests a file and prints the result.
  */
-string MD5File (const char *filename)
+string MD5::MD5File (const char *filename)
 {
 	FILE *file;
 	if ((file = fopen (filename, "rb+")) == NULL)

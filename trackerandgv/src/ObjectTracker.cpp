@@ -258,7 +258,7 @@ void ObjectTracker::_prcsPosAuth(RequestPositionAuthentication *msg)
         ack->set_seqno(msg->seqno());
         int n = _checkPos(pos.latitude() / 10e7, pos.longitude() / 10e7, pos.altitude() / 10e3);
         ack->set_result(n);
-        GetManager()->Log(0, GetObjectID(), 0, "Arm!");
+        GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "Arm!");
         WaitSend(ack);
     }
 }

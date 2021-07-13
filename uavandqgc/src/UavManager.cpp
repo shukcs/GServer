@@ -168,7 +168,7 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
         }
         else
         {
-            Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
+            Log(0, IObjectManager::GetObjectFlagID(ret), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
         }
 
         AckUavIdentityAuthentication ack;
@@ -247,7 +247,7 @@ void UavManager::processAllocationUav(int seqno, const string &id)
             SendMsg(ms);
         }
         if (res == 1)
-            Log(0, id, 0, "Allocate ID(%d) for UAV!", idTmp);
+            Log(0, "UAV:" + id, 0, "Allocate ID(%d) for UAV!", idTmp);
     }
 }
 
@@ -331,7 +331,7 @@ void UavManager::saveBind(const std::string &uav, bool bBind, const string &gs, 
 
         msg->SetCondition("id", uav, 2);
         SendMsg(msg);
-        Log(0, gs, 0, "%s %s", bBind ? "bind" : "unbind", uav.c_str());
+        Log(0, "GS:" + gs, 0, "%s %s", bBind ? "bind" : "unbind", uav.c_str());
     }
 }
 

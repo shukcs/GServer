@@ -432,7 +432,7 @@ void ObjectUav::_prcsPosAuth(RequestPositionAuthentication *msg)
         ack->set_seqno(msg->seqno());
         int n = _checkPos(pos.latitude() / 10e7, pos.longitude() / 10e7, pos.altitude() / 10e3);
         ack->set_result(n);
-        GetManager()->Log(0, GetObjectID(), 0, "Arm!");
+        GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "Arm!");
         ack->set_devid(GetObjectID());
         WaitSend(ack);
     }
@@ -619,7 +619,7 @@ void ObjectUav::saveBind(bool bBind, const string &gs, bool bForce)
         }
 
         SendMsg(msg);
-        GetManager()->Log(0, gs, 0, "%s %s", bBind ? "bind" : "unbind", m_id.c_str());
+        GetManager()->Log(0, "GS:" + gs, 0, "%s %s", bBind ? "bind" : "unbind", m_id.c_str());
     }
 }
 

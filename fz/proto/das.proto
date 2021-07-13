@@ -74,21 +74,22 @@ message AckNewFZUser {
 }
 
 //=================================================================================================
-//RequestIdentityAllocation GS
+//RequestFZUserIdentity
 //=================================================================================================
 message RequestFZUserIdentity {
 	required uint32 seqno         = 1;      //本包的包序号
 	required string user          = 2;      //设备类型UAV/TRACKER(devtype->type)
-	optional string	pswd          = 3;      //扩展备用数据
+	required string	pswd          = 3;      //扩展备用数据
+	required string pcsn          = 4;      //pc序列号
 }
 
 //=================================================================================================
-//AckIdentityAllocation GS
+//AckFZUserIdentity
 //=================================================================================================
 message AckFZUserIdentity {
     required uint32 seqno       = 1;    //本包的包序号
     required int32 	result      = 2;    //ID分配的结果
-    optional string	id          = 3;    //分配得到的ID
+    required int32	swver       = 3;    //软件注册版本<0未注册
     optional string	extradata   = 4;    //扩展备用数据
 }
 
@@ -137,4 +138,40 @@ message RequestFriends {
 message AckFriends {
     required uint32 seqno     = 1;  //本包的包序号
     repeated string friends   = 2;  //好友列表
+}
+
+
+//=================================================================================================
+//AddSWKey
+//=================================================================================================
+message AddSWKey {
+	required uint32 seqno         = 1;      //本包的包序号
+	required string	swkey         = 2;      //软件序列号
+	optional uint32	ver           = 3;      //软件版本号
+}
+
+//=================================================================================================
+//AckSWRegist
+//=================================================================================================
+message AckAddSWKey {
+	required uint32 seqno         = 1;      //本包的包序号
+	required int32 result         = 2;      //结果0:reject -1:无权限 -2:sn不合规范
+}
+
+//=================================================================================================
+//SWRegist
+//=================================================================================================
+message SWRegist {
+	required uint32 seqno         = 1;      //本包的包序号
+	required string pcsn          = 2;      //主板sn
+	required string	swkey         = 3;      //软件序列号
+	optional uint32	ver           = 4;      //软件版本号
+}
+
+//=================================================================================================
+//AckSWRegist
+//=================================================================================================
+message AckSWRegist {
+	required uint32 seqno         = 1;      //本包的包序号
+	required int32 result         = 2;      //结果0:reject
 }

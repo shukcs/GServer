@@ -126,17 +126,34 @@ IObject *VgFZManager::prcsPBLogin(ISocket *s, const RequestFZUserIdentity *rgi)
         if (bLogin)
             o->OnLogined(true, s);
         else
-            Log(0, o->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
+            Log(0, IObjectManager::GetObjectFlagID(o), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
 
-        AckFZUserIdentity ack;
-        ack.set_seqno(rgi->seqno());
-        ack.set_result(bLogin ? 1 : 0);
-        ObjectAbsPB::SendProtoBuffTo(s, ack);
+        if (!bLogin || rgi->pcsn()==o->GetPCSn())
+        {
+            AckFZUserIdentity ack;
+            ack.set_seqno(rgi->seqno());
+            ack.set_result(bLogin ? 1 : 0);
+            ack.set_swver(bLogin ? o->GetVer() : -1);
+            ObjectAbsPB::SendProtoBuffTo(s, ack);
+        }
+        else if (bLogin)
+        {
+            o->SetPcsn(rgi->pcsn());
+            if (o->GetAuth(ObjectVgFZ::Type_UserManager))
+            {
+                AckFZUserIdentity ack;
+                ack.set_seqno(1);
+                ack.set_result(1);
+                ack.set_swver(1);
+                ObjectAbsPB::SendProtoBuffTo(s, ack);
+            }
+        }
     }
     else if(o==NULL)
     {
         o = new ObjectVgFZ(usr, rgi->seqno());
         o->SetPswd(pswd);
+        o->SetPcsn(rgi->pcsn());
     }
 
     return o;

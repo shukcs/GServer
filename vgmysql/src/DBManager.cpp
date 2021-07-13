@@ -145,7 +145,7 @@ int64_t ObjectDB::_executeSql(ExecutItem *sql, DBMessage *msg, int idx)
                 for (FiledVal *itr : sql->Fields(ExecutItem::Read))
                 {
                     if (msg)
-                        _save2Message(*itr, *msg);
+                        _save2Message(*itr, *msg, idx);
                 }
             } while (m_sqlEngine->GetResult());
         }
@@ -189,7 +189,7 @@ void ObjectDB::_initFieldByVarient(FiledVal &fd, const Variant &v)
     }
 }
 
-void ObjectDB::_save2Message(const FiledVal &fd, DBMessage &msg)
+void ObjectDB::_save2Message(const FiledVal &fd, DBMessage &msg, int idx)
 {
     if (fd.IsEmpty() && !msg.IsQueryList())
         return;
@@ -216,7 +216,7 @@ void ObjectDB::_save2Message(const FiledVal &fd, DBMessage &msg)
         break;
     }
 
-    msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), v): msg.SetRead(fd.GetFieldName(), v);
+    msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), v, idx): msg.SetRead(fd.GetFieldName(), v, idx);
 }
 ////////////////////////////////////////////////////////////////////////////////
 //DBManager

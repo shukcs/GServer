@@ -371,6 +371,12 @@
 					<field name="usr1" type="char(32)" />
 					<field name="usr2" type="char(32)" />
 				</table>
+				<table name="FZKeyReg">
+					<field name="swsn" type="char(32)" constraint="primary key"/>
+					<field name="pcsn" type="char(32)" />
+					<field name="ver" type="INT" constraint="DEFAULT 1"/>
+					<field name="used" type="INT" constraint="DEFAULT 0" />
+				</table>
 			</Tables>
 			<SQLs>
 				<SQL name="insertFZInfo" table="FZInfo" type="Replace" >
@@ -405,6 +411,20 @@
 				<SQL name="checkFZ" table="FZInfo" type="Select" >
 					<item name="count(*)" sqlTp="int" type="Read" />
 					<item name="user" type="Condition" />
+				</SQL>
+				<SQL name="insertFZKey" table="FZKeyReg" type="Insert" >
+					<item name="swsn" type="Write" />
+					<item name="ver" type="Write" />
+				</SQL>
+				<SQL name="updateFZPCReg" table="FZKeyReg" type="Update" >
+					<item name="pcsn" type="Write" />
+					<item name="used" paramVal="1" type="Write" />
+					<item name="used" paramVal="0" type="Condition" />
+					<item name="swsn" type="Condition" />
+				</SQL>
+				<SQL name="queryFZPCReg" table="FZKeyReg" type="Select" >
+					<item name="ver" ref="FZKeyReg" type="Read" />
+					<item name="pcsn" type="Condition" />
 				</SQL>
 			</SQLs>
 		</Object>

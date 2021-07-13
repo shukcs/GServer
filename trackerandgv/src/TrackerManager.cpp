@@ -110,7 +110,7 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
 
     ObjectTracker *ret = (ObjectTracker *)GetObjectByID(uavid);
     string sim = uia.has_extradata() ? uia.extradata() : "";
-    Log(0, uavid, 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestTrackerIdentityAuthentication!");
+    Log(0, "Tracker:" + uavid, 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestTrackerIdentityAuthentication!");
     if (ret)
     {
         if (ret->GetSocket() == s)
@@ -127,7 +127,7 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
         else
         {
             ack.set_result(0);
-            Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
+            Log(0, IObjectManager::GetObjectFlagID(ret), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
         }
 
         ObjectAbsPB::SendProtoBuffTo(s, ack);
@@ -163,7 +163,7 @@ IObject *TrackerManager::_check3rdLogin(ISocket *s, const Request3rdIdentityAuth
         else
         {
             ack.set_result(0);
-            Log(0, ret->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
+            Log(0, IObjectManager::GetObjectFlagID(ret), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
         }
 
         ObjectAbsPB::SendProtoBuffTo(s, ack);
@@ -178,7 +178,7 @@ IObject *TrackerManager::_check3rdLogin(ISocket *s, const Request3rdIdentityAuth
 IObject *TrackerManager::_checkProgram(ISocket *s, const RequestProgramUpgrade &rpu)
 {
     string uavid = Utility::Upper(rpu.has_extradata() ? rpu.extradata() : string());
-    Log(0, uavid, 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
+    Log(0, "Tracker:" + uavid, 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
 
     AckProgramUpgrade ack;
     ack.set_seqno(rpu.seqno());

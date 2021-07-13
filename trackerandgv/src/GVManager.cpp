@@ -88,7 +88,7 @@ IObject *GVManager::prcsPBLogin(ISocket *s, const RequestIVIdentityAuthenticatio
         if (bLogin)
             o->OnLogined(true, s);
         else
-            Log(0, o->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
+            Log(0, IObjectManager::GetObjectFlagID(o), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
 
         AckIVIdentityAuthentication ack;
         ack.set_seqno(rgi->seqno());

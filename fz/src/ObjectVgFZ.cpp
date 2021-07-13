@@ -4,10 +4,13 @@
 #include "ProtoMsg.h"
 #include "Messages.h"
 #include "Utility.h"
+#include "MD5lib.h"
 #include "IMessage.h"
 #include "DBMessages.h"
 #include "VgFZManager.h"
 #include "DBExecItem.h"
+
+#define MD5KEY "$VIGA-CHANGSHA802"
 
 enum {
     WRITE_BUFFLEN = 1024 * 8,
@@ -19,14 +22,12 @@ enum {
 using namespace das::proto;
 using namespace google::protobuf;
 using namespace std;
-#ifdef SOCKETS_NAMESPACE
-using namespace SOCKETS_NAMESPACE;
-#endif
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
 ObjectVgFZ::ObjectVgFZ(const std::string &id, int seq): ObjectAbsPB(id)
-, m_auth(1), m_bInitFriends(false), m_seq(seq)
+, m_auth(Type_Common), m_bInitFriends(false), m_seq(seq), m_ver(-1)
+, m_tmSpace(-1)
 {
     SetBuffSize(WRITE_BUFFLEN);
 }
@@ -63,7 +64,12 @@ int ObjectVgFZ::Authorize() const
     return m_auth;
 }
 
-bool ObjectVgFZ::GetAuth(GSAuthorizeType auth) const
+int ObjectVgFZ::GetVer() const
+{
+    return m_ver;
+}
+
+bool ObjectVgFZ::GetAuth(AuthorizeType auth) const
 {
     return (auth & m_auth) == auth;
 }
@@ -71,6 +77,23 @@ bool ObjectVgFZ::GetAuth(GSAuthorizeType auth) const
 int ObjectVgFZ::FZType()
 {
     return IObject::VgFZ;
+}
+
+bool ObjectVgFZ::CheckSWKey(const std::string &swk)
+{
+    auto ls = Utility::SplitString(swk, "-");
+    if (ls.size() != 2 || ls.front().length() != 8 || ls.back().length() != 16)
+        return false;
+
+    static const char *sLTab = "0123456789QWERTYUIOPASDFGHJKLZXCVBNM";
+    auto md5 = MD5::MD5DigestString((ls.front() + MD5KEY).c_str());
+    char tmp[17] = {0};
+    auto strMd5 = (const uint8_t *)md5.c_str();
+    for (int i = 0; i < 16; ++i)
+    {
+        tmp[i] = sLTab[strMd5[i] % 36];
+    }
+    return ls.back() == tmp;
 }
 
 int ObjectVgFZ::GetObjectType() const
@@ -84,10 +107,15 @@ void ObjectVgFZ::_prcsLogin(RequestFZUserIdentity *msg)
     {
         bool bSuc = m_pswd == msg->pswd();
         OnLogined(bSuc);
-        if (auto ack = new AckFZUserIdentity)
+        if (bSuc)
+        {
+            SetPcsn(msg->pcsn());
+        }
+        else if (auto ack = new AckFZUserIdentity)
         {
             ack->set_seqno(msg->seqno());
-            ack->set_result(bSuc ? 1 : -1);
+            ack->set_result(-1);
+            ack->set_swver(-1);
             WaitSend(ack);
         }
     }
@@ -123,6 +151,12 @@ void ObjectVgFZ::ProcessMessage(IMessage *msg)
         case IMessage::FriendQueryRslt:
             processFriends(*(DBMessage*)msg);
             break;
+        case IMessage::InserSWSNRslt:
+            processInserSWSN(*(DBMessage*)msg);
+            break;
+        case IMessage::UpdateSWSNRslt:
+            processSWRegist(*(DBMessage*)msg);
+            break;
         default:
             break;
         }
@@ -147,6 +181,10 @@ void ObjectVgFZ::PrcsProtoBuff(uint64_t ms)
         _prcsSyncDeviceList((SyncFZUserList *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(RequestFriends))
         _prcsReqFriends((RequestFriends *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(AddSWKey))
+        _prcsAddSWKey((AddSWKey *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(SWRegist))
+        _prcsSWRegist((SWRegist *)m_p->GetProtoMessage());
 
     if (m_stInit == IObject::Initialed)
         m_tmLastInfo = ms;
@@ -178,19 +216,26 @@ void ObjectVgFZ::processFZ2FZ(const Message &msg, int tp)
 
 void ObjectVgFZ::processFZInfo(const DBMessage &msg)
 {
-    m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : ReleaseLater;
-    string pswd = msg.GetRead("pswd").ToString();
-    m_auth = msg.GetRead("auth").ToInt32();
-    bool bLogin = pswd == m_pswd && !pswd.empty();
+    bool bLogin = true;
+    if (!msg.GetRead(EXECRSLT).IsNull())
+    {
+        m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : ReleaseLater;
+        string pswd = msg.GetRead("pswd").ToString();
+        bLogin = pswd == m_pswd && !pswd.empty();
+        m_pswd = pswd;
+    }
+
+    auto var = msg.GetRead("ver", 1);
+    m_ver = var.IsNull() ? -1 : var.ToInt32();
     AckFZUserIdentity ack;
     ack.set_seqno(m_seq);
     ack.set_result(bLogin ? 1 : -1);
+    ack.set_swver(m_ver);
     ObjectAbsPB::SendProtoBuffTo(GetSocket(), ack);
     if (m_stInit==Initialed)
         OnLogined(bLogin);
 
     m_seq = -1;
-    m_pswd = pswd;
     m_tmLastInfo = Utility::msTimeTick();
     if (Initialed == m_stInit)
         initFriend();
@@ -205,10 +250,10 @@ void ObjectVgFZ::processFZInsert(const DBMessage &msg)
         ack->set_result(bSuc ? 1 : -1);
         WaitSend(ack);
     }
-    if (!bSuc)
-        m_stInit = IObject::Uninitial;
 
-    m_auth = 0x100;
+    if (!m_check.empty())
+        m_stInit = ReleaseLater;
+
     m_tmLastInfo = Utility::msTimeTick();
 }
 
@@ -229,6 +274,29 @@ void ObjectVgFZ::processFriends(const DBMessage &msg)
                 m_friends.push_back(itr.ToString());
         }
     }
+}
+
+void ObjectVgFZ::processInserSWSN(const DBMessage &msg)
+{
+    bool bSuc = msg.GetRead(EXECRSLT).ToBool();
+    if (auto ack = new AckAddSWKey)
+    {
+        ack->set_seqno(msg.GetSeqNomb());
+        ack->set_result(bSuc ? 1 : 0);
+        WaitSend(ack);
+    }
+}
+
+void ObjectVgFZ::processSWRegist(const DBMessage &msg)
+{
+    bool bSuc = msg.GetRead(EXECRSLT).ToBool();
+    if (auto ack = new AckSWRegist)
+    {
+        ack->set_seqno(msg.GetSeqNomb());
+        ack->set_result(bSuc ? 1 : 0);
+        WaitSend(ack);
+    }
+
 }
 
 void ObjectVgFZ::processCheckUser(const DBMessage &msg)
@@ -258,6 +326,11 @@ void ObjectVgFZ::InitObject()
 
             msg->SetSql("queryFZInfo");
             msg->SetCondition("user", m_id);
+            if (!m_pcsn.empty())
+            {
+                msg->SetSql("queryFZPCReg");
+                msg->SetCondition("pcsn", m_pcsn);
+            }
             SendMsg(msg);
             m_stInit = IObject::Initialing;
             return;
@@ -270,19 +343,19 @@ void ObjectVgFZ::CheckTimer(uint64_t ms, char *buf, int len)
 {
     ObjectAbsPB::CheckTimer(ms, buf, len);
     ms -= m_tmLastInfo;
-    if (m_auth > Type_ALL && ms > 50)
+    if (ReleaseLater == m_stInit && ms > 100)
         Release();
-    else if (ReleaseLater==m_stInit && ms>100)
-        Release();
-    else if (ms > 600000 || (!m_check.empty() && ms > 60000))
+    else if (!GetAuth(Type_UserManager) && (ms > 600000 || (!m_check.empty() && ms > 60000)))
         Release();
     else if (m_check.empty() && ms > 10000)//³¬Ê±¹Ø±Õ
-        CloseLink();   
+        CloseLink();
+    else
+        _sendHeartBeat(ms);
 }
 
 bool ObjectVgFZ::IsAllowRelease() const
 {
-    return !GetAuth(ObjectVgFZ::Type_UavManager);
+    return !GetAuth(ObjectVgFZ::Type_UserManager);
 }
 
 void ObjectVgFZ::FreshLogin(uint64_t ms)
@@ -295,9 +368,37 @@ void ObjectVgFZ::SetCheck(const std::string &str)
     m_check = str;
 }
 
+void ObjectVgFZ::SetPcsn(const std::string &str)
+{
+    if (!str.empty() && str!=m_pcsn)
+    {
+        m_pcsn = str;
+        if (!GetAuth(Type_UserManager))
+        {
+            m_ver = -1;
+            if (Initialed == m_stInit)
+            {
+                DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
+                if (!msg)
+                    return;
+
+                msg->SetSql("queryFZPCReg");
+                msg->SetCondition("pcsn", m_pcsn);
+                SendMsg(msg);
+                m_stInit = IObject::Initialing;
+            }
+        }
+    }
+}
+
+const std::string & ObjectVgFZ::GetPCSn() const
+{
+    return m_pcsn;
+}
+
 void ObjectVgFZ::_prcsSyncDeviceList(SyncFZUserList *ms)
 {
-    if (ms && GetAuth(ObjectVgFZ::Type_UavManager))
+    if (ms && GetAuth(ObjectVgFZ::Type_UserManager))
     {
         m_seq = ms->seqno();
         if (auto syn = new ObjectSignal(this, FZType(), IMessage::SyncDeviceis, GetObjectID()))
@@ -463,6 +564,63 @@ void ObjectVgFZ::_prcsReqFriends(das::proto::RequestFriends *msg)
             ack->add_friends(itr);
         }
         WaitSend(ack);
+    }
+}
+
+void ObjectVgFZ::_prcsAddSWKey(AddSWKey *pb)
+{
+    if (!pb)
+        return;
+
+    int ret = !GetAuth(ObjectVgFZ::Type_UserManager) ? -1 : (!CheckSWKey(pb->swkey()) ? -2 : 0);
+    if (ret < 0)
+    {
+        if (auto ack = new AckAddSWKey)
+        {
+            ack->set_seqno(m_seq++);
+            ack->set_result(ret);
+            WaitSend(ack);
+        }
+        return;
+    }
+    DBMessage *msg = new DBMessage(this, IMessage::InserSWSNRslt);
+    if (!msg)
+        return;
+
+    msg->SetSeqNomb(pb->seqno());
+    msg->SetSql("insertFZKey");
+    msg->SetWrite("swsn", pb->swkey());
+    if (pb->has_ver())
+        msg->SetWrite("ver", Utility::l2string(pb->ver()));
+    SendMsg(msg);
+}
+
+void ObjectVgFZ::_prcsSWRegist(SWRegist *pb)
+{
+    if (!pb)
+        return;
+
+    DBMessage *msg = new DBMessage(this, IMessage::UpdateSWSNRslt);
+    if (!msg)
+        return;
+
+    msg->SetSql("updateFZPCReg");
+    msg->SetSeqNomb(pb->seqno());
+    msg->SetWrite("pcsn", pb->pcsn());
+    msg->SetCondition("swsn", pb->swkey());
+    SendMsg(msg);
+}
+
+void ObjectVgFZ::_sendHeartBeat(uint64_t ms)
+{
+    if (ms - m_tmSpace < 5000)
+        return;
+
+    m_tmSpace = ms;
+    if (PostHeartBeat *hb = new PostHeartBeat)
+    {
+        hb->set_seqno(m_seq++);
+        WaitSend(hb);
     }
 }
 

@@ -33,6 +33,8 @@ google::protobuf::Message *PBAbSFactoryItem::createMessage(const string &name)
     DeclareRcvPB(SyncFZUserList);
     DeclareRcvPB(FZUserMessage);
     DeclareRcvPB(RequestFriends);
+    DeclareRcvPB(AddSWKey);
+    DeclareRcvPB(SWRegist);
 
     auto itr = s_MapPbCreate.find(name);
     if (itr != s_MapPbCreate.end())

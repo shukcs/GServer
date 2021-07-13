@@ -1472,6 +1472,51 @@ void Utility::Sleep(int ms)
 #endif
 }
 
+bool Utility::PipeCmd(char* buff, int len, char *cmd)
+{
+    if (!buff || len < 1)
+        return false;
+
+    bool ret = false;
+#if !(defined _WIN32 || defined _WIN64)
+    FILE *file = popen(cmd.c_str(), "r");
+    if (file && NULL != fgets(szLine, len - 1, file))
+        ret = true;
+    pclose(file);
+#else
+    HANDLE hReadPipe = NULL; ///读取管道
+    HANDLE hWritePipe = NULL; ///写入管道	
+    SECURITY_ATTRIBUTES sa = { sizeof(SECURITY_ATTRIBUTES), NULL, TRUE };   ///安全属性
+    if (CreatePipe(&hReadPipe, &hWritePipe, &sa, 0))
+    {
+        STARTUPINFOA         si = {};   ///控制命令行窗口信息.设置命令行窗口的信息为指定的读写管道
+        GetStartupInfoA(&si);
+        si.hStdError = hWritePipe;
+        si.hStdOutput = hWritePipe;
+        si.wShowWindow = SW_HIDE; //隐藏命令行窗口
+        si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+
+        PROCESS_INFORMATION pi = {};   ///进程信息	
+        if (CreateProcessA(NULL, cmd, NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi))
+        {
+            WaitForSingleObject(pi.hProcess, 500);
+            if (ReadFile(hReadPipe, buff, len, (DWORD*)&len, 0) && len > 0)
+            {
+                ret = true;
+                buff[len] = 0;
+            }
+        }
+
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+    }
+
+    CloseHandle(hWritePipe);
+    CloseHandle(hReadPipe);
+#endif
+    return ret;
+}
+
 void Utility::Dump(const std::string &file, int sig)
 {
     FILE *fd = fopen(file.c_str(), "wb");
@@ -1497,10 +1542,8 @@ void Utility::Dump(const std::string &file, int sig)
         char addrline[32] = { 0 };
         memcpy(addrline, str1 + 1, str2 - str1);
         snprintf(szLine, sizeof(szLine), "addr2line -e /proc/%d/exe %s ", pid, addrline);
-        FILE *file = popen(szLine, "r");
-        if (NULL != fgets(szLine, 256, file))
+        if (PipeCmd(szLine, sizeof(szLine), szLine))
             fprintf(fd, "%s\n", szLine);
-        pclose(file);
     }
     free(strings);
     signal(sig, SIG_DFL);

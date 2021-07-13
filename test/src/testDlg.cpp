@@ -10,6 +10,7 @@
 #include "GSLink.h"
 #include "3rdLink.h"
 #include "TrackerLink.h"
+#include "Utility.h"
 
 /*-----------------------------------------------------------------------
 TestCloud

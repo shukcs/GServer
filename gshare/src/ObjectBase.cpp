@@ -177,7 +177,7 @@ void ILink::OnLogined(bool suc, ISocket *s)
     m_bLogined = suc;
     IObject *o = GetParObject();
     if (s && o)
-        o->GetManager()->Log(0, o->GetObjectID(), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), suc ? "logined" : "login fail");
+        o->GetManager()->Log(0, IObjectManager::GetObjectFlagID(o), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), suc ? "logined" : "login fail");
     if (!suc)
         CloseLink();
 }
@@ -228,7 +228,7 @@ void ILink::CheckTimer(uint64_t, char *, int)
             o->InitObject();
 
         if (ChangeLogind(false))
-            o->GetManager()->Log(0, o->GetObjectID(), 0, "disconnect");
+            o->GetManager()->Log(0, IObjectManager::GetObjectFlagID(o), 0, "disconnect");
     }
 }
 
@@ -662,6 +662,34 @@ bool IObjectManager::SendMsg(IMessage *msg)
         return true;
 
     return false;
+}
+
+string IObjectManager::GetObjectFlagID(IObject *o)
+{
+    string ret;
+    if (!o)
+        return ret;
+
+    switch (o->GetObjectType())
+    {
+    case IObject::Plant:
+        ret = "UAV:"; break;
+    case IObject::GroundStation:
+        ret = "GS:"; break;
+    case IObject::DBMySql:
+        ret = "DB:"; break;
+    case IObject::VgFZ:
+        ret = "FZ:"; break;
+    case IObject::User + 1:
+        ret = "Tracker:"; break;
+    case IObject::User + 2:
+        ret = "GV:"; break;
+    case IObject::User + 3:
+        ret = "GXClient:"; break;
+    default:
+        return ret;
+    }
+    return ret + o->GetObjectID();
 }
 
 void IObjectManager::InitThread(uint16_t nThread, uint16_t bufSz)

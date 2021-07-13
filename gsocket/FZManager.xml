@@ -1,4 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <document>
-	<Manager thread="2" />
+	<Manager thread="2" >
+		<Object id="root" pswd="NIhao666" auth="7" />
+	</Manager>
 </document>

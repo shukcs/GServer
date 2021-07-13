@@ -88,7 +88,6 @@ bool Variant::Add(const Variant&v)
     switch (v.GetType())
     {
     case Variant::Type_string:
-        ((StringList*)m_list)->push_back(v.ToString()); break;
     case Variant::Type_buff:
         ((StringList*)m_list)->push_back(*(string*)v.m_list); break;
     case Variant::Type_int32:

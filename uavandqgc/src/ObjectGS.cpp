@@ -501,7 +501,7 @@ void ObjectGS::processPostLandRslt(const DBMessage &msg)
         WaitSend(appd);
     }
     if (nLand > 0)
-        GetManager()->Log(0, GetObjectID(), 0, "Upload land %d!", nLand);
+        GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "Upload land %d!", nLand);
 
 }
 
@@ -767,7 +767,7 @@ void ObjectGS::processPostPlanRslt(const DBMessage &msg)
         WaitSend(ack);
     }
 
-    GetManager()->Log(0, GetObjectID(), 0, "Upload mission plan %ld!", id);
+    GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "Upload mission plan %ld!", id);
 }
 
 void ObjectGS::processCountLandRslt(const DBMessage &msg)
@@ -1215,7 +1215,7 @@ void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
         ackDD->set_result(1);
         WaitSend(ackDD);
     }
-    GetManager()->Log(0, GetObjectID(), 0, "Delete land %s!", id.c_str());
+    GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "Delete land %s!", id.c_str());
 }
 
 void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
@@ -1344,7 +1344,7 @@ void ObjectGS::_prcsDeletePlan(das::proto::DeleteOperationDescription *msg)
         ackDP->set_result(1);
         WaitSend(ackDP);
     }
-    GetManager()->Log(0, m_id, 0, "Delete mission plan %s!", id.c_str());
+    GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "Delete mission plan %s!", id.c_str());
 }
 
 void ObjectGS::_prcsPostMission(PostOperationRoute *msg)
@@ -1356,7 +1356,7 @@ void ObjectGS::_prcsPostMission(PostOperationRoute *msg)
     {
         ms->AttachProto(msg);
         SendMsg(ms);
-        GetManager()->Log(0, m_id, 0, "PostOperationRoute acreage:%f, ridges:%d!", ort.acreage(), ort.ridgebeg_size());
+        GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "PostOperationRoute acreage:%f, ridges:%d!", ort.acreage(), ort.ridgebeg_size());
     }
     else
     {

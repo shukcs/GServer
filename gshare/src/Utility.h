@@ -122,6 +122,7 @@ namespace Utility
 
 	/** wait a specified number of ms */
     SHARED_DECL void Sleep(int ms);
+    SHARED_DECL bool PipeCmd(char* buff, int len, char *cmd);
     SHARED_DECL void Dump(const std::string &file, int sig);
 }
 
