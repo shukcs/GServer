@@ -103,7 +103,7 @@ int ObjectVgFZ::GetObjectType() const
 
 void ObjectVgFZ::_prcsLogin(RequestFZUserIdentity *msg)
 {
-    if (msg && m_p)
+    if (msg)
     {
         bool bSuc = m_pswd == msg->pswd();
         OnLogined(bSuc);
@@ -227,6 +227,7 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
     else if (Initialed != m_stInit)
     {
         bLogin = false;
+        m_pswd = string();
     }
 
     auto var = msg.GetRead("ver", 1);
@@ -332,7 +333,7 @@ void ObjectVgFZ::InitObject()
             msg->SetCondition("user", m_id);
             if (!m_pcsn.empty())
             {
-                msg->SetSql("queryFZPCReg");
+                msg->AddSql("queryFZPCReg");
                 msg->SetCondition("pcsn", m_pcsn);
             }
             SendMsg(msg);
