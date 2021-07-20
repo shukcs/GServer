@@ -142,7 +142,7 @@ IObject *VgFZManager::prcsPBLogin(ISocket *s, const RequestFZUserIdentity *rgi)
             if (o->GetAuth(ObjectVgFZ::Type_UserManager))
             {
                 AckFZUserIdentity ack;
-                ack.set_seqno(1);
+                ack.set_seqno(rgi->seqno());
                 ack.set_result(1);
                 ack.set_swver(1);
                 ObjectAbsPB::SendProtoBuffTo(s, ack);

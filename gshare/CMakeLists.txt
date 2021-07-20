@@ -47,6 +47,8 @@ set(SRC_LIST
 	src/Utility.h
 	src/Varient.cpp
 	src/Varient.h
+	src/MD5lib.cpp
+	src/MD5lib.h
 )
 
 add_library(${PACKAGE_NAME} STATIC ${SRC_LIST})
