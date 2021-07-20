@@ -224,6 +224,10 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
         bLogin = pswd == m_pswd && !pswd.empty();
         m_pswd = pswd;
     }
+    else if (Initialed != m_stInit)
+    {
+        bLogin = false;
+    }
 
     auto var = msg.GetRead("ver", 1);
     m_ver = var.IsNull() ? -1 : var.ToInt32();
@@ -235,7 +239,7 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
     if (m_stInit==Initialed)
         OnLogined(bLogin);
 
-    m_seq = -1;
+    m_seq = 0;
     m_tmLastInfo = Utility::msTimeTick();
     if (Initialed == m_stInit)
         initFriend();
@@ -348,7 +352,7 @@ void ObjectVgFZ::CheckTimer(uint64_t ms, char *buf, int len)
     else if (!GetAuth(Type_UserManager) && (ms > 600000 || (!m_check.empty() && ms > 60000)))
         Release();
     else if (m_check.empty() && ms > 10000)//³¬Ê±¹Ø±Õ
-        CloseLink();
+        IsInitaled() ? CloseLink() : Release();
     else
         _sendHeartBeat(ms);
 }
