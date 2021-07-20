@@ -217,7 +217,7 @@ void ObjectVgFZ::processFZ2FZ(const Message &msg, int tp)
 void ObjectVgFZ::processFZInfo(const DBMessage &msg)
 {
     bool bLogin = true;
-    if (!msg.GetRead(EXECRSLT).IsNull())
+    if (!msg.GetRead("pswd").IsNull())
     {
         m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : ReleaseLater;
         string pswd = msg.GetRead("pswd").ToString();
