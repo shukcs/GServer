@@ -16,7 +16,8 @@ namespace Utility
     SHARED_DECL const std::string &EmptyStr();
     SHARED_DECL int FindString(const char *src, int len, const char *cnt, int cntLen = -1);
     SHARED_DECL int FindString(const char *src, int len, const std::string &str);
-    SHARED_DECL StringList SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty = true);
+    SHARED_DECL StringList SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty = true); 
+    std::string Trim(const std::string& str);
     SHARED_DECL void ReplacePart(std::string &str, char part, char rpc);
     SHARED_DECL uint32_t Crc32(const char *src, int len);
     SHARED_DECL std::string base64(const char *str_in, int len);
@@ -122,7 +123,7 @@ namespace Utility
 
 	/** wait a specified number of ms */
     SHARED_DECL void Sleep(int ms);
-    SHARED_DECL bool PipeCmd(char* buff, int len, char *cmd);
+    SHARED_DECL bool PipeCmd(char* buff, int len, const char *cmd);
     SHARED_DECL void Dump(const std::string &file, int sig);
 }
 

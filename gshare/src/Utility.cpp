@@ -151,6 +151,21 @@ StringList Utility::SplitString(const string &str, const string &sp, bool bSkipE
     return strLsRet;
 }
 
+
+string Utility::Trim(const std::string& str)
+{
+    string ret;
+    auto ptr = str.c_str();
+    for (size_t i = 0; i < str.length(); i++)
+    {
+        if (ptr[i] == ' ' || ptr[i] == '\t' || ptr[i] == '\n' || ptr[i] == '\r')
+            continue;
+
+        ret += (ptr[i]);
+    }
+    return ret;
+}
+
 void Utility::ReplacePart(std::string &str, char part, char rpc)
 {
     int count = str.length();
@@ -1472,15 +1487,15 @@ void Utility::Sleep(int ms)
 #endif
 }
 
-bool Utility::PipeCmd(char* buff, int len, char *cmd)
+bool Utility::PipeCmd(char* buff, int len, const char *cmd)
 {
     if (!buff || len < 1)
         return false;
 
     bool ret = false;
 #if !(defined _WIN32 || defined _WIN64)
-    FILE *file = popen(cmd.c_str(), "r");
-    if (file && NULL != fgets(szLine, len - 1, file))
+    FILE *file = popen(cmd, "r");
+    if (file && NULL != fgets(buff, len - 1, file))
         ret = true;
     pclose(file);
 #else
@@ -1497,7 +1512,7 @@ bool Utility::PipeCmd(char* buff, int len, char *cmd)
         si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
 
         PROCESS_INFORMATION pi = {};   ///进程信息	
-        if (CreateProcessA(NULL, cmd, NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi))
+        if (CreateProcessA(NULL, &string(cmd).at(0), NULL, NULL, TRUE, 0, NULL, NULL, &si, &pi))
         {
             WaitForSingleObject(pi.hProcess, 500);
             if (ReadFile(hReadPipe, buff, len, (DWORD*)&len, 0) && len > 0)
