@@ -69,16 +69,17 @@ void ObjectDB::ProcessMessage(IMessage *msg)
     DBMessage *ack = db->GenerateAck(this);
     int idx = db->GetSqls().size()>1 ? 1 : 0;
     uint64_t ref = 0;
+    int tmp = 0;
     for (const string sql : db->GetSqls())
     {
         ExecutItem *item = GetSqlByName(sql);
-        int tmp = idx++;
+        idx++;
         if (!item)
             continue;
         item->ClearData();
         _initSqlByMsg(*item, *db, tmp);
         if (ref>0)
-            _initRefField(*item, db->GetRefFiled(tmp), ref);
+            _initRefField(*item, db->GetRefFiled(idx), ref);
         ref = _executeSql(item, ack, tmp);
         if (ref < 1)
             ref = db->GetRead(INCREASEField, tmp).ToUint64();

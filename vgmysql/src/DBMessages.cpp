@@ -220,5 +220,5 @@ DBMessage *DBMessage::GenerateAck(ObjectDB *db) const
 
 string DBMessage::propertyKey(const string &key, int idx) const
 {
-    return (idx<1 || idx>(int)m_sqls.size()) ? key : Utility::l2string(idx) + "." + key;
+    return idx<1 ? key : Utility::l2string(idx) + "." + key;
 }
