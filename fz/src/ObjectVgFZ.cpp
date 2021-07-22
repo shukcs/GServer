@@ -217,12 +217,14 @@ void ObjectVgFZ::processFZ2FZ(const Message &msg, int tp)
 void ObjectVgFZ::processFZInfo(const DBMessage &msg)
 {
     bool bLogin = true;
+    int idx = 0;
     if (!msg.GetRead("pswd").IsNull())
     {
         m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : ReleaseLater;
         string pswd = msg.GetRead("pswd").ToString();
         bLogin = pswd == m_pswd && !pswd.empty();
         m_pswd = pswd;
+        ++idx;
     }
     else if (Initialed != m_stInit)
     {
@@ -230,7 +232,7 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
         m_pswd = string();
     }
 
-    auto var = msg.GetRead("ver", 1);
+    auto var = msg.GetRead("ver", idx);
     m_ver = var.IsNull() ? -1 : var.ToInt32();
     AckFZUserIdentity ack;
     ack.set_seqno(m_seq);
