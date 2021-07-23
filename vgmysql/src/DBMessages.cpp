@@ -46,19 +46,19 @@ static const char *rcvId(DBMessage::OBjectFlag f, int objTp)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 DBMessage::DBMessage(IObject *sender, MessageType ack, OBjectFlag rcv)
 : IMessage(new MessageData(sender, DBExec), rcvId(rcv, sender->GetObjectType()), IObject::DBMySql)
-, m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
+, m_seq(0), m_ackTp(ack), m_bQueryList(false)
 {
 }
 
 DBMessage::DBMessage(IObjectManager *sender, MessageType ack, OBjectFlag rcv)
 : IMessage(new MessageData(sender, DBExec), rcvId(rcv, sender->GetObjectType()), IObject::DBMySql)
-, m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
+, m_seq(0), m_ackTp(ack), m_bQueryList(false)
 {
 }
 
 DBMessage::DBMessage(ObjectDB *sender, int tpMsg, int tpRcv, const std::string &idRcv)
 : IMessage(new MessageData(sender, tpMsg), idRcv, tpRcv), m_seq(0), m_ackTp(Unknown)
-, m_bQueryList(false), m_idxRefSql(0)
+, m_bQueryList(false)
 {
 }
 
@@ -69,7 +69,7 @@ DBMessage::DBMessage(IObjectManager *mgr, const string &str)
 
 DBMessage::DBMessage(const string &sender, int tpSend, MessageType ack, OBjectFlag rcv)
     : IMessage(new MessageData(sender, tpSend, DBExec), rcvId(rcv, tpSend), IObject::DBMySql)
-    , m_seq(0), m_ackTp(ack), m_bQueryList(false), m_idxRefSql(0)
+    , m_seq(0), m_ackTp(ack), m_bQueryList(false)
 {
 }
 
@@ -125,6 +125,12 @@ void DBMessage::SetCondition(const std::string &key, const Variant &v, int idx)
         m_conditions[propertyKey(key, idx)] = v;
 }
 
+void DBMessage::AddCondition(const std::string &key, const Variant &v, int idx)
+{
+    if (!key.empty() && !v.IsNull())
+        m_conditions[propertyKey(key, idx)].Add(v);
+}
+
 const Variant &DBMessage::GetCondition(const string &key, int idx, const std::string &ju) const
 {
     auto itr = m_conditions.find(propertyKey(key, idx));
@@ -172,18 +178,14 @@ bool DBMessage::IsQueryList() const
     return m_bQueryList;
 }
 
-void DBMessage::SetRefFiled(const std::string &filed, int idx)
+void DBMessage::SetRefFiled(const std::string &filed)
 {
     m_refFiled = filed;
-    m_idxRefSql = idx;
 }
 
-const std::string &DBMessage::GetRefFiled(int idx) const
+const std::string &DBMessage::GetRefFiled() const
 {
-    if (m_idxRefSql == idx)
-        return m_refFiled;
-
-    return sStrEmpty;
+    return m_refFiled;
 }
 
 DBMessage *DBMessage::GenerateAck(ObjectDB *db) const
@@ -204,11 +206,11 @@ DBMessage *DBMessage::GenerateAck(ObjectDB *db) const
         }
         else
         { 
-            for (int i = 1; i <= count; ++i)
+            for (int i = 0; i < count; ++i)
             {
                 const Variant &v = GetRead(INCREASEField, i);
                 if (!v.IsNull())
-                    ret->SetRead(INCREASEField, GetRead(INCREASEField), i);
+                    ret->SetRead(INCREASEField, v, i);
             }
         }
 

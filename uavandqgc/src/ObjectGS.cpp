@@ -489,8 +489,8 @@ void ObjectGS::processCheckGS(const DBMessage &msg)
 
 void ObjectGS::processPostLandRslt(const DBMessage &msg)
 {
-    int64_t nCon = msg.GetRead(INCREASEField, 1).ToInt64();
-    int64_t nLand = msg.GetRead(INCREASEField, 2).ToInt64();
+    int64_t nCon = msg.GetRead(INCREASEField).ToInt64();
+    int64_t nLand = msg.GetRead(INCREASEField, 1).ToInt64();
     if (auto appd = new AckPostParcelDescription)
     {
         appd->set_seqno(msg.GetSeqNomb());
@@ -1044,47 +1044,47 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
     db->SetSql(bSuc ? "updateOwner" : "insertOwner");
     if (bSuc)
     {
-        db->SetWrite("id", nCon, 1);
-        db->SetWrite(INCREASEField, nCon, 1);
+        db->SetWrite("id", nCon);
+        db->SetWrite(INCREASEField, nCon);
     }
     if (pc.has_name())
-        db->SetWrite("name", pc.name(), 1);
+        db->SetWrite("name", pc.name());
     if (pc.has_birthdate())
-        db->SetWrite("birthdate", pc.birthdate(), 1);
+        db->SetWrite("birthdate", pc.birthdate());
     if (pc.has_address())
-        db->SetWrite("address", pc.address(), 1);
+        db->SetWrite("address", pc.address());
     if (pc.has_mobileno())
-        db->SetWrite("mobileno", pc.mobileno(), 1);
+        db->SetWrite("mobileno", pc.mobileno());
     if (pc.has_phoneno())
-        db->SetWrite("phoneno", pc.phoneno(), 1);
+        db->SetWrite("phoneno", pc.phoneno());
     if (pc.has_weixin())
-        db->SetWrite("weixin", pc.weixin(), 1);
+        db->SetWrite("weixin", pc.weixin());
 
     nCon = Utility::str2int(land.has_pc() ? land.pc().id() : "", 10, &bSuc);
     db->AddSql(bSuc ? "updateLand" : "insertLand");
     db->SetRefFiled("ownerID");
     if (land.has_name())
-        db->SetWrite("name", land.name(), 2);
+        db->SetWrite("name", land.name(), 1);
     if (land.has_registerid())
-        db->SetWrite("gsuser", land.registerid(), 2);
+        db->SetWrite("gsuser", land.registerid(), 1);
     if (land.has_acreage())
-        db->SetWrite("acreage", land.acreage(), 2);
+        db->SetWrite("acreage", land.acreage(), 1);
     if (bSuc)
     {
-        db->SetWrite("id", nCon, 2);
-        db->SetWrite(INCREASEField, nCon, 2);
+        db->SetWrite("id", nCon, 1);
+        db->SetWrite(INCREASEField, nCon, 1);
     }
     if (land.has_coordinate())
     {
-        db->SetWrite("lat", double(land.coordinate().latitude() / 1e7), 2);
-        db->SetWrite("lon", double(land.coordinate().longitude() / 1e7), 2);
+        db->SetWrite("lat", double(land.coordinate().latitude() / 1e7), 1);
+        db->SetWrite("lon", double(land.coordinate().longitude() / 1e7), 1);
     }
     if (land.has_psi())
     {
         string buff;
         buff.resize(land.psi().ByteSize());
         land.psi().SerializeToArray(&buff.front(), buff.size());
-        db->SetWrite("boundary", Variant(buff.size(), &buff.front()), 2);
+        db->SetWrite("boundary", Variant(buff.size(), &buff.front()), 1);
     }
 
     SendMsg(db);
@@ -1202,11 +1202,12 @@ void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
         return;
 
     msgDb->SetSql("deleteLand");
-    msgDb->AddSql("deletePlan");
-    msgDb->SetCondition("LandInfo.id", id, 1);
+    msgDb->SetCondition("LandInfo.id", id);
     if (!GetAuth(ObjectGS::Type_ALL))
-        msgDb->SetCondition("LandInfo.gsuser", m_id, 1);
-    msgDb->SetCondition("landId", id, 2);
+        msgDb->SetCondition("LandInfo.gsuser", m_id);
+
+    msgDb->AddSql("deletePlan");
+    msgDb->SetCondition("landId", id, 1);
     SendMsg(msgDb);
 
     if (auto ackDD = new AckDeleteParcelDescription)
@@ -1335,7 +1336,7 @@ void ObjectGS::_prcsDeletePlan(das::proto::DeleteOperationDescription *msg)
 
     msgDb->SetSql("deletePlan");
     msgDb->SetCondition("id", id);
-    msgDb->SetCondition("planuser", m_id, 2);
+    msgDb->SetCondition("planuser", m_id);
     SendMsg(msgDb);
 
     if (auto ackDP = new AckDeleteOperationDescription)

@@ -45,6 +45,7 @@ public:
     SHARED_SQL void AddRead(const std::string &key, const Variant &v, int idx = 0);
     SHARED_SQL const Variant &GetRead(const std::string &key, int idx = 0)const;
     SHARED_SQL void SetCondition(const std::string &key, const Variant &v, int idx = 0);
+    SHARED_SQL void AddCondition(const std::string &key, const Variant &v, int idx = 0);
     SHARED_SQL const Variant &GetCondition(const std::string &key, int idx = 0, const std::string &ju="=")const;
     SHARED_SQL void SetSql(const std::string &sql, bool bQuerylist = false);
     SHARED_SQL void AddSql(const std::string &sql);
@@ -53,8 +54,8 @@ public:
     SHARED_SQL int GetSeqNomb()const;
     SHARED_SQL bool IsQueryList() const;
    
-    SHARED_SQL void SetRefFiled(const std::string &filed, int idx=2);
-    SHARED_SQL const std::string &GetRefFiled(int idx)const;
+    SHARED_SQL void SetRefFiled(const std::string &filed);
+    SHARED_SQL const std::string &GetRefFiled()const;
     SHARED_SQL DBMessage *GenerateAck(ObjectDB *db)const;
 protected:
     std::string propertyKey(const std::string &key, int idx)const;
@@ -62,7 +63,6 @@ protected:
     int             m_seq;
     MessageType     m_ackTp;
     bool            m_bQueryList;
-    int             m_idxRefSql;
     StringList      m_sqls;
     VariantMap      m_writes;
     VariantMap      m_conditions;

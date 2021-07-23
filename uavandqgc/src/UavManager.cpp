@@ -293,9 +293,9 @@ void UavManager::queryUavInfo(const string &gs, int seq, const std::list<std::st
             if (id >= 1)
             {
                 msg->SetSql("insertUavInfo", true);
-                msg->SetWrite("id", uavs.front(), 1);
-                msg->SetWrite("authCheck", Utility::RandString(8), 1);
-                idx = 2;
+                msg->SetWrite("id", uavs.front());
+                msg->SetWrite("authCheck", Utility::RandString(8));
+                idx = 1;
                 if (id > m_lastId)
                     m_lastId = id+1;
             }
@@ -318,18 +318,18 @@ void UavManager::saveBind(const std::string &uav, bool bBind, const string &gs, 
     if (DBMessage *msg = new DBMessage(gs, IObject::GroundStation, IMessage::DeviceBindRslt, DBMessage::DB_Uav))
     {
         msg->SetSql("updateBinded");
-        msg->AddSql("queryUavInfo");
-        msg->SetWrite("binder", gs, 1);
-        msg->SetWrite("timeBind", Utility::msTimeTick(), 1);
-        msg->SetWrite("binded", bBind, 1);
-        msg->SetCondition("id", uav, 1);
+        msg->SetWrite("binder", gs);
+        msg->SetWrite("timeBind", Utility::msTimeTick());
+        msg->SetWrite("binded", bBind);
+        msg->SetCondition("id", uav);
         if (!bForce)
         {
-            msg->SetCondition("UavInfo.binded", false, 1);
-            msg->SetCondition("UavInfo.binder", gs, 1);
+            msg->SetCondition("UavInfo.binded", false);
+            msg->SetCondition("UavInfo.binder", gs);
         }
 
-        msg->SetCondition("id", uav, 2);
+        msg->AddSql("queryUavInfo");
+        msg->SetCondition("id", uav, 1);
         SendMsg(msg);
         Log(0, "GS:" + gs, 0, "%s %s", bBind ? "bind" : "unbind", uav.c_str());
     }

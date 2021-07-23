@@ -220,7 +220,7 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
     int idx = 0;
     if (!msg.GetRead("pswd").IsNull())
     {
-        m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : ReleaseLater;
+        m_stInit = Initialed;
         string pswd = msg.GetRead("pswd").ToString();
         bLogin = pswd == m_pswd && !pswd.empty();
         m_pswd = pswd;
@@ -229,6 +229,7 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
     else if (Initialed != m_stInit)
     {
         bLogin = false;
+        m_stInit = ReleaseLater;
         m_pswd = string();
     }
 
@@ -336,7 +337,7 @@ void ObjectVgFZ::InitObject()
             if (!m_pcsn.empty())
             {
                 msg->AddSql("queryFZPCReg");
-                msg->SetCondition("pcsn", m_pcsn);
+                msg->SetCondition("pcsn", m_pcsn, 1);
             }
             SendMsg(msg);
             m_stInit = IObject::Initialing;
@@ -382,9 +383,9 @@ void ObjectVgFZ::SetPcsn(const std::string &str)
         m_pcsn = str;
         if (!GetAuth(Type_UserManager))
         {
-            m_ver = -1;
             if (Initialed == m_stInit)
             {
+                m_ver = -1;
                 DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
                 if (!msg)
                     return;
