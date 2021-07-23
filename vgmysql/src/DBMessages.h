@@ -50,6 +50,7 @@ public:
     SHARED_SQL void SetSql(const std::string &sql, bool bQuerylist = false);
     SHARED_SQL void AddSql(const std::string &sql);
     SHARED_SQL const StringList &GetSqls()const;
+    SHARED_SQL int IndexofSql(const std::string &sql)const;
     SHARED_SQL void SetSeqNomb(int no);
     SHARED_SQL int GetSeqNomb()const;
     SHARED_SQL bool IsQueryList() const;

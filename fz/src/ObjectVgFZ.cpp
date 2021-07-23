@@ -217,14 +217,13 @@ void ObjectVgFZ::processFZ2FZ(const Message &msg, int tp)
 void ObjectVgFZ::processFZInfo(const DBMessage &msg)
 {
     bool bLogin = true;
-    int idx = 0;
+    int idx = msg.IndexofSql("queryFZPCReg");
     if (!msg.GetRead("pswd").IsNull())
     {
         m_stInit = Initialed;
         string pswd = msg.GetRead("pswd").ToString();
         bLogin = pswd == m_pswd && !pswd.empty();
         m_pswd = pswd;
-        ++idx;
     }
     else if (Initialed != m_stInit)
     {

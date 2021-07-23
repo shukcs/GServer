@@ -330,7 +330,8 @@ void ObjectGS::processBind(const DBMessage &msg)
 void ObjectGS::processUavsInfo(const DBMessage &msg)
 {
     auto ack = new AckRequestUavStatus;
-    if (!ack)
+    int idx = msg.IndexofSql("queryUavInfo");
+    if (!ack || idx<0)
         return;
 
     auto ids = msg.GetRead("id").GetVarList();

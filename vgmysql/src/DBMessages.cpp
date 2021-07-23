@@ -163,6 +163,19 @@ const StringList&DBMessage::GetSqls() const
     return m_sqls;
 }
 
+int DBMessage::IndexofSql(const std::string &sql) const
+{
+    int ret = 0;
+    for (const string &itr : m_sqls)
+    {
+        if (sql == itr)
+            return ret;
+
+        ret++;
+    }
+    return -1;
+}
+
 void DBMessage::SetSeqNomb(int no)
 {
     m_seq = no;
@@ -196,6 +209,7 @@ DBMessage *DBMessage::GenerateAck(ObjectDB *db) const
         if (!ret)
             return NULL;
         ret->SetSeqNomb(m_seq);
+        ret->m_sqls = m_sqls;
         ret->m_bQueryList = m_bQueryList;
         int count = m_sqls.size();
         if (count == 1)
