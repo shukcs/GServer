@@ -392,7 +392,6 @@ void ObjectVgFZ::SetPcsn(const std::string &str)
                 msg->SetSql("queryFZPCReg");
                 msg->SetCondition("pcsn", m_pcsn);
                 SendMsg(msg);
-                m_stInit = IObject::Initialing;
             }
         }
     }
