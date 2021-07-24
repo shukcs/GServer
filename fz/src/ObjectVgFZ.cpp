@@ -234,6 +234,9 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
 
     auto var = msg.GetRead("ver", idx);
     m_ver = var.IsNull() ? -1 : var.ToInt32();
+    if (m_ver < 0)
+        m_pcsn = string();
+
     AckFZUserIdentity ack;
     ack.set_seqno(m_seq);
     ack.set_result(bLogin ? 1 : -1);
@@ -304,6 +307,11 @@ void ObjectVgFZ::processSWRegist(const DBMessage &msg)
         WaitSend(ack);
     }
 
+    if (!bSuc)
+    {
+        m_ver = -1;
+        m_pcsn = string();
+    }
 }
 
 void ObjectVgFZ::processCheckUser(const DBMessage &msg)
@@ -610,9 +618,12 @@ void ObjectVgFZ::_prcsSWRegist(SWRegist *pb)
     if (!msg)
         return;
 
+    m_pcsn = pb->pcsn();
+    m_ver = pb->has_ver() ? pb->ver() : 1;
+
     msg->SetSql("updateFZPCReg");
     msg->SetSeqNomb(pb->seqno());
-    msg->SetWrite("pcsn", pb->pcsn());
+    msg->SetWrite("pcsn", m_pcsn);
     msg->SetCondition("swsn", pb->swkey());
     SendMsg(msg);
 }
