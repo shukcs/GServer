@@ -152,7 +152,7 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
     ObjectGS *o = (ObjectGS*)GetObjectByID(usr);
     if (o && o->IsInitaled())
     {
-        bool bLogin = !o->IsConnect() && o->m_pswd == pswd;
+        bool bLogin = !o->IsConnect() && o->GetPswd() == pswd;
         if (bLogin)
             o->OnLogined(true, s);
         else

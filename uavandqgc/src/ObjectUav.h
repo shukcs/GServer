@@ -58,7 +58,7 @@ public:
     const std::string &GetBinder()const;
 public:
     static int UAVType();
-    static void InitialUAV(const DBMessage &msg, ObjectUav &uav);
+    static void InitialUAV(const DBMessage &msg, ObjectUav &uav, uint32_t idx=0);
 protected:
     virtual int GetObjectType()const;
     virtual void ProcessMessage(IMessage *msg);
@@ -83,7 +83,7 @@ private:
     void _prcsPostBlocks(das::proto::PostBlocks *msg);
     void _prcsABOperation(das::proto::PostABOperation *msg);
 
-    void processBind(das::proto::RequestBindUav *rbu, const GS2UavMessage &msg);
+    void processBind(const das::proto::UavStatus &st);
     void processControl2Uav(das::proto::PostControl2Uav *msg);
     void processRequestPost(google::protobuf::Message *msg, const std::string &gs);
     void processPostOr(das::proto::PostOperationRoute *msg, const std::string &gs);
@@ -94,8 +94,6 @@ private:
     int _checkPos(double lat, double lon, double alt);
 private:
     void savePos();
-    void saveBind(bool bBind, const std::string &gs, bool bForce=false);
-    void sendBindAck(int ack, int res, bool bind, const std::string &gs);
     void sendGx(const das::proto::PostOperationInformation &msg, uint64_t tm);
 private:
     friend class UavManager;

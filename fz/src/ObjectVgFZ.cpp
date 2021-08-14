@@ -387,9 +387,9 @@ void ObjectVgFZ::SetPcsn(const std::string &str)
 {
     if (!str.empty() && str!=m_pcsn)
     {
-        m_pcsn = str;
         if (!GetAuth(Type_UserManager))
         {
+            m_pcsn = str;
             if (Initialed == m_stInit)
             {
                 m_ver = -1;

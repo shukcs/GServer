@@ -139,29 +139,29 @@ int ObjectUav::UAVType()
     return IObject::Plant;
 }
 
-void ObjectUav::InitialUAV(const DBMessage &rslt, ObjectUav &uav)
+void ObjectUav::InitialUAV(const DBMessage &rslt, ObjectUav &uav, uint32_t idx)
 {
-    const Variant &binded = rslt.GetRead("binded");
+    const Variant &binded = rslt.GetRead("binded", idx);
     if (!binded.IsNull())
         uav.m_bBind = binded.ToInt8() != 0;
 
-    uav.m_lastBinder = rslt.GetRead("binder").ToString();
-    const Variant &lat = rslt.GetRead("lat");
+    uav.m_lastBinder = rslt.GetRead("binder", idx).ToString();
+    const Variant &lat = rslt.GetRead("lat", idx);
     if (lat.GetType() == Variant::Type_double)
         uav.m_lat = lat.ToDouble();
-    const Variant &lon = rslt.GetRead("lon");
+    const Variant &lon = rslt.GetRead("lon", idx);
     if (lon.GetType() == Variant::Type_double)
         uav.m_lon = lon.ToDouble();
-    const Variant &timeBind = rslt.GetRead("timeBind");
+    const Variant &timeBind = rslt.GetRead("timeBind", idx);
     if (!timeBind.IsNull())
         uav.m_tmLastBind = timeBind.ToInt64();
-    const Variant &timePos = rslt.GetRead("timePos");
+    const Variant &timePos = rslt.GetRead("timePos", idx);
     if (!timePos.IsNull())
         uav.m_tmLastBind = timePos.ToInt64();
-    const Variant &valid = rslt.GetRead("valid");
+    const Variant &valid = rslt.GetRead("valid", idx);
     if (!valid.IsNull())
         uav.m_tmValidLast = valid.ToInt64();
-    uav.m_authCheck = rslt.GetRead("authCheck").ToString();
+    uav.m_authCheck = rslt.GetRead("authCheck", idx).ToString();
 }
 
 IMessage *ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectUav *obj)
@@ -197,7 +197,7 @@ void ObjectUav::ProcessMessage(IMessage *msg)
     switch (msg->GetMessgeType())
     {
     case IMessage::BindUav:
-        processBind((RequestBindUav*)msg->GetContent(), *(GS2UavMessage*)msg); break;
+        processBind(*(UavStatus*)msg->GetContent()); break;
     case IMessage::ControlDevice:
         processControl2Uav((PostControl2Uav*)msg->GetContent()); break;
     case IMessage::ControlDevice2:
@@ -467,33 +467,10 @@ void ObjectUav::_prcsABOperation(PostABOperation *msg)
         m_mission->PrcsABOperation(msg);
 }
 
-void ObjectUav::processBind(RequestBindUav *msg, const GS2UavMessage &g2u)
+void ObjectUav::processBind(const UavStatus &msg)
 {
-    bool bBind = msg->opid() == 1;
-    int res = -1;
-    string gs = g2u.GetSenderID();
-    if (gs.length() == 0)
-        return;
-
-    bool bForce = (g2u.GetAuth() & ObjectGS::Type_UavManager)!=0;
-    if (Initialed > m_stInit)
-        res = -2;
-    else if (bForce)
-        res = 1;
-    else 
-        res = (gs==m_lastBinder || m_bBind==false) ? 1 : -3;
-
-    if (res == 1 && (!bBind || !bForce))
-    {
-        m_lastBinder = gs;
-        if (m_bBind!= bBind)
-        {
-            m_bBind = bBind;
-            saveBind(bBind, gs, bForce);
-        }
-    }
-
-    sendBindAck(msg->seqno(), res, m_bBind, m_lastBinder);
+    m_lastBinder = msg.binder();
+    m_bBind = msg.binded();
 }
 
 void ObjectUav::processControl2Uav(PostControl2Uav *msg)
@@ -597,50 +574,6 @@ void ObjectUav::savePos()
             msg->SetWrite("simID", m_strSim);
 
         SendMsg(msg);
-    }
-}
-
-void ObjectUav::saveBind(bool bBind, const string &gs, bool bForce)
-{
-    if (bForce && bBind)
-        return;
-
-    if (DBMessage *msg = new DBMessage(this))
-    {
-        msg->SetSql("updateBinded");
-        msg->SetWrite("binder", gs);
-        msg->SetWrite("timeBind", Utility::msTimeTick());
-        msg->SetWrite("binded", bForce ? false : bBind);
-        msg->SetCondition("id", m_id);
-        if (!bForce)
-        {
-            msg->SetCondition("UavInfo.binded", false);
-            msg->SetCondition("UavInfo.binder", bForce ? gs : m_lastBinder);
-        }
-
-        SendMsg(msg);
-        GetManager()->Log(0, "GS:" + gs, 0, "%s %s", bBind ? "bind" : "unbind", m_id.c_str());
-    }
-}
-
-void ObjectUav::sendBindAck(int ack, int res, bool bind, const std::string &gs)
-{
-    if (Uav2GSMessage *ms = new Uav2GSMessage(this, gs))
-    {
-        AckRequestBindUav *proto = new AckRequestBindUav();
-        if (!proto)
-            return;
-
-        proto->set_seqno(ack);
-        proto->set_opid(bind ? 1 : 0);
-        proto->set_result(res);
-        if (UavStatus *s = new UavStatus)
-        {
-            TransUavStatus(*s);
-            proto->set_allocated_status(s);
-        }
-        ms->AttachProto(proto);
-        SendMsg(ms);
     }
 }
 

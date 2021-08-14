@@ -30,7 +30,7 @@ const map<string, int> &getProtoTypes(const string &className)
     if (sProtoType.empty())
     {
         map<string, int> &sGsProtoType = sProtoType[SymbolString(GS2UavMessage)];
-        sGsProtoType[d_p_ClassName(RequestBindUav)] = IMessage::BindUav;
+        sGsProtoType[d_p_ClassName(UavStatus)] = IMessage::BindUav;
         sGsProtoType[d_p_ClassName(PostOperationRoute)] = IMessage::PostOR;
         sGsProtoType[d_p_ClassName(PostControl2Uav)] = IMessage::ControlDevice;
         sGsProtoType[d_p_ClassName(RequestRouteMissions)] = IMessage::SychMission;

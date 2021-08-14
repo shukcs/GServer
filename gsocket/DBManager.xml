@@ -322,8 +322,8 @@
 					<item name="binder" ref="UavInfo" type="Write" />
 					<item name="timeBind" ref="UavInfo" type="Write"/>
 					<item name="id" type="Condition" />
-					<item name="UavInfo.binded" type="Condition" />
-					<item name="UavInfo.binder" type="Condition" />
+					<item name="binded" type="Condition" />
+					<item name="binder" type="Condition" />
 				</SQL>
 				<SQL name="deleteUavInfo" table="UavInfo" type="Delete" >
 					<item name="id" type="Condition" />

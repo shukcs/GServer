@@ -98,7 +98,7 @@ private:
     void _prcsProgram(das::proto::PostProgram *msg);
     void _prcsReqUavs(das::proto::RequestUavStatus *msg);
     void _prcsSyncDeviceList(das::proto::SyncDeviceList *ms);
-    void _prcsReqBind(das::proto::RequestBindUav *msg);
+    void _prcsReqBind(const das::proto::RequestBindUav &msg);
     void _prcsControl2Uav(das::proto::PostControl2Uav *msg);
     void _prcsPostLand(das::proto::PostParcelDescription *msg);
     void _prcsReqLand(das::proto::RequestParcelDescriptions *msg);
@@ -124,16 +124,17 @@ private:
     int _addDatabaseUser(const std::string &user, const std::string &pswd, int seq);
     void notifyUavNewFw(const std::string &fw, int seq);
     void ackSyncDeviceis();
+    void saveBind(const std::string &uav, bool bBind);
 private:
     friend class GSManager;
     int             m_auth;
-    std::string     m_pswd;
-    std::string     m_check;
     bool            m_bInitFriends;
     int             m_countLand;
     int             m_countPlan;
     int             m_seq;
     uint64_t        m_tmLastInfo;
+    std::string     m_pswd;
+    std::string     m_check;
     std::list<std::string> m_friends;
 };
 

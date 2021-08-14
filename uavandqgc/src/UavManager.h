@@ -52,14 +52,12 @@ private:
     IObject *_checkLogin(ISocket *s, const das::proto::RequestUavIdentityAuthentication &uia);
 
     void sendBindAck(const ObjectUav &uav, int ack, int res, bool bind, const std::string &gs);
-    void checkBindUav(const das::proto::RequestBindUav &rbu, const GS2UavMessage &gs);
     void checkUavInfo(const das::proto::RequestUavStatus &uia, const GS2UavMessage &gs);
     void processAllocationUav(int seqno, const std::string &id);
     void processNotifyProgram(const das::proto::NotifyProgram &proto);
     void processMaxID(const DBMessage &msg);
     void addUavId(int seq, const std::string &uav);
     void queryUavInfo(const std::string &gs, int seq, const std::list<std::string> &uavs, bool bAdd);
-    void saveBind(const std::string &uav, bool bBind, const std::string &gs, bool bForce);
 private:
     uint32_t    m_lastId;
 };

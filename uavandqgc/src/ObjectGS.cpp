@@ -236,7 +236,7 @@ void ObjectGS::PrcsProtoBuff(uint64_t ms)
     else if (strMsg == d_p_ClassName(SyncDeviceList))
         _prcsSyncDeviceList((SyncDeviceList *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(RequestBindUav))
-        _prcsReqBind((RequestBindUav *)m_p->DeatachProto());
+        _prcsReqBind(*(RequestBindUav *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(PostControl2Uav))
         _prcsControl2Uav((PostControl2Uav*)m_p->DeatachProto());
     else if (strMsg == d_p_ClassName(RequestIdentityAllocation))
@@ -310,18 +310,24 @@ void ObjectGS::processBind(const DBMessage &msg)
     if(proto)
     {
         proto->set_seqno(msg.GetSeqNomb());
-        proto->set_opid(msg.GetRead("binded").ToInt8());
+        proto->set_opid(msg.GetRead("binded", 1).ToInt8());
         proto->set_result(res ? 0 : 1);
     }
     if (res)
     { 
         if(UavStatus *s = new UavStatus)
         {
-            ObjectUav uav(msg.GetRead("id").ToString());
-            ObjectUav::InitialUAV(msg, uav);
+            ObjectUav uav(msg.GetRead("id", 1).ToString());
+            ObjectUav::InitialUAV(msg, uav, 1);
             uav.TransUavStatus(*s);
             if (proto)
                 proto->set_allocated_status(s);
+
+            if (auto gs2uav = new GS2UavMessage(this, uav.GetObjectID()))
+            {
+                gs2uav->SetPBContent(*s);
+                SendMsg(gs2uav);
+            }
         }
     }
     WaitSend(proto);
@@ -334,15 +340,15 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
     if (!ack || idx<0)
         return;
 
-    auto ids = msg.GetRead("id").GetVarList();
-    auto bindeds = msg.GetRead("binded").GetVarList();
-    auto binders = msg.GetRead("binder").GetVarList();
-    auto lats = msg.GetRead("lat").GetVarList();
-    auto lons = msg.GetRead("lon").GetVarList();
-    auto timeBinds = msg.GetRead("timeBind").GetVarList();
-    auto valids = msg.GetRead("valid").GetVarList();
-    auto authChecks = msg.GetRead("authCheck").GetVarList();
-    auto sims = msg.GetRead("simID").GetVarList();
+    auto ids = msg.GetRead("id", idx).GetVarList();
+    auto bindeds = msg.GetRead("binded", idx).GetVarList();
+    auto binders = msg.GetRead("binder", idx).GetVarList();
+    auto lats = msg.GetRead("lat", idx).GetVarList();
+    auto lons = msg.GetRead("lon", idx).GetVarList();
+    auto timeBinds = msg.GetRead("timeBind", idx).GetVarList();
+    auto valids = msg.GetRead("valid", idx).GetVarList();
+    auto authChecks = msg.GetRead("authCheck", idx).GetVarList();
+    auto sims = msg.GetRead("simID", idx).GetVarList();
 
     ack->set_seqno(msg.GetSeqNomb());
     auto idItr = ids.begin();
@@ -971,39 +977,17 @@ void ObjectGS::_prcsSyncDeviceList(SyncDeviceList *ms)
     }
 }
 
-void ObjectGS::_prcsReqBind(RequestBindUav *msg)
+void ObjectGS::_prcsReqBind(const RequestBindUav&msg)
 {
-    if (!msg)
-        return;
-
-    if (GetAuth(ObjectGS::Type_UavManager) && !msg->uavid().empty())
+    if (GetAuth(ObjectGS::Type_UavManager) && !msg.uavid().empty())
     {
-        if (msg->opid() == 1)
-            Subcribe(msg->uavid(), IMessage::PushUavSndInfo);
-        else if (msg->opid() == 0)
-            Unsubcribe(msg->uavid(), IMessage::PushUavSndInfo);
+        if (msg.opid() == 1)
+            Subcribe(msg.uavid(), IMessage::PushUavSndInfo);
+        else if (msg.opid() == 0)
+            Unsubcribe(msg.uavid(), IMessage::PushUavSndInfo);
     }
 
-    if (msg->opid() != 0 && msg->opid() != 1)
-    {
-        if (auto ack = new AckRequestBindUav())
-        {
-            ack->set_seqno(msg->seqno());
-            ack->set_opid(msg->opid());
-            ack->set_result(1);
-            WaitSend(ack);
-        }
-        delete msg;
-    }
-    else if (GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid()))
-    {
-        ms->AttachProto(msg);
-        SendMsg(ms);
-    }
-    else
-    {
-        delete msg;
-    }
+    saveBind(msg.uavid(), msg.opid() == 1);
 }
 
 void ObjectGS::_prcsControl2Uav(das::proto::PostControl2Uav *msg)
@@ -1163,6 +1147,31 @@ void ObjectGS::ackSyncDeviceis()
         CopyAndSend(ack);
 
     m_seq = -1;
+}
+
+void ObjectGS::saveBind(const std::string &uav, bool bBind)
+{
+    if (GetAuth(ObjectGS::Type_UavManager) && bBind)
+        return;
+
+    if (DBMessage *msg = new DBMessage(this, IMessage::DeviceBindRslt, DBMessage::DB_Uav))
+    {
+        msg->SetSql("updateBinded");
+        msg->SetWrite("timeBind", Utility::msTimeTick());
+        msg->SetWrite("binded", bBind);
+        msg->SetWrite("binder", GetObjectID());
+        msg->SetCondition("id", uav);
+        if (!GetAuth(ObjectGS::Type_UavManager))
+        {
+            msg->SetCondition("binded", false);
+            msg->SetCondition("binder", GetObjectID());
+        }
+
+        msg->AddSql("queryUavInfo");
+        msg->SetCondition("id", uav, 1);
+        SendMsg(msg);
+    }
+    GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "%s %s!", bBind?"bind": "unbind", uav.c_str());
 }
 
 void ObjectGS::initFriend()
