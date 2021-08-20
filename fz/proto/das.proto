@@ -77,10 +77,10 @@ message AckNewFZUser {
 //RequestFZUserIdentity
 //=================================================================================================
 message RequestFZUserIdentity {
-	required uint32 seqno         = 1;      //本包的包序号
-	required string user          = 2;      //设备类型UAV/TRACKER(devtype->type)
-	required string	pswd          = 3;      //扩展备用数据
-	required string pcsn          = 4;      //pc序列号
+    required uint32 seqno         = 1;      //本包的包序号
+    required string user          = 2;      //设备类型UAV/TRACKER(devtype->type)
+    required string	pswd          = 3;      //扩展备用数据
+    required string pcsn          = 4;      //pc序列号
 }
 
 //=================================================================================================
@@ -145,33 +145,77 @@ message AckFriends {
 //AddSWKey
 //=================================================================================================
 message AddSWKey {
-	required uint32 seqno         = 1;      //本包的包序号
-	required string	swkey         = 2;      //软件序列号
-	optional uint32	ver           = 3;      //软件版本号
+    required uint32 seqno         = 1;      //本包的包序号
+    required string	swkey         = 2;      //软件序列号
+    optional uint32	ver           = 3;      //软件版本号
 }
 
 //=================================================================================================
 //AckSWRegist
 //=================================================================================================
 message AckAddSWKey {
-	required uint32 seqno         = 1;      //本包的包序号
-	required int32 result         = 2;      //结果0:reject -1:无权限 -2:sn不合规范
+    required uint32 seqno         = 1;      //本包的包序号
+    required int32 result         = 2;      //结果0:reject -1:无权限 -2:sn不合规范
 }
 
 //=================================================================================================
 //SWRegist
 //=================================================================================================
 message SWRegist {
-	required uint32 seqno         = 1;      //本包的包序号
-	required string pcsn          = 2;      //主板sn
-	required string	swkey         = 3;      //软件序列号
-	optional uint32	ver           = 4;      //软件版本号
+    required uint32 seqno         = 1;      //本包的包序号
+    required string pcsn          = 2;      //主板sn
+    required string	swkey         = 3;      //软件序列号
+    optional uint32	ver           = 4;      //软件版本号
 }
 
 //=================================================================================================
 //AckSWRegist
 //=================================================================================================
 message AckSWRegist {
-	required uint32 seqno         = 1;      //本包的包序号
-	required int32 result         = 2;      //结果0:reject
+    required uint32 seqno         = 1;      //本包的包序号
+    required int32 result         = 2;      //结果0:reject
+}
+
+//=================================================================================================
+//FZResult
+//=================================================================================================
+message FZResult {
+    optional int64 id         = 1;      //id
+    optional int64 begTm      = 2;      //开始时间
+    required int32 usedTm     = 3;      //用时
+    required int32 type       = 4;      //类型
+    required int32 rslt       = 5;      //成绩
+}
+
+//=================================================================================================
+//PostFZResult
+//=================================================================================================
+message PostFZResult {
+    required uint32   seqno        = 1;      //本包的包序号
+    required FZResult rslt         = 2;
+}
+
+//=================================================================================================
+//AckPostFZResult
+//=================================================================================================
+message AckPostFZResult {
+    required uint32   seqno        = 1;      //本包的包序号
+    required int64 	  id           = 2;
+}
+
+//=================================================================================================
+//RequestFZResult
+//=================================================================================================
+message RequestFZResults {
+    required uint32 seqno        = 1;      //本包的包序号
+    optional int64  tmbeg        = 2;      //考核起始时间
+    optional int64  tmend        = 3;      //考核结束时间
+}
+
+//=================================================================================================
+//RequestFZResult
+//=================================================================================================
+message AckFZResults {
+    required uint32 seqno        = 1;      //本包的包序号
+	repeated FZResult rslt       = 2;
 }

@@ -53,6 +53,11 @@ class AddSWKey;
 class AckAddSWKey;
 class SWRegist;
 class AckSWRegist;
+class FZResult;
+class PostFZResult;
+class AckPostFZResult;
+class RequestFZResults;
+class AckFZResults;
 
 enum FZMsgType {
   DeleteFriend = 1,
@@ -1978,6 +1983,511 @@ class AckSWRegist : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static AckSWRegist* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class FZResult : public ::google::protobuf::Message {
+ public:
+  FZResult();
+  virtual ~FZResult();
+
+  FZResult(const FZResult& from);
+
+  inline FZResult& operator=(const FZResult& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const FZResult& default_instance();
+
+  void Swap(FZResult* other);
+
+  // implements Message ----------------------------------------------
+
+  FZResult* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const FZResult& from);
+  void MergeFrom(const FZResult& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional int64 id = 1;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 1;
+  inline ::google::protobuf::int64 id() const;
+  inline void set_id(::google::protobuf::int64 value);
+
+  // optional int64 begTm = 2;
+  inline bool has_begtm() const;
+  inline void clear_begtm();
+  static const int kBegTmFieldNumber = 2;
+  inline ::google::protobuf::int64 begtm() const;
+  inline void set_begtm(::google::protobuf::int64 value);
+
+  // required int32 usedTm = 3;
+  inline bool has_usedtm() const;
+  inline void clear_usedtm();
+  static const int kUsedTmFieldNumber = 3;
+  inline ::google::protobuf::int32 usedtm() const;
+  inline void set_usedtm(::google::protobuf::int32 value);
+
+  // required int32 type = 4;
+  inline bool has_type() const;
+  inline void clear_type();
+  static const int kTypeFieldNumber = 4;
+  inline ::google::protobuf::int32 type() const;
+  inline void set_type(::google::protobuf::int32 value);
+
+  // required int32 rslt = 5;
+  inline bool has_rslt() const;
+  inline void clear_rslt();
+  static const int kRsltFieldNumber = 5;
+  inline ::google::protobuf::int32 rslt() const;
+  inline void set_rslt(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.FZResult)
+ private:
+  inline void set_has_id();
+  inline void clear_has_id();
+  inline void set_has_begtm();
+  inline void clear_has_begtm();
+  inline void set_has_usedtm();
+  inline void clear_has_usedtm();
+  inline void set_has_type();
+  inline void clear_has_type();
+  inline void set_has_rslt();
+  inline void clear_has_rslt();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::int64 id_;
+  ::google::protobuf::int64 begtm_;
+  ::google::protobuf::int32 usedtm_;
+  ::google::protobuf::int32 type_;
+  ::google::protobuf::int32 rslt_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static FZResult* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class PostFZResult : public ::google::protobuf::Message {
+ public:
+  PostFZResult();
+  virtual ~PostFZResult();
+
+  PostFZResult(const PostFZResult& from);
+
+  inline PostFZResult& operator=(const PostFZResult& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PostFZResult& default_instance();
+
+  void Swap(PostFZResult* other);
+
+  // implements Message ----------------------------------------------
+
+  PostFZResult* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const PostFZResult& from);
+  void MergeFrom(const PostFZResult& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required .das.proto.FZResult rslt = 2;
+  inline bool has_rslt() const;
+  inline void clear_rslt();
+  static const int kRsltFieldNumber = 2;
+  inline const ::das::proto::FZResult& rslt() const;
+  inline ::das::proto::FZResult* mutable_rslt();
+  inline ::das::proto::FZResult* release_rslt();
+  inline void set_allocated_rslt(::das::proto::FZResult* rslt);
+
+  // @@protoc_insertion_point(class_scope:das.proto.PostFZResult)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_rslt();
+  inline void clear_has_rslt();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::das::proto::FZResult* rslt_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static PostFZResult* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckPostFZResult : public ::google::protobuf::Message {
+ public:
+  AckPostFZResult();
+  virtual ~AckPostFZResult();
+
+  AckPostFZResult(const AckPostFZResult& from);
+
+  inline AckPostFZResult& operator=(const AckPostFZResult& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckPostFZResult& default_instance();
+
+  void Swap(AckPostFZResult* other);
+
+  // implements Message ----------------------------------------------
+
+  AckPostFZResult* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckPostFZResult& from);
+  void MergeFrom(const AckPostFZResult& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required int64 id = 2;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 2;
+  inline ::google::protobuf::int64 id() const;
+  inline void set_id(::google::protobuf::int64 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckPostFZResult)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_id();
+  inline void clear_has_id();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::int64 id_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckPostFZResult* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class RequestFZResults : public ::google::protobuf::Message {
+ public:
+  RequestFZResults();
+  virtual ~RequestFZResults();
+
+  RequestFZResults(const RequestFZResults& from);
+
+  inline RequestFZResults& operator=(const RequestFZResults& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RequestFZResults& default_instance();
+
+  void Swap(RequestFZResults* other);
+
+  // implements Message ----------------------------------------------
+
+  RequestFZResults* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RequestFZResults& from);
+  void MergeFrom(const RequestFZResults& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // optional int64 tmbeg = 2;
+  inline bool has_tmbeg() const;
+  inline void clear_tmbeg();
+  static const int kTmbegFieldNumber = 2;
+  inline ::google::protobuf::int64 tmbeg() const;
+  inline void set_tmbeg(::google::protobuf::int64 value);
+
+  // optional int64 tmend = 3;
+  inline bool has_tmend() const;
+  inline void clear_tmend();
+  static const int kTmendFieldNumber = 3;
+  inline ::google::protobuf::int64 tmend() const;
+  inline void set_tmend(::google::protobuf::int64 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.RequestFZResults)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_tmbeg();
+  inline void clear_has_tmbeg();
+  inline void set_has_tmend();
+  inline void clear_has_tmend();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::int64 tmbeg_;
+  ::google::protobuf::int64 tmend_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static RequestFZResults* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckFZResults : public ::google::protobuf::Message {
+ public:
+  AckFZResults();
+  virtual ~AckFZResults();
+
+  AckFZResults(const AckFZResults& from);
+
+  inline AckFZResults& operator=(const AckFZResults& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckFZResults& default_instance();
+
+  void Swap(AckFZResults* other);
+
+  // implements Message ----------------------------------------------
+
+  AckFZResults* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckFZResults& from);
+  void MergeFrom(const AckFZResults& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // repeated .das.proto.FZResult rslt = 2;
+  inline int rslt_size() const;
+  inline void clear_rslt();
+  static const int kRsltFieldNumber = 2;
+  inline const ::das::proto::FZResult& rslt(int index) const;
+  inline ::das::proto::FZResult* mutable_rslt(int index);
+  inline ::das::proto::FZResult* add_rslt();
+  inline const ::google::protobuf::RepeatedPtrField< ::das::proto::FZResult >&
+      rslt() const;
+  inline ::google::protobuf::RepeatedPtrField< ::das::proto::FZResult >*
+      mutable_rslt();
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckFZResults)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::RepeatedPtrField< ::das::proto::FZResult > rslt_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckFZResults* default_instance_;
 };
 // ===================================================================
 
@@ -4035,6 +4545,353 @@ inline ::google::protobuf::int32 AckSWRegist::result() const {
 inline void AckSWRegist::set_result(::google::protobuf::int32 value) {
   set_has_result();
   result_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// FZResult
+
+// optional int64 id = 1;
+inline bool FZResult::has_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void FZResult::set_has_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void FZResult::clear_has_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void FZResult::clear_id() {
+  id_ = GOOGLE_LONGLONG(0);
+  clear_has_id();
+}
+inline ::google::protobuf::int64 FZResult::id() const {
+  return id_;
+}
+inline void FZResult::set_id(::google::protobuf::int64 value) {
+  set_has_id();
+  id_ = value;
+}
+
+// optional int64 begTm = 2;
+inline bool FZResult::has_begtm() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void FZResult::set_has_begtm() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void FZResult::clear_has_begtm() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void FZResult::clear_begtm() {
+  begtm_ = GOOGLE_LONGLONG(0);
+  clear_has_begtm();
+}
+inline ::google::protobuf::int64 FZResult::begtm() const {
+  return begtm_;
+}
+inline void FZResult::set_begtm(::google::protobuf::int64 value) {
+  set_has_begtm();
+  begtm_ = value;
+}
+
+// required int32 usedTm = 3;
+inline bool FZResult::has_usedtm() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void FZResult::set_has_usedtm() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void FZResult::clear_has_usedtm() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void FZResult::clear_usedtm() {
+  usedtm_ = 0;
+  clear_has_usedtm();
+}
+inline ::google::protobuf::int32 FZResult::usedtm() const {
+  return usedtm_;
+}
+inline void FZResult::set_usedtm(::google::protobuf::int32 value) {
+  set_has_usedtm();
+  usedtm_ = value;
+}
+
+// required int32 type = 4;
+inline bool FZResult::has_type() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void FZResult::set_has_type() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void FZResult::clear_has_type() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void FZResult::clear_type() {
+  type_ = 0;
+  clear_has_type();
+}
+inline ::google::protobuf::int32 FZResult::type() const {
+  return type_;
+}
+inline void FZResult::set_type(::google::protobuf::int32 value) {
+  set_has_type();
+  type_ = value;
+}
+
+// required int32 rslt = 5;
+inline bool FZResult::has_rslt() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void FZResult::set_has_rslt() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void FZResult::clear_has_rslt() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void FZResult::clear_rslt() {
+  rslt_ = 0;
+  clear_has_rslt();
+}
+inline ::google::protobuf::int32 FZResult::rslt() const {
+  return rslt_;
+}
+inline void FZResult::set_rslt(::google::protobuf::int32 value) {
+  set_has_rslt();
+  rslt_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// PostFZResult
+
+// required uint32 seqno = 1;
+inline bool PostFZResult::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void PostFZResult::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void PostFZResult::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void PostFZResult::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 PostFZResult::seqno() const {
+  return seqno_;
+}
+inline void PostFZResult::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required .das.proto.FZResult rslt = 2;
+inline bool PostFZResult::has_rslt() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void PostFZResult::set_has_rslt() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void PostFZResult::clear_has_rslt() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void PostFZResult::clear_rslt() {
+  if (rslt_ != NULL) rslt_->::das::proto::FZResult::Clear();
+  clear_has_rslt();
+}
+inline const ::das::proto::FZResult& PostFZResult::rslt() const {
+  return rslt_ != NULL ? *rslt_ : *default_instance_->rslt_;
+}
+inline ::das::proto::FZResult* PostFZResult::mutable_rslt() {
+  set_has_rslt();
+  if (rslt_ == NULL) rslt_ = new ::das::proto::FZResult;
+  return rslt_;
+}
+inline ::das::proto::FZResult* PostFZResult::release_rslt() {
+  clear_has_rslt();
+  ::das::proto::FZResult* temp = rslt_;
+  rslt_ = NULL;
+  return temp;
+}
+inline void PostFZResult::set_allocated_rslt(::das::proto::FZResult* rslt) {
+  delete rslt_;
+  rslt_ = rslt;
+  if (rslt) {
+    set_has_rslt();
+  } else {
+    clear_has_rslt();
+  }
+}
+
+// -------------------------------------------------------------------
+
+// AckPostFZResult
+
+// required uint32 seqno = 1;
+inline bool AckPostFZResult::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckPostFZResult::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckPostFZResult::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckPostFZResult::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckPostFZResult::seqno() const {
+  return seqno_;
+}
+inline void AckPostFZResult::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int64 id = 2;
+inline bool AckPostFZResult::has_id() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckPostFZResult::set_has_id() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckPostFZResult::clear_has_id() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckPostFZResult::clear_id() {
+  id_ = GOOGLE_LONGLONG(0);
+  clear_has_id();
+}
+inline ::google::protobuf::int64 AckPostFZResult::id() const {
+  return id_;
+}
+inline void AckPostFZResult::set_id(::google::protobuf::int64 value) {
+  set_has_id();
+  id_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// RequestFZResults
+
+// required uint32 seqno = 1;
+inline bool RequestFZResults::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void RequestFZResults::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void RequestFZResults::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void RequestFZResults::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 RequestFZResults::seqno() const {
+  return seqno_;
+}
+inline void RequestFZResults::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// optional int64 tmbeg = 2;
+inline bool RequestFZResults::has_tmbeg() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void RequestFZResults::set_has_tmbeg() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void RequestFZResults::clear_has_tmbeg() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void RequestFZResults::clear_tmbeg() {
+  tmbeg_ = GOOGLE_LONGLONG(0);
+  clear_has_tmbeg();
+}
+inline ::google::protobuf::int64 RequestFZResults::tmbeg() const {
+  return tmbeg_;
+}
+inline void RequestFZResults::set_tmbeg(::google::protobuf::int64 value) {
+  set_has_tmbeg();
+  tmbeg_ = value;
+}
+
+// optional int64 tmend = 3;
+inline bool RequestFZResults::has_tmend() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void RequestFZResults::set_has_tmend() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void RequestFZResults::clear_has_tmend() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void RequestFZResults::clear_tmend() {
+  tmend_ = GOOGLE_LONGLONG(0);
+  clear_has_tmend();
+}
+inline ::google::protobuf::int64 RequestFZResults::tmend() const {
+  return tmend_;
+}
+inline void RequestFZResults::set_tmend(::google::protobuf::int64 value) {
+  set_has_tmend();
+  tmend_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// AckFZResults
+
+// required uint32 seqno = 1;
+inline bool AckFZResults::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckFZResults::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckFZResults::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckFZResults::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckFZResults::seqno() const {
+  return seqno_;
+}
+inline void AckFZResults::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// repeated .das.proto.FZResult rslt = 2;
+inline int AckFZResults::rslt_size() const {
+  return rslt_.size();
+}
+inline void AckFZResults::clear_rslt() {
+  rslt_.Clear();
+}
+inline const ::das::proto::FZResult& AckFZResults::rslt(int index) const {
+  return rslt_.Get(index);
+}
+inline ::das::proto::FZResult* AckFZResults::mutable_rslt(int index) {
+  return rslt_.Mutable(index);
+}
+inline ::das::proto::FZResult* AckFZResults::add_rslt() {
+  return rslt_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::das::proto::FZResult >&
+AckFZResults::rslt() const {
+  return rslt_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::das::proto::FZResult >*
+AckFZResults::mutable_rslt() {
+  return &rslt_;
 }
 
 

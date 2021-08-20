@@ -6,6 +6,7 @@ typedef struct st_mysql_bind MYSQL_BIND;
 class TiXmlElement;
 class ExecutItem;
 class MysqlDB;
+enum BraceFlag;
 class FiledVal
 {
 public:
@@ -22,11 +23,6 @@ public:
         StaticParam = 0x100,
         StaticRef = StaticParam << 1,
         List = StaticRef<<1,
-    };
-    enum BraceFlag{
-        NoBrace,
-        NumbLeftMask = 0xff,//×î×ó+'('
-        NumbRightMask = 0xff00,//×îÓÒ+')'
     };
 public:
     SHARED_SQL void SetParam(const string &param, FieldType tp = NoBuff);
@@ -87,12 +83,12 @@ protected:
 private:
     friend class ExecutItem;
     int             m_type;
-    char            m_bEmpty;
-    FieldType       m_tpField;
     char            *m_buff;
     ExecutItem      *m_exParam;
     unsigned long   m_lenMax;
     unsigned long   m_len;
+    char            m_bEmpty;
+    FieldType       m_tpField;
     string          m_name;
     string          m_param;
     string          m_condition;

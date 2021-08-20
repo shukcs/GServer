@@ -106,6 +106,8 @@ public:
         SuspendRslt,
         InserSWSNRslt,
         UpdateSWSNRslt,
+        AckInserFZRslt,
+        AckQueryFZRslt,
 
         DBAckEnd,
         DBMsgEnd,

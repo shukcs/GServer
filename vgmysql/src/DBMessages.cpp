@@ -135,12 +135,7 @@ const Variant &DBMessage::GetCondition(const string &key, int idx, const std::st
 {
     auto itr = m_conditions.find(propertyKey(key, idx));
     if (itr == m_conditions.end())
-    {
-        if (ju!="=")
-            itr = m_conditions.find(propertyKey(key+":"+ju, idx));
-        else
-            return sVarEmpty;
-    }
+        itr = m_conditions.find(propertyKey(key+":"+ju, idx));
 
     return itr!=m_conditions.end() ? itr->second : sVarEmpty;
 }

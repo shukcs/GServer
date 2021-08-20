@@ -341,7 +341,7 @@
 			<Tables>
 				<table name="eventLog">
 					<field name="id" type="BIGINT" constraint="primary key;auto_increment"/>
-					<field name="logTm" type="BIGINT" />		
+					<field name="logTm" type="BIGINT" />
 					<field name="event" type="INT" constraint="DEFAULT '0'" />
 					<field name="error" type="INT" constraint="DEFAULT '0'" />
 					<field name="object" type="char(32)" constraint="DEFAULT ''" />
@@ -376,6 +376,14 @@
 					<field name="pcsn" type="char(32)" />
 					<field name="ver" type="INT" constraint="DEFAULT 1"/>
 					<field name="used" type="INT" constraint="DEFAULT 0" />
+				</table>
+				<table name="FZResult">
+					<field name="id" type="BIGINT" constraint="primary key;auto_increment"/>
+					<field name="user" type="char(32)" constraint="primary key"/>
+					<field name="begTm" type="BIGINT" />
+					<field name="usedTm" type="INT" />
+					<field name="type" type="INT" />
+					<field name="result" type="INT" />
 				</table>
 			</Tables>
 			<SQLs>
@@ -425,6 +433,23 @@
 				<SQL name="queryFZPCReg" table="FZKeyReg" type="Select" >
 					<item name="ver" ref="FZKeyReg" type="Read" />
 					<item name="pcsn" type="Condition" />
+				</SQL>
+				<SQL name="insertFZResult" table="FZResult" type="Insert" >
+					<item name="user"  type="Write" />
+					<item name="begTm" ref="FZResult" type="Write" />
+					<item name="usedTm" ref="FZResult" type="Write" />
+					<item name="type" ref="FZResult" type="Write" />
+					<item name="result" ref="FZResult" type="Write" />
+				</SQL>
+				<SQL name="queryFZResult" table="FZResult" type="Select" >
+					<item name="id" ref="FZResult" type="Read" />
+					<item name="begTm" ref="FZResult" type="Read" />
+					<item name="usedTm" ref="FZResult" type="Read" />
+					<item name="type" ref="FZResult" type="Read" />
+					<item name="result" ref="FZResult" type="Read" />
+					<item name="user" type="Condition" />
+					<item name="begTm" ref="FZResult" type="Condition" condition=">" />
+					<item name="begTm" ref="FZResult" type="Condition" condition="<" />
 				</SQL>
 			</SQLs>
 		</Object>

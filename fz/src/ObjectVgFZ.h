@@ -13,6 +13,8 @@ namespace das {
         class RequestFriends;
         class AddSWKey;
         class SWRegist;
+        class PostFZResult;
+        class RequestFZResults;
     }
 }
 class FWItem;
@@ -62,6 +64,8 @@ protected:
     void processFriends(const DBMessage &msg);
     void processInserSWSN(const DBMessage &msg);
     void processSWRegist(const DBMessage &msg);
+    void processAckFZRslt(const DBMessage &msg);
+    void processAckFZRslts(const DBMessage &msg);
 
     void InitObject();
     void CheckTimer(uint64_t ms, char *buf, int len);
@@ -76,6 +80,8 @@ private:
     void _prcsReqFriends(das::proto::RequestFriends *msg);
     void _prcsAddSWKey(das::proto::AddSWKey *msg);
     void _prcsSWRegist(das::proto::SWRegist *msg);
+    void _prcsPostFZResult(das::proto::PostFZResult *msg);
+    void _prcsRequestFZResults(const das::proto::RequestFZResults &msg);
     void _sendHeartBeat(uint64_t ms);
 private:
     void _checkFZ(const std::string &user, int ack);

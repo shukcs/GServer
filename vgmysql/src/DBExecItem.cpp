@@ -12,7 +12,11 @@
 #include <string.h>
 #include <chrono>
 
-#define ParamSpliter "#;#"
+enum BraceFlag {
+    NoBrace,
+    NumbLeftMask = 0xff,//×î×ó+'('
+    NumbRightMask = 0xff00,//×îÓÒ+')'
+};
 #define LeftBraceCount(f) ((f&NumbLeftMask))
 #define RightBraceCount(f) ((f&NumbRightMask)>>8)
 using namespace std::chrono;
@@ -21,17 +25,17 @@ static const list<FiledVal*> lsFieldEmpty;
 ///////////////////////////////////////////////////////////////////////////////////////
 //FiledVal
 ///////////////////////////////////////////////////////////////////////////////////////
-FiledVal::FiledVal(int tp, const std::string &name, int len): m_type(tp)
-, m_bEmpty(1), m_tpField(NoBuff), m_buff(NULL), m_exParam(NULL)
-,m_lenMax(0), m_len(0), m_name(name), m_condition("=")
+FiledVal::FiledVal(int tp, const std::string &name, int len): m_type(tp), m_buff(NULL)
+, m_exParam(NULL),m_lenMax(0), m_len(0), m_name(name), m_condition("="), m_bEmpty(1)
+, m_tpField(NoBuff)
 {
     InitBuff(len);
     transType(tp);
 }
 
-FiledVal::FiledVal(VGTableField *fild, bool bOth): m_type(-1), m_bEmpty(1)
-, m_tpField(NoBuff), m_buff(NULL), m_exParam(NULL)
-, m_lenMax(0), m_len(0), m_condition("=")
+FiledVal::FiledVal(VGTableField *fild, bool bOth): m_type(-1), m_buff(NULL)
+, m_exParam(NULL), m_lenMax(0), m_len(0), m_condition("="), m_bEmpty(1)
+, m_tpField(NoBuff)
 {
     if (fild)
     {
@@ -117,16 +121,20 @@ void FiledVal::SetParam(const string &param, FieldType tp)
 
 void FiledVal::SetParam(const list<string> &param)
 {
-    m_bEmpty = 0;
+    if (param.empty())
+        return;
+
+    m_bEmpty = false;
     m_tpField = (FieldType)(m_tpField|List);
     m_param.clear();
     for (const string &itr : param)
     {
         if (m_param.empty())
-            m_param = itr;
+            m_param = "(" + m_name + m_condition + "'" + itr + "'";
         else
-            m_param += string(ParamSpliter) + itr;
+            m_param += " or " + m_name + m_condition + "'" + itr + "'";
     }
+    m_param += ")";
 }
 
 void FiledVal::SetParam(const string &exFild, const string &param, FieldType tp /*= NoBuff*/)
@@ -154,6 +162,9 @@ const string & FiledVal::GetParam() const
 
 void FiledVal::InitBuff(unsigned len, const void *buf)
 {
+    if (m_tpField & (StaticParam | StaticRef))
+        return;
+
     if (len > m_lenMax)
     {
         m_lenMax = len;
@@ -174,26 +185,12 @@ string FiledVal::ToConditionString(const string &str)const
 {
     string ret;
     if (m_exParam)
-    {
         ret += m_name + m_condition + "(" + m_exParam->GetSqlString() + ")";
-    }
     else if (List & m_tpField)
-    {
-        for (const string &itr : VGMySql::SplitString(m_param, ParamSpliter))
-        {
-            string tmp;
-            tmp.resize(m_name.size() + m_condition.size() + itr.size() + 10);
-            if (ret.empty())
-                sprintf(&tmp.front(), "%s%s'%s'", m_name.c_str(), m_condition.c_str(), itr.c_str());
-            else
-                sprintf(&tmp.front(), " or %s%s'%s'", m_name.c_str(), m_condition.c_str(), itr.c_str());
-            ret += tmp.c_str();
-        }
-    }
+        ret = m_param;
     else
-    {
         ret += m_name + m_condition + (IsStringParam() ? GetParam() : "?");
-    }
+   
     return finallyString(ret, getBraceFlag(str));
 }
 
@@ -334,7 +331,7 @@ FiledVal *FiledVal::parseFiled(const MysqlDB &db, const TiXmlElement &e, bool ot
     return NULL;
 }
 
-FiledVal::BraceFlag FiledVal::getBraceFlag(const string &str)
+BraceFlag FiledVal::getBraceFlag(const string &str)
 {
     int nLeft = 0;
     int nRight = 0;

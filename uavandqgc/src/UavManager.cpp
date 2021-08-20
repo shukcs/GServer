@@ -278,8 +278,7 @@ void UavManager::queryUavInfo(const string &gs, int seq, const std::list<std::st
         int idx = 0;
         if (bAdd && uavs.size()==1)
         {
-            uint32_t id = toIntID(uavs.front());
-            if (id >= 1)
+            if (uint32_t id = toIntID(uavs.front()))
             {
                 msg->SetSql("insertUavInfo", true);
                 msg->SetWrite("id", uavs.front());

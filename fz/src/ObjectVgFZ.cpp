@@ -157,6 +157,12 @@ void ObjectVgFZ::ProcessMessage(IMessage *msg)
         case IMessage::UpdateSWSNRslt:
             processSWRegist(*(DBMessage*)msg);
             break;
+        case IMessage::AckInserFZRslt:
+            processAckFZRslt(*(DBMessage*)msg);
+            break;
+        case IMessage::AckQueryFZRslt:
+            processAckFZRslts(*(DBMessage*)msg);
+            break;
         default:
             break;
         }
@@ -185,6 +191,10 @@ void ObjectVgFZ::PrcsProtoBuff(uint64_t ms)
         _prcsAddSWKey((AddSWKey *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(SWRegist))
         _prcsSWRegist((SWRegist *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(PostFZResult))
+        _prcsPostFZResult((PostFZResult *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(RequestFZResults))
+        _prcsRequestFZResults(*(RequestFZResults *)m_p->GetProtoMessage());
 
     if (m_stInit == IObject::Initialed)
         m_tmLastInfo = ms;
@@ -312,6 +322,58 @@ void ObjectVgFZ::processSWRegist(const DBMessage &msg)
         m_ver = -1;
         m_pcsn = string();
     }
+}
+
+void ObjectVgFZ::processAckFZRslt(const DBMessage &msg)
+{
+    if (auto ack = new AckPostFZResult)
+    {
+        ack->set_seqno(msg.GetSeqNomb());
+        ack->set_id(msg.GetRead(INCREASEField).ToInt64());
+        WaitSend(ack);
+    }
+}
+
+void ObjectVgFZ::processAckFZRslts(const DBMessage &msg)
+{
+    auto ack = new AckFZResults;
+    if (!ack)
+        return;
+
+    ack->set_seqno(msg.GetSeqNomb());
+    const VariantList &ids = msg.GetRead("id").GetVarList();
+    const VariantList &begTms = msg.GetRead("begTm").GetVarList();
+    const VariantList &usedTms = msg.GetRead("usedTm").GetVarList();
+    const VariantList &types = msg.GetRead("type").GetVarList();
+    const VariantList &results = msg.GetRead("result").GetVarList();
+
+    auto begItr = begTms.begin();
+    auto usedItr = usedTms.begin();
+    auto typeItr = types.begin();
+    auto rsltItr = results.begin();
+    for (const Variant &id : ids)
+    {
+        if (ack->ByteSize() > MaxSend)
+        {
+            WaitSend(ack);
+            ack = new AckFZResults;
+            if (!ack)
+                break;
+            ack->set_seqno(msg.GetSeqNomb());
+        }
+
+        auto result = ack->add_rslt();
+        if (!result)
+            break;
+        result->set_id(id.ToInt64());
+        result->set_begtm(begItr++->ToInt64());
+        result->set_usedtm(usedItr++->ToInt32());
+        result->set_type(typeItr++->ToInt32());
+        result->set_type(rsltItr++->ToInt32());
+    }
+
+    if (ack)
+        WaitSend(ack);
 }
 
 void ObjectVgFZ::processCheckUser(const DBMessage &msg)
@@ -625,6 +687,42 @@ void ObjectVgFZ::_prcsSWRegist(SWRegist *pb)
     msg->SetSeqNomb(pb->seqno());
     msg->SetWrite("pcsn", m_pcsn);
     msg->SetCondition("swsn", pb->swkey());
+    SendMsg(msg);
+}
+
+void ObjectVgFZ::_prcsPostFZResult(PostFZResult *rslt)
+{
+    if (!rslt || !rslt->has_rslt())
+        return;
+
+    DBMessage *msg = new DBMessage(this, IMessage::AckInserFZRslt);
+    if (!msg)
+        return;
+
+    msg->SetSql("insertFZResult");
+    msg->SetSeqNomb(rslt->seqno());
+    msg->SetWrite("user", GetObjectID());
+    msg->SetWrite("begTm", rslt->rslt().has_begtm() ? rslt->rslt().begtm() : Utility::msTimeTick());
+    msg->SetWrite("usedTm", rslt->rslt().usedtm());
+    msg->SetWrite("type", rslt->rslt().type());
+    msg->SetWrite("result", rslt->rslt().rslt());
+
+    SendMsg(msg);
+}
+
+void ObjectVgFZ::_prcsRequestFZResults(const RequestFZResults &req)
+{
+    DBMessage *msg = new DBMessage(this, IMessage::AckQueryFZRslt);
+    if (!msg)
+        return;
+
+    msg->SetSql("queryFZResult", true);
+    msg->SetSeqNomb(req.seqno());
+    if (req.has_tmbeg())
+        msg->SetCondition("begTm:>", req.tmbeg());
+    if (req.has_tmend())
+        msg->SetCondition("begTm:<", (int64_t)req.tmend());
+
     SendMsg(msg);
 }
 

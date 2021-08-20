@@ -35,6 +35,9 @@ google::protobuf::Message *PBAbSFactoryItem::createMessage(const string &name)
     DeclareRcvPB(RequestFriends);
     DeclareRcvPB(AddSWKey);
     DeclareRcvPB(SWRegist);
+    DeclareRcvPB(PostFZResult);
+    DeclareRcvPB(RequestFZResults);
+    DeclareRcvPB(AckFZResults);
 
     auto itr = s_MapPbCreate.find(name);
     if (itr != s_MapPbCreate.end())
@@ -131,7 +134,6 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         return false;
   
     m_msg = PBAbSFactoryItem::createMessage(name);
-
     if (m_msg)
         return m_msg->ParseFromArray(buff, len);
 
