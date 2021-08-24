@@ -6,7 +6,13 @@ typedef struct st_mysql_bind MYSQL_BIND;
 class TiXmlElement;
 class ExecutItem;
 class MysqlDB;
-enum BraceFlag;
+
+enum BraceFlag {
+    NoBrace,
+    NumbLeftMask = 0xff,//×î×ó+'('
+    NumbRightMask = 0xff00,//×îÓÒ+')'
+};
+
 class FiledVal
 {
 public:

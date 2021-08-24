@@ -12,11 +12,6 @@
 #include <string.h>
 #include <chrono>
 
-enum BraceFlag {
-    NoBrace,
-    NumbLeftMask = 0xff,//×î×ó+'('
-    NumbRightMask = 0xff00,//×îÓÒ+')'
-};
 #define LeftBraceCount(f) ((f&NumbLeftMask))
 #define RightBraceCount(f) ((f&NumbRightMask)>>8)
 using namespace std::chrono;
