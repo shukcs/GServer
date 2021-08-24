@@ -71,18 +71,18 @@ void ObjectDB::ProcessMessage(IMessage *msg)
     int idx = 0;
     for (const string sql : db->GetSqls())
     {
-        ExecutItem *item = GetSqlByName(sql);
-        if (!item)
-            continue;
-        item->ClearData();
-        _initSqlByMsg(*item, *db, idx);
-        if (ref>0)
+        if (ExecutItem *item = GetSqlByName(sql))
         {
-            _initRefField(*item, db->GetRefFiled(), ref);
-            ref = 0;
-        }
+            item->ClearData();
+            _initSqlByMsg(*item, *db, idx);
+            if (ref > 0)
+            {
+                _initRefField(*item, db->GetRefFiled(), ref);
+                ref = 0;
+            }
 
-        ref = _executeSql(item, ack, idx);
+            ref = _executeSql(item, ack, idx);
+        }
         idx++;
     }
     if (ack)

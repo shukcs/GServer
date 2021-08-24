@@ -379,7 +379,7 @@
 				</table>
 				<table name="FZResult">
 					<field name="id" type="BIGINT" constraint="primary key;auto_increment"/>
-					<field name="user" type="char(32)" constraint="primary key"/>
+					<field name="user" type="char(32)" />
 					<field name="begTm" type="BIGINT" />
 					<field name="usedTm" type="INT" />
 					<field name="type" type="INT" />
@@ -440,6 +440,7 @@
 					<item name="usedTm" ref="FZResult" type="Write" />
 					<item name="type" ref="FZResult" type="Write" />
 					<item name="result" ref="FZResult" type="Write" />
+					<item type="AutoIncrement" />
 				</SQL>
 				<SQL name="queryFZResult" table="FZResult" type="Select" >
 					<item name="id" ref="FZResult" type="Read" />

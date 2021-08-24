@@ -369,7 +369,7 @@ void ObjectVgFZ::processAckFZRslts(const DBMessage &msg)
         result->set_begtm(begItr++->ToInt64());
         result->set_usedtm(usedItr++->ToInt32());
         result->set_type(typeItr++->ToInt32());
-        result->set_type(rsltItr++->ToInt32());
+        result->set_rslt(rsltItr++->ToInt32());
     }
 
     if (ack)
