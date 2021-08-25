@@ -718,6 +718,7 @@ void ObjectVgFZ::_prcsRequestFZResults(const RequestFZResults &req)
 
     msg->SetSql("queryFZResult", true);
     msg->SetSeqNomb(req.seqno());
+    msg->SetCondition("user", GetObjectID());
     if (req.has_tmbeg())
         msg->SetCondition("begTm:>", req.tmbeg());
     if (req.has_tmend())
