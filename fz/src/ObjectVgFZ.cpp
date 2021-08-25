@@ -27,7 +27,6 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////////////////
 ObjectVgFZ::ObjectVgFZ(const std::string &id, int seq): ObjectAbsPB(id)
 , m_auth(Type_Common), m_bInitFriends(false), m_seq(seq), m_ver(-1)
-, m_tmSpace(-1)
 {
     SetBuffSize(WRITE_BUFFLEN);
 }
@@ -121,8 +120,16 @@ void ObjectVgFZ::_prcsLogin(RequestFZUserIdentity *msg)
     }
 }
 
-void ObjectVgFZ::_prcsHeartBeat(das::proto::AckHeartBeat *)
+void ObjectVgFZ::_prcsHeartBeat(das::proto::PostHeartBeat *hb)
 {
+    if (!hb)
+        return;
+
+    if (auto ack = new AckHeartBeat)
+    {
+        ack->set_seqno(hb->seqno());
+        WaitSend(ack);
+    }
 }
 
 void ObjectVgFZ::ProcessMessage(IMessage *msg)
@@ -179,8 +186,8 @@ void ObjectVgFZ::PrcsProtoBuff(uint64_t ms)
         _prcsLogin((RequestFZUserIdentity*)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(RequestNewFZUser))
         _prcsReqNewFz((RequestNewFZUser*)m_p->GetProtoMessage());
-    else if (strMsg == d_p_ClassName(AckHeartBeat))
-        _prcsHeartBeat((AckHeartBeat *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(PostHeartBeat))
+        _prcsHeartBeat((PostHeartBeat *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(FZUserMessage))
         _prcsFzMessage((FZUserMessage *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(SyncFZUserList))
@@ -424,10 +431,8 @@ void ObjectVgFZ::CheckTimer(uint64_t ms, char *buf, int len)
         Release();
     else if (!GetAuth(Type_UserManager) && (ms > 600000 || (!m_check.empty() && ms > 60000)))
         Release();
-    else if (m_check.empty() && ms > 10000)//超时关闭
+    else if (m_check.empty() && ms > 15000)//超时关闭
         IsInitaled() ? CloseLink() : Release();
-    else
-        _sendHeartBeat(ms);
 }
 
 bool ObjectVgFZ::IsAllowRelease() const
@@ -725,19 +730,6 @@ void ObjectVgFZ::_prcsRequestFZResults(const RequestFZResults &req)
         msg->SetCondition("begTm:<", (int64_t)req.tmend());
 
     SendMsg(msg);
-}
-
-void ObjectVgFZ::_sendHeartBeat(uint64_t ms)
-{
-    if (ms - m_tmSpace < 5000)
-        return;
-
-    m_tmSpace = ms;
-    if (PostHeartBeat *hb = new PostHeartBeat)
-    {
-        hb->set_seqno(m_seq++);
-        WaitSend(hb);
-    }
 }
 
 void ObjectVgFZ::_checkFZ(const string &user, int ack)

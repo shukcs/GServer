@@ -8,7 +8,7 @@ namespace das {
         class RequestFZUserIdentity;
         class RequestNewFZUser;
         class SyncFZUserList;
-        class AckHeartBeat;
+        class PostHeartBeat;
         class FZUserMessage;
         class RequestFriends;
         class AddSWKey;
@@ -73,7 +73,7 @@ protected:
     void FreshLogin(uint64_t ms);
 private:
     void _prcsLogin(das::proto::RequestFZUserIdentity *msg);
-    void _prcsHeartBeat(das::proto::AckHeartBeat *msg);
+    void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
     void _prcsSyncDeviceList(das::proto::SyncFZUserList *ms);
     void _prcsReqNewFz(das::proto::RequestNewFZUser *msg);
     void _prcsFzMessage(das::proto::FZUserMessage *msg);
@@ -82,7 +82,6 @@ private:
     void _prcsSWRegist(das::proto::SWRegist *msg);
     void _prcsPostFZResult(das::proto::PostFZResult *msg);
     void _prcsRequestFZResults(const das::proto::RequestFZResults &msg);
-    void _sendHeartBeat(uint64_t ms);
 private:
     void _checkFZ(const std::string &user, int ack);
     void initFriend();
@@ -95,7 +94,6 @@ private:
     bool            m_bInitFriends;
     int             m_seq;
     int             m_ver;
-    uint64_t        m_tmSpace;
     uint64_t        m_tmLastInfo;
     std::string     m_pswd;
     std::string     m_check;
