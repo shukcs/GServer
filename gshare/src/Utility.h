@@ -16,6 +16,7 @@ namespace Utility
     SHARED_DECL const std::string &EmptyStr();
     SHARED_DECL int FindString(const char *src, int len, const char *cnt, int cntLen = -1);
     SHARED_DECL int FindString(const char *src, int len, const std::string &str);
+    SHARED_DECL int FindString(const std::string &src, const std::string &str);
     SHARED_DECL StringList SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty = true); 
     std::string Trim(const std::string& str);
     SHARED_DECL void ReplacePart(std::string &str, char part, char rpc);

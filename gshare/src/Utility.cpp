@@ -124,6 +124,11 @@ int Utility::FindString(const char *src, int len, const char *cnt, int cntLen)
     return -1;
 }
 
+int Utility::FindString(const std::string &src, const std::string &str)
+{
+    return FindString(src.c_str(), src.size(), str.c_str(), str.length());
+}
+
 int Utility::FindString(const char *src, int len, const std::string &str)
 {
     return FindString(src, len, str.c_str(), str.length());

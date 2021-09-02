@@ -251,6 +251,9 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
 
     auto var = msg.GetRead("ver", idx);
     m_ver = var.IsNull() ? -1 : var.ToInt32();
+    if (m_pcsn.empty() || m_pcsn == "O.E.M")
+        m_ver = -2;
+
     if (m_ver < 0)
         m_pcsn = string();
 
@@ -410,7 +413,7 @@ void ObjectVgFZ::InitObject()
 
             msg->SetSql("queryFZInfo");
             msg->SetCondition("user", m_id);
-            if (!m_pcsn.empty())
+            if (!m_pcsn.empty() || m_pcsn=="O.E.M")
             {
                 msg->AddSql("queryFZPCReg");
                 msg->SetCondition("pcsn", m_pcsn, 1);
@@ -456,7 +459,7 @@ void ObjectVgFZ::SetPcsn(const std::string &str)
     {
         if (!GetAuth(Type_UserManager))
         {
-            m_pcsn = str;
+            m_pcsn = m_pcsn = Utility::FindString(m_pcsn, "O.E.M") >= 0 ? "O.E.M" : str;
             if (Initialed == m_stInit)
             {
                 m_ver = -1;
@@ -681,11 +684,22 @@ void ObjectVgFZ::_prcsSWRegist(SWRegist *pb)
     if (!pb)
         return;
 
+    m_pcsn = Utility::FindString(m_pcsn, "O.E.M") >= 0 ? "O.E.M": pb->pcsn();
+    if (m_pcsn.empty() || m_pcsn=="O.E.M")
+    {
+        if (auto ack = new AckSWRegist)
+        {
+            ack->set_seqno(pb->seqno());
+            ack->set_result(-1);
+            WaitSend(ack);
+        }
+        return;
+    }
+
     DBMessage *msg = new DBMessage(this, IMessage::UpdateSWSNRslt);
     if (!msg)
         return;
 
-    m_pcsn = pb->pcsn();
     m_ver = pb->has_ver() ? pb->ver() : 1;
 
     msg->SetSql("updateFZPCReg");
