@@ -459,7 +459,7 @@ void ObjectVgFZ::SetPcsn(const std::string &str)
     {
         if (!GetAuth(Type_UserManager))
         {
-            m_pcsn = m_pcsn = Utility::FindString(m_pcsn, "O.E.M") >= 0 ? "O.E.M" : str;
+            m_pcsn = Utility::FindString(str, "O.E.M") >= 0 ? "O.E.M" : str;
             if (Initialed == m_stInit)
             {
                 m_ver = -1;
