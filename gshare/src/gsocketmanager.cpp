@@ -68,7 +68,7 @@ bool GSocketManager::s_bRun = true;
 //GSocketManager
 ////////////////////////////////////////////////////////////////////////////
 GSocketManager::GSocketManager(int nThread, int maxSock) : m_openMax(maxSock)
-,m_mtx(new Mutex) , m_thread(NULL)
+,m_mtx(new Mutex) , m_thread(nullptr)
 {
     InitEpoll();
     InitThread(nThread);
@@ -115,7 +115,7 @@ void GSocketManager::ReleaseSocket(ISocket *s)
 
 bool GSocketManager::IsMainManager()const
 {
-    return m_thread==NULL;
+    return m_thread==nullptr;
 }
 
 bool GSocketManager::Poll(unsigned ms)
@@ -143,7 +143,7 @@ void GSocketManager::AddProcessThread()
 
 bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
 {
-    int fd = s != NULL ? s->GetSocketHandle() : -1;
+    int fd = s != nullptr ? s->GetSocketHandle() : -1;
     if (fd==-1 || m_sockets.find(fd)==m_sockets.end())
         return false;
 
@@ -167,7 +167,7 @@ void GSocketManager::InitThread(int nThread)
 
 void GSocketManager::PrcsAddSockets(int64_t sec)
 {
-    ISocket *s = NULL;
+    ISocket *s = nullptr;
     while (m_socketsAdd.Pop(s))
     {
         int handle = s->GetSocketHandle();
@@ -230,7 +230,7 @@ ISocket *GSocketManager::GetSockByHandle(int handle) const
     if (itr != m_sockets.end())
         return itr->second;
 
-    return NULL;
+    return nullptr;
 }
 
 void GSocketManager::CloseThread()
@@ -242,7 +242,7 @@ void GSocketManager::CloseThread()
 GSocketManager *GSocketManager::GetManagerofLeastSocket() const
 {
     int count = -1;
-    GSocketManager *ret = NULL;
+    GSocketManager *ret = nullptr;
     for (GSocketManager *itr : m_othManagers)
     {
         int tmp = itr->m_sockets.size();
@@ -264,7 +264,7 @@ bool GSocketManager::SokectPoll(unsigned ms)
         return ret;
     fd_set rfds = m_ep_fd;
     struct timeval tv = {0};    //windows select不会挂起线程的
-    int n = select((int)(m_maxsock + 1), &rfds, NULL, NULL, &tv);
+    int n = select((int)(m_maxsock + 1), &rfds, nullptr, nullptr, &tv);
     for (int i=0; i<n; ++i)
     {
         ISocket *sock = GetSockByHandle(rfds.fd_array[i]);
@@ -364,7 +364,7 @@ void GSocketManager::CloseServer()
         if (h >= (int)m_maxsock)
             _checkMaxSock();
 #else
-        epoll_ctl(m_ep_fd, EPOLL_CTL_DEL, h, NULL);
+        epoll_ctl(m_ep_fd, EPOLL_CTL_DEL, h, nullptr);
 #endif
     }
     
@@ -398,7 +398,7 @@ void GSocketManager::_remove(int h)
     if (h >= (int)m_maxsock)
         _checkMaxSock();
 #else
-    epoll_ctl(m_ep_fd, EPOLL_CTL_DEL, h, NULL);
+    epoll_ctl(m_ep_fd, EPOLL_CTL_DEL, h, nullptr);
 #endif
 }
 

@@ -19,6 +19,7 @@ class GXClient;
 
 class TrackerMessage : public IMessage
 {
+    CLASS_INFO(TrackerMessage)
 public:
     TrackerMessage(IObject *sender, const std::string &idRcv, int rcv);
     TrackerMessage(IObjectManager *sender, const std::string &idRcv, int rcv);
@@ -39,6 +40,7 @@ protected:
 
 class Tracker2GVMessage : public TrackerMessage
 {
+    CLASS_INFO(Tracker2GVMessage)
 public:
     Tracker2GVMessage(ObjectTracker *sender, const std::string &idRcv);
     Tracker2GVMessage(IObjectManager *sender, const std::string &idRcv);
@@ -49,6 +51,7 @@ private:
 
 class GV2TrackerMessage : public TrackerMessage
 {
+    CLASS_INFO(GV2TrackerMessage)
 public:
     GV2TrackerMessage(ObjectGV *sender, const std::string &idRcv);
     GV2TrackerMessage(IObjectManager *sender, const std::string &idRcv);
@@ -59,6 +62,7 @@ private:
 
 class Tracker2GXMessage : public TrackerMessage
 {
+    CLASS_INFO(Tracker2GXMessage)
 public:
     Tracker2GXMessage(ObjectTracker *sender);
     Tracker2GXMessage(IObjectManager *sender);
@@ -69,6 +73,7 @@ private:
 
 class GX2TrackerMessage : public IMessage
 {
+    CLASS_INFO(GX2TrackerMessage)
 public:
     GX2TrackerMessage(const std::string &sender, int st);
     int GetStat()const;

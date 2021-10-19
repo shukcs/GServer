@@ -8,13 +8,13 @@
 using namespace SOCKETS_NAMESPACE;
 #endif
 
-using namespace das::proto;
-using namespace std;
 enum MyEnum
 {
     Max_PBSize = 0x4000,
 };
-////////////////////////////////////////////////////////////////////////////////
+
+using namespace das::proto;
+using namespace std;////////////////////////////////////////////////////////////////////////////////
 //PBAbSFactoryItem
 ////////////////////////////////////////////////////////////////////////////////
 map<string, PBAbSFactoryItem*> s_MapPbCreate;
@@ -27,48 +27,24 @@ PBAbSFactoryItem::PBAbSFactoryItem(const string &name)
 google::protobuf::Message *PBAbSFactoryItem::createMessage(const string &name)
 {
     DeclareRcvPB(PostHeartBeat);
-    DeclareRcvPB(RequestNewGS);
     DeclareRcvPB(RequestIdentityAllocation);
+    DeclareRcvPB(RequestGVIdentityAuthentication);
+    DeclareRcvPB(RequestIVIdentityAuthentication);
+    DeclareRcvPB(RequestTrackerIdentityAuthentication);
+    DeclareRcvPB(AckTrackerIdentityAuthentication);
+    DeclareRcvPB(Request3rdIdentityAuthentication);
     DeclareRcvPB(AckUavIdentityAuthentication);
-    DeclareRcvPB(RequestGSIdentityAuthentication);
-    DeclareRcvPB(RequestUavIdentityAuthentication);
-    DeclareRcvPB(PostProgram);
-    DeclareRcvPB(AckNotifyProgram);
-    DeclareRcvPB(RequestProgram);
-    DeclareRcvPB(SyncDeviceList);
+    DeclareRcvPB(UpdateDeviceList);
     DeclareRcvPB(AckUpdateDeviceList);
-    DeclareRcvPB(PostParcelDescription);
-    DeclareRcvPB(DeleteParcelDescription);
-    DeclareRcvPB(RequestParcelDescriptions);
-    DeclareRcvPB(PostOperationDescription);
-    DeclareRcvPB(DeleteOperationDescription);
-    DeclareRcvPB(RequestOperationDescriptions);
-    DeclareRcvPB(PostOperationRoute);
+    DeclareRcvPB(SyncDeviceList);
+    DeclareRcvPB(RequestPositionAuthentication);
     DeclareRcvPB(PostOperationInformation);
     DeclareRcvPB(AckOperationInformation);
-    DeclareRcvPB(AckPostOperationRoute);
-    DeclareRcvPB(SyscOperationRoutes);
-    DeclareRcvPB(RequestRouteMissions);
-    DeclareRcvPB(RequestUavStatus);
-    DeclareRcvPB(RequestBindUav);
-    DeclareRcvPB(RequestUavProductInfos);
-    DeclareRcvPB(PostControl2Uav);
-    DeclareRcvPB(PostStatus2GroundStation);
-    DeclareRcvPB(RequestPositionAuthentication);
-    DeclareRcvPB(RequestFriends);
-    DeclareRcvPB(GroundStationsMessage);
-    DeclareRcvPB(AckGroundStationsMessage);
-    DeclareRcvPB(RequestMissionSuspend);
-    DeclareRcvPB(RequestUavMissionAcreage);
-    DeclareRcvPB(RequestUavMission);
-    DeclareRcvPB(PostOperationAssist);
-    DeclareRcvPB(RequestOperationAssist);
-    DeclareRcvPB(PostABPoint);
-    DeclareRcvPB(RequestABPoint);
-    DeclareRcvPB(PostOperationReturn);
-    DeclareRcvPB(RequestOperationReturn);
-    DeclareRcvPB(PostBlocks);
-    DeclareRcvPB(PostABOperation);
+    DeclareRcvPB(QueryParameters);
+    DeclareRcvPB(AckQueryParameters);
+    DeclareRcvPB(ConfigureParameters);
+    DeclareRcvPB(AckConfigurParameters);
+    DeclareRcvPB(RequestProgramUpgrade);
 
     auto itr = s_MapPbCreate.find(name);
     if (itr != s_MapPbCreate.end())
@@ -118,7 +94,7 @@ bool ProtoMsg::Parse(const char *buff, uint32_t &len)
         {
             pos += n-8;
             uint32_t szMsg = Utility::fromBigendian(buff+pos);
-            if (szMsg>Max_PBSize || szMsg<18)
+            if (szMsg > Max_PBSize || szMsg<8)
             {
                 pos += 18;
                 continue;
@@ -163,11 +139,19 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
 {
     if (!buff || len < 0)
         return false;
-  
-    m_msg = PBAbSFactoryItem::createMessage(name);
 
-    if (m_msg)
-        return m_msg->ParseFromArray(buff, len);
+    m_msg = PBAbSFactoryItem::createMessage(name);
+    bool ret = false;
+    if (!m_msg)
+        return ret;
+
+    try {
+        ret = m_msg->ParseFromArray(buff, len);
+    }
+    catch (...)
+    {
+        throw;
+    }
 
     return false;
 }

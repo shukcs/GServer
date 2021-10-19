@@ -189,7 +189,7 @@ IMessage *ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectU
     return ms;
 }
 
-void ObjectUav::ProcessMessage(IMessage *msg)
+void ObjectUav::ProcessMessage(const IMessage *msg)
 {
     if (!msg)
         return;

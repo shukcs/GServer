@@ -61,7 +61,7 @@ public:
     static void InitialUAV(const DBMessage &msg, ObjectUav &uav, uint32_t idx=0);
 protected:
     virtual int GetObjectType()const;
-    virtual void ProcessMessage(IMessage *msg);
+    virtual void ProcessMessage(const IMessage *msg);
     void PrcsProtoBuff(uint64_t);
 
     void CheckTimer(uint64_t ms, char *buf, int len);

@@ -94,6 +94,11 @@ bool IMessage::IsValid() const
     return m_data && m_data->IsValid() && m_tpRcv > IObject::UnKnow;
 }
 
+ std::string IMessage::ClassName() const
+{
+     return _className();
+}
+
 int IMessage::CreateThreadID() const
 {
     return m_data ? m_data->m_threadID : -1;

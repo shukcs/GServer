@@ -1,9 +1,9 @@
 ﻿#ifndef __LOOP_QUEUE_H__
 #define __LOOP_QUEUE_H__
 
-#define USINGORIGINNEW
-#include "Varient.h"
 #include <assert.h>
+#include <stdint.h>
+#include "stdconfig.h"
 
 /********************************************************************************
 *多线程的循环队列，解决生产者/消费者之间不用加锁
@@ -38,7 +38,7 @@ class NodeItem
 {
     typedef NodeItem<EC> Node;
 public:
-    NodeItem(const EC &val):m_val(val), m_next(NULL)
+    NodeItem(const EC &val):m_val(val), m_next(nullptr)
     {
     }
     const EC &GetValue()const
@@ -100,7 +100,7 @@ public:
     }
     bool IsEmpty()const
     {
-        return m_pop==NULL || m_pop==m_push;
+        return m_pop==nullptr || m_pop==m_push;
     }
     bool IsContains(const EC &val)const
     {
@@ -126,10 +126,10 @@ private:
             auto ret = m_header;
             m_header = m_header->GetNext();
             m_nEmpty--;
-            ret->SetNext(NULL);
+            ret->SetNext(nullptr);
             return ret;
         }
-        return NULL;
+        return nullptr;
     }
     void removeMore(uint32_t max)
     {
@@ -144,7 +144,7 @@ private:
     bool genPush(const EC &val)
     {
         m_push = new QueNode(val);
-        return m_push != NULL;
+        return m_push != nullptr;
     }
     bool setNext(const EC &val)
     {
@@ -160,7 +160,7 @@ private:
             m_push = tmp;
         }
 
-        return tmp!=NULL;
+        return tmp!=nullptr;
     }
 private:
     QueNode             *m_push;

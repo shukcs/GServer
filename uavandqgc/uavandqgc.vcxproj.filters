@@ -12,9 +12,6 @@
     <ClCompile Include="src\UavManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\ProtoMsg.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\GSManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -47,6 +44,9 @@
     </ClCompile>
     <ClCompile Include="src\GXLink.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="proto\ProtoMsg.cpp">
+      <Filter>proto</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

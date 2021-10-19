@@ -20,15 +20,15 @@ class DBMessage;
 class ObjectDB : public IObject, MysqlDB
 {
 public:
-    SHARED_SQL ObjectDB(const std::string &id);
-    SHARED_SQL ~ObjectDB();
+    ObjectDB(const std::string &id);
+    ~ObjectDB();
 public:
-    SHARED_SQL static ObjectDB *ParseMySql(const TiXmlElement &e);
+    static ObjectDB *ParseMySql(const TiXmlElement &e);
 protected:
     int GetObjectType()const;
     void InitObject();
 
-    void ProcessMessage(IMessage *msg);
+    void ProcessMessage(const IMessage *msg);
 private:
     void _initSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx);
     void _initCmpSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx);
@@ -43,12 +43,12 @@ private:
 class DBManager : public IObjectManager
 {
 public:
-    SHARED_SQL DBManager();
-    SHARED_SQL ~DBManager();
+    DBManager();
+    ~DBManager();
 
 protected:
     int GetObjectType()const;
-    bool PrcsPublicMsg();
+    bool PrcsPublicMsg(const IMessage &msg);
     IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
     void LoadConfig();
     bool IsReceiveData()const;

@@ -18,18 +18,18 @@ class MysqlDB
 public:
     typedef std::list<std::string> StringList;
 public:
-    SHARED_SQL MysqlDB();
-    SHARED_SQL virtual ~MysqlDB();
-    SHARED_SQL std::string Parse(const TiXmlNode &);
-    SHARED_SQL VGTable *GetTableByName(const std::string &name)const;
-    SHARED_SQL ExecutItem *GetSqlByName(const std::string &name)const;
-    SHARED_SQL VGTrigger *GetTriggerByName(const std::string &name)const;
-    SHARED_SQL int GetDBPort()const;
-    SHARED_SQL const char *GetDBHost()const;
-    SHARED_SQL const char *GetDBUser()const;
-    SHARED_SQL const char *GetDBPswd()const;
-    SHARED_SQL const char *GetDBCharSet()const;
-    SHARED_SQL const char *GetDBName()const;
+    MysqlDB();
+    virtual ~MysqlDB();
+    std::string Parse(const TiXmlNode &);
+    VGTable *GetTableByName(const std::string &name)const;
+    ExecutItem *GetSqlByName(const std::string &name)const;
+    VGTrigger *GetTriggerByName(const std::string &name)const;
+    int GetDBPort()const;
+    const char *GetDBHost()const;
+    const char *GetDBUser()const;
+    const char *GetDBPswd()const;
+    const char *GetDBCharSet()const;
+    const char *GetDBName()const;
 protected:
     std::string parseDatabase(const TiXmlElement *e);
     void parseTables(const TiXmlNode *node);

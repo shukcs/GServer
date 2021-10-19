@@ -132,7 +132,7 @@ void ObjectVgFZ::_prcsHeartBeat(das::proto::PostHeartBeat *hb)
     }
 }
 
-void ObjectVgFZ::ProcessMessage(IMessage *msg)
+void ObjectVgFZ::ProcessMessage(const IMessage *msg)
 {
     int tp = msg->GetMessgeType();
     if(m_p)

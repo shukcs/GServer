@@ -26,8 +26,8 @@ public:
     SHARED_DECL MessageData(IObjectManager *sender, int16_t tpMs);
     SHARED_DECL MessageData(const std::string &sender, int tpSnd, int16_t tpMs);
     SHARED_DECL virtual ~MessageData();
-private:
-    bool IsValid() const;
+
+    SHARED_DECL bool IsValid() const;
 private:
     friend class IMessage;
     int         m_threadID;
@@ -46,7 +46,6 @@ tpMsg:消息类型
 **************************************************************************/
 class IMessage
 {
-    CLASS_INFO(IMessage)
 public:
     enum MessageType
     {
@@ -113,7 +112,10 @@ public:
         DBMsgEnd,
         GXClinetStat,
 
-        User,
+        SendMail,
+        MailRslt,
+
+        UserMsg,
     };
 public:
     SHARED_DECL IMessage(MessageData *data, const std::string &rcv, int32_t tpRcv);
@@ -130,7 +132,10 @@ public:
     SHARED_DECL const std::string &GetSenderID()const;
 
     SHARED_DECL bool IsValid()const;
+    SHARED_DECL std::string ClassName()const;
     int CreateThreadID()const;
+protected:
+    virtual const std::string &_className()const = 0;
 protected:
     MessageData *m_data;
     int32_t     m_tpRcv;
@@ -139,9 +144,10 @@ protected:
 
 class ObjectSignal : public IMessage
 {
+    CLASS_INFO(ObjectSignal)
 public:
     enum EventType {
-        S_Release = User + 0x2000,
+        S_Release = UserMsg + 0x2000,
         S_Login,
         S_Logout,
     };

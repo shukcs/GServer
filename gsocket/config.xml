@@ -5,5 +5,6 @@
 		<Library name="uavandqgc" />
 		<Library name="trackerandgv" />
 		<Library name="fz" />
+		<Library name="mail" />
 	</Libs>
 </document>

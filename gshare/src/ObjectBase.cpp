@@ -647,6 +647,16 @@ IObject *IObjectManager::GetObjectByID(const std::string &id) const
     return NULL;
 }
 
+
+IObject *IObjectManager::GetFirstObject() const
+{
+    auto itrObj = m_objects.begin();
+    if (itrObj != m_objects.end())
+        return itrObj->second;
+
+    return NULL;
+}
+
 void IObjectManager::PushManagerMessage(IMessage *msg)
 {
     if (!msg)
@@ -680,11 +690,11 @@ string IObjectManager::GetObjectFlagID(IObject *o)
         ret = "DB:"; break;
     case IObject::VgFZ:
         ret = "FZ:"; break;
-    case IObject::User + 1:
+    case IObject::Tracker:
         ret = "Tracker:"; break;
-    case IObject::User + 2:
+    case IObject::GVMgr:
         ret = "GV:"; break;
-    case IObject::User + 3:
+    case IObject::GXLink:
         ret = "GXClient:"; break;
     default:
         return ret;

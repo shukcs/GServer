@@ -32,21 +32,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _SOCKETS_Base64_H
 #define _SOCKETS_Base64_H
 
-#include "stdconfig.h"
-#ifdef _MSC_VER
-#pragma warning(disable:4514)
-#endif
-
 #include <string>
 
-#ifdef SOCKETS_NAMESPACE
-namespace SOCKETS_NAMESPACE {
-#endif
-
-/** \defgroup util Utilities */
-
-/** Base64 encode/decode. 
-	\ingroup util */
 namespace Base64
 {
 	std::string encode(const unsigned char *, size_t);
@@ -55,11 +42,6 @@ namespace Base64
     size_t decode_length(const std::string &);
     size_t encode_length(size_t sz);
 };
-
-
-#ifdef SOCKETS_NAMESPACE
-}
-#endif
 
 #endif // _SOCKETS_Base64_H
 

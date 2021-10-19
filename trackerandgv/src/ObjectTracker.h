@@ -43,7 +43,7 @@ public:
     static int TrackerType();
 protected:
     virtual int GetObjectType()const;
-    virtual void ProcessMessage(IMessage *msg);
+    virtual void ProcessMessage(const IMessage *msg);
     void PrcsProtoBuff(uint64_t);
 
     void CheckTimer(uint64_t ms, char *buf, int len);

@@ -9,6 +9,7 @@ INCLUDE_DIRECTORIES(
 	../protobuf
 	../gshare/src
 	../vgmysql/src
+	../mail/src
 	../tinyxml
 )
 set(SRC_LIST
@@ -38,6 +39,7 @@ target_link_libraries(${PACKAGE_NAME} gshare)
 target_link_libraries(${PACKAGE_NAME} tinyxml)
 target_link_libraries(${PACKAGE_NAME} protobuf)
 target_link_libraries(${PACKAGE_NAME} vgmysql)
+target_link_libraries(${PACKAGE_NAME} mail)
 
 #install(
 #	TARGETS

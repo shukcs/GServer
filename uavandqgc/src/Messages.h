@@ -78,6 +78,7 @@ private:
 
 class GX2UavMessage : public IMessage
 {
+    CLASS_INFO(GX2UavMessage)
 public:
     GX2UavMessage(const std::string &sender, int st);
     int GetStat()const;

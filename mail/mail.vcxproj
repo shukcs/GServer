@@ -11,32 +11,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="proto\das.pb.h" />
-    <ClInclude Include="src\GVManager.h" />
-    <ClInclude Include="src\GXClient.h" />
-    <ClInclude Include="src\GXLink.h" />
-    <ClInclude Include="src\Messages.h" />
-    <ClInclude Include="src\ObjectAbsPB.h" />
-    <ClInclude Include="src\ObjectGV.h" />
-    <ClInclude Include="src\ObjectTracker.h" />
-    <ClInclude Include="src\TrackerManager.h" />
+    <ClCompile Include="src\MailManager.cpp" />
+    <ClCompile Include="src\MailMessages.cpp" />
+    <ClCompile Include="src\mailSmtp\quickmail.c" />
+    <ClCompile Include="src\mailSmtp\smtpsocket.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="proto\das.pb.cc" />
-    <ClCompile Include="proto\ProtoMsg.cpp" />
-    <ClCompile Include="src\GVManager.cpp" />
-    <ClCompile Include="src\GXClient.cpp" />
-    <ClCompile Include="src\GXLink.cpp" />
-    <ClCompile Include="src\Messages.cpp" />
-    <ClCompile Include="src\ObjectAbsPB.cpp" />
-    <ClCompile Include="src\ObjectGV.cpp" />
-    <ClCompile Include="src\ObjectTracker.cpp" />
-    <ClCompile Include="src\TrackerManager.cpp" />
+    <ClInclude Include="src\MailManager.h" />
+    <ClInclude Include="src\MailMessages.h" />
+    <ClInclude Include="src\mailSmtp\quickmail.h" />
+    <ClInclude Include="src\mailSmtp\smtpsocket.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{75DFFF61-7F66-46A9-8182-55218780142B}</ProjectGuid>
+    <ProjectGuid>{2C1F0C59-0954-4B6F-AB49-EE582F95EFB4}</ProjectGuid>
+    <RootNamespace>share</RootNamespace>
+    <Keyword>Qt4VSv1.0</Keyword>
+    <ProjectName>mail</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
-    <ProjectName>trackerandgv</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -80,6 +71,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\$(ProjectName)</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectName)</TargetName>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\bin</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\$(ProjectName)</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
@@ -87,7 +79,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>./src;../gshare/src;./proto;../protobuf/;../vgmysql/src;../tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;../tinyxml;..\gshare\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>obj\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -96,7 +88,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32;MAIL_SHARELIB;NOCURL;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -106,7 +98,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(MYSQL)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreImportLibrary>true</IgnoreImportLibrary>
@@ -116,8 +108,7 @@
       <RandomizedBaseAddress>true</RandomizedBaseAddress>
       <SubSystem>Windows</SubSystem>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalDependencies>gshare.lib;protobuf.lib;vgmysql.lib;tinyxmlSTL.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <ShowProgress>NotSet</ShowProgress>
+      <AdditionalDependencies>ws2_32.lib;gshare.lib;tinyxmlSTL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <DefaultCharType>Unsigned</DefaultCharType>
@@ -128,13 +119,13 @@
       <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;SHARE_LIBRARY;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <QtMoc>
-      <IncludePath>.\GeneratedFiles\$(ConfigurationName);.\GeneratedFiles;.;$(QTDIR)\mkspecs\win32-msvc;.\src;%(AdditionalIncludeDirectories)</IncludePath>
-      <Define>_WINDOWS;UNICODE;_UNICODE;WIN32;SHARE_LIBRARY;QT_NO_DEBUG;NDEBUG;%(PreprocessorDefinitions)</Define>
+      <IncludePath>./src;../tinyxml;..\gshare\src;%(AdditionalIncludeDirectories)</IncludePath>
+      <Define>_WIN32;MAIL_SHARELIB;NOCURL;NDEBUG;%(PreprocessorDefinitions)</Define>
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>./src;./proto;../gshare/src;../protobuf/;../vgmysql/src;../tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;../tinyxml;../gshare/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>obj\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -143,7 +134,7 @@
       <ExceptionHandling>Sync</ExceptionHandling>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32;MAIL_SHARELIB;NOCURL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -153,7 +144,7 @@
       <ProgramDataBaseFileName>$(IntDir)vc$(PlatformToolsetVersion).pdb</ProgramDataBaseFileName>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(MYSQL)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreImportLibrary>true</IgnoreImportLibrary>
@@ -163,7 +154,7 @@
       <SubSystem>Windows</SubSystem>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <ProgramDatabaseFile>$(OutDir)$(ProjectName).pdb</ProgramDatabaseFile>
-      <AdditionalDependencies>gshare.lib;protobuf.lib;tinyxmlSTL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;gshare.lib;tinyxmlSTL.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Midl>
       <DefaultCharType>Unsigned</DefaultCharType>
@@ -174,8 +165,8 @@
       <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;SHARE_LIBRARY;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <QtMoc>
-      <IncludePath>./src;../gshare/src;%(AdditionalIncludeDirectories)</IncludePath>
-      <Define>_WINDOWS;WIN32;%(PreprocessorDefinitions)</Define>
+      <IncludePath>./src;../tinyxml;../gshare/src;%(AdditionalIncludeDirectories)</IncludePath>
+      <Define>_WIN32;MAIL_SHARELIB;NOCURL;%(PreprocessorDefinitions)</Define>
     </QtMoc>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

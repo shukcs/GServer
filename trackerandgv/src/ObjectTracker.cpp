@@ -107,10 +107,10 @@ void ObjectTracker::SetSimId(const std::string &sim)
 
 int ObjectTracker::TrackerType()
 {
-    return IObject::User + 1;
+    return IObject::Tracker;
 }
 
-void ObjectTracker::ProcessMessage(IMessage *msg)
+void ObjectTracker::ProcessMessage(const IMessage *msg)
 {
     if (!msg)
         return;

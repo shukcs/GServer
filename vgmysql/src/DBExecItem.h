@@ -31,19 +31,19 @@ public:
         List = StaticRef<<1,
     };
 public:
-    SHARED_SQL void SetParam(const string &param, FieldType tp = NoBuff);
-    SHARED_SQL void SetParam(const string &exFild, const string &param, FieldType tp = NoBuff);
-    SHARED_SQL void SetParam(const list<string> &param);
-    SHARED_SQL void SetParam(const string &exFild, const list<string> &param);
-    SHARED_SQL unsigned GetMaxLen()const;
-    SHARED_SQL unsigned GetValidLen()const;
-    SHARED_SQL void *GetBuff()const;
-    SHARED_SQL FieldType GetParamType()const;
-    SHARED_SQL void InitBuff(unsigned len, const void *buf = NULL);
-    SHARED_SQL const string &GetFieldName()const;
-    SHARED_SQL const string &GetJudge()const;
-    SHARED_SQL ExecutItem *ComplexSql()const;
-    SHARED_SQL bool IsEmpty()const;
+    void SetParam(const string &param, FieldType tp = NoBuff);
+    void SetParam(const string &exFild, const string &param, FieldType tp = NoBuff);
+    void SetParam(const list<string> &param);
+    void SetParam(const string &exFild, const list<string> &param);
+    unsigned GetMaxLen()const;
+    unsigned GetValidLen()const;
+    void *GetBuff()const;
+    FieldType GetParamType()const;
+    void InitBuff(unsigned len, const void *buf = NULL);
+    const string &GetFieldName()const;
+    const string &GetJudge()const;
+    ExecutItem *ComplexSql()const;
+    bool IsEmpty()const;
 
     string ToConditionString(const string &str)const;
     int GetType()const;
@@ -120,16 +120,16 @@ public:
 public:
     ~ExecutItem();
 
-    SHARED_SQL FiledVal *GetReadItem(const string &name)const;
-    SHARED_SQL FiledVal *GetWriteItem(const string &name)const;
-    SHARED_SQL FiledVal *GetConditionItem(const string &name)const;
-    SHARED_SQL FiledVal *GetIncrement()const;
-    SHARED_SQL const list<FiledVal*> &Fields(FiledType tp)const;
-    SHARED_SQL bool IsValid()const;
-    SHARED_SQL int CountRead()const;
-    SHARED_SQL void ClearData();
-    SHARED_SQL ExecutType GetType()const;
-    SHARED_SQL const std::string &GetName()const;
+    FiledVal *GetReadItem(const string &name)const;
+    FiledVal *GetWriteItem(const string &name)const;
+    FiledVal *GetConditionItem(const string &name)const;
+    FiledVal *GetIncrement()const;
+    const list<FiledVal*> &Fields(FiledType tp)const;
+    bool IsValid()const;
+    int CountRead()const;
+    void ClearData();
+    ExecutType GetType()const;
+    const std::string &GetName()const;
 
     string GetSqlString(MYSQL_BIND *paramBinds=NULL)const;
     MYSQL_BIND *GetParamBinds();

@@ -28,12 +28,12 @@ public:
 
     SHARED_SQL bool Execut(ExecutItem *item);
     SHARED_SQL bool Execut(const std::string &sql);
-    SHARED_SQL ExecutItem *GetResult();
-    SHARED_SQL bool EnterDatabase(const std::string &db=std::string(), const char *cset=NULL);
-    SHARED_SQL bool ExistTable(const std::string &name);
-    SHARED_SQL bool CreateTable(VGTable *tb);
-    SHARED_SQL bool ExistTrigger(const std::string &name);
-    SHARED_SQL bool CreateTrigger(VGTrigger *trigger);
+    ExecutItem *GetResult();
+    bool EnterDatabase(const std::string &db=std::string(), const char *cset=NULL);
+    bool ExistTable(const std::string &name);
+    bool CreateTable(VGTable *tb);
+    bool ExistTrigger(const std::string &name);
+    bool CreateTrigger(VGTrigger *trigger);
 public:
     MYSQL_RES *Query(const std::string &sql);
     template<typename T, typename Contianer = std::list<T> >

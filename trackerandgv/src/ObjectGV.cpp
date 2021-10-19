@@ -68,7 +68,7 @@ void ObjectGV::SetSeq(int seq)
 
 int ObjectGV::GVType()
 {
-    return IObject::User+2;
+    return IObject::GVMgr;
 }
 
 ObjectGV *ObjectGV::ParseObjecy(const TiXmlElement &e)
@@ -142,7 +142,7 @@ void ObjectGV::_prcsConfigureParameters(das::proto::ConfigureParameters *pb)
     }
 }
 
-void ObjectGV::ProcessMessage(IMessage *msg)
+void ObjectGV::ProcessMessage(const IMessage *msg)
 {
     int tp = msg ? msg->GetMessgeType() : IMessage::Unknown;
 

@@ -1,16 +1,13 @@
 ﻿#ifndef __OBJECT_MANAGERS_H__
 #define __OBJECT_MANAGERS_H__
 
-#include "LoopQueue.h"
 #include <map>
+#include "LoopQueue.h"
 
-class SubcribeStruct;
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
 
-class IMutex;
-class Thread;
 class ISocket;
 class IMessage;
 class IObject;
@@ -64,8 +61,6 @@ public:
     IObjectManager *GetManagerByType(int tp)const;
 
     void ProcessReceive(ISocket *sock, void const *buf, int len);
-protected:
-    void PrcsMessages();
 private:
     ObjectManagers();
     ~ObjectManagers();

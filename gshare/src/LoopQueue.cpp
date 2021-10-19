@@ -11,7 +11,7 @@ if(warn)\
 //////////////////////////////////////////////////////////////////////////
 //LoopQueueAbs
 //////////////////////////////////////////////////////////////////////////
-LoopQueBuff::LoopQueBuff(uint32_t sz) : m_buff(NULL), m_sizeBuff(0)
+LoopQueBuff::LoopQueBuff(uint32_t sz) : m_buff(nullptr), m_sizeBuff(0)
 {
     m_pos[0] = 0;
     m_pos[1] = 0;
@@ -45,7 +45,7 @@ bool LoopQueBuff::ReSize(uint32_t sz)
 
 int LoopQueBuff::Count() const
 {
-    if (NULL == m_buff || m_sizeBuff < 1)
+    if (nullptr == m_buff || m_sizeBuff < 1)
         return 0;
 
     if (m_pos[0] == m_pos[1])
@@ -127,7 +127,7 @@ void LoopQueBuff::Clear(int i)
 
 bool LoopQueBuff::IsValid() const
 {
-    return m_buff != NULL && m_sizeBuff > 1;
+    return m_buff != nullptr && m_sizeBuff > 1;
 }
 
 int LoopQueBuff::BuffSize() const

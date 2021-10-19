@@ -57,12 +57,12 @@ void ObjectDB::InitObject()
     }
 }
 
-void ObjectDB::ProcessMessage(IMessage *msg)
+void ObjectDB::ProcessMessage(const IMessage *msg)
 {
     if (m_stInit == Uninitial)
         InitObject();
 
-    DBMessage *db = dynamic_cast<DBMessage *>(msg);
+    auto db = dynamic_cast<const DBMessage *>(msg);
     if (!db)
         return;
 
@@ -237,7 +237,7 @@ int DBManager::GetObjectType() const
     return IObject::DBMySql;
 }
 
-bool DBManager::PrcsPublicMsg()
+bool DBManager::PrcsPublicMsg(const IMessage &)
 {
     return true;
 }

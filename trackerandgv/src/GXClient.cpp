@@ -93,7 +93,7 @@ void GXClient::ClearChanged()
 
 int GXClient::GXClientType()
 {
-    return IObject::User + 3;
+    return IObject::GXLink;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////
 //GXManager

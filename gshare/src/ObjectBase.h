@@ -2,6 +2,7 @@
 #define __OBJECT_BASE_H__
 
 #include <map>
+#include <list>
 #include "LoopQueue.h"
 
 #ifdef __GNUC__
@@ -92,6 +93,10 @@ public:
         GroundStation,
         DBMySql,
         VgFZ,
+        Tracker,
+        GVMgr,
+        GXLink,
+        Mail,
         User,
     };
     enum ObjectStat
@@ -112,7 +117,7 @@ public:
     virtual int GetObjectType()const = 0;
     virtual void InitObject() = 0;
 public:
-    virtual void ProcessMessage(IMessage *msg) = 0;
+    virtual void ProcessMessage(const IMessage *msg) = 0;
 public:
     SHARED_DECL static IObjectManager *GetManagerByType(int);
     SHARED_DECL static bool SendMsg(IMessage *msg);
@@ -195,6 +200,7 @@ protected:
     SHARED_DECL IObjectManager();
 
     SHARED_DECL IObject *GetObjectByID(const std::string &id)const;
+    SHARED_DECL IObject *GetFirstObject()const;
     SHARED_DECL virtual bool PrcsPublicMsg(const IMessage &msg);
     SHARED_DECL virtual void ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb);
     SHARED_DECL void InitThread(uint16_t nT = 1, uint16_t bufSz = 1024);

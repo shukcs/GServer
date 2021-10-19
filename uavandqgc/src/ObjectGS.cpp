@@ -138,7 +138,7 @@ void ObjectGS::_prcsProgram(PostProgram *msg)
     }
 }
 
-void ObjectGS::ProcessMessage(IMessage *msg)
+void ObjectGS::ProcessMessage(const IMessage *msg)
 {
     int tp = msg->GetMessgeType();
     if(m_p)

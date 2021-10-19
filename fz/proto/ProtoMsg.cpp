@@ -134,10 +134,19 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         return false;
   
     m_msg = PBAbSFactoryItem::createMessage(name);
-    if (m_msg)
-        return m_msg->ParseFromArray(buff, len);
+    bool ret = false;
+    if (!m_msg)
+        return ret;
 
-    return false;
+    try {
+        ret = m_msg->ParseFromArray(buff, len);
+    }
+    catch (...)
+    {
+        throw;
+    }
+
+    return ret;
 }
 
 void ProtoMsg::_clear()

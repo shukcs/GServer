@@ -1,10 +1,10 @@
-#ifndef _SOCKETS_CONFIG_H
-#define _SOCKETS_CONFIG_H
+#ifndef __SOCKETS_CONFIG_H__
+#define __SOCKETS_CONFIG_H__
 
 /* Limits */
 #define TCP_LINE_SIZE 8192
 
-#if defined _WIN32 || defined _WIN64
+#if (defined _WIN32 || defined _WIN64) && defined _TEST_MEM_LEAK
 #include "crtdbg.h"
 #endif
 
@@ -102,7 +102,7 @@
     p = NULL;\
 }
 
-#if (defined _WIN32 || defined _WIN64) && !defined USINGORIGINNEW
+#if (defined _WIN32 || defined _WIN64) && !defined USINGORIGINNEW  && defined _TEST_MEM_LEAK
 #ifdef _DEBUG
 #define DEBUG_CLIENTBLOCK new(_CLIENT_BLOCK, __FILE__, __LINE__)
 #define new DEBUG_CLIENTBLOCK
@@ -111,4 +111,4 @@
 #endif//_DEBUG
 #endif //defined _WIN32 || defined _WIN64
 
-#endif // _SOCKETS_CONFIG_H
+#endif // __SOCKETS_CONFIG_H__

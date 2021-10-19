@@ -15,6 +15,7 @@ set(SRC_LIST
 	../protobuf/ProtoMsg.h
 	proto/das.pb.cc
 	proto/das.pb.h
+	proto/ProtoMsg.cpp
 	src/GVManager.cpp
 	src/GVManager.h
 	src/GXClient.cpp
@@ -29,7 +30,6 @@ set(SRC_LIST
 	src/ObjectGV.h
 	src/ObjectTracker.cpp
 	src/ObjectTracker.h
-	src/ProtoMsg.cpp
 	src/TrackerManager.cpp
 	src/TrackerManager.h
 )
