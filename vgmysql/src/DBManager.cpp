@@ -247,25 +247,20 @@ IObject *DBManager::PrcsNotObjectReceive(ISocket *, const char *, int)
     return NULL;
 }
 
-void DBManager::LoadConfig()
+void DBManager::LoadConfig(const TiXmlElement *root)
 {
-    TiXmlDocument doc;
-    doc.LoadFile("DBManager.xml");
-
-    const TiXmlElement *rootElement = doc.RootElement();
-    const TiXmlNode *node = rootElement ? rootElement->FirstChild("Manager") : NULL;
-    const TiXmlElement *cfg = node ? node->ToElement() : NULL;
+    const TiXmlElement *cfg = root ? root->FirstChildElement("DBManager") : NULL;
     if (!cfg)
         return;
 
     InitThread(1, 0);
-    const TiXmlNode *dbNode = node ? node->FirstChild("Object") : NULL;
+    const TiXmlElement *dbNode = cfg->FirstChildElement("Object");
     while (dbNode)
     {
-        if (ObjectDB *db = ObjectDB::ParseMySql(*dbNode->ToElement()))
+        if (ObjectDB *db = ObjectDB::ParseMySql(*dbNode))
             AddObject(db);
 
-        dbNode = dbNode->NextSibling("Object");
+        dbNode = dbNode->NextSiblingElement("Object");
     }
 }
 

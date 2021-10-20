@@ -45,7 +45,7 @@ protected:
     int GetObjectType()const;
     IObject *PrcsProtoBuff(ISocket *s);
     bool PrcsPublicMsg(const IMessage &msg);
-    void LoadConfig();
+    void LoadConfig(const TiXmlElement *root);
     bool IsHasReuest(const char *buf, int len)const;
 private:
     void _getLastId();

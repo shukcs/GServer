@@ -100,13 +100,9 @@ bool UavManager::PrcsPublicMsg(const IMessage &msg)
     return false;
 }
 
-void UavManager::LoadConfig()
+void UavManager::LoadConfig(const TiXmlElement *root)
 {
-    TiXmlDocument doc;
-    doc.LoadFile("UavManager.xml");
-    const TiXmlElement *rootElement = doc.RootElement();
-    const TiXmlNode *node = rootElement ? rootElement->FirstChild("Manager") : NULL;
-    const TiXmlElement *cfg = node ? node->ToElement() : NULL;
+    const TiXmlElement *cfg = root ? root->FirstChildElement("UavManager") : NULL;
     if (cfg)
     {
         const char *tmp = cfg->Attribute("thread");
@@ -186,7 +182,7 @@ void UavManager::checkUavInfo(const RequestUavStatus &uia, const GS2UavMessage &
     as.set_seqno(uia.seqno());
 
     StringList strLs;
-    bool bMgr = (0 != (gs.GetAuth()&ObjectGS::Type_UavManager));
+    bool bMgr = (0 != (gs.GetAuth()&IObject::Type_Manager));
     const string &id = gs.GetSenderID();
     for (int i = 0; i < uia.uavid_size(); ++i)
     {

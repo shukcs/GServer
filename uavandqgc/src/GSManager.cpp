@@ -199,14 +199,9 @@ IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
     return o;
 }
 
-void GSManager::LoadConfig()
+void GSManager::LoadConfig(const TiXmlElement *root)
 {
-    TiXmlDocument doc;
-    doc.LoadFile("GSManager.xml");
-
-    const TiXmlElement *rootElement = doc.RootElement();
-    const TiXmlNode *node = rootElement ? rootElement->FirstChild("Manager") : NULL;
-    const TiXmlElement *cfg = node ? node->ToElement() : NULL;
+    const TiXmlElement *cfg = root ? root->FirstChildElement("GSManager") : NULL;
     if (cfg)
     {
         const char *tmp = cfg->Attribute("thread");
@@ -215,10 +210,9 @@ void GSManager::LoadConfig()
         int buSz = tmp ? (int)Utility::str2int(tmp) : 6144;
         InitThread(n, buSz);
 
-        const TiXmlNode *dbNode = node ? node->FirstChild("Object") : NULL;
-        while (dbNode)
+        const TiXmlElement *e = cfg->FirstChildElement("Object");
+        while (e)
         {
-            const TiXmlElement *e = dbNode->ToElement();
             const char *id = e->Attribute("id");
             const char *pswd = e->Attribute("pswd");
             if (id && pswd)
@@ -234,7 +228,7 @@ void GSManager::LoadConfig()
                 m_mgrs.push_back(obj);
             }
 
-            dbNode = dbNode->NextSibling("Object");
+            e = e->NextSiblingElement("Object");
         }
     }
 }

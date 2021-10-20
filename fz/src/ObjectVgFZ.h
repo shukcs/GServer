@@ -15,6 +15,10 @@ namespace das {
         class SWRegist;
         class PostFZResult;
         class RequestFZResults;
+        class FZInfo;
+        class PostFZInfo;
+        class RequestFZInfo;
+        class PostGetFZPswd;
     }
 }
 class FWItem;
@@ -25,16 +29,9 @@ using namespace SOCKETS_NAMESPACE;
 class ProtoMsg;
 class FZ2FZMessage;
 class DBMessage;
+class MailRsltMessage;
 class ObjectVgFZ : public ObjectAbsPB
 {
-public:
-    enum AuthorizeType
-    {
-        Type_Common = 1,
-        Type_UserManager = Type_Common << 1,
-        Type_Admin = Type_UserManager << 1,
-        Type_ALL = Type_Common | Type_UserManager | Type_Admin,
-    };
 public:
     ObjectVgFZ(const std::string &id, int seq=-1);
     ~ObjectVgFZ();
@@ -66,11 +63,15 @@ protected:
     void processSWRegist(const DBMessage &msg);
     void processAckFZRslt(const DBMessage &msg);
     void processAckFZRslts(const DBMessage &msg);
+    void processMailRslt(const MailRsltMessage &msg);
 
+    bool ackLogin(const DBMessage &msg);
+    void ackGetPswd(const DBMessage &msg);
     void InitObject();
     void CheckTimer(uint64_t ms, char *buf, int len);
     bool IsAllowRelease()const;
     void FreshLogin(uint64_t ms);
+    bool CheckMail(const std::string &str);
 private:
     void _prcsLogin(das::proto::RequestFZUserIdentity *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);
@@ -82,7 +83,11 @@ private:
     void _prcsSWRegist(das::proto::SWRegist *msg);
     void _prcsPostFZResult(das::proto::PostFZResult *msg);
     void _prcsRequestFZResults(const das::proto::RequestFZResults &msg);
+    void _prcsPostFZInfo(const das::proto::PostFZInfo &msg);
+    void _prcsRequestFZInfo(const das::proto::RequestFZInfo &msg);
+    void _prcsPostGetFZPswd(const das::proto::PostGetFZPswd &msg);
 private:
+    bool _saveInfo(const das::proto::FZInfo &info);
     void _checkFZ(const std::string &user, int ack);
     void initFriend();
     void addDBFriend(const std::string &user1, const std::string &user2);
@@ -98,6 +103,8 @@ private:
     std::string     m_pswd;
     std::string     m_check;
     std::string     m_pcsn;
+    std::string     m_email;
+    std::string     m_info;
     std::list<std::string> m_friends;
 };
 

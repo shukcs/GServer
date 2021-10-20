@@ -99,31 +99,26 @@ IObject *GVManager::prcsPBLogin(ISocket *s, const RequestIVIdentityAuthenticatio
     return o;
 }
 
-void GVManager::LoadConfig()
+void GVManager::LoadConfig(const TiXmlElement *root)
 {
-    TiXmlDocument doc;
-    doc.LoadFile("GVManager.xml");
-
-    const TiXmlElement *rootElement = doc.RootElement();
-    const TiXmlNode *node = rootElement ? rootElement->FirstChild("Manager") : NULL;
-    const TiXmlElement *cfg = node ? node->ToElement() : NULL;
-    int buSz = 1024;
-    int n = 1;
+    const TiXmlElement *cfg = root ? root->FirstChildElement("GVManager") : NULL;
     if (cfg)
     {
+        int buSz = 1024;
+        int n = 1;
         const char *tmp = cfg->Attribute("thread");
         n = tmp ? (int)Utility::str2int(tmp) : 1;
         tmp = cfg->Attribute("buff");
         buSz = tmp ? (int)Utility::str2int(tmp) : 6144;
         InitThread(n, buSz);
 
-        const TiXmlNode *dbNode = node ? node->FirstChild("Object") : NULL;
+        const TiXmlElement *dbNode = cfg->FirstChildElement("Object");
         while (dbNode)
         {
-            if (ObjectGV *gv = ObjectGV::ParseObjecy(*dbNode->ToElement()))
+            if (ObjectGV *gv = ObjectGV::ParseObjecy(*dbNode))
                 AddObject(gv);
 
-            dbNode = dbNode->NextSibling("Object");
+            dbNode = dbNode->NextSiblingElement("Object");
         }
     }
 }

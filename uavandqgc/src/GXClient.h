@@ -76,7 +76,7 @@ protected:
     bool PrcsPublicMsg(const IMessage &msg);
     IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
     void PrcsProtoBuff();
-    void LoadConfig();
+    void LoadConfig(const TiXmlElement *root);
     bool IsReceiveData()const;
 
     void ProcessLogin(const std::string &id, bool bLogin);

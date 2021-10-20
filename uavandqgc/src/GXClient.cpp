@@ -179,7 +179,7 @@ void GXManager::PrcsProtoBuff()
         _prcsInformationAck((AckOperationInformation*)m_parse->GetProtoMessage());
 }
 
-void GXManager::LoadConfig()
+void GXManager::LoadConfig(const TiXmlElement *)
 {
     InitThread(1, 0);
 }

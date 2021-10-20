@@ -46,7 +46,7 @@ protected:
 
     IObject *prcsPBLogin(ISocket *s, const das::proto::RequestGSIdentityAuthentication *msg);
     IObject *prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg);
-    void LoadConfig();
+    void LoadConfig(const TiXmlElement *root);
     bool IsHasReuest(const char *buf, int len)const;
 private:
     bool                    m_bInit;

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <document>
-	<Manager>
+	<DBManager>
 		<Object name="DBGS" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
 			<Tables>
 				<table name="GSInfo">
@@ -364,7 +364,9 @@
 					<field name="user" type="char(32)" constraint="primary key"/>
 					<field name="pswd" type="char(32)" />
 					<field name="auth" type="INT" constraint="DEFAULT '1'"/>
-					<field name="regTm" type="BIGINT" />	
+					<field name="regTm" type="BIGINT" />
+					<field name="email" type="char(64)" />
+					<field name="info" type="char(240)" />
 				</table>	
 				<table name="FZFrienfs">
 					<field name="id" type="char(64)" constraint="primary key"/>
@@ -396,10 +398,14 @@
 				<SQL name="queryFZInfo" table="FZInfo" type="Select" >
 					<item name="pswd" ref="FZInfo" type="Read" />
 					<item name="auth" ref="FZInfo" type="Read" />
+					<item name="email" ref="FZInfo" type="Read" />
+					<item name="info" ref="FZInfo" type="Read" />
 					<item name="user" type="Condition" />
 				</SQL>
-				<SQL name="changePswd" table="FZInfo" type="Update" >
-					<item name="pswd" ref="FZInfo" type="Write" />
+				<SQL name="changeUser" table="FZInfo" type="Update" >
+					<item name="pswd" type="Write" />
+					<item name="email" type="Write" />
+					<item name="info" type="Write" />
 					<item name="user" type="Condition" />
 				</SQL>
 				<SQL name="insertFZFriends" table="FZFrienfs" type="Replace" >
@@ -454,5 +460,23 @@
 				</SQL>
 			</SQLs>
 		</Object>
-	</Manager>
+	</DBManager>
+	<VgFZManager thread="2" >
+		<Object id="root" pswd="NIhao666" auth="7" />
+	</VgFZManager>
+	<UavManager thread="2" />
+	<GSManager thread="2" buff="6144" >
+		<Object id="root" pswd="NIhao666" auth="7" />
+		<Object id="admin" pswd="admin123" auth="3" />
+	</GSManager>
+	<MailManager>
+		<Object name="hsj8262@163.com" user="hsj8262@163.com" password="ttailu_123" host="smtp.163.com" />
+	</MailManager>
+	<GVManager thread="2" buff="6144" >
+		<Object id="root" pswd="NIhao666" auth="7" />
+		<Object id="admin1" pswd="admin123" auth="3" />
+		<Object id="admin2" pswd="admin123" auth="3" />
+		<Object id="admin3" pswd="admin123" auth="3" />
+	</GVManager>
+	<TrackerManager thread="2" buff="1024" />
 </document>

@@ -39,7 +39,7 @@ protected:
     bool PrcsPublicMsg(const IMessage &msg);
 
     IObject *prcsPBLogin(ISocket *s, const das::proto::RequestIVIdentityAuthentication *msg);
-    void LoadConfig();
+    void LoadConfig(const TiXmlElement *root);
     bool IsHasReuest(const char *buf, int len)const;
 private:
     StringList      m_trackers;

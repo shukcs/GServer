@@ -4,7 +4,6 @@
 #include "tinyxml.h"
 #include "ObjectManagers.h"
 #include "mailSmtp/quickmail.h"
-#include <sys/timeb.h>
 
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
@@ -61,9 +60,7 @@ const char *ObjectMail::SendMail(const MailMessage &msg)
 
       //add message_id by cdevelop@qq.com
     char message_id[256];
-    struct timeb tb = { 0 };
-    ftime(&tb);
-    snprintf(message_id, sizeof(message_id), "Message-ID: <%lld@%s>", (unsigned long long)tb.time * 1000LL + (unsigned long long)tb.millitm, m_host.c_str());
+    snprintf(message_id, sizeof(message_id), "Message-ID: <%lld@%s>", Utility::msTimeTick(), m_id.c_str());
     quickmail_add_header(mailobj, message_id);
     if (!quickmail_get_from(mailobj))
         return "Invalid command line parameters";
@@ -118,6 +115,7 @@ void ObjectMail::ProcessMessage(const IMessage *msg)
     auto mailMsg = dynamic_cast<const MailMessage *>(msg);
     if (!mailMsg)
         return;
+
     auto err = SendMail(*mailMsg);
     MailRsltMessage *ack = mailMsg->GenerateAck(this);
     if (ack)
@@ -148,6 +146,7 @@ bool MailManager::PrcsPublicMsg(const IMessage &msg)
 {
     if (auto o = GetFirstObject())
         o->ProcessMessage(&msg);
+
     return true;
 }
 
@@ -156,25 +155,23 @@ IObject *MailManager::PrcsNotObjectReceive(ISocket *, const char *, int)
     return NULL;
 }
 
-void MailManager::LoadConfig()
+void MailManager::LoadConfig(const TiXmlElement *root)
 {
     TiXmlDocument doc;
     doc.LoadFile("MailManager.xml");
 
-    const TiXmlElement *rootElement = doc.RootElement();
-    const TiXmlNode *node = rootElement ? rootElement->FirstChild("Manager") : NULL;
-    const TiXmlElement *cfg = node ? node->ToElement() : NULL;
+    const TiXmlElement *cfg = root ? root->FirstChildElement("MailManager") : NULL;
     if (!cfg)
         return;
 
     InitThread(1, 0);
-    const TiXmlNode *dbNode = node ? node->FirstChild("Object") : NULL;
+    const TiXmlNode *dbNode = cfg->FirstChildElement("Object");
     while (dbNode)
     {
         if (ObjectMail *db = ObjectMail::ParseMaill(*dbNode->ToElement()))
             AddObject(db);
 
-        dbNode = dbNode->NextSibling("Object");
+        dbNode = dbNode->NextSiblingElement("Object");
     }
 }
 

@@ -7,6 +7,7 @@ namespace das {
     namespace proto {
         class RequestFZUserIdentity;
         class RequestNewFZUser;
+        class PostGetFZPswd;
     }
 }
 
@@ -44,7 +45,8 @@ protected:
 
     IObject *prcsPBLogin(ISocket *s, const das::proto::RequestFZUserIdentity *msg);
     IObject *prcsPBNewGs(ISocket *s, const das::proto::RequestNewFZUser *msg);
-    void LoadConfig();
+    IObject *prcsPostGetFZPswd(ISocket *s, const das::proto::PostGetFZPswd *msg);
+    void LoadConfig(const TiXmlElement *root);
     bool IsHasReuest(const char *buf, int len)const;
 private:
     bool                    m_bInit;

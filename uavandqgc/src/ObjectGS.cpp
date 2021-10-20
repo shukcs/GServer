@@ -66,7 +66,7 @@ int ObjectGS::Authorize() const
     return m_auth;
 }
 
-bool ObjectGS::GetAuth(GSAuthorizeType auth) const
+bool ObjectGS::GetAuth(AuthorizeType auth) const
 {
     return (auth & m_auth) == auth;
 }
@@ -382,7 +382,7 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
             ++timeBindItr;
         us->set_online(false);
 
-        bool bAuth = (binder == m_id && bBind) || GetAuth(ObjectGS::Type_UavManager);
+        bool bAuth = (binder == m_id && bBind) || GetAuth(Type_Manager);
         if (authCheckItr != authChecks.end() && bAuth)
         {
             us->set_authstring(authCheckItr->ToString());
@@ -933,7 +933,7 @@ void ObjectGS::CheckTimer(uint64_t ms, char *buf, int len)
 
 bool ObjectGS::IsAllowRelease() const
 {
-    return !GetAuth(ObjectGS::Type_UavManager);
+    return !GetAuth(Type_Manager);
 }
 
 void ObjectGS::FreshLogin(uint64_t ms)
@@ -960,7 +960,7 @@ void ObjectGS::_prcsReqUavs(RequestUavStatus *msg)
 
 void ObjectGS::_prcsSyncDeviceList(SyncDeviceList *ms)
 {
-    if (ms && GetAuth(ObjectGS::Type_UavManager))
+    if (ms && GetAuth(Type_Manager))
     {
         m_seq = ms->seqno();
         if (auto syn = new ObjectSignal(this, GSType(), IMessage::SyncDeviceis, GetObjectID()))
@@ -979,7 +979,7 @@ void ObjectGS::_prcsSyncDeviceList(SyncDeviceList *ms)
 
 void ObjectGS::_prcsReqBind(const RequestBindUav&msg)
 {
-    if (GetAuth(ObjectGS::Type_UavManager) && !msg.uavid().empty())
+    if (GetAuth(Type_Manager) && !msg.uavid().empty())
     {
         if (msg.opid() == 1)
             Subcribe(msg.uavid(), IMessage::PushUavSndInfo);
@@ -1004,7 +1004,7 @@ void ObjectGS::_prcsControl2Uav(das::proto::PostControl2Uav *msg)
 
 void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
 {
-    if (!msg || GetAuth(ObjectGS::Type_UavManager))
+    if (!msg || GetAuth(Type_Manager))
         return;
 
     if (m_countLand >= MAXLANDRECORDS)
@@ -1151,7 +1151,7 @@ void ObjectGS::ackSyncDeviceis()
 
 void ObjectGS::saveBind(const std::string &uav, bool bBind)
 {
-    if (GetAuth(ObjectGS::Type_UavManager) && bBind)
+    if (GetAuth(Type_Manager) && bBind)
         return;
 
     if (DBMessage *msg = new DBMessage(this, IMessage::DeviceBindRslt, DBMessage::DB_Uav))
@@ -1161,7 +1161,7 @@ void ObjectGS::saveBind(const std::string &uav, bool bBind)
         msg->SetWrite("binded", bBind);
         msg->SetWrite("binder", GetObjectID());
         msg->SetCondition("id", uav);
-        if (!GetAuth(ObjectGS::Type_UavManager))
+        if (!GetAuth(Type_Manager))
         {
             msg->SetCondition("binded", false);
             msg->SetCondition("binder", GetObjectID());
@@ -1234,7 +1234,7 @@ void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
     if (!msg)
         return;
 
-    if (GetAuth(Type_UavManager))
+    if (GetAuth(Type_Manager))
     {
         if (GS2UavMessage *ms = new GS2UavMessage(this, string()))
         {
@@ -1471,7 +1471,7 @@ void ObjectGS::_prcsReqMissons(das::proto::RequestUavMission &msg)
         return;
     msgDb->SetSeqNomb(msg.seqno());
     msgDb->SetSql("queryMission", true);
-    if (!GetAuth(ObjectGS::Type_UavManager))
+    if (!GetAuth(Type_Manager))
         msgDb->SetCondition("userID", m_id);
     msgDb->SetCondition("uavID", msg.uav());
     if (msg.has_planid())
@@ -1495,7 +1495,7 @@ void ObjectGS::_prcsReqMissonsAcreage(das::proto::RequestUavMissionAcreage &msg)
     msgDb->SetSeqNomb(msg.seqno());
     msgDb->SetSql("queryMissionAcreage");
 
-    if (!GetAuth(ObjectGS::Type_UavManager))
+    if (!GetAuth(Type_Manager))
         msgDb->SetCondition("userID", m_id);
     if (msg.has_uav())
         msgDb->SetCondition("uavID", msg.uav());

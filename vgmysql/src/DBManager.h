@@ -10,7 +10,6 @@ class FiledVal;
 class ExecutItem;
 class Variant;
 class TiXmlNode;
-class TiXmlElement;
 
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
@@ -50,7 +49,7 @@ protected:
     int GetObjectType()const;
     bool PrcsPublicMsg(const IMessage &msg);
     IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
-    void LoadConfig();
+    void LoadConfig(const TiXmlElement *root);
     bool IsReceiveData()const;
 private:
 };

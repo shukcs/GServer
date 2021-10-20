@@ -81,6 +81,8 @@ IObject *VgFZManager::PrcsProtoBuff(ISocket *s)
         return prcsPBLogin(s, (const RequestFZUserIdentity *)pb);
     else if (name == d_p_ClassName(RequestNewFZUser))
         return prcsPBNewGs(s, (const RequestNewFZUser *)pb);
+    else if (name == d_p_ClassName(PostGetFZPswd))
+        return prcsPostGetFZPswd(s, (const PostGetFZPswd *)pb);
 
     return NULL;
 }
@@ -128,10 +130,10 @@ IObject *VgFZManager::prcsPBLogin(ISocket *s, const RequestFZUserIdentity *rgi)
         else
             Log(0, IObjectManager::GetObjectFlagID(o), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
 
-        int rslt = !bLogin ? -1 : ((o->GetAuth(ObjectVgFZ::Type_UserManager) || rgi->pcsn() == o->GetPCSn()) ? 1 : 0);
+        int rslt = !bLogin ? -1 : ((o->GetAuth(ObjectVgFZ::Type_Manager) || rgi->pcsn() == o->GetPCSn()) ? 1 : 0);
         if (rslt != 0)
         {
-            int ver = (bLogin && o->GetAuth(ObjectVgFZ::Type_UserManager)) ? 1 : -1;
+            int ver = (bLogin && o->GetAuth(ObjectVgFZ::Type_Manager)) ? 1 : -1;
             if (bLogin && ver < 1 && rgi->pcsn() == o->GetPCSn())
                 ver = o->GetVer();
 
@@ -178,18 +180,42 @@ IObject *VgFZManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewFZUser
     {
         o->SetCheck(Utility::RandString());
         o->_checkFZ(userId, msg->seqno());
+        o->SetAuth(IObject::Type_ReqNewUser);
     }
     return o;
 }
 
-void VgFZManager::LoadConfig()
+IObject * VgFZManager::prcsPostGetFZPswd(ISocket *s, const PostGetFZPswd *msg)
 {
-    TiXmlDocument doc;
-    doc.LoadFile("FZManager.xml");
+    if (!s || !msg || msg->user().empty() || msg->email().empty())
+        return NULL;
 
-    const TiXmlElement *rootElement = doc.RootElement();
-    const TiXmlNode *node = rootElement ? rootElement->FirstChild("Manager") : NULL;
-    const TiXmlElement *cfg = node ? node->ToElement() : NULL;
+    string userId = Utility::Lower(msg->user());
+    ObjectVgFZ *o = (ObjectVgFZ *)GetObjectByID(userId);
+    if (o && (o->GetSocket() || !o->IsAllowRelease()))
+    {
+        AckGetFZPswd ack;
+        ack.set_seqno(msg->seqno());
+        ack.set_rslt(-2);
+        ObjectAbsPB::SendProtoBuffTo(s, ack);
+        return NULL;
+    }
+
+    if (!o)
+        o = new ObjectVgFZ(userId);
+
+    if (o)
+    {
+        o->SetAuth(IObject::Type_GetPswd);
+        o->CheckMail(msg->email());
+        o->m_seq = msg->seqno();
+    }
+    return o;
+}
+
+void VgFZManager::LoadConfig(const TiXmlElement *root)
+{
+    const TiXmlElement *cfg = root ? root->FirstChildElement("VgFZManager") : NULL;
     if (cfg)
     {
         const char *tmp = cfg->Attribute("thread");
@@ -198,10 +224,9 @@ void VgFZManager::LoadConfig()
         int buSz = tmp ? (int)Utility::str2int(tmp) : 6144;
         InitThread(n, buSz);
 
-        const TiXmlNode *dbNode = node ? node->FirstChild("Object") : NULL;
-        while (dbNode)
+        const TiXmlElement *e = cfg->FirstChildElement("Object");
+        while (e)
         {
-            const TiXmlElement *e = dbNode->ToElement();
             const char *id = e->Attribute("id");
             const char *pswd = e->Attribute("pswd");
             if (id && pswd)
@@ -217,7 +242,7 @@ void VgFZManager::LoadConfig()
                 m_mgrs.push_back(obj);
             }
 
-            dbNode = dbNode->NextSibling("Object");
+            e = e->NextSiblingElement("Object");
         }
     }
 }
@@ -225,7 +250,8 @@ void VgFZManager::LoadConfig()
 bool VgFZManager::IsHasReuest(const char *buf, int len) const
 {
     return Utility::FindString(buf, len, d_p_ClassName(RequestFZUserIdentity)) >= 8
-        || Utility::FindString(buf, len, d_p_ClassName(RequestNewFZUser)) >= 8;
+        || Utility::FindString(buf, len, d_p_ClassName(RequestNewFZUser)) >= 8
+        || Utility::FindString(buf, len, d_p_ClassName(PostGetFZPswd)) >= 8;
 }
 
 DECLARE_MANAGER_ITEM(VgFZManager)

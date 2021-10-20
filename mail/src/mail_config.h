@@ -1,5 +1,5 @@
-#ifndef _STD_CONFIG_H
-#define _STD_CONFIG_H
+#ifndef __MAIL_CONFIG_H__
+#define __MAIL_CONFIG_H__
 
 #if defined _WIN32 || defined _WIN64
 #include "crtdbg.h"
@@ -28,4 +28,4 @@
 #endif//_DEBUG
 #endif //defined _WIN32 || defined _WIN64
 
-#endif // _SOCKETS_CONFIG_H
+#endif // __MAIL_CONFIG_H__

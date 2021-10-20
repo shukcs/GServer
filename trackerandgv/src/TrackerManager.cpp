@@ -79,18 +79,16 @@ bool TrackerManager::PrcsPublicMsg(const IMessage &)
     return true;
 }
 
-void TrackerManager::LoadConfig()
+void TrackerManager::LoadConfig(const TiXmlElement *rootElement)
 {
-    TiXmlDocument doc;
-    doc.LoadFile("TrackerManager.xml");
-    const TiXmlElement *rootElement = doc.RootElement();
-    const TiXmlNode *node = rootElement ? rootElement->FirstChild("Manager") : NULL;
-    const TiXmlElement *cfg = node ? node->ToElement() : NULL;
+    const TiXmlElement *cfg = rootElement ? rootElement->FirstChildElement("TrackerManager") : NULL;
     if (cfg)
     {
         const char *tmp = cfg->Attribute("thread");
         int n = tmp ? (int)Utility::str2int(tmp) : 1;
-        InitThread(n, 512);
+        tmp = cfg->Attribute("buff");
+        int sz = tmp ? (int)Utility::str2int(tmp) : 512;
+        InitThread(n, sz);
         AddObject(new ObjectTracker("VIGAT:00000000"));
     }
 }

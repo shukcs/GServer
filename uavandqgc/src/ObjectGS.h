@@ -45,14 +45,6 @@ class DBMessage;
 class ObjectGS : public ObjectAbsPB
 {
 public:
-    enum GSAuthorizeType
-    {
-        Type_Common = 1,
-        Type_UavManager = Type_Common << 1,
-        Type_Admin = Type_UavManager << 1,
-        Type_ALL = Type_Common | Type_UavManager | Type_Admin,
-    };
-public:
     ObjectGS(const std::string &id, int seq=-1);
     ~ObjectGS();
 
@@ -61,7 +53,7 @@ public:
     const std::string &GetPswd()const;
     void SetAuth(int);
     int Authorize()const;
-    bool GetAuth(GSAuthorizeType auth = Type_Common)const;
+    bool GetAuth(AuthorizeType auth = Type_Common)const;
 public:
     static int GSType();
 protected:

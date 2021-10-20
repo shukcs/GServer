@@ -13,6 +13,7 @@ class IMessage;
 class IObject;
 class IObjectManager;
 class ILog;
+class TiXmlElement;
 
 //数据处理工厂元素抽象
 class SHARED_DECL ManagerAbstractItem
@@ -55,6 +56,7 @@ public:
     static ILog &GetLog();
     static bool SndMessage(IMessage *msg);
     static bool RlsMessage(IMessage *msg);
+    static SHARED_DECL void SetManagersXml(TiXmlElement *msg);
 public:
     void AddManager(IObjectManager *m);
     void RemoveManager(int type);
@@ -65,6 +67,7 @@ private:
     ObjectManagers();
     ~ObjectManagers();
 private:
+    TiXmlElement                        *m_cfg;
     std::map<int, IObjectManager*>      m_managersMap;
     char                                m_buff[1024];
 };

@@ -3,9 +3,6 @@
 
 #include "ObjectBase.h"
 
-class TiXmlNode;
-class TiXmlElement;
-
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
 #endif
@@ -43,7 +40,7 @@ public:
 protected:
     int GetObjectType()const;
     IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
-    void LoadConfig();
+    void LoadConfig(const TiXmlElement *root);
     bool IsReceiveData()const;
     bool PrcsPublicMsg(const IMessage &msg);
 private:

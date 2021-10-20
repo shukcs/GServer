@@ -38,6 +38,9 @@ google::protobuf::Message *PBAbSFactoryItem::createMessage(const string &name)
     DeclareRcvPB(PostFZResult);
     DeclareRcvPB(RequestFZResults);
     DeclareRcvPB(AckFZResults);
+    DeclareRcvPB(PostFZInfo);
+    DeclareRcvPB(RequestFZInfo);
+    DeclareRcvPB(PostGetFZPswd);
 
     auto itr = s_MapPbCreate.find(name);
     if (itr != s_MapPbCreate.end())

@@ -58,6 +58,13 @@ class PostFZResult;
 class AckPostFZResult;
 class RequestFZResults;
 class AckFZResults;
+class FZInfo;
+class PostFZInfo;
+class AckPostFZInfo;
+class RequestFZInfo;
+class AckFZInfo;
+class PostGetFZPswd;
+class AckGetFZPswd;
 
 enum FZMsgType {
   DeleteFriend = 1,
@@ -2489,6 +2496,749 @@ class AckFZResults : public ::google::protobuf::Message {
   void InitAsDefaultInstance();
   static AckFZResults* default_instance_;
 };
+// -------------------------------------------------------------------
+
+class FZInfo : public ::google::protobuf::Message {
+ public:
+  FZInfo();
+  virtual ~FZInfo();
+
+  FZInfo(const FZInfo& from);
+
+  inline FZInfo& operator=(const FZInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const FZInfo& default_instance();
+
+  void Swap(FZInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  FZInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const FZInfo& from);
+  void MergeFrom(const FZInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // optional string name = 1;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 1;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // optional string grade = 2;
+  inline bool has_grade() const;
+  inline void clear_grade();
+  static const int kGradeFieldNumber = 2;
+  inline const ::std::string& grade() const;
+  inline void set_grade(const ::std::string& value);
+  inline void set_grade(const char* value);
+  inline void set_grade(const char* value, size_t size);
+  inline ::std::string* mutable_grade();
+  inline ::std::string* release_grade();
+  inline void set_allocated_grade(::std::string* grade);
+
+  // optional string major = 3;
+  inline bool has_major() const;
+  inline void clear_major();
+  static const int kMajorFieldNumber = 3;
+  inline const ::std::string& major() const;
+  inline void set_major(const ::std::string& value);
+  inline void set_major(const char* value);
+  inline void set_major(const char* value, size_t size);
+  inline ::std::string* mutable_major();
+  inline ::std::string* release_major();
+  inline void set_allocated_major(::std::string* major);
+
+  // optional string id = 4;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 4;
+  inline const ::std::string& id() const;
+  inline void set_id(const ::std::string& value);
+  inline void set_id(const char* value);
+  inline void set_id(const char* value, size_t size);
+  inline ::std::string* mutable_id();
+  inline ::std::string* release_id();
+  inline void set_allocated_id(::std::string* id);
+
+  // optional string school = 5;
+  inline bool has_school() const;
+  inline void clear_school();
+  static const int kSchoolFieldNumber = 5;
+  inline const ::std::string& school() const;
+  inline void set_school(const ::std::string& value);
+  inline void set_school(const char* value);
+  inline void set_school(const char* value, size_t size);
+  inline ::std::string* mutable_school();
+  inline ::std::string* release_school();
+  inline void set_allocated_school(::std::string* school);
+
+  // optional string births = 6;
+  inline bool has_births() const;
+  inline void clear_births();
+  static const int kBirthsFieldNumber = 6;
+  inline const ::std::string& births() const;
+  inline void set_births(const ::std::string& value);
+  inline void set_births(const char* value);
+  inline void set_births(const char* value, size_t size);
+  inline ::std::string* mutable_births();
+  inline ::std::string* release_births();
+  inline void set_allocated_births(::std::string* births);
+
+  // required string email = 7;
+  inline bool has_email() const;
+  inline void clear_email();
+  static const int kEmailFieldNumber = 7;
+  inline const ::std::string& email() const;
+  inline void set_email(const ::std::string& value);
+  inline void set_email(const char* value);
+  inline void set_email(const char* value, size_t size);
+  inline ::std::string* mutable_email();
+  inline ::std::string* release_email();
+  inline void set_allocated_email(::std::string* email);
+
+  // @@protoc_insertion_point(class_scope:das.proto.FZInfo)
+ private:
+  inline void set_has_name();
+  inline void clear_has_name();
+  inline void set_has_grade();
+  inline void clear_has_grade();
+  inline void set_has_major();
+  inline void clear_has_major();
+  inline void set_has_id();
+  inline void clear_has_id();
+  inline void set_has_school();
+  inline void clear_has_school();
+  inline void set_has_births();
+  inline void clear_has_births();
+  inline void set_has_email();
+  inline void clear_has_email();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* name_;
+  ::std::string* grade_;
+  ::std::string* major_;
+  ::std::string* id_;
+  ::std::string* school_;
+  ::std::string* births_;
+  ::std::string* email_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static FZInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class PostFZInfo : public ::google::protobuf::Message {
+ public:
+  PostFZInfo();
+  virtual ~PostFZInfo();
+
+  PostFZInfo(const PostFZInfo& from);
+
+  inline PostFZInfo& operator=(const PostFZInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PostFZInfo& default_instance();
+
+  void Swap(PostFZInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  PostFZInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const PostFZInfo& from);
+  void MergeFrom(const PostFZInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required .das.proto.FZInfo info = 2;
+  inline bool has_info() const;
+  inline void clear_info();
+  static const int kInfoFieldNumber = 2;
+  inline const ::das::proto::FZInfo& info() const;
+  inline ::das::proto::FZInfo* mutable_info();
+  inline ::das::proto::FZInfo* release_info();
+  inline void set_allocated_info(::das::proto::FZInfo* info);
+
+  // @@protoc_insertion_point(class_scope:das.proto.PostFZInfo)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_info();
+  inline void clear_has_info();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::das::proto::FZInfo* info_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static PostFZInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckPostFZInfo : public ::google::protobuf::Message {
+ public:
+  AckPostFZInfo();
+  virtual ~AckPostFZInfo();
+
+  AckPostFZInfo(const AckPostFZInfo& from);
+
+  inline AckPostFZInfo& operator=(const AckPostFZInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckPostFZInfo& default_instance();
+
+  void Swap(AckPostFZInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  AckPostFZInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckPostFZInfo& from);
+  void MergeFrom(const AckPostFZInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required int32 rslt = 2;
+  inline bool has_rslt() const;
+  inline void clear_rslt();
+  static const int kRsltFieldNumber = 2;
+  inline ::google::protobuf::int32 rslt() const;
+  inline void set_rslt(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckPostFZInfo)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_rslt();
+  inline void clear_has_rslt();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 rslt_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckPostFZInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class RequestFZInfo : public ::google::protobuf::Message {
+ public:
+  RequestFZInfo();
+  virtual ~RequestFZInfo();
+
+  RequestFZInfo(const RequestFZInfo& from);
+
+  inline RequestFZInfo& operator=(const RequestFZInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const RequestFZInfo& default_instance();
+
+  void Swap(RequestFZInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  RequestFZInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const RequestFZInfo& from);
+  void MergeFrom(const RequestFZInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.RequestFZInfo)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(1 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static RequestFZInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckFZInfo : public ::google::protobuf::Message {
+ public:
+  AckFZInfo();
+  virtual ~AckFZInfo();
+
+  AckFZInfo(const AckFZInfo& from);
+
+  inline AckFZInfo& operator=(const AckFZInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckFZInfo& default_instance();
+
+  void Swap(AckFZInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  AckFZInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckFZInfo& from);
+  void MergeFrom(const AckFZInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // optional .das.proto.FZInfo info = 2;
+  inline bool has_info() const;
+  inline void clear_info();
+  static const int kInfoFieldNumber = 2;
+  inline const ::das::proto::FZInfo& info() const;
+  inline ::das::proto::FZInfo* mutable_info();
+  inline ::das::proto::FZInfo* release_info();
+  inline void set_allocated_info(::das::proto::FZInfo* info);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckFZInfo)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_info();
+  inline void clear_has_info();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::das::proto::FZInfo* info_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckFZInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class PostGetFZPswd : public ::google::protobuf::Message {
+ public:
+  PostGetFZPswd();
+  virtual ~PostGetFZPswd();
+
+  PostGetFZPswd(const PostGetFZPswd& from);
+
+  inline PostGetFZPswd& operator=(const PostGetFZPswd& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const PostGetFZPswd& default_instance();
+
+  void Swap(PostGetFZPswd* other);
+
+  // implements Message ----------------------------------------------
+
+  PostGetFZPswd* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const PostGetFZPswd& from);
+  void MergeFrom(const PostGetFZPswd& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required string email = 2;
+  inline bool has_email() const;
+  inline void clear_email();
+  static const int kEmailFieldNumber = 2;
+  inline const ::std::string& email() const;
+  inline void set_email(const ::std::string& value);
+  inline void set_email(const char* value);
+  inline void set_email(const char* value, size_t size);
+  inline ::std::string* mutable_email();
+  inline ::std::string* release_email();
+  inline void set_allocated_email(::std::string* email);
+
+  // required string user = 3;
+  inline bool has_user() const;
+  inline void clear_user();
+  static const int kUserFieldNumber = 3;
+  inline const ::std::string& user() const;
+  inline void set_user(const ::std::string& value);
+  inline void set_user(const char* value);
+  inline void set_user(const char* value, size_t size);
+  inline ::std::string* mutable_user();
+  inline ::std::string* release_user();
+  inline void set_allocated_user(::std::string* user);
+
+  // @@protoc_insertion_point(class_scope:das.proto.PostGetFZPswd)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_email();
+  inline void clear_has_email();
+  inline void set_has_user();
+  inline void clear_has_user();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* email_;
+  ::std::string* user_;
+  ::google::protobuf::uint32 seqno_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(3 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static PostGetFZPswd* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class AckGetFZPswd : public ::google::protobuf::Message {
+ public:
+  AckGetFZPswd();
+  virtual ~AckGetFZPswd();
+
+  AckGetFZPswd(const AckGetFZPswd& from);
+
+  inline AckGetFZPswd& operator=(const AckGetFZPswd& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const AckGetFZPswd& default_instance();
+
+  void Swap(AckGetFZPswd* other);
+
+  // implements Message ----------------------------------------------
+
+  AckGetFZPswd* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const AckGetFZPswd& from);
+  void MergeFrom(const AckGetFZPswd& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required uint32 seqno = 1;
+  inline bool has_seqno() const;
+  inline void clear_seqno();
+  static const int kSeqnoFieldNumber = 1;
+  inline ::google::protobuf::uint32 seqno() const;
+  inline void set_seqno(::google::protobuf::uint32 value);
+
+  // required int32 rslt = 2;
+  inline bool has_rslt() const;
+  inline void clear_rslt();
+  static const int kRsltFieldNumber = 2;
+  inline ::google::protobuf::int32 rslt() const;
+  inline void set_rslt(::google::protobuf::int32 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.AckGetFZPswd)
+ private:
+  inline void set_has_seqno();
+  inline void clear_has_seqno();
+  inline void set_has_rslt();
+  inline void clear_has_rslt();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::google::protobuf::uint32 seqno_;
+  ::google::protobuf::int32 rslt_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static AckGetFZPswd* default_instance_;
+};
 // ===================================================================
 
 
@@ -4892,6 +5642,916 @@ AckFZResults::rslt() const {
 inline ::google::protobuf::RepeatedPtrField< ::das::proto::FZResult >*
 AckFZResults::mutable_rslt() {
   return &rslt_;
+}
+
+// -------------------------------------------------------------------
+
+// FZInfo
+
+// optional string name = 1;
+inline bool FZInfo::has_name() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void FZInfo::set_has_name() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void FZInfo::clear_has_name() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void FZInfo::clear_name() {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& FZInfo::name() const {
+  return *name_;
+}
+inline void FZInfo::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void FZInfo::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void FZInfo::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* FZInfo::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  return name_;
+}
+inline ::std::string* FZInfo::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void FZInfo::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string grade = 2;
+inline bool FZInfo::has_grade() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void FZInfo::set_has_grade() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void FZInfo::clear_has_grade() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void FZInfo::clear_grade() {
+  if (grade_ != &::google::protobuf::internal::kEmptyString) {
+    grade_->clear();
+  }
+  clear_has_grade();
+}
+inline const ::std::string& FZInfo::grade() const {
+  return *grade_;
+}
+inline void FZInfo::set_grade(const ::std::string& value) {
+  set_has_grade();
+  if (grade_ == &::google::protobuf::internal::kEmptyString) {
+    grade_ = new ::std::string;
+  }
+  grade_->assign(value);
+}
+inline void FZInfo::set_grade(const char* value) {
+  set_has_grade();
+  if (grade_ == &::google::protobuf::internal::kEmptyString) {
+    grade_ = new ::std::string;
+  }
+  grade_->assign(value);
+}
+inline void FZInfo::set_grade(const char* value, size_t size) {
+  set_has_grade();
+  if (grade_ == &::google::protobuf::internal::kEmptyString) {
+    grade_ = new ::std::string;
+  }
+  grade_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* FZInfo::mutable_grade() {
+  set_has_grade();
+  if (grade_ == &::google::protobuf::internal::kEmptyString) {
+    grade_ = new ::std::string;
+  }
+  return grade_;
+}
+inline ::std::string* FZInfo::release_grade() {
+  clear_has_grade();
+  if (grade_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = grade_;
+    grade_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void FZInfo::set_allocated_grade(::std::string* grade) {
+  if (grade_ != &::google::protobuf::internal::kEmptyString) {
+    delete grade_;
+  }
+  if (grade) {
+    set_has_grade();
+    grade_ = grade;
+  } else {
+    clear_has_grade();
+    grade_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string major = 3;
+inline bool FZInfo::has_major() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void FZInfo::set_has_major() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void FZInfo::clear_has_major() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void FZInfo::clear_major() {
+  if (major_ != &::google::protobuf::internal::kEmptyString) {
+    major_->clear();
+  }
+  clear_has_major();
+}
+inline const ::std::string& FZInfo::major() const {
+  return *major_;
+}
+inline void FZInfo::set_major(const ::std::string& value) {
+  set_has_major();
+  if (major_ == &::google::protobuf::internal::kEmptyString) {
+    major_ = new ::std::string;
+  }
+  major_->assign(value);
+}
+inline void FZInfo::set_major(const char* value) {
+  set_has_major();
+  if (major_ == &::google::protobuf::internal::kEmptyString) {
+    major_ = new ::std::string;
+  }
+  major_->assign(value);
+}
+inline void FZInfo::set_major(const char* value, size_t size) {
+  set_has_major();
+  if (major_ == &::google::protobuf::internal::kEmptyString) {
+    major_ = new ::std::string;
+  }
+  major_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* FZInfo::mutable_major() {
+  set_has_major();
+  if (major_ == &::google::protobuf::internal::kEmptyString) {
+    major_ = new ::std::string;
+  }
+  return major_;
+}
+inline ::std::string* FZInfo::release_major() {
+  clear_has_major();
+  if (major_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = major_;
+    major_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void FZInfo::set_allocated_major(::std::string* major) {
+  if (major_ != &::google::protobuf::internal::kEmptyString) {
+    delete major_;
+  }
+  if (major) {
+    set_has_major();
+    major_ = major;
+  } else {
+    clear_has_major();
+    major_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string id = 4;
+inline bool FZInfo::has_id() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void FZInfo::set_has_id() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void FZInfo::clear_has_id() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void FZInfo::clear_id() {
+  if (id_ != &::google::protobuf::internal::kEmptyString) {
+    id_->clear();
+  }
+  clear_has_id();
+}
+inline const ::std::string& FZInfo::id() const {
+  return *id_;
+}
+inline void FZInfo::set_id(const ::std::string& value) {
+  set_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    id_ = new ::std::string;
+  }
+  id_->assign(value);
+}
+inline void FZInfo::set_id(const char* value) {
+  set_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    id_ = new ::std::string;
+  }
+  id_->assign(value);
+}
+inline void FZInfo::set_id(const char* value, size_t size) {
+  set_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    id_ = new ::std::string;
+  }
+  id_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* FZInfo::mutable_id() {
+  set_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    id_ = new ::std::string;
+  }
+  return id_;
+}
+inline ::std::string* FZInfo::release_id() {
+  clear_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = id_;
+    id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void FZInfo::set_allocated_id(::std::string* id) {
+  if (id_ != &::google::protobuf::internal::kEmptyString) {
+    delete id_;
+  }
+  if (id) {
+    set_has_id();
+    id_ = id;
+  } else {
+    clear_has_id();
+    id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string school = 5;
+inline bool FZInfo::has_school() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void FZInfo::set_has_school() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void FZInfo::clear_has_school() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void FZInfo::clear_school() {
+  if (school_ != &::google::protobuf::internal::kEmptyString) {
+    school_->clear();
+  }
+  clear_has_school();
+}
+inline const ::std::string& FZInfo::school() const {
+  return *school_;
+}
+inline void FZInfo::set_school(const ::std::string& value) {
+  set_has_school();
+  if (school_ == &::google::protobuf::internal::kEmptyString) {
+    school_ = new ::std::string;
+  }
+  school_->assign(value);
+}
+inline void FZInfo::set_school(const char* value) {
+  set_has_school();
+  if (school_ == &::google::protobuf::internal::kEmptyString) {
+    school_ = new ::std::string;
+  }
+  school_->assign(value);
+}
+inline void FZInfo::set_school(const char* value, size_t size) {
+  set_has_school();
+  if (school_ == &::google::protobuf::internal::kEmptyString) {
+    school_ = new ::std::string;
+  }
+  school_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* FZInfo::mutable_school() {
+  set_has_school();
+  if (school_ == &::google::protobuf::internal::kEmptyString) {
+    school_ = new ::std::string;
+  }
+  return school_;
+}
+inline ::std::string* FZInfo::release_school() {
+  clear_has_school();
+  if (school_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = school_;
+    school_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void FZInfo::set_allocated_school(::std::string* school) {
+  if (school_ != &::google::protobuf::internal::kEmptyString) {
+    delete school_;
+  }
+  if (school) {
+    set_has_school();
+    school_ = school;
+  } else {
+    clear_has_school();
+    school_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string births = 6;
+inline bool FZInfo::has_births() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void FZInfo::set_has_births() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void FZInfo::clear_has_births() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void FZInfo::clear_births() {
+  if (births_ != &::google::protobuf::internal::kEmptyString) {
+    births_->clear();
+  }
+  clear_has_births();
+}
+inline const ::std::string& FZInfo::births() const {
+  return *births_;
+}
+inline void FZInfo::set_births(const ::std::string& value) {
+  set_has_births();
+  if (births_ == &::google::protobuf::internal::kEmptyString) {
+    births_ = new ::std::string;
+  }
+  births_->assign(value);
+}
+inline void FZInfo::set_births(const char* value) {
+  set_has_births();
+  if (births_ == &::google::protobuf::internal::kEmptyString) {
+    births_ = new ::std::string;
+  }
+  births_->assign(value);
+}
+inline void FZInfo::set_births(const char* value, size_t size) {
+  set_has_births();
+  if (births_ == &::google::protobuf::internal::kEmptyString) {
+    births_ = new ::std::string;
+  }
+  births_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* FZInfo::mutable_births() {
+  set_has_births();
+  if (births_ == &::google::protobuf::internal::kEmptyString) {
+    births_ = new ::std::string;
+  }
+  return births_;
+}
+inline ::std::string* FZInfo::release_births() {
+  clear_has_births();
+  if (births_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = births_;
+    births_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void FZInfo::set_allocated_births(::std::string* births) {
+  if (births_ != &::google::protobuf::internal::kEmptyString) {
+    delete births_;
+  }
+  if (births) {
+    set_has_births();
+    births_ = births;
+  } else {
+    clear_has_births();
+    births_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string email = 7;
+inline bool FZInfo::has_email() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void FZInfo::set_has_email() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void FZInfo::clear_has_email() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void FZInfo::clear_email() {
+  if (email_ != &::google::protobuf::internal::kEmptyString) {
+    email_->clear();
+  }
+  clear_has_email();
+}
+inline const ::std::string& FZInfo::email() const {
+  return *email_;
+}
+inline void FZInfo::set_email(const ::std::string& value) {
+  set_has_email();
+  if (email_ == &::google::protobuf::internal::kEmptyString) {
+    email_ = new ::std::string;
+  }
+  email_->assign(value);
+}
+inline void FZInfo::set_email(const char* value) {
+  set_has_email();
+  if (email_ == &::google::protobuf::internal::kEmptyString) {
+    email_ = new ::std::string;
+  }
+  email_->assign(value);
+}
+inline void FZInfo::set_email(const char* value, size_t size) {
+  set_has_email();
+  if (email_ == &::google::protobuf::internal::kEmptyString) {
+    email_ = new ::std::string;
+  }
+  email_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* FZInfo::mutable_email() {
+  set_has_email();
+  if (email_ == &::google::protobuf::internal::kEmptyString) {
+    email_ = new ::std::string;
+  }
+  return email_;
+}
+inline ::std::string* FZInfo::release_email() {
+  clear_has_email();
+  if (email_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = email_;
+    email_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void FZInfo::set_allocated_email(::std::string* email) {
+  if (email_ != &::google::protobuf::internal::kEmptyString) {
+    delete email_;
+  }
+  if (email) {
+    set_has_email();
+    email_ = email;
+  } else {
+    clear_has_email();
+    email_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
+// PostFZInfo
+
+// required uint32 seqno = 1;
+inline bool PostFZInfo::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void PostFZInfo::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void PostFZInfo::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void PostFZInfo::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 PostFZInfo::seqno() const {
+  return seqno_;
+}
+inline void PostFZInfo::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required .das.proto.FZInfo info = 2;
+inline bool PostFZInfo::has_info() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void PostFZInfo::set_has_info() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void PostFZInfo::clear_has_info() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void PostFZInfo::clear_info() {
+  if (info_ != NULL) info_->::das::proto::FZInfo::Clear();
+  clear_has_info();
+}
+inline const ::das::proto::FZInfo& PostFZInfo::info() const {
+  return info_ != NULL ? *info_ : *default_instance_->info_;
+}
+inline ::das::proto::FZInfo* PostFZInfo::mutable_info() {
+  set_has_info();
+  if (info_ == NULL) info_ = new ::das::proto::FZInfo;
+  return info_;
+}
+inline ::das::proto::FZInfo* PostFZInfo::release_info() {
+  clear_has_info();
+  ::das::proto::FZInfo* temp = info_;
+  info_ = NULL;
+  return temp;
+}
+inline void PostFZInfo::set_allocated_info(::das::proto::FZInfo* info) {
+  delete info_;
+  info_ = info;
+  if (info) {
+    set_has_info();
+  } else {
+    clear_has_info();
+  }
+}
+
+// -------------------------------------------------------------------
+
+// AckPostFZInfo
+
+// required uint32 seqno = 1;
+inline bool AckPostFZInfo::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckPostFZInfo::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckPostFZInfo::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckPostFZInfo::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckPostFZInfo::seqno() const {
+  return seqno_;
+}
+inline void AckPostFZInfo::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 rslt = 2;
+inline bool AckPostFZInfo::has_rslt() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckPostFZInfo::set_has_rslt() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckPostFZInfo::clear_has_rslt() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckPostFZInfo::clear_rslt() {
+  rslt_ = 0;
+  clear_has_rslt();
+}
+inline ::google::protobuf::int32 AckPostFZInfo::rslt() const {
+  return rslt_;
+}
+inline void AckPostFZInfo::set_rslt(::google::protobuf::int32 value) {
+  set_has_rslt();
+  rslt_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// RequestFZInfo
+
+// required uint32 seqno = 1;
+inline bool RequestFZInfo::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void RequestFZInfo::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void RequestFZInfo::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void RequestFZInfo::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 RequestFZInfo::seqno() const {
+  return seqno_;
+}
+inline void RequestFZInfo::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// AckFZInfo
+
+// required uint32 seqno = 1;
+inline bool AckFZInfo::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckFZInfo::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckFZInfo::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckFZInfo::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckFZInfo::seqno() const {
+  return seqno_;
+}
+inline void AckFZInfo::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// optional .das.proto.FZInfo info = 2;
+inline bool AckFZInfo::has_info() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckFZInfo::set_has_info() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckFZInfo::clear_has_info() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckFZInfo::clear_info() {
+  if (info_ != NULL) info_->::das::proto::FZInfo::Clear();
+  clear_has_info();
+}
+inline const ::das::proto::FZInfo& AckFZInfo::info() const {
+  return info_ != NULL ? *info_ : *default_instance_->info_;
+}
+inline ::das::proto::FZInfo* AckFZInfo::mutable_info() {
+  set_has_info();
+  if (info_ == NULL) info_ = new ::das::proto::FZInfo;
+  return info_;
+}
+inline ::das::proto::FZInfo* AckFZInfo::release_info() {
+  clear_has_info();
+  ::das::proto::FZInfo* temp = info_;
+  info_ = NULL;
+  return temp;
+}
+inline void AckFZInfo::set_allocated_info(::das::proto::FZInfo* info) {
+  delete info_;
+  info_ = info;
+  if (info) {
+    set_has_info();
+  } else {
+    clear_has_info();
+  }
+}
+
+// -------------------------------------------------------------------
+
+// PostGetFZPswd
+
+// required uint32 seqno = 1;
+inline bool PostGetFZPswd::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void PostGetFZPswd::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void PostGetFZPswd::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void PostGetFZPswd::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 PostGetFZPswd::seqno() const {
+  return seqno_;
+}
+inline void PostGetFZPswd::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required string email = 2;
+inline bool PostGetFZPswd::has_email() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void PostGetFZPswd::set_has_email() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void PostGetFZPswd::clear_has_email() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void PostGetFZPswd::clear_email() {
+  if (email_ != &::google::protobuf::internal::kEmptyString) {
+    email_->clear();
+  }
+  clear_has_email();
+}
+inline const ::std::string& PostGetFZPswd::email() const {
+  return *email_;
+}
+inline void PostGetFZPswd::set_email(const ::std::string& value) {
+  set_has_email();
+  if (email_ == &::google::protobuf::internal::kEmptyString) {
+    email_ = new ::std::string;
+  }
+  email_->assign(value);
+}
+inline void PostGetFZPswd::set_email(const char* value) {
+  set_has_email();
+  if (email_ == &::google::protobuf::internal::kEmptyString) {
+    email_ = new ::std::string;
+  }
+  email_->assign(value);
+}
+inline void PostGetFZPswd::set_email(const char* value, size_t size) {
+  set_has_email();
+  if (email_ == &::google::protobuf::internal::kEmptyString) {
+    email_ = new ::std::string;
+  }
+  email_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* PostGetFZPswd::mutable_email() {
+  set_has_email();
+  if (email_ == &::google::protobuf::internal::kEmptyString) {
+    email_ = new ::std::string;
+  }
+  return email_;
+}
+inline ::std::string* PostGetFZPswd::release_email() {
+  clear_has_email();
+  if (email_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = email_;
+    email_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void PostGetFZPswd::set_allocated_email(::std::string* email) {
+  if (email_ != &::google::protobuf::internal::kEmptyString) {
+    delete email_;
+  }
+  if (email) {
+    set_has_email();
+    email_ = email;
+  } else {
+    clear_has_email();
+    email_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string user = 3;
+inline bool PostGetFZPswd::has_user() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void PostGetFZPswd::set_has_user() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void PostGetFZPswd::clear_has_user() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void PostGetFZPswd::clear_user() {
+  if (user_ != &::google::protobuf::internal::kEmptyString) {
+    user_->clear();
+  }
+  clear_has_user();
+}
+inline const ::std::string& PostGetFZPswd::user() const {
+  return *user_;
+}
+inline void PostGetFZPswd::set_user(const ::std::string& value) {
+  set_has_user();
+  if (user_ == &::google::protobuf::internal::kEmptyString) {
+    user_ = new ::std::string;
+  }
+  user_->assign(value);
+}
+inline void PostGetFZPswd::set_user(const char* value) {
+  set_has_user();
+  if (user_ == &::google::protobuf::internal::kEmptyString) {
+    user_ = new ::std::string;
+  }
+  user_->assign(value);
+}
+inline void PostGetFZPswd::set_user(const char* value, size_t size) {
+  set_has_user();
+  if (user_ == &::google::protobuf::internal::kEmptyString) {
+    user_ = new ::std::string;
+  }
+  user_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* PostGetFZPswd::mutable_user() {
+  set_has_user();
+  if (user_ == &::google::protobuf::internal::kEmptyString) {
+    user_ = new ::std::string;
+  }
+  return user_;
+}
+inline ::std::string* PostGetFZPswd::release_user() {
+  clear_has_user();
+  if (user_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = user_;
+    user_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void PostGetFZPswd::set_allocated_user(::std::string* user) {
+  if (user_ != &::google::protobuf::internal::kEmptyString) {
+    delete user_;
+  }
+  if (user) {
+    set_has_user();
+    user_ = user;
+  } else {
+    clear_has_user();
+    user_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
+// AckGetFZPswd
+
+// required uint32 seqno = 1;
+inline bool AckGetFZPswd::has_seqno() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void AckGetFZPswd::set_has_seqno() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void AckGetFZPswd::clear_has_seqno() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void AckGetFZPswd::clear_seqno() {
+  seqno_ = 0u;
+  clear_has_seqno();
+}
+inline ::google::protobuf::uint32 AckGetFZPswd::seqno() const {
+  return seqno_;
+}
+inline void AckGetFZPswd::set_seqno(::google::protobuf::uint32 value) {
+  set_has_seqno();
+  seqno_ = value;
+}
+
+// required int32 rslt = 2;
+inline bool AckGetFZPswd::has_rslt() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void AckGetFZPswd::set_has_rslt() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void AckGetFZPswd::clear_has_rslt() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void AckGetFZPswd::clear_rslt() {
+  rslt_ = 0;
+  clear_has_rslt();
+}
+inline ::google::protobuf::int32 AckGetFZPswd::rslt() const {
+  return rslt_;
+}
+inline void AckGetFZPswd::set_rslt(::google::protobuf::int32 value) {
+  set_has_rslt();
+  rslt_ = value;
 }
 
 

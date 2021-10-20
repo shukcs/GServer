@@ -42,7 +42,7 @@ void ManagerAbstractItem::Unregister()
 ////////////////////////////////////////////////////////////
 //ObjectManagers
 ////////////////////////////////////////////////////////////
-ObjectManagers::ObjectManagers()
+ObjectManagers::ObjectManagers():m_cfg(NULL)
 {
 }
 
@@ -90,6 +90,11 @@ bool ObjectManagers::RlsMessage(IMessage *msg)
     return false;
 }
 
+void ObjectManagers::SetManagersXml(TiXmlElement *msg)
+{
+    Instance().m_cfg = msg;
+}
+
 void ObjectManagers::AddManager(IObjectManager *m)
 {
     if (m)
@@ -100,7 +105,7 @@ void ObjectManagers::AddManager(IObjectManager *m)
             delete itr->second;
 
         m_managersMap[type] = m;
-        m->LoadConfig();
+        m->LoadConfig(m_cfg);
     }
 }
 

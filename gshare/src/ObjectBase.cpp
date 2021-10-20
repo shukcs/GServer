@@ -148,8 +148,8 @@ public:
 ///////////////////////////////////////////////////////////////////////////////////////
 //SocketHandle
 ///////////////////////////////////////////////////////////////////////////////////////
-ILink::ILink() : m_sock(NULL), m_recv(NULL), m_mtxS(NULL), m_thread(NULL)
-, m_bLogined(false), m_bChanged(false), m_Stat(Stat_Link)
+ILink::ILink() : m_bLogined(false), m_sock(NULL), m_recv(NULL), m_mtxS(NULL)
+, m_thread(NULL), m_bChanged(false), m_Stat(Stat_Link)
 {
 }
 
@@ -174,12 +174,15 @@ void ILink::OnLogined(bool suc, ISocket *s)
     if (!s)
         s = m_sock;
 
-    m_bLogined = suc;
-    IObject *o = GetParObject();
-    if (s && o)
-        o->GetManager()->Log(0, IObjectManager::GetObjectFlagID(o), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), suc ? "logined" : "login fail");
-    if (!suc)
-        CloseLink();
+    if (s)
+    {
+        m_bLogined = suc;
+        IObject *o = GetParObject();
+        if (s && o)
+            o->GetManager()->Log(0, IObjectManager::GetObjectFlagID(o), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), suc ? "logined" : "login fail");
+        if (!suc)
+            CloseLink();
+    }
 }
 
 int ILink::GetSendRemain() const
@@ -468,7 +471,7 @@ IObjectManager::~IObjectManager()
     m_lsThread.clear();
 }
 
-void IObjectManager::LoadConfig()
+void IObjectManager::LoadConfig(const TiXmlElement *)
 {
 }
 

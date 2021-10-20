@@ -46,6 +46,9 @@ int main(int argc, char *argv[])
     if (!rootElement)
         return -1;
 
+    TiXmlDocument docMgr;
+    docMgr.LoadFile("Managers.xml");
+    ObjectManagers::SetManagersXml(docMgr.RootElement());
     std::list<GLibrary*> lsLib;
     if (const TiXmlElement *libs = rootElement->FirstChildElement("Libs"))
     {

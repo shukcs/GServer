@@ -25,6 +25,7 @@ class ILog;
 class SocketHandle;
 class IObject;
 class ISocketManager;
+class TiXmlElement;
 
 typedef LoopQueue<IMessage*> MessageQue;
 
@@ -73,12 +74,13 @@ protected:
     virtual void FreshLogin(uint64_t ms) = 0;
 protected:
     void SetSocket(ISocket *s);
+protected:
+    bool                    m_bLogined;
 private:
     ISocket                 *m_sock;
     LoopQueBuff             *m_recv;
     IMutex                  *m_mtxS;
     BussinessThread         *m_thread;
-    bool                    m_bLogined;
     bool                    m_bChanged;
     uint32_t                m_Stat;
 };
@@ -106,6 +108,16 @@ public:
         InitialFail,
         Initialed,
         ReleaseLater,
+    };
+    enum AuthorizeType
+    {
+        Type_Common = 1,
+        Type_Manager = Type_Common << 1,
+        Type_Admin = Type_Manager << 1,
+        Type_ALL = Type_Common | Type_Manager | Type_Admin,
+
+        Type_ReqNewUser = Type_Admin << 1,
+        Type_GetPswd = Type_ReqNewUser << 1,
     };
 public:
     SHARED_DECL const std::string &GetObjectID()const;
@@ -176,7 +188,7 @@ protected:
 public:
     SHARED_DECL virtual ~IObjectManager();
     virtual int GetObjectType()const = 0;
-    SHARED_DECL virtual void LoadConfig();
+    SHARED_DECL virtual void LoadConfig(const TiXmlElement *root);
     SHARED_DECL bool AddObject(IObject *obj);
     SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
     SHARED_DECL void Subcribe(const std::string &dsub, const std::string &sender, int tpMsg);
