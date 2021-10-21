@@ -471,10 +471,6 @@ IObjectManager::~IObjectManager()
     m_lsThread.clear();
 }
 
-void IObjectManager::LoadConfig(const TiXmlElement *)
-{
-}
-
 void IObjectManager::PushReleaseMsg(IMessage *msg)
 {
     BussinessThread *t = msg ? GetThread(msg->CreateThreadID()) : NULL;

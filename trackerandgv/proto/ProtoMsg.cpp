@@ -153,7 +153,7 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
         throw;
     }
 
-    return false;
+    return ret;
 }
 
 void ProtoMsg::_clear()

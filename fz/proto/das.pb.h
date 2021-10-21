@@ -2576,17 +2576,17 @@ class FZInfo : public ::google::protobuf::Message {
   inline ::std::string* release_grade();
   inline void set_allocated_grade(::std::string* grade);
 
-  // optional string major = 3;
-  inline bool has_major() const;
-  inline void clear_major();
-  static const int kMajorFieldNumber = 3;
-  inline const ::std::string& major() const;
-  inline void set_major(const ::std::string& value);
-  inline void set_major(const char* value);
-  inline void set_major(const char* value, size_t size);
-  inline ::std::string* mutable_major();
-  inline ::std::string* release_major();
-  inline void set_allocated_major(::std::string* major);
+  // optional string majr = 3;
+  inline bool has_majr() const;
+  inline void clear_majr();
+  static const int kMajrFieldNumber = 3;
+  inline const ::std::string& majr() const;
+  inline void set_majr(const ::std::string& value);
+  inline void set_majr(const char* value);
+  inline void set_majr(const char* value, size_t size);
+  inline ::std::string* mutable_majr();
+  inline ::std::string* release_majr();
+  inline void set_allocated_majr(::std::string* majr);
 
   // optional string id = 4;
   inline bool has_id() const;
@@ -2642,8 +2642,8 @@ class FZInfo : public ::google::protobuf::Message {
   inline void clear_has_name();
   inline void set_has_grade();
   inline void clear_has_grade();
-  inline void set_has_major();
-  inline void clear_has_major();
+  inline void set_has_majr();
+  inline void clear_has_majr();
   inline void set_has_id();
   inline void clear_has_id();
   inline void set_has_school();
@@ -2657,7 +2657,7 @@ class FZInfo : public ::google::protobuf::Message {
 
   ::std::string* name_;
   ::std::string* grade_;
-  ::std::string* major_;
+  ::std::string* majr_;
   ::std::string* id_;
   ::std::string* school_;
   ::std::string* births_;
@@ -5788,73 +5788,73 @@ inline void FZInfo::set_allocated_grade(::std::string* grade) {
   }
 }
 
-// optional string major = 3;
-inline bool FZInfo::has_major() const {
+// optional string majr = 3;
+inline bool FZInfo::has_majr() const {
   return (_has_bits_[0] & 0x00000004u) != 0;
 }
-inline void FZInfo::set_has_major() {
+inline void FZInfo::set_has_majr() {
   _has_bits_[0] |= 0x00000004u;
 }
-inline void FZInfo::clear_has_major() {
+inline void FZInfo::clear_has_majr() {
   _has_bits_[0] &= ~0x00000004u;
 }
-inline void FZInfo::clear_major() {
-  if (major_ != &::google::protobuf::internal::kEmptyString) {
-    major_->clear();
+inline void FZInfo::clear_majr() {
+  if (majr_ != &::google::protobuf::internal::kEmptyString) {
+    majr_->clear();
   }
-  clear_has_major();
+  clear_has_majr();
 }
-inline const ::std::string& FZInfo::major() const {
-  return *major_;
+inline const ::std::string& FZInfo::majr() const {
+  return *majr_;
 }
-inline void FZInfo::set_major(const ::std::string& value) {
-  set_has_major();
-  if (major_ == &::google::protobuf::internal::kEmptyString) {
-    major_ = new ::std::string;
+inline void FZInfo::set_majr(const ::std::string& value) {
+  set_has_majr();
+  if (majr_ == &::google::protobuf::internal::kEmptyString) {
+    majr_ = new ::std::string;
   }
-  major_->assign(value);
+  majr_->assign(value);
 }
-inline void FZInfo::set_major(const char* value) {
-  set_has_major();
-  if (major_ == &::google::protobuf::internal::kEmptyString) {
-    major_ = new ::std::string;
+inline void FZInfo::set_majr(const char* value) {
+  set_has_majr();
+  if (majr_ == &::google::protobuf::internal::kEmptyString) {
+    majr_ = new ::std::string;
   }
-  major_->assign(value);
+  majr_->assign(value);
 }
-inline void FZInfo::set_major(const char* value, size_t size) {
-  set_has_major();
-  if (major_ == &::google::protobuf::internal::kEmptyString) {
-    major_ = new ::std::string;
+inline void FZInfo::set_majr(const char* value, size_t size) {
+  set_has_majr();
+  if (majr_ == &::google::protobuf::internal::kEmptyString) {
+    majr_ = new ::std::string;
   }
-  major_->assign(reinterpret_cast<const char*>(value), size);
+  majr_->assign(reinterpret_cast<const char*>(value), size);
 }
-inline ::std::string* FZInfo::mutable_major() {
-  set_has_major();
-  if (major_ == &::google::protobuf::internal::kEmptyString) {
-    major_ = new ::std::string;
+inline ::std::string* FZInfo::mutable_majr() {
+  set_has_majr();
+  if (majr_ == &::google::protobuf::internal::kEmptyString) {
+    majr_ = new ::std::string;
   }
-  return major_;
+  return majr_;
 }
-inline ::std::string* FZInfo::release_major() {
-  clear_has_major();
-  if (major_ == &::google::protobuf::internal::kEmptyString) {
+inline ::std::string* FZInfo::release_majr() {
+  clear_has_majr();
+  if (majr_ == &::google::protobuf::internal::kEmptyString) {
     return NULL;
   } else {
-    ::std::string* temp = major_;
-    major_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    ::std::string* temp = majr_;
+    majr_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
     return temp;
   }
 }
-inline void FZInfo::set_allocated_major(::std::string* major) {
-  if (major_ != &::google::protobuf::internal::kEmptyString) {
-    delete major_;
+inline void FZInfo::set_allocated_majr(::std::string* majr) {
+  if (majr_ != &::google::protobuf::internal::kEmptyString) {
+    delete majr_;
   }
-  if (major) {
-    set_has_major();
-    major_ = major;
+  if (majr) {
+    set_has_majr();
+    majr_ = majr;
   } else {
-    clear_has_major();
-    major_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    clear_has_majr();
+    majr_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   }
 }
 

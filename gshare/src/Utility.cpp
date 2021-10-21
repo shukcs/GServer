@@ -1439,7 +1439,7 @@ string Utility::ModuleDirectory()
     ReplacePart(strRet, '\\', '/');
 #endif
     int idx = strRet.find_last_of('/');
-    return idx >= 0 ? strRet.substr(0, idx) : string();
+    return idx >= 0 ? strRet.substr(0, idx+1) : string();
 }
 
 string Utility::ModuleName()

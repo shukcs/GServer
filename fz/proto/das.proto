@@ -226,7 +226,7 @@ message AckFZResults {
 message FZInfo {
     optional string name        = 1; //姓名
     optional string grade       = 2; //年级
-    optional string major       = 3; //专业
+    optional string majr        = 3; //专业
     optional string id          = 4; //学号
 	optional string school      = 5; //学校
 	optional string births      = 6; //出生日期

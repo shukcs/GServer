@@ -201,11 +201,11 @@ void ObjectVgFZ::PrcsProtoBuff(uint64_t ms)
     else if (strMsg == d_p_ClassName(AddSWKey))
         _prcsAddSWKey((AddSWKey *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(SWRegist))
-        _prcsSWRegist((SWRegist *)m_p->GetProtoMessage());
+        _prcsSWRegist((SWRegist*)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(PostFZResult))
-        _prcsPostFZResult((PostFZResult *)m_p->GetProtoMessage());
+        _prcsPostFZResult((PostFZResult*)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(RequestFZResults))
-        _prcsRequestFZResults(*(RequestFZResults *)m_p->GetProtoMessage());
+        _prcsRequestFZResults(*(RequestFZResults*)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(PostFZInfo))
         _prcsPostFZInfo(*(PostFZInfo *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(RequestFZInfo))
@@ -413,8 +413,9 @@ bool ObjectVgFZ::ackLogin(const DBMessage &msg)
     }
     if (Initialed == m_stInit)
         OnLogined(bLogin);
+    if (!bLogin)
+        m_stInit = ReleaseLater;
 
-    m_stInit = ReleaseLater;
     AckFZUserIdentity ack;
     ack.set_seqno(m_seq);
     ack.set_result(bLogin ? 1 : -1);
@@ -863,7 +864,7 @@ void ObjectVgFZ::_prcsRequestFZInfo(const RequestFZInfo &msg)
             auto itr = strLs.begin();
             info->set_name(*itr++);
             info->set_grade(*itr++);
-            info->set_major(*itr++);
+            info->set_majr(*itr++);
             info->set_id(*itr++);
             info->set_school(*itr++);
             info->set_births(*itr);
@@ -883,7 +884,7 @@ bool ObjectVgFZ::_saveInfo(const FZInfo &info)
     str += "#;#";
     str += info.has_grade() ? info.grade() : string();
     str += "#;#";
-    str += info.has_major() ? info.major() : string();
+    str += info.has_majr() ? info.majr() : string();
     str += "#;#";
     str += info.has_id() ? info.id() : string();
     str += "#;#";

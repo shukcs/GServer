@@ -2,9 +2,8 @@
 <document>
 	<GSocketManager thread="20" maxListen="64" portListen="18198" />
 	<Libs>
-		<Library name="uavandqgc" />
-		<Library name="trackerandgv" />
-		<Library name="fz" />
 		<Library name="mail" />
+		<Library name="uavandqgc" />
+		<Library name="fz" />
 	</Libs>
 </document>

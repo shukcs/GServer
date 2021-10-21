@@ -29,28 +29,25 @@ bool GLibrary::Load(const string &nameLib, const string &path)
     if (nameLib.size() <= 0)
         return false;
 
-    string file;
+    string file = path;
     char last = 0;
     if (path.size() > 0)
         last = *(--path.end());
 #if defined _WIN32 || defined _WIN64
     if (last != '\\' && last != '/')
-        file = path + "/";
+        file += "/";
 
     file += nameLib + ".dll";
     m_module = LoadLibrary(file.c_str());
-    if (NULL == m_module)
-        fprintf(stderr, "Load library fail!\n");
 #else
     if (last != '/')
-        file = path + "/";
+        file += "/";
 
-    file += "lib";
-    file += nameLib + ".so";
+    file += "lib" + nameLib + ".so";
     m_module = dlopen(file.c_str(), RTLD_NOW);
-    if (NULL == m_module)
-        fprintf(stderr, "(Load library fail):%s\n", dlerror());
 #endif
+    if (NULL == m_module)
+        fprintf(stderr, "Load library fail!\n");
     else
         m_strPath = file;
     return m_module != NULL;

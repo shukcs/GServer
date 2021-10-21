@@ -188,7 +188,7 @@ protected:
 public:
     SHARED_DECL virtual ~IObjectManager();
     virtual int GetObjectType()const = 0;
-    SHARED_DECL virtual void LoadConfig(const TiXmlElement *root);
+    virtual void LoadConfig(const TiXmlElement *root) = 0;
     SHARED_DECL bool AddObject(IObject *obj);
     SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
     SHARED_DECL void Subcribe(const std::string &dsub, const std::string &sender, int tpMsg);

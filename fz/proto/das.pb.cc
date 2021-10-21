@@ -512,7 +512,7 @@ void protobuf_AssignDesc_das_2eproto() {
   static const int FZInfo_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, grade_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, major_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, majr_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, school_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, births_),
@@ -807,20 +807,20 @@ void protobuf_AddDesc_das_2eproto() {
     "\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \002(\003\"\?\n\020RequestFZRes"
     "ults\022\r\n\005seqno\030\001 \002(\r\022\r\n\005tmbeg\030\002 \001(\003\022\r\n\005tm"
     "end\030\003 \001(\003\"@\n\014AckFZResults\022\r\n\005seqno\030\001 \002(\r"
-    "\022!\n\004rslt\030\002 \003(\0132\023.das.proto.FZResult\"o\n\006F"
-    "ZInfo\022\014\n\004name\030\001 \001(\t\022\r\n\005grade\030\002 \001(\t\022\r\n\005ma"
-    "jor\030\003 \001(\t\022\n\n\002id\030\004 \001(\t\022\016\n\006school\030\005 \001(\t\022\016\n"
-    "\006births\030\006 \001(\t\022\r\n\005email\030\007 \002(\t\"<\n\nPostFZIn"
-    "fo\022\r\n\005seqno\030\001 \002(\r\022\037\n\004info\030\002 \002(\0132\021.das.pr"
-    "oto.FZInfo\",\n\rAckPostFZInfo\022\r\n\005seqno\030\001 \002"
-    "(\r\022\014\n\004rslt\030\002 \002(\005\"\036\n\rRequestFZInfo\022\r\n\005seq"
-    "no\030\001 \002(\r\";\n\tAckFZInfo\022\r\n\005seqno\030\001 \002(\r\022\037\n\004"
-    "info\030\002 \001(\0132\021.das.proto.FZInfo\";\n\rPostGet"
-    "FZPswd\022\r\n\005seqno\030\001 \002(\r\022\r\n\005email\030\002 \002(\t\022\014\n\004"
-    "user\030\003 \002(\t\"+\n\014AckGetFZPswd\022\r\n\005seqno\030\001 \002("
-    "\r\022\014\n\004rslt\030\002 \002(\005*g\n\tFZMsgType\022\020\n\014DeleteFr"
-    "iend\020\001\022\021\n\rRequestFriend\020\002\022\017\n\013AgreeFriend"
-    "\020\003\022\020\n\014RejectFriend\020\004\022\010\n\004Text\020\005\022\010\n\004Land\020\006", 1960);
+    "\022!\n\004rslt\030\002 \003(\0132\023.das.proto.FZResult\"n\n\006F"
+    "ZInfo\022\014\n\004name\030\001 \001(\t\022\r\n\005grade\030\002 \001(\t\022\014\n\004ma"
+    "jr\030\003 \001(\t\022\n\n\002id\030\004 \001(\t\022\016\n\006school\030\005 \001(\t\022\016\n\006"
+    "births\030\006 \001(\t\022\r\n\005email\030\007 \002(\t\"<\n\nPostFZInf"
+    "o\022\r\n\005seqno\030\001 \002(\r\022\037\n\004info\030\002 \002(\0132\021.das.pro"
+    "to.FZInfo\",\n\rAckPostFZInfo\022\r\n\005seqno\030\001 \002("
+    "\r\022\014\n\004rslt\030\002 \002(\005\"\036\n\rRequestFZInfo\022\r\n\005seqn"
+    "o\030\001 \002(\r\";\n\tAckFZInfo\022\r\n\005seqno\030\001 \002(\r\022\037\n\004i"
+    "nfo\030\002 \001(\0132\021.das.proto.FZInfo\";\n\rPostGetF"
+    "ZPswd\022\r\n\005seqno\030\001 \002(\r\022\r\n\005email\030\002 \002(\t\022\014\n\004u"
+    "ser\030\003 \002(\t\"+\n\014AckGetFZPswd\022\r\n\005seqno\030\001 \002(\r"
+    "\022\014\n\004rslt\030\002 \002(\005*g\n\tFZMsgType\022\020\n\014DeleteFri"
+    "end\020\001\022\021\n\rRequestFriend\020\002\022\017\n\013AgreeFriend\020"
+    "\003\022\020\n\014RejectFriend\020\004\022\010\n\004Text\020\005\022\010\n\004Land\020\006", 1959);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "das.proto", &protobuf_RegisterTypes);
   PostHeartBeat::default_instance_ = new PostHeartBeat();
@@ -7684,7 +7684,7 @@ void AckFZResults::Swap(AckFZResults* other) {
 #ifndef _MSC_VER
 const int FZInfo::kNameFieldNumber;
 const int FZInfo::kGradeFieldNumber;
-const int FZInfo::kMajorFieldNumber;
+const int FZInfo::kMajrFieldNumber;
 const int FZInfo::kIdFieldNumber;
 const int FZInfo::kSchoolFieldNumber;
 const int FZInfo::kBirthsFieldNumber;
@@ -7709,7 +7709,7 @@ void FZInfo::SharedCtor() {
   _cached_size_ = 0;
   name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   grade_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  major_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  majr_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   school_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   births_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
@@ -7728,8 +7728,8 @@ void FZInfo::SharedDtor() {
   if (grade_ != &::google::protobuf::internal::kEmptyString) {
     delete grade_;
   }
-  if (major_ != &::google::protobuf::internal::kEmptyString) {
-    delete major_;
+  if (majr_ != &::google::protobuf::internal::kEmptyString) {
+    delete majr_;
   }
   if (id_ != &::google::protobuf::internal::kEmptyString) {
     delete id_;
@@ -7780,9 +7780,9 @@ void FZInfo::Clear() {
         grade_->clear();
       }
     }
-    if (has_major()) {
-      if (major_ != &::google::protobuf::internal::kEmptyString) {
-        major_->clear();
+    if (has_majr()) {
+      if (majr_ != &::google::protobuf::internal::kEmptyString) {
+        majr_->clear();
       }
     }
     if (has_id()) {
@@ -7845,19 +7845,19 @@ bool FZInfo::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(26)) goto parse_major;
+        if (input->ExpectTag(26)) goto parse_majr;
         break;
       }
 
-      // optional string major = 3;
+      // optional string majr = 3;
       case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_major:
+         parse_majr:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_major()));
+                input, this->mutable_majr()));
           ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->major().data(), this->major().length(),
+            this->majr().data(), this->majr().length(),
             ::google::protobuf::internal::WireFormat::PARSE);
         } else {
           goto handle_uninterpreted;
@@ -7970,13 +7970,13 @@ void FZInfo::SerializeWithCachedSizes(
       2, this->grade(), output);
   }
 
-  // optional string major = 3;
-  if (has_major()) {
+  // optional string majr = 3;
+  if (has_majr()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->major().data(), this->major().length(),
+      this->majr().data(), this->majr().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      3, this->major(), output);
+      3, this->majr(), output);
   }
 
   // optional string id = 4;
@@ -8043,14 +8043,14 @@ void FZInfo::SerializeWithCachedSizes(
         2, this->grade(), target);
   }
 
-  // optional string major = 3;
-  if (has_major()) {
+  // optional string majr = 3;
+  if (has_majr()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->major().data(), this->major().length(),
+      this->majr().data(), this->majr().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        3, this->major(), target);
+        3, this->majr(), target);
   }
 
   // optional string id = 4;
@@ -8118,11 +8118,11 @@ int FZInfo::ByteSize() const {
           this->grade());
     }
 
-    // optional string major = 3;
-    if (has_major()) {
+    // optional string majr = 3;
+    if (has_majr()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->major());
+          this->majr());
     }
 
     // optional string id = 4;
@@ -8186,8 +8186,8 @@ void FZInfo::MergeFrom(const FZInfo& from) {
     if (from.has_grade()) {
       set_grade(from.grade());
     }
-    if (from.has_major()) {
-      set_major(from.major());
+    if (from.has_majr()) {
+      set_majr(from.majr());
     }
     if (from.has_id()) {
       set_id(from.id());
@@ -8227,7 +8227,7 @@ void FZInfo::Swap(FZInfo* other) {
   if (other != this) {
     std::swap(name_, other->name_);
     std::swap(grade_, other->grade_);
-    std::swap(major_, other->major_);
+    std::swap(majr_, other->majr_);
     std::swap(id_, other->id_);
     std::swap(school_, other->school_);
     std::swap(births_, other->births_);

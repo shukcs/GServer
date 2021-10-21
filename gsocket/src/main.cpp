@@ -32,24 +32,14 @@ void OnBindFinish(ISocket *sock, bool binded)
         exit(0);
 }
 
-int main(int argc, char *argv[])
+bool LoadConfig(const std::string &file, std::list<GLibrary*> &lsLib)
 {
-#if defined _WIN32 || defined _WIN64
-    _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
-#else
-    signal(SIGSEGV, dump);
-    signal(SIGABRT, dump);
-#endif //defined _WIN32 || defined _WIN64
     TiXmlDocument doc;
-    doc.LoadFile("config.xml");
+    doc.LoadFile(file.c_str());
     const TiXmlElement *rootElement = doc.RootElement();
     if (!rootElement)
-        return -1;
+        return false;
 
-    TiXmlDocument docMgr;
-    docMgr.LoadFile("Managers.xml");
-    ObjectManagers::SetManagersXml(docMgr.RootElement());
-    std::list<GLibrary*> lsLib;
     if (const TiXmlElement *libs = rootElement->FirstChildElement("Libs"))
     {
         const TiXmlNode *lib = libs->FirstChild("Library");
@@ -81,21 +71,39 @@ int main(int argc, char *argv[])
                 }
             }
         }
-        while (sSockMgr->IsRun())
-        {
-#if defined _WIN32 || defined _WIN64
-            if (_kbhit() > 0)
-            {
-                int ch = _getch();
-                if (ch == 27)
-                    sSockMgr->Exit();
-            }
-#endif //defined _WIN32 || defined _WIN64
-            sSockMgr->Poll(50);
-        }
-        delete sSockMgr;
     }
+    return sSockMgr != NULL;
+}
 
+int main(int argc, char *argv[])
+{
+#if defined _WIN32 || defined _WIN64
+    _CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
+#else
+    signal(SIGSEGV, dump);
+    signal(SIGABRT, dump);
+#endif //defined _WIN32 || defined _WIN64
+    TiXmlDocument docMgr;
+    docMgr.LoadFile((Utility::ModuleDirectory() + "Managers.xml").c_str());
+    ObjectManagers::SetManagersXml(docMgr.RootElement());
+
+    std::list<GLibrary*> lsLib;
+    if (!LoadConfig(Utility::ModuleDirectory()+"config.xml", lsLib))
+        return -1;
+
+    while (sSockMgr->IsRun())
+    {
+#if defined _WIN32 || defined _WIN64
+        if (_kbhit() > 0)
+        {
+            int ch = _getch();
+            if (ch == 27)
+                sSockMgr->Exit();
+        }
+#endif //defined _WIN32 || defined _WIN64
+        sSockMgr->Poll(50);
+    }
+    delete sSockMgr;
     for (auto itr : lsLib)
     {
         if (itr)
