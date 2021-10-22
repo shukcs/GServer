@@ -16,9 +16,9 @@ class MailMessage : public IMessage
 {
     CLASS_INFO(MailMessage)
 public:
-    SHARED_MAIL MailMessage(IObject *sender,  const std::string &rcv);
-    SHARED_MAIL MailMessage(IObjectManager *sender, const std::string &rcv);
-    SHARED_MAIL MailMessage(const std::string &sender, int tpSend, const std::string &rcv);
+    SHARED_MAIL MailMessage(IObject *sender,  const std::string &rcv="");
+    SHARED_MAIL MailMessage(IObjectManager *sender, const std::string &rcv="");
+    SHARED_MAIL MailMessage(const std::string &sender, int tpSend, const std::string &rcv="");
 
     SHARED_MAIL void SetTitle(const std::string &tt);
     SHARED_MAIL void SetBody(const std::string &tt);

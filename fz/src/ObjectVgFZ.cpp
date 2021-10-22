@@ -256,7 +256,7 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
     }
 
     if (GetAuth(IObject::Type_GetPswd))
-        ackGetPswd(msg);
+        forGetPswd(msg);
     else
         ackLogin(msg);
 
@@ -425,7 +425,7 @@ bool ObjectVgFZ::ackLogin(const DBMessage &msg)
     return bLogin;
 }
 
-void ObjectVgFZ::ackGetPswd(const DBMessage &msg)
+void ObjectVgFZ::forGetPswd(const DBMessage &msg)
 {
     int idx = msg.IndexofSql("queryFZInfo");
     string email = m_email;
@@ -528,7 +528,7 @@ bool ObjectVgFZ::CheckMail(const std::string &str)
         mailMsg->SetSeq(m_seq);
         mailMsg->SetMailTo(m_email);
         mailMsg->SetTitle("AirSim user password");
-        mailMsg->SetBody("User: " + GetObjectID() + "\r\nPassword: " + m_pswd);
+        mailMsg->SetBody("User: " + GetObjectID() + "\r\nPassword: " + m_pswd + "\n");
         SendMsg(mailMsg);
     }
     return true;

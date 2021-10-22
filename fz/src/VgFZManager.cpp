@@ -178,9 +178,9 @@ IObject *VgFZManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewFZUser
 
     if (o)
     {
+        o->SetAuth(IObject::Type_ReqNewUser);
         o->SetCheck(Utility::RandString());
         o->_checkFZ(userId, msg->seqno());
-        o->SetAuth(IObject::Type_ReqNewUser);
     }
     return o;
 }
@@ -207,8 +207,8 @@ IObject * VgFZManager::prcsPostGetFZPswd(ISocket *s, const PostGetFZPswd *msg)
     if (o)
     {
         o->SetAuth(IObject::Type_GetPswd);
-        o->CheckMail(msg->email());
         o->m_seq = msg->seqno();
+        o->CheckMail(msg->email());
     }
     return o;
 }

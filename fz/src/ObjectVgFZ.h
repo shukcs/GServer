@@ -66,7 +66,7 @@ protected:
     void processMailRslt(const MailRsltMessage &msg);
 
     bool ackLogin(const DBMessage &msg);
-    void ackGetPswd(const DBMessage &msg);
+    void forGetPswd(const DBMessage &msg);
     void InitObject();
     void CheckTimer(uint64_t ms, char *buf, int len);
     bool IsAllowRelease()const;
