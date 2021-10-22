@@ -60,7 +60,7 @@ const char *ObjectMail::SendMail(const MailMessage &msg)
 
       //add message_id by cdevelop@qq.com
     char message_id[256];
-    snprintf(message_id, sizeof(message_id), "Message-ID: <%lld@%s>", Utility::msTimeTick(), m_id.c_str());
+    snprintf(message_id, sizeof(message_id), "Message-ID: <%ld@%s>", Utility::msTimeTick(), m_id.c_str());
     quickmail_add_header(mailobj, message_id);
     if (!quickmail_get_from(mailobj))
         return "Invalid command line parameters";
