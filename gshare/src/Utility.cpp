@@ -29,16 +29,34 @@
 #define MAX_PATH 1024
 #endif
 
+enum {
+    Utf8_Byte1 = 0x00000080,
+    Utf8_Byte2 = 0x00000800,
+    Utf8_Byte3 = 0x00010000,
+    Utf8_Byte4 = 0x00200000,
+    Utf8_Byte5 = 0x04000000,
+    Utf8_Byte6 = 0x80000000,
+
+    Utf8Head_1Byte = 0b10000000,
+    Utf8Head_2Byte = 0b11000000,
+    Utf8Head_3Byte = 0b11100000,
+    Utf8Head_4Byte = 0b11110000,
+    Utf8Head_5Byte = 0b11111000,
+    Utf8Head_6Byte = 0b11111100,
+
+    Utf8Mask_1Byte = 0b11000000,
+    Utf8Mask_2Byte = 0b11100000,
+    Utf8Mask_3Byte = 0b11110000,
+    Utf8Mask_4Byte = 0b11111000,
+    Utf8Mask_5Byte = 0b11111100,
+    Utf8Mask_6Byte = 0b11111110,
+};
+
 union FlagEnddian
 {
     int     nFlag;
     char    cData;
 };
-
-using namespace std::chrono;
-#ifdef SOCKETS_NAMESPACE
-using namespace SOCKETS_NAMESPACE;
-#endif
 
 #define MAX_STACK_FRAMES   128
 // defines for the random number generator
@@ -54,7 +72,11 @@ enum
     UperSpace = 'a' - 'A',
 }; 
 
+#ifdef SOCKETS_NAMESPACE
+using namespace SOCKETS_NAMESPACE;
+#endif
 using namespace std;
+using namespace std::chrono;
 // statics
 static const char *sRandStrTab = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm0123456789";
 static string s_hostName;
@@ -83,6 +105,16 @@ static uint32_t str2ipv4(const string &ip)
     return u.l;
 }
 
+static bool isUtf8(const uint8_t *str, size_t len)
+{
+    for (size_t i = 0; i < len; ++i)
+    {
+        if (Utf8Head_1Byte != (Utf8Mask_1Byte & str[i]))
+            return false;
+    }
+
+    return true;
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //namespace Utility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1172,6 +1204,68 @@ string Utility::ToString(double d)
 	return tmp;
 }
 
+int Utility::Utf8Length(const std::wstring &str)
+{
+    int ret = 0;
+    size_t nLen = str.length();
+    for (size_t i = 0; i < nLen; ++i)
+    {
+        wchar_t cTmp = str[i];
+        if (cTmp < Utf8_Byte1)
+            ret++;
+        else if (cTmp >= Utf8_Byte1 && cTmp < Utf8_Byte2)
+            ret += 2;
+        else if (cTmp >= Utf8_Byte2 && cTmp < Utf8_Byte3)
+            ret += 3;
+        else if (cTmp >= Utf8_Byte3 && cTmp < Utf8_Byte4)
+            ret += 4;
+        else if (cTmp >= Utf8_Byte4 && cTmp < Utf8_Byte5)
+            ret += 5;
+        else if (cTmp >= Utf8_Byte5 && cTmp < Utf8_Byte6)
+            ret += 6;
+        else
+            return -1;
+    }
+    return ret;
+}
+
+int Utility::UnicodeLength(const string & utf8)
+{
+    int ret = 0;
+    auto nCount = utf8.length();
+    auto pStr = utf8.c_str();
+
+    for (size_t i = 0; i < nCount; ++i)
+    {
+        if (pStr[i] < 0x80)
+        {
+            ++ret;
+            continue;
+        }
+        
+        int nCheck = 0;
+        if ((pStr[i] & Utf8Mask_2Byte) == Utf8Head_2Byte)
+            nCheck = 1;
+        else if ((pStr[i] & Utf8Mask_3Byte) == Utf8Head_3Byte)
+            nCheck = 2;
+        else if ((pStr[i] & Utf8Mask_4Byte) == Utf8Head_4Byte)
+            nCheck = 3;
+        else if ((pStr[i] & Utf8Mask_5Byte) == Utf8Head_5Byte)
+            nCheck = 4;
+        else if ((pStr[i] & Utf8Mask_6Byte) == Utf8Head_6Byte)
+            nCheck = 5;
+        else
+            return -1;
+
+        if (i+nCheck >= nCount || !isUtf8((const uint8_t*)pStr + i + 1, nCheck))
+            return -1;
+
+        ret++;
+        i+= nCheck;
+    }
+    return ret;
+}
+
 wstring Utility::Utf8ToUnicode(const string & str)
 {
     size_t nCount  = str.length();
@@ -1189,7 +1283,7 @@ wstring Utility::Utf8ToUnicode(const string & str)
                 if (0xc0 == (str[i] & 0xE0))
                 {
                     nDecBt = 1;
-                    wchar_t c = (short)str[i] << 6;
+                    wchar_t c = (wchar_t)str[i] << 6;
                     strUnicode[nRst] = c & 0x07c0;
                 }
                 else if (0xE0 == (str[i] & 0xF0))
@@ -1227,29 +1321,58 @@ wstring Utility::Utf8ToUnicode(const string & str)
 
 string Utility::UnicodeToUtf8(const std::wstring &str)
 {
-    size_t nLen = str.length();
+    size_t nLen = Utf8Length(str);
+    if (nLen < 0)
+        return string();
+
     string ret;
-    ret.resize(nLen * 3 + 1);
-    if (ret.size() >= nLen * 3 + 1)
+    ret.resize(nLen + 1);
+    if (ret.size() >= nLen+1)
     {
         char *strUtf8 = &ret.at(0);
         int nRst = 0;
         short nDecBt = 0;
-        for (size_t i = 0; i < nLen; ++i)
+        for (size_t i = 0; i < str.length(); ++i)
         {
             wchar_t cTmp = str[i];
             if (!nDecBt)
             {
-                if (cTmp < 0x80)
+                if (cTmp < Utf8_Byte1)
+                {
                     strUtf8[nRst++] = char(cTmp);
-                else if (cTmp >= 0x80 && cTmp < 0x07ff)
+                }
+                else if (cTmp >= Utf8_Byte1 && cTmp < Utf8_Byte2)
                 {
                     strUtf8[nRst++] = 0xc0 | ((cTmp >> 6) & 0x1f);
                     strUtf8[nRst++] = 0x80 | (cTmp & 0x3f);
                 }
-                else if (cTmp > 0x07ff)
+                else if (cTmp >= Utf8_Byte2 && cTmp < Utf8_Byte3)
                 {
                     strUtf8[nRst++] = 0xe0 | ((cTmp >> 12) & 0x0f);
+                    strUtf8[nRst++] = 0x80 | ((cTmp >> 6) & 0x3f);
+                    strUtf8[nRst++] = 0x80 | (cTmp & 0x3f);
+                }
+                else if (cTmp >= Utf8_Byte3 && cTmp < Utf8_Byte4)
+                {
+                    strUtf8[nRst++] = 0xf0 | ((cTmp >> 18) & 0x07);
+                    strUtf8[nRst++] = 0x80 | ((cTmp >> 12) & 0x3f);
+                    strUtf8[nRst++] = 0x80 | ((cTmp >> 6) & 0x3f);
+                    strUtf8[nRst++] = 0x80 | (cTmp & 0x3f);
+                }
+                else if (cTmp >= Utf8_Byte4 && cTmp < Utf8_Byte5)
+                {
+                    strUtf8[nRst++] = 0xf8 | ((cTmp >> 24) & 0x03);
+                    strUtf8[nRst++] = 0x80 | ((cTmp >> 18) & 0x3F);
+                    strUtf8[nRst++] = 0x80 | ((cTmp >> 12) & 0x3f);
+                    strUtf8[nRst++] = 0x80 | ((cTmp >> 6) & 0x3f);
+                    strUtf8[nRst++] = 0x80 | (cTmp & 0x3f);
+                }
+                else if (cTmp >= Utf8_Byte5)
+                {
+                    strUtf8[nRst++] = 0xfc | ((cTmp >> 30) & 0x01);
+                    strUtf8[nRst++] = 0x80 | ((cTmp >> 24) & 0x3F);
+                    strUtf8[nRst++] = 0x80 | ((cTmp >> 18) & 0x3F);
+                    strUtf8[nRst++] = 0x80 | ((cTmp >> 12) & 0x3f);
                     strUtf8[nRst++] = 0x80 | ((cTmp >> 6) & 0x3f);
                     strUtf8[nRst++] = 0x80 | (cTmp & 0x3f);
                 }

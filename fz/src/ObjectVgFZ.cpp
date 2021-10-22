@@ -897,6 +897,7 @@ bool ObjectVgFZ::_saveInfo(const FZInfo &info)
 
     if (auto *msgDB = new DBMessage(this))
     {
+        msgDB->SetSql("changeUser");
         msgDB->SetCondition("user", GetObjectID());
         if (m_info != str)
         {

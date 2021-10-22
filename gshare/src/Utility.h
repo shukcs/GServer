@@ -41,6 +41,8 @@ namespace Utility
     SHARED_DECL int64_t timeStamp(int y, int m=1, int d=1, int h=0, int nM=0, int s=0, int ms=0);
 
     //utf8 utf16 local8bit相互转换，linux Unicode为32位
+    SHARED_DECL int Utf8Length(const std::wstring &str);
+    SHARED_DECL int UnicodeLength(const std::string &utf8);
     SHARED_DECL std::wstring Utf8ToUnicode(const std::string & str);
     SHARED_DECL std::string UnicodeToUtf8(const std::wstring &str);
     /** Utf8 decrypt, encrypt. */
