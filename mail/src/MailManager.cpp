@@ -59,9 +59,8 @@ const char *ObjectMail::SendMail(const MailMessage &msg)
     quickmail_add_body_memory(mailobj, NULL, &body.at(0), body.size(), 0);
 
       //add message_id by cdevelop@qq.com
-    char message_id[256];
-    snprintf(message_id, sizeof(message_id), "Message-ID: <%ld@%s>", Utility::msTimeTick(), m_id.c_str());
-    quickmail_add_header(mailobj, message_id);
+    auto message_id = "Message-ID: <" + Utility::bigint2string(Utility::msTimeTick()) + "@" + m_id + ">";
+    quickmail_add_header(mailobj, message_id.c_str());
     if (!quickmail_get_from(mailobj))
         return "Invalid command line parameters";
 
