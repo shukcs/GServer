@@ -37,19 +37,26 @@ enum {
     Utf8_Byte5 = 0x04000000,
     Utf8_Byte6 = 0x80000000,
 
-    Utf8Head_1Byte = 0b10000000,
+    Utf8Head_Commom = 0b10000000,
     Utf8Head_2Byte = 0b11000000,
     Utf8Head_3Byte = 0b11100000,
     Utf8Head_4Byte = 0b11110000,
     Utf8Head_5Byte = 0b11111000,
     Utf8Head_6Byte = 0b11111100,
 
-    Utf8Mask_1Byte = 0b11000000,
+    Utf8Mask_Commom = 0b11000000,
     Utf8Mask_2Byte = 0b11100000,
     Utf8Mask_3Byte = 0b11110000,
     Utf8Mask_4Byte = 0b11111000,
     Utf8Mask_5Byte = 0b11111100,
     Utf8Mask_6Byte = 0b11111110,
+
+    Utf8DataMask_Common = 0B111111,
+    Utf8DataMask_2 = 0B11111,
+    Utf8DataMask_3 = 0B1111,
+    Utf8DataMask_4 = 0B111,
+    Utf8DataMask_5 = 0B11,
+    Utf8DataMask_6 = 0B1,
 };
 
 union FlagEnddian
@@ -109,7 +116,7 @@ static bool isUtf8(const uint8_t *str, size_t len)
 {
     for (size_t i = 0; i < len; ++i)
     {
-        if (Utf8Head_1Byte != (Utf8Mask_1Byte & str[i]))
+        if (Utf8Head_Commom != (Utf8Mask_Commom & str[i]))
             return false;
     }
 
@@ -1207,10 +1214,12 @@ string Utility::ToString(double d)
 int Utility::Utf8Length(const std::wstring &str)
 {
     int ret = 0;
-    size_t nLen = str.length();
-    for (size_t i = 0; i < nLen; ++i)
+    for (size_t i = 0; i < str.length(); ++i)
     {
-        wchar_t cTmp = str[i];
+        uint32_t cTmp = 0xffffffff & str[i];
+        if (cTmp & Utf8_Byte6)
+            return -1;
+
         if (cTmp < Utf8_Byte1)
             ret++;
         else if (cTmp >= Utf8_Byte1 && cTmp < Utf8_Byte2)
@@ -1223,9 +1232,8 @@ int Utility::Utf8Length(const std::wstring &str)
             ret += 5;
         else if (cTmp >= Utf8_Byte5 && cTmp < Utf8_Byte6)
             ret += 6;
-        else
-            return -1;
     }
+
     return ret;
 }
 
@@ -1233,11 +1241,10 @@ int Utility::UnicodeLength(const string & utf8)
 {
     int ret = 0;
     auto nCount = utf8.length();
-    auto pStr = utf8.c_str();
-
+    auto pStr = (const uint8_t *)utf8.c_str();
     for (size_t i = 0; i < nCount; ++i)
     {
-        if (pStr[i] < 0x80)
+        if (pStr[i] < Utf8Head_Commom)
         {
             ++ret;
             continue;
@@ -1257,63 +1264,65 @@ int Utility::UnicodeLength(const string & utf8)
         else
             return -1;
 
-        if (i+nCheck >= nCount || !isUtf8((const uint8_t*)pStr + i + 1, nCheck))
+        if (i+nCheck >= nCount || !isUtf8(pStr + i + 1, nCheck))
             return -1;
 
         ret++;
         i+= nCheck;
     }
+
     return ret;
 }
 
 wstring Utility::Utf8ToUnicode(const string & str)
 {
-    size_t nCount  = str.length();
+    size_t nCount = UnicodeLength(str);
     wstring ret;
-    ret.resize(nCount + 1);
-    if (ret.size() >= nCount + 1)
+    ret.resize(nCount);
+    if (ret.size() >= nCount)
     {
         wchar_t *strUnicode = &ret.front();
         int nRst = 0;
         short nDecBt = 0;
-        for (size_t i = 0; i < nCount; ++i)
+        for (size_t i = 0; i < str.length(); ++i)
         {
             if (!nDecBt)
             {
-                if (0xc0 == (str[i] & 0xE0))
-                {
-                    nDecBt = 1;
-                    wchar_t c = (wchar_t)str[i] << 6;
-                    strUnicode[nRst] = c & 0x07c0;
-                }
-                else if (0xE0 == (str[i] & 0xF0))
-                {
-                    nDecBt = 2;
-                    wchar_t c = (short)str[i] << 12;
-                    strUnicode[nRst] = 0xf000 & c;
-                }
-                else
+                if(0 == (str[i] & Utf8Head_Commom))
                 {
                     strUnicode[nRst++] = str[i];
                 }
+                else if (Utf8Head_2Byte == (str[i] & Utf8Mask_2Byte))
+                {
+                    nDecBt = 1;
+                    strUnicode[nRst++] = (Utf8DataMask_2 & str[i]) << 6;
+                }
+                else if (Utf8Head_3Byte == (str[i] & Utf8Mask_3Byte))
+                {
+                    nDecBt = 2;
+                    strUnicode[nRst++] = (Utf8DataMask_3 & str[i]) << 12;
+                }
+                else if (Utf8Head_4Byte == (str[i] & Utf8Mask_4Byte))
+                {
+                    nDecBt = 3;
+                    strUnicode[nRst++] = (Utf8DataMask_4 & str[i]) << 12;
+                }
+                else if (Utf8Head_5Byte == (str[i] & Utf8Mask_5Byte))
+                {
+                    nDecBt = 4;
+                    strUnicode[nRst++] = (Utf8DataMask_5 & str[i]) << 12;
+                }
+                else if (Utf8Head_6Byte == (str[i] & Utf8Mask_6Byte))
+                {
+                    nDecBt = 5;
+                    strUnicode[nRst++] = (Utf8DataMask_6 & str[i]) << 12;
+                }
             }
-            else if (nDecBt == 2 && 0x80 == (str[i] & 0xc0))
+            else if (nDecBt-- > 0)
             {
-                --nDecBt;
-                wchar_t c = (short)str[i] << 6;
-                strUnicode[nRst] |= 0x0fc0 & c;
-            }
-            else if (nDecBt == 1 && 0x80 == (str[i] & 0xc0))
-            {
-                --nDecBt;
-                strUnicode[nRst++] |= 0x3f & str[i];
-            }
-            else
-            {
-                return wstring();
+                strUnicode[nRst-1] |= (str[i] & Utf8DataMask_Common) << 6*nDecBt;
             }
         }
-        strUnicode[nRst] = 0;
         return ret;
     }
     return wstring();
@@ -1321,77 +1330,70 @@ wstring Utility::Utf8ToUnicode(const string & str)
 
 string Utility::UnicodeToUtf8(const std::wstring &str)
 {
+    string ret;
     size_t nLen = Utf8Length(str);
     if (nLen < 0)
+        return ret;
+
+    ret.resize(nLen);
+    if (ret.size() < nLen)
         return string();
 
-    string ret;
-    ret.resize(nLen + 1);
-    if (ret.size() >= nLen+1)
+    char *strUtf8 = &ret.front();
+    int nRst = 0;
+    for (size_t i = 0; i < str.length(); ++i)
     {
-        char *strUtf8 = &ret.at(0);
-        int nRst = 0;
-        short nDecBt = 0;
-        for (size_t i = 0; i < str.length(); ++i)
+        uint32_t cTmp = 0xffffffff &str[i];
+        uint8_t count = 0;
+        if (cTmp < Utf8_Byte1)
         {
-            wchar_t cTmp = str[i];
-            if (!nDecBt)
-            {
-                if (cTmp < Utf8_Byte1)
-                {
-                    strUtf8[nRst++] = char(cTmp);
-                }
-                else if (cTmp >= Utf8_Byte1 && cTmp < Utf8_Byte2)
-                {
-                    strUtf8[nRst++] = 0xc0 | ((cTmp >> 6) & 0x1f);
-                    strUtf8[nRst++] = 0x80 | (cTmp & 0x3f);
-                }
-                else if (cTmp >= Utf8_Byte2 && cTmp < Utf8_Byte3)
-                {
-                    strUtf8[nRst++] = 0xe0 | ((cTmp >> 12) & 0x0f);
-                    strUtf8[nRst++] = 0x80 | ((cTmp >> 6) & 0x3f);
-                    strUtf8[nRst++] = 0x80 | (cTmp & 0x3f);
-                }
-                else if (cTmp >= Utf8_Byte3 && cTmp < Utf8_Byte4)
-                {
-                    strUtf8[nRst++] = 0xf0 | ((cTmp >> 18) & 0x07);
-                    strUtf8[nRst++] = 0x80 | ((cTmp >> 12) & 0x3f);
-                    strUtf8[nRst++] = 0x80 | ((cTmp >> 6) & 0x3f);
-                    strUtf8[nRst++] = 0x80 | (cTmp & 0x3f);
-                }
-                else if (cTmp >= Utf8_Byte4 && cTmp < Utf8_Byte5)
-                {
-                    strUtf8[nRst++] = 0xf8 | ((cTmp >> 24) & 0x03);
-                    strUtf8[nRst++] = 0x80 | ((cTmp >> 18) & 0x3F);
-                    strUtf8[nRst++] = 0x80 | ((cTmp >> 12) & 0x3f);
-                    strUtf8[nRst++] = 0x80 | ((cTmp >> 6) & 0x3f);
-                    strUtf8[nRst++] = 0x80 | (cTmp & 0x3f);
-                }
-                else if (cTmp >= Utf8_Byte5)
-                {
-                    strUtf8[nRst++] = 0xfc | ((cTmp >> 30) & 0x01);
-                    strUtf8[nRst++] = 0x80 | ((cTmp >> 24) & 0x3F);
-                    strUtf8[nRst++] = 0x80 | ((cTmp >> 18) & 0x3F);
-                    strUtf8[nRst++] = 0x80 | ((cTmp >> 12) & 0x3f);
-                    strUtf8[nRst++] = 0x80 | ((cTmp >> 6) & 0x3f);
-                    strUtf8[nRst++] = 0x80 | (cTmp & 0x3f);
-                }
-            }
+            strUtf8[nRst++] = char(cTmp);
         }
-        strUtf8[nRst] = 0;
-        return ret;
+        else if (cTmp >= Utf8_Byte1 && cTmp < Utf8_Byte2)
+        {
+            strUtf8[nRst++] = Utf8Head_2Byte | ((cTmp >> 6) & Utf8DataMask_2);
+            count = 1;
+        }
+        else if (cTmp >= Utf8_Byte2 && cTmp < Utf8_Byte3)
+        {
+            strUtf8[nRst++] = Utf8Head_3Byte | ((cTmp >> 12) & Utf8DataMask_3);
+            count = 2;
+        }
+        else if (cTmp >= Utf8_Byte3 && cTmp < Utf8_Byte4)
+        {
+            strUtf8[nRst++] = Utf8Head_4Byte | ((cTmp >> 18) & Utf8DataMask_4);
+            count = 3;
+        }
+        else if (cTmp >= Utf8_Byte4 && cTmp < Utf8_Byte5)
+        {
+            strUtf8[nRst++] = Utf8Head_5Byte | ((cTmp >> 24) & Utf8DataMask_5);
+            count = 4;
+        }
+        else if (cTmp >= Utf8_Byte5)
+        {
+            strUtf8[nRst++] = Utf8Head_6Byte | ((cTmp >> 30) & Utf8DataMask_6);
+            count = 5;
+        }
+
+        for (auto k = 0; k < count; ++k)
+        {
+            strUtf8[nRst++] = Utf8Head_Commom | ((cTmp >> 6*(count-k-1)) & Utf8DataMask_Common);
+        }
     }
-    return string();
+    return ret;
 }
 
-string Utility::FromUtf8(const string& str)
+string Utility::FromUtf8(const string& str, const string &cd)
 {
     string ret;
     wstring unic = Utf8ToUnicode(str);
     if (unic.length())
     {
-        setlocale(LC_ALL, "");
-        size_t nLen = wcstombs(NULL, unic.c_str(), 0) + 1;
+        setlocale(LC_ALL, cd.c_str());
+        auto nLen = wcstombs(NULL, unic.c_str(), 0) ;
+        if (nLen > unic.length() * 6)///没有支持的字符集
+            return ret;
+
         ret.resize(nLen);
         if (ret.size() < nLen)
             return string();
@@ -1400,19 +1402,18 @@ string Utility::FromUtf8(const string& str)
         if (wcstombs(strRet, unic.c_str(), nLen) <= 0)
             return string();
 
-        strRet[nLen - 1] = 0;
         setlocale(LC_ALL, "C");
     }
     return ret;
 }
 
 // 110yyyxx 10xxxxxx	
-string Utility::ToUtf8(const string& str)
+string Utility::ToUtf8(const string& str, const string &cd)
 {
-    setlocale(LC_ALL, "");
     string ret;
-    size_t nBuff = mbstowcs(NULL, str.c_str(), 0) + 1;
-    if (nBuff > 0)
+    setlocale(LC_ALL, cd.c_str());
+    size_t nBuff = mbstowcs(NULL, str.c_str(), 0);
+    if (nBuff > 0 && nBuff<= str.length())///nBuff>str.length()，没有支持的字符集
     {
         wstring strUnic;
         strUnic.resize(nBuff);
@@ -1421,10 +1422,7 @@ string Utility::ToUtf8(const string& str)
 
         int nTmp = mbstowcs(&strUnic.front(), str.c_str(), nBuff);
         if (nTmp > 0)
-        {
-            strUnic.at(nBuff - 1) = 0;
             ret = UnicodeToUtf8(strUnic);
-        }
     }
     setlocale(LC_ALL, "C");
     return ret;

@@ -40,14 +40,14 @@ namespace Utility
     SHARED_DECL std::string dateString(int64_t ms, const std::string &fmt = "y-M-d h:m:s.z");
     SHARED_DECL int64_t timeStamp(int y, int m=1, int d=1, int h=0, int nM=0, int s=0, int ms=0);
 
-    //utf8 utf16 local8bit相互转换，linux Unicode为32位
+    //utf8 utf16 local8bit相互转换，linux Unicode为32位,linux 需指定转码;选择编码 sudo dpkg-reconfigure --force locales
     SHARED_DECL int Utf8Length(const std::wstring &str);
     SHARED_DECL int UnicodeLength(const std::string &utf8);
     SHARED_DECL std::wstring Utf8ToUnicode(const std::string & str);
     SHARED_DECL std::string UnicodeToUtf8(const std::wstring &str);
-    /** Utf8 decrypt, encrypt. */
-    SHARED_DECL std::string FromUtf8(const std::string&);
-    SHARED_DECL std::string ToUtf8(const std::string&);
+    SHARED_DECL std::string FromUtf8(const std::string&, const std::string &c = "zh_CN.GB2312");
+    SHARED_DECL std::string ToUtf8(const std::string&, const std::string &c= "zh_CN.GB2312");
+
     SHARED_DECL std::string Upper(const std::string&);
     SHARED_DECL std::string Lower(const std::string&);
     SHARED_DECL bool Compare(const std::string&, const std::string&, bool=true);
