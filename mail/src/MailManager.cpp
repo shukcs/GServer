@@ -8,11 +8,34 @@
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
 #endif
+
+class WSAInitializer // Winsock Initializer
+{
+public:
+    WSAInitializer()
+    {
+#if defined _WIN32 || defined _WIN64
+        WSADATA wsadata;
+        if (WSAStartup(MAKEWORD(2, 2), &wsadata))
+        {
+            exit(-1);
+        }
+#endif //defined _WIN32 || defined _WIN64
+    }
+    ~WSAInitializer()
+    {
+#if defined _WIN32 || defined _WIN64
+        WSACleanup();
+#endif //defined _WIN32 || defined _WIN64
+    }
+private:
+};
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //ObjectMail
 ////////////////////////////////////////////////////////////////////////////////////////////////
 ObjectMail::ObjectMail(const std::string &id) : IObject(id), m_port(25), m_smtps(false)
 {
+    static WSAInitializer s;
 }
 
 ObjectMail::~ObjectMail()
@@ -39,7 +62,7 @@ bool ObjectMail::Parse(const TiXmlElement &e)
     return !m_user.empty() && !m_host.empty();
 }
 
-const char *ObjectMail::SendMail(const MailMessage &msg)
+const char *ObjectMail::SendMail(const MailMessage &msg, bool bLog)
 {
     if (msg.GetMailTo().empty())
         return "No destinate e-mail";
@@ -48,10 +71,6 @@ const char *ObjectMail::SendMail(const MailMessage &msg)
     auto mailobj = quickmail_create(NULL, NULL);
     quickmail_set_from(mailobj, GetObjectID().c_str());
     quickmail_add_to(mailobj, msg.GetMailTo().c_str());
-#ifdef _DEBUG
-    quickmail_set_debug_log(mailobj, stdout);
-#endif
-
     quickmail_set_subject(mailobj, msg.GetTitle().c_str());
     auto body = msg.GetBody();
 
@@ -61,6 +80,8 @@ const char *ObjectMail::SendMail(const MailMessage &msg)
       //add message_id by cdevelop@qq.com
     auto message_id = "Message-ID: <" + Utility::bigint2string(Utility::msTimeTick()) + "@" + m_id + ">";
     quickmail_add_header(mailobj, message_id.c_str());
+    if (bLog)
+        quickmail_set_debug_log(mailobj, stdout);
     if (!quickmail_get_from(mailobj))
         return "Invalid command line parameters";
 

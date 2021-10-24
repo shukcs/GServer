@@ -15,7 +15,7 @@ public:
     ~ObjectMail();
 
     bool Parse(const TiXmlElement &e);
-    const char *SendMail(const MailMessage &msg);
+    const char *SendMail(const MailMessage &msg, bool bLog = false);
     static ObjectMail *ParseMaill(const TiXmlElement &e);
     static TypeObject MailType();
 protected:
