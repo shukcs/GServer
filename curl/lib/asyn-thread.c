@@ -78,6 +78,7 @@
 #include "curl_printf.h"
 #include "curl_memory.h"
 #include "memdebug.h"
+#include "select.h"
 
 struct resdata {
   struct curltime start;

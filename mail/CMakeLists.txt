@@ -29,9 +29,9 @@ set_target_properties(
 	${PACKAGE_NAME}
 )
 
-target_link_libraries(${PACKAGE_NAME} curl)
 target_link_libraries(${PACKAGE_NAME} gshare)
 target_link_libraries(${PACKAGE_NAME} tinyxml)
+target_link_libraries(${PACKAGE_NAME} curl)
 
 #install(
 #	TARGETS
