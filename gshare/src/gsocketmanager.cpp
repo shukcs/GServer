@@ -309,11 +309,12 @@ bool GSocketManager::SetNonblocking(ISocket *sock)
     int h = sock ? sock->GetSocketHandle() : -1;
     if (-1 == h)
         return false;
+
+    unsigned long ul = 1;
 #if defined _WIN32 || defined _WIN64
-    unsigned long ul=1;
     if(SOCKET_ERROR == ioctlsocket(h, FIONBIO, &ul))
 #else
-    if (0 != ioctl(h, FIONBIO, 1))//设置成非阻塞模式；
+    if (0 != ioctl(h, FIONBIO, &ul))//设置成非阻塞模式；
 #endif
         return false;
     return true;

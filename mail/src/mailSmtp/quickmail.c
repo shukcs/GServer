@@ -1036,6 +1036,7 @@ const char* quickmail_protocol_send (quickmail mailobj, const char* smtpserver, 
       curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
       curl_easy_setopt(curl, CURLOPT_STDERR, mailobj->debuglog);
     }
+    curl_easy_setopt(curl, CURLOPT_TIMEOUT, 10);//接收数据时超时设置，如果10秒内数据未接收完，直接退出
     //send the message
     result = curl_easy_perform(curl);
     //free the list of recipients and clean up

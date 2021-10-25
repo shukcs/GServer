@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <document>
 	<DBManager>
-		<Object name="DBGS" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
+		<Object name="DBGS" user="root" pswd="NIhao666" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
 			<Tables>
 				<table name="GSInfo">
 					<field name="user" type="char(32)" constraint="primary key"/>
@@ -281,7 +281,7 @@
 				</Trigger>
 			</Triggers-->
 		</Object>
-		<Object name="DBUav" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
+		<Object name="DBUav" user="root" pswd="NIhao666" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
 			<Tables>
 				<table name="UavInfo">
 					<field name="id" type="char(16)" constraint="primary key"/>
@@ -337,7 +337,7 @@
 				</SQL>
 			</SQLs>
 		</Object>
-		<Object name="DBLog" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
+		<Object name="DBLog" user="root" pswd="NIhao666" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
 			<Tables>
 				<table name="eventLog">
 					<field name="id" type="BIGINT" constraint="primary key;auto_increment"/>
@@ -358,7 +358,7 @@
 				</SQL>
 			</SQLs>
 		</Object>
-		<Object name="DBFz" user="root" pswd="" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
+		<Object name="DBFz" user="root" pswd="NIhao666" host="127.0.0.1" port="3306" database="gsuav" charSet="utf8">
 			<Tables>
 				<table name="FZInfo">
 					<field name="user" type="char(32)" constraint="primary key"/>
@@ -470,7 +470,7 @@
 		<Object id="admin" pswd="admin123" auth="3" />
 	</GSManager>
 	<MailManager>
-		<Object name="hsj8262@163.com" user="hsj8262@163.com" password="ttailu_123" host="smtp.163.com" />
+		<Object name="hsj8262@163.com" user="hsj8262@163.com" password="ttailu_123" host="smtp.163.com" port="465"/>
 	</MailManager>
 	<GVManager thread="2" buff="6144" >
 		<Object id="root" pswd="NIhao666" auth="7" />
