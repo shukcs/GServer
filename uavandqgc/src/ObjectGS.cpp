@@ -153,7 +153,7 @@ void ObjectGS::ProcessMessage(const IMessage *msg)
         case IMessage::DeviceAllocationRslt:
         case IMessage::PushUavSndInfo:
         case IMessage::ControlUser:
-            CopyAndSend(*((GSOrUavMessage *)msg)->GetProtobuf());
+            processControlUser(*((GSOrUavMessage *)msg)->GetProtobuf());
             break;
         case IMessage::User2User:
         case IMessage::User2UserAck:
@@ -300,6 +300,13 @@ void ObjectGS::processGs2Gs(const Message &msg, int tp)
     }
 
     CopyAndSend(msg);
+}
+
+
+void ObjectGS::processControlUser(const Message &msg)
+{
+    if (!GetAuth(Type_Manager) || msg.GetDescriptor()->full_name() == d_p_ClassName(PostStatus2GroundStation))
+        CopyAndSend(msg);
 }
 
 void ObjectGS::processBind(const DBMessage &msg)
@@ -982,9 +989,15 @@ void ObjectGS::_prcsReqBind(const RequestBindUav&msg)
     if (GetAuth(Type_Manager) && !msg.uavid().empty())
     {
         if (msg.opid() == 1)
+        { 
             Subcribe(msg.uavid(), IMessage::PushUavSndInfo);
+            Subcribe(msg.uavid(), IMessage::ControlUser);
+        }
         else if (msg.opid() == 0)
+        { 
             Unsubcribe(msg.uavid(), IMessage::PushUavSndInfo);
+            Unsubcribe(msg.uavid(), IMessage::ControlUser);
+        }
     }
 
     saveBind(msg.uavid(), msg.opid() == 1);
@@ -992,7 +1005,7 @@ void ObjectGS::_prcsReqBind(const RequestBindUav&msg)
 
 void ObjectGS::_prcsControl2Uav(das::proto::PostControl2Uav *msg)
 {
-    if (!msg)
+    if (!msg || GetAuth(Type_Manager))
         return;
 
     if (GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid()))
@@ -1077,7 +1090,7 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
 
 void ObjectGS::_prcsReqLand(RequestParcelDescriptions *msg)
 {
-    if (!msg || (!msg->has_registerid() && !msg->has_pdid()))
+    if (GetAuth(Type_Manager) || !msg || (!msg->has_registerid() && !msg->has_pdid()))
         return;
 
     DBMessage *db = new DBMessage(this, IMessage::LandQueryRslt);

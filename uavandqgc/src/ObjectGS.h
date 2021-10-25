@@ -63,6 +63,7 @@ protected:
     void PrcsProtoBuff(uint64_t);
 
     void processGs2Gs(const google::protobuf::Message &msg, int tp);
+    void processControlUser(const google::protobuf::Message &msg);
     void processBind(const DBMessage &msg);
     void processUavsInfo(const DBMessage &msg);
     void processSuspend(const DBMessage &msg);
