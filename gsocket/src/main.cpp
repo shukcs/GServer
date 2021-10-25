@@ -10,7 +10,6 @@
 #endif //defined _WIN32 || defined _WIN64
 #include "ILog.h"
 #include "tinyxml.h"
-#include "MailMessages.h"
 
 static ISocketManager *sSockMgr = NULL;
 static void dump(int signo)
@@ -73,7 +72,6 @@ bool LoadConfig(const std::string &file, std::list<GLibrary*> &lsLib)
             }
         }
     }
-    MailMessage msg("", 0);
     return sSockMgr != NULL;
 }
 

@@ -31,7 +31,10 @@ set_target_properties(
 
 target_link_libraries(${PACKAGE_NAME} gshare)
 target_link_libraries(${PACKAGE_NAME} tinyxml)
-target_link_libraries(${PACKAGE_NAME} curl)
+target_link_libraries(${PACKAGE_NAME} libcurl.a)
+target_link_libraries(${PACKAGE_NAME} ssl)
+target_link_libraries(${PACKAGE_NAME} crypto)
+target_link_libraries(${PACKAGE_NAME} z)
 
 #install(
 #	TARGETS

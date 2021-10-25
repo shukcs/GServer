@@ -7,7 +7,6 @@ include_directories(
 	../src/
 	../gshare/src
 	../tinyxml
-	../mail/src
 )
 
 
@@ -25,8 +24,6 @@ set_target_properties(
 
 target_link_libraries(${PACKAGE_NAME} tinyxml)
 target_link_libraries(${PACKAGE_NAME} gshare)
-target_link_libraries(${PACKAGE_NAME} dl)
-target_link_libraries(${PACKAGE_NAME} mail)
 #install(
 #	TARGETS
 #	${PACKAGE_NAME}
