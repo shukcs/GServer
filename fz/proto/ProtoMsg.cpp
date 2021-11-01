@@ -41,6 +41,7 @@ google::protobuf::Message *PBAbSFactoryItem::createMessage(const string &name)
     DeclareRcvPB(PostFZInfo);
     DeclareRcvPB(RequestFZInfo);
     DeclareRcvPB(PostGetFZPswd);
+    DeclareRcvPB(PostChangeFZPswd);
 
     auto itr = s_MapPbCreate.find(name);
     if (itr != s_MapPbCreate.end())

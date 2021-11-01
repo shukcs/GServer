@@ -212,6 +212,8 @@ void ObjectVgFZ::PrcsProtoBuff(uint64_t ms)
         _prcsRequestFZInfo(*(RequestFZInfo *)m_p->GetProtoMessage());
     else if (strMsg == d_p_ClassName(PostGetFZPswd))
         _prcsPostGetFZPswd(*(PostGetFZPswd *)m_p->GetProtoMessage());
+    else if (strMsg == d_p_ClassName(PostChangeFZPswd))
+        _prcsPostChangeFZPswd(*(PostChangeFZPswd *)m_p->GetProtoMessage());
 
     if (m_stInit == IObject::Initialed)
         m_tmLastInfo = ms;
@@ -876,6 +878,33 @@ void ObjectVgFZ::_prcsRequestFZInfo(const RequestFZInfo &msg)
 void ObjectVgFZ::_prcsPostGetFZPswd(const PostGetFZPswd &)
 {
     return;
+}
+
+void ObjectVgFZ::_prcsPostChangeFZPswd(const das::proto::PostChangeFZPswd &msg)
+{
+    int rslt = 1;
+    if (!GetAuth(IObject::Type_Common))
+        rslt = -2;
+    else if (GetAuth(IObject::Type_Manager))
+        rslt = -1;
+    else if (!msg.has_old() || msg.has_pswd() || msg.old() != m_pswd)
+        rslt = 0;
+
+    auto *msgDB = rslt == 1 ? new DBMessage(this) : NULL;
+    if (msgDB)
+    {
+        msgDB->SetSql("changeUser");
+        msgDB->SetCondition("user", GetObjectID());
+        msgDB->SetWrite("pswd", msg.pswd());
+        SendMsg(msgDB);
+    }
+
+    if (auto ack = new AckChangeFZPswd)
+    {
+        ack->set_seqno(msg.seqno());
+        ack->set_result(rslt);
+        WaitSend(ack);
+    }
 }
 
 bool ObjectVgFZ::_saveInfo(const FZInfo &info)

@@ -19,6 +19,7 @@ namespace das {
         class PostFZInfo;
         class RequestFZInfo;
         class PostGetFZPswd;
+        class PostChangeFZPswd;
     }
 }
 class FWItem;
@@ -86,6 +87,7 @@ private:
     void _prcsPostFZInfo(const das::proto::PostFZInfo &msg);
     void _prcsRequestFZInfo(const das::proto::RequestFZInfo &msg);
     void _prcsPostGetFZPswd(const das::proto::PostGetFZPswd &msg);
+    void _prcsPostChangeFZPswd(const das::proto::PostChangeFZPswd &msg);
 private:
     bool _saveInfo(const das::proto::FZInfo &info);
     void _checkFZ(const std::string &user, int ack);
