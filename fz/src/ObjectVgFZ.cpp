@@ -893,9 +893,10 @@ void ObjectVgFZ::_prcsPostChangeFZPswd(const das::proto::PostChangeFZPswd &msg)
     auto *msgDB = rslt == 1 ? new DBMessage(this) : NULL;
     if (msgDB)
     {
+        m_pswd = msg.pswd();
         msgDB->SetSql("changeUser");
         msgDB->SetCondition("user", GetObjectID());
-        msgDB->SetWrite("pswd", msg.pswd());
+        msgDB->SetWrite("pswd", m_pswd);
         SendMsg(msgDB);
     }
 
