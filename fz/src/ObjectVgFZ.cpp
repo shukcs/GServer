@@ -882,13 +882,13 @@ void ObjectVgFZ::_prcsPostGetFZPswd(const PostGetFZPswd &)
 
 void ObjectVgFZ::_prcsPostChangeFZPswd(const das::proto::PostChangeFZPswd &msg)
 {
-    int rslt = 1;
+    int rslt = 0;
     if (!GetAuth(IObject::Type_Common))
         rslt = -2;
     else if (GetAuth(IObject::Type_Manager))
         rslt = -1;
-    else if (!msg.has_old() || msg.has_pswd() || msg.old() != m_pswd)
-        rslt = 0;
+    else if (msg.has_old() && msg.has_pswd() && msg.old() == m_pswd)
+        rslt = 1;
 
     auto *msgDB = rslt == 1 ? new DBMessage(this) : NULL;
     if (msgDB)
