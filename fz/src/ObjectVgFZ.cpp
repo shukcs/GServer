@@ -547,7 +547,7 @@ void ObjectVgFZ::SetPcsn(const std::string &str)
     {
         if (!GetAuth(Type_Manager))
         {
-            m_pcsn = Utility::FindString(str, "O.E.M") >= 0 ? "O.E.M" : str;
+            m_pcsn = str;// Utility::FindString(str, "O.E.M") >= 0 ? "O.E.M" : str;
             if (Initialed == m_stInit)
             {
                 m_ver = -1;
@@ -772,7 +772,7 @@ void ObjectVgFZ::_prcsSWRegist(SWRegist *pb)
     if (!pb)
         return;
 
-    m_pcsn = Utility::FindString(m_pcsn, "O.E.M") >= 0 ? "O.E.M": pb->pcsn();
+    m_pcsn = pb->pcsn();// Utility::FindString(pb->pcsn(), "O.E.M") >= 0 ? "O.E.M" : pb->pcsn();
     if (m_pcsn.empty() || m_pcsn=="O.E.M")
     {
         if (auto ack = new AckSWRegist)
