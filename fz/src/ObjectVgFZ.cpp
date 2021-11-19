@@ -781,7 +781,7 @@ void ObjectVgFZ::_prcsSWRegist(SWRegist *pb)
             ack->set_seqno(pb->seqno());
             ack->set_result(-1);
             WaitSend(ack);
-            GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "PC %s register key:% fail!", m_pcsn.c_str(), pb->swkey().c_str());
+            GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "PC %s register key:%s fail!", m_pcsn.c_str(), pb->swkey().c_str());
         }
         return;
     }
