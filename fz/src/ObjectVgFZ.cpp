@@ -320,6 +320,7 @@ void ObjectVgFZ::processSWRegist(const DBMessage &msg)
     {
         ack->set_seqno(msg.GetSeqNomb());
         ack->set_result(bSuc ? 1 : 0);
+        GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "PC %s register %s", m_pcsn.c_str(), bSuc? "success":"fail");
         WaitSend(ack);
     }
 
@@ -780,6 +781,7 @@ void ObjectVgFZ::_prcsSWRegist(SWRegist *pb)
             ack->set_seqno(pb->seqno());
             ack->set_result(-1);
             WaitSend(ack);
+            GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "PC %s register key:% fail!", m_pcsn.c_str(), pb->swkey().c_str());
         }
         return;
     }
