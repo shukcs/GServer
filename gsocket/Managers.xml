@@ -376,8 +376,10 @@
 				<table name="FZKeyReg">
 					<field name="swsn" type="char(32)" constraint="primary key"/>
 					<field name="pcsn" type="char(32)" />
-					<field name="ver" type="INT" constraint="DEFAULT 1"/>
+					<field name="ver" type="BIGINT" constraint="DEFAULT 1"/>
 					<field name="used" type="INT" constraint="DEFAULT 0" />
+					<field name="regTm" type="BIGINT" />
+					<field name="dscr" type="char(64)" />
 				</table>
 				<table name="FZResult">
 					<field name="id" type="BIGINT" constraint="primary key;auto_increment"/>
@@ -428,17 +430,26 @@
 				</SQL>
 				<SQL name="insertFZKey" table="FZKeyReg" type="Insert" >
 					<item name="swsn" type="Write" />
-					<item name="ver" type="Write" />
+					<item name="dscr" type="Write" />
+					<item name="ver" ref="FZKeyReg" type="Write" />
 				</SQL>
 				<SQL name="updateFZPCReg" table="FZKeyReg" type="Update" >
 					<item name="pcsn" type="Write" />
-					<item name="used" paramVal="1" type="Write" />
-					<item name="used" paramVal="0" type="Condition" />
+					<item name="ver" ref="FZKeyReg"type="Write" />
+					<item name="dscr" type="Write" />
+					<item name="used" ref="FZKeyReg" type="Write" />
+					<item name="used" ref="FZKeyReg" type="Condition" />
 					<item name="swsn" type="Condition" />
 				</SQL>
 				<SQL name="queryFZPCReg" table="FZKeyReg" type="Select" >
 					<item name="ver" ref="FZKeyReg" type="Read" />
+					<item name="swsn" ref="FZKeyReg" type="Read" />
+					<item name="pcsn" ref="FZKeyReg" type="Read" />
+					<item name="used" ref="FZKeyReg" type="Read" />
+					<item name="dscr" ref="FZKeyReg" type="Read" />
+					<item name="regTm" ref="FZKeyReg" type="Read" />
 					<item name="pcsn" type="Condition" />
+					<item name="swsn" type="Condition" />
 				</SQL>
 				<SQL name="insertFZResult" table="FZResult" type="Insert" >
 					<item name="user"  type="Write" />
@@ -470,7 +481,7 @@
 		<Object id="admin" pswd="admin123" auth="3" />
 	</GSManager>
 	<MailManager>
-		<Object name="hsj8262@163.com" user="hsj8262@163.com" password="ttailu_123" host="smtp.163.com" port="465"/>
+		<Object name="hsj8262@163.com" user="hsj8262@163.com" password="FAYDHQLPZJNLZLNB" host="smtp.163.com" port="465" smtps="1"/>
 	</MailManager>
 	<GVManager thread="2" buff="6144" >
 		<Object id="root" pswd="NIhao666" auth="7" />

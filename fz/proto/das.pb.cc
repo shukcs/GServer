@@ -69,12 +69,18 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* AckFriends_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   AckFriends_reflection_ = NULL;
-const ::google::protobuf::Descriptor* AddSWKey_descriptor_ = NULL;
+const ::google::protobuf::Descriptor* UpdateSWKey_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  AddSWKey_reflection_ = NULL;
-const ::google::protobuf::Descriptor* AckAddSWKey_descriptor_ = NULL;
+  UpdateSWKey_reflection_ = NULL;
+const ::google::protobuf::Descriptor* AckUpdateSWKey_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
-  AckAddSWKey_reflection_ = NULL;
+  AckUpdateSWKey_reflection_ = NULL;
+const ::google::protobuf::Descriptor* ReqSWKeyInfo_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  ReqSWKeyInfo_reflection_ = NULL;
+const ::google::protobuf::Descriptor* AckSWKeyInfo_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  AckSWKeyInfo_reflection_ = NULL;
 const ::google::protobuf::Descriptor* SWRegist_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   SWRegist_reflection_ = NULL;
@@ -282,7 +288,7 @@ void protobuf_AssignDesc_das_2eproto() {
   static const int AckFZUserIdentity_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckFZUserIdentity, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckFZUserIdentity, result_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckFZUserIdentity, swver_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckFZUserIdentity, ver_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckFZUserIdentity, extradata_),
   };
   AckFZUserIdentity_reflection_ =
@@ -396,45 +402,84 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckFriends));
-  AddSWKey_descriptor_ = file->message_type(16);
-  static const int AddSWKey_offsets_[3] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AddSWKey, seqno_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AddSWKey, swkey_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AddSWKey, ver_),
+  UpdateSWKey_descriptor_ = file->message_type(16);
+  static const int UpdateSWKey_offsets_[5] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UpdateSWKey, seqno_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UpdateSWKey, swkey_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UpdateSWKey, dscr_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UpdateSWKey, ver_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UpdateSWKey, change_),
   };
-  AddSWKey_reflection_ =
+  UpdateSWKey_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
-      AddSWKey_descriptor_,
-      AddSWKey::default_instance_,
-      AddSWKey_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AddSWKey, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AddSWKey, _unknown_fields_),
+      UpdateSWKey_descriptor_,
+      UpdateSWKey::default_instance_,
+      UpdateSWKey_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UpdateSWKey, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(UpdateSWKey, _unknown_fields_),
       -1,
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(AddSWKey));
-  AckAddSWKey_descriptor_ = file->message_type(17);
-  static const int AckAddSWKey_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckAddSWKey, seqno_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckAddSWKey, result_),
+      sizeof(UpdateSWKey));
+  AckUpdateSWKey_descriptor_ = file->message_type(17);
+  static const int AckUpdateSWKey_offsets_[3] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUpdateSWKey, seqno_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUpdateSWKey, result_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUpdateSWKey, swkey_),
   };
-  AckAddSWKey_reflection_ =
+  AckUpdateSWKey_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
-      AckAddSWKey_descriptor_,
-      AckAddSWKey::default_instance_,
-      AckAddSWKey_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckAddSWKey, _has_bits_[0]),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckAddSWKey, _unknown_fields_),
+      AckUpdateSWKey_descriptor_,
+      AckUpdateSWKey::default_instance_,
+      AckUpdateSWKey_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUpdateSWKey, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckUpdateSWKey, _unknown_fields_),
       -1,
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
-      sizeof(AckAddSWKey));
-  SWRegist_descriptor_ = file->message_type(18);
-  static const int SWRegist_offsets_[4] = {
+      sizeof(AckUpdateSWKey));
+  ReqSWKeyInfo_descriptor_ = file->message_type(18);
+  static const int ReqSWKeyInfo_offsets_[2] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ReqSWKeyInfo, seqno_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ReqSWKeyInfo, swkey_),
+  };
+  ReqSWKeyInfo_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      ReqSWKeyInfo_descriptor_,
+      ReqSWKeyInfo::default_instance_,
+      ReqSWKeyInfo_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ReqSWKeyInfo, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(ReqSWKeyInfo, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(ReqSWKeyInfo));
+  AckSWKeyInfo_descriptor_ = file->message_type(19);
+  static const int AckSWKeyInfo_offsets_[7] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSWKeyInfo, seqno_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSWKeyInfo, swkey_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSWKeyInfo, ver_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSWKeyInfo, dscr_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSWKeyInfo, pcsn_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSWKeyInfo, regtm_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSWKeyInfo, used_),
+  };
+  AckSWKeyInfo_reflection_ =
+    new ::google::protobuf::internal::GeneratedMessageReflection(
+      AckSWKeyInfo_descriptor_,
+      AckSWKeyInfo::default_instance_,
+      AckSWKeyInfo_offsets_,
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSWKeyInfo, _has_bits_[0]),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSWKeyInfo, _unknown_fields_),
+      -1,
+      ::google::protobuf::DescriptorPool::generated_pool(),
+      ::google::protobuf::MessageFactory::generated_factory(),
+      sizeof(AckSWKeyInfo));
+  SWRegist_descriptor_ = file->message_type(20);
+  static const int SWRegist_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SWRegist, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SWRegist, pcsn_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SWRegist, swkey_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(SWRegist, ver_),
   };
   SWRegist_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -447,10 +492,11 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(SWRegist));
-  AckSWRegist_descriptor_ = file->message_type(19);
-  static const int AckSWRegist_offsets_[2] = {
+  AckSWRegist_descriptor_ = file->message_type(21);
+  static const int AckSWRegist_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSWRegist, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSWRegist, result_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckSWRegist, ver_),
   };
   AckSWRegist_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -463,7 +509,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckSWRegist));
-  FZResult_descriptor_ = file->message_type(20);
+  FZResult_descriptor_ = file->message_type(22);
   static const int FZResult_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, begtm_),
@@ -482,7 +528,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(FZResult));
-  PostFZResult_descriptor_ = file->message_type(21);
+  PostFZResult_descriptor_ = file->message_type(23);
   static const int PostFZResult_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostFZResult, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostFZResult, rslt_),
@@ -498,7 +544,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostFZResult));
-  AckPostFZResult_descriptor_ = file->message_type(22);
+  AckPostFZResult_descriptor_ = file->message_type(24);
   static const int AckPostFZResult_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostFZResult, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostFZResult, id_),
@@ -514,7 +560,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostFZResult));
-  RequestFZResults_descriptor_ = file->message_type(23);
+  RequestFZResults_descriptor_ = file->message_type(25);
   static const int RequestFZResults_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestFZResults, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestFZResults, tmbeg_),
@@ -531,7 +577,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestFZResults));
-  AckFZResults_descriptor_ = file->message_type(24);
+  AckFZResults_descriptor_ = file->message_type(26);
   static const int AckFZResults_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckFZResults, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckFZResults, rslt_),
@@ -547,7 +593,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckFZResults));
-  FZInfo_descriptor_ = file->message_type(25);
+  FZInfo_descriptor_ = file->message_type(27);
   static const int FZInfo_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, grade_),
@@ -568,7 +614,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(FZInfo));
-  PostFZInfo_descriptor_ = file->message_type(26);
+  PostFZInfo_descriptor_ = file->message_type(28);
   static const int PostFZInfo_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostFZInfo, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostFZInfo, info_),
@@ -584,7 +630,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostFZInfo));
-  AckPostFZInfo_descriptor_ = file->message_type(27);
+  AckPostFZInfo_descriptor_ = file->message_type(29);
   static const int AckPostFZInfo_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostFZInfo, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckPostFZInfo, rslt_),
@@ -600,7 +646,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckPostFZInfo));
-  RequestFZInfo_descriptor_ = file->message_type(28);
+  RequestFZInfo_descriptor_ = file->message_type(30);
   static const int RequestFZInfo_offsets_[1] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RequestFZInfo, seqno_),
   };
@@ -615,7 +661,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(RequestFZInfo));
-  AckFZInfo_descriptor_ = file->message_type(29);
+  AckFZInfo_descriptor_ = file->message_type(31);
   static const int AckFZInfo_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckFZInfo, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckFZInfo, info_),
@@ -631,7 +677,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(AckFZInfo));
-  PostGetFZPswd_descriptor_ = file->message_type(30);
+  PostGetFZPswd_descriptor_ = file->message_type(32);
   static const int PostGetFZPswd_offsets_[3] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostGetFZPswd, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(PostGetFZPswd, email_),
@@ -648,7 +694,7 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::DescriptorPool::generated_pool(),
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(PostGetFZPswd));
-  AckGetFZPswd_descriptor_ = file->message_type(31);
+  AckGetFZPswd_descriptor_ = file->message_type(33);
   static const int AckGetFZPswd_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckGetFZPswd, seqno_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(AckGetFZPswd, rslt_),
@@ -710,9 +756,13 @@ void protobuf_RegisterTypes(const ::std::string&) {
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     AckFriends_descriptor_, &AckFriends::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    AddSWKey_descriptor_, &AddSWKey::default_instance());
+    UpdateSWKey_descriptor_, &UpdateSWKey::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-    AckAddSWKey_descriptor_, &AckAddSWKey::default_instance());
+    AckUpdateSWKey_descriptor_, &AckUpdateSWKey::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    ReqSWKeyInfo_descriptor_, &ReqSWKeyInfo::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+    AckSWKeyInfo_descriptor_, &AckSWKeyInfo::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
     SWRegist_descriptor_, &SWRegist::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -778,10 +828,14 @@ void protobuf_ShutdownFile_das_2eproto() {
   delete RequestFriends_reflection_;
   delete AckFriends::default_instance_;
   delete AckFriends_reflection_;
-  delete AddSWKey::default_instance_;
-  delete AddSWKey_reflection_;
-  delete AckAddSWKey::default_instance_;
-  delete AckAddSWKey_reflection_;
+  delete UpdateSWKey::default_instance_;
+  delete UpdateSWKey_reflection_;
+  delete AckUpdateSWKey::default_instance_;
+  delete AckUpdateSWKey_reflection_;
+  delete ReqSWKeyInfo::default_instance_;
+  delete ReqSWKeyInfo_reflection_;
+  delete AckSWKeyInfo::default_instance_;
+  delete AckSWKeyInfo_reflection_;
   delete SWRegist::default_instance_;
   delete SWRegist_reflection_;
   delete AckSWRegist::default_instance_;
@@ -832,45 +886,51 @@ void protobuf_AddDesc_das_2eproto() {
     "sword\030\005 \001(\t\"<\n\014AckNewFZUser\022\r\n\005seqno\030\001 \002"
     "(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005check\030\003 \001(\t\"P\n\025Req"
     "uestFZUserIdentity\022\r\n\005seqno\030\001 \002(\r\022\014\n\004use"
-    "r\030\002 \002(\t\022\014\n\004pswd\030\003 \002(\t\022\014\n\004pcsn\030\004 \002(\t\"T\n\021A"
+    "r\030\002 \002(\t\022\014\n\004pswd\030\003 \002(\t\022\014\n\004pcsn\030\004 \002(\t\"R\n\021A"
     "ckFZUserIdentity\022\r\n\005seqno\030\001 \002(\r\022\016\n\006resul"
-    "t\030\002 \002(\005\022\r\n\005swver\030\003 \002(\005\022\021\n\textradata\030\004 \001("
-    "\t\"<\n\020PostChangeFZPswd\022\r\n\005seqno\030\001 \002(\r\022\013\n\003"
-    "old\030\002 \002(\t\022\014\n\004pswd\030\003 \002(\t\"0\n\017AckChangeFZPs"
-    "wd\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"m\n\rFZU"
-    "serMessage\022\r\n\005seqno\030\001 \002(\r\022\"\n\004type\030\002 \002(\0162"
-    "\024.das.proto.FZMsgType\022\014\n\004from\030\003 \002(\t\022\n\n\002t"
-    "o\030\004 \002(\t\022\017\n\007content\030\005 \001(\014\"<\n\020AckFZUserMes"
-    "sage\022\r\n\005seqno\030\001 \002(\r\022\013\n\003res\030\002 \002(\r\022\014\n\004user"
-    "\030\003 \002(\t\"\037\n\016RequestFriends\022\r\n\005seqno\030\001 \002(\r\""
-    ",\n\nAckFriends\022\r\n\005seqno\030\001 \002(\r\022\017\n\007friends\030"
-    "\002 \003(\t\"5\n\010AddSWKey\022\r\n\005seqno\030\001 \002(\r\022\r\n\005swke"
-    "y\030\002 \002(\t\022\013\n\003ver\030\003 \001(\r\",\n\013AckAddSWKey\022\r\n\005s"
-    "eqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"C\n\010SWRegist\022\r"
-    "\n\005seqno\030\001 \002(\r\022\014\n\004pcsn\030\002 \002(\t\022\r\n\005swkey\030\003 \002"
-    "(\t\022\013\n\003ver\030\004 \001(\r\",\n\013AckSWRegist\022\r\n\005seqno\030"
-    "\001 \002(\r\022\016\n\006result\030\002 \002(\005\"Q\n\010FZResult\022\n\n\002id\030"
-    "\001 \001(\003\022\r\n\005begTm\030\002 \001(\003\022\016\n\006usedTm\030\003 \002(\005\022\014\n\004"
-    "type\030\004 \002(\005\022\014\n\004rslt\030\005 \002(\005\"@\n\014PostFZResult"
-    "\022\r\n\005seqno\030\001 \002(\r\022!\n\004rslt\030\002 \002(\0132\023.das.prot"
-    "o.FZResult\",\n\017AckPostFZResult\022\r\n\005seqno\030\001"
-    " \002(\r\022\n\n\002id\030\002 \002(\003\"\?\n\020RequestFZResults\022\r\n\005"
-    "seqno\030\001 \002(\r\022\r\n\005tmbeg\030\002 \001(\003\022\r\n\005tmend\030\003 \001("
-    "\003\"@\n\014AckFZResults\022\r\n\005seqno\030\001 \002(\r\022!\n\004rslt"
-    "\030\002 \003(\0132\023.das.proto.FZResult\"n\n\006FZInfo\022\014\n"
-    "\004name\030\001 \001(\t\022\r\n\005grade\030\002 \001(\t\022\014\n\004majr\030\003 \001(\t"
-    "\022\n\n\002id\030\004 \001(\t\022\016\n\006school\030\005 \001(\t\022\016\n\006births\030\006"
-    " \001(\t\022\r\n\005email\030\007 \002(\t\"<\n\nPostFZInfo\022\r\n\005seq"
-    "no\030\001 \002(\r\022\037\n\004info\030\002 \002(\0132\021.das.proto.FZInf"
-    "o\",\n\rAckPostFZInfo\022\r\n\005seqno\030\001 \002(\r\022\014\n\004rsl"
-    "t\030\002 \002(\005\"\036\n\rRequestFZInfo\022\r\n\005seqno\030\001 \002(\r\""
-    ";\n\tAckFZInfo\022\r\n\005seqno\030\001 \002(\r\022\037\n\004info\030\002 \001("
-    "\0132\021.das.proto.FZInfo\";\n\rPostGetFZPswd\022\r\n"
-    "\005seqno\030\001 \002(\r\022\r\n\005email\030\002 \002(\t\022\014\n\004user\030\003 \002("
-    "\t\"+\n\014AckGetFZPswd\022\r\n\005seqno\030\001 \002(\r\022\014\n\004rslt"
-    "\030\002 \002(\005*g\n\tFZMsgType\022\020\n\014DeleteFriend\020\001\022\021\n"
-    "\rRequestFriend\020\002\022\017\n\013AgreeFriend\020\003\022\020\n\014Rej"
-    "ectFriend\020\004\022\010\n\004Text\020\005\022\010\n\004Land\020\006", 2071);
+    "t\030\002 \002(\005\022\013\n\003ver\030\003 \002(\003\022\021\n\textradata\030\004 \001(\t\""
+    "<\n\020PostChangeFZPswd\022\r\n\005seqno\030\001 \002(\r\022\013\n\003ol"
+    "d\030\002 \002(\t\022\014\n\004pswd\030\003 \002(\t\"0\n\017AckChangeFZPswd"
+    "\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\"m\n\rFZUse"
+    "rMessage\022\r\n\005seqno\030\001 \002(\r\022\"\n\004type\030\002 \002(\0162\024."
+    "das.proto.FZMsgType\022\014\n\004from\030\003 \002(\t\022\n\n\002to\030"
+    "\004 \002(\t\022\017\n\007content\030\005 \001(\014\"<\n\020AckFZUserMessa"
+    "ge\022\r\n\005seqno\030\001 \002(\r\022\013\n\003res\030\002 \002(\r\022\014\n\004user\030\003"
+    " \002(\t\"\037\n\016RequestFriends\022\r\n\005seqno\030\001 \002(\r\",\n"
+    "\nAckFriends\022\r\n\005seqno\030\001 \002(\r\022\017\n\007friends\030\002 "
+    "\003(\t\"V\n\013UpdateSWKey\022\r\n\005seqno\030\001 \002(\r\022\r\n\005swk"
+    "ey\030\002 \002(\t\022\014\n\004dscr\030\003 \001(\t\022\013\n\003ver\030\004 \001(\003\022\016\n\006c"
+    "hange\030\005 \001(\005\">\n\016AckUpdateSWKey\022\r\n\005seqno\030\001"
+    " \002(\r\022\016\n\006result\030\002 \002(\005\022\r\n\005swkey\030\003 \002(\t\",\n\014R"
+    "eqSWKeyInfo\022\r\n\005seqno\030\001 \002(\r\022\r\n\005swkey\030\002 \002("
+    "\t\"r\n\014AckSWKeyInfo\022\r\n\005seqno\030\001 \002(\r\022\r\n\005swke"
+    "y\030\002 \002(\t\022\013\n\003ver\030\003 \002(\003\022\014\n\004dscr\030\004 \001(\t\022\014\n\004pc"
+    "sn\030\005 \001(\t\022\r\n\005regTm\030\006 \001(\003\022\014\n\004used\030\007 \001(\005\"6\n"
+    "\010SWRegist\022\r\n\005seqno\030\001 \002(\r\022\014\n\004pcsn\030\002 \002(\t\022\r"
+    "\n\005swkey\030\003 \002(\t\"9\n\013AckSWRegist\022\r\n\005seqno\030\001 "
+    "\002(\r\022\016\n\006result\030\002 \002(\005\022\013\n\003ver\030\003 \002(\003\"Q\n\010FZRe"
+    "sult\022\n\n\002id\030\001 \001(\003\022\r\n\005begTm\030\002 \001(\003\022\016\n\006usedT"
+    "m\030\003 \002(\005\022\014\n\004type\030\004 \002(\005\022\014\n\004rslt\030\005 \002(\005\"@\n\014P"
+    "ostFZResult\022\r\n\005seqno\030\001 \002(\r\022!\n\004rslt\030\002 \002(\013"
+    "2\023.das.proto.FZResult\",\n\017AckPostFZResult"
+    "\022\r\n\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \002(\003\"\?\n\020RequestFZ"
+    "Results\022\r\n\005seqno\030\001 \002(\r\022\r\n\005tmbeg\030\002 \001(\003\022\r\n"
+    "\005tmend\030\003 \001(\003\"@\n\014AckFZResults\022\r\n\005seqno\030\001 "
+    "\002(\r\022!\n\004rslt\030\002 \003(\0132\023.das.proto.FZResult\"n"
+    "\n\006FZInfo\022\014\n\004name\030\001 \001(\t\022\r\n\005grade\030\002 \001(\t\022\014\n"
+    "\004majr\030\003 \001(\t\022\n\n\002id\030\004 \001(\t\022\016\n\006school\030\005 \001(\t\022"
+    "\016\n\006births\030\006 \001(\t\022\r\n\005email\030\007 \002(\t\"<\n\nPostFZ"
+    "Info\022\r\n\005seqno\030\001 \002(\r\022\037\n\004info\030\002 \002(\0132\021.das."
+    "proto.FZInfo\",\n\rAckPostFZInfo\022\r\n\005seqno\030\001"
+    " \002(\r\022\014\n\004rslt\030\002 \002(\005\"\036\n\rRequestFZInfo\022\r\n\005s"
+    "eqno\030\001 \002(\r\";\n\tAckFZInfo\022\r\n\005seqno\030\001 \002(\r\022\037"
+    "\n\004info\030\002 \001(\0132\021.das.proto.FZInfo\";\n\rPostG"
+    "etFZPswd\022\r\n\005seqno\030\001 \002(\r\022\r\n\005email\030\002 \002(\t\022\014"
+    "\n\004user\030\003 \002(\t\"+\n\014AckGetFZPswd\022\r\n\005seqno\030\001 "
+    "\002(\r\022\014\n\004rslt\030\002 \002(\005*g\n\tFZMsgType\022\020\n\014Delete"
+    "Friend\020\001\022\021\n\rRequestFriend\020\002\022\017\n\013AgreeFrie"
+    "nd\020\003\022\020\n\014RejectFriend\020\004\022\010\n\004Text\020\005\022\010\n\004Land"
+    "\020\006", 2282);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "das.proto", &protobuf_RegisterTypes);
   PostHeartBeat::default_instance_ = new PostHeartBeat();
@@ -889,8 +949,10 @@ void protobuf_AddDesc_das_2eproto() {
   AckFZUserMessage::default_instance_ = new AckFZUserMessage();
   RequestFriends::default_instance_ = new RequestFriends();
   AckFriends::default_instance_ = new AckFriends();
-  AddSWKey::default_instance_ = new AddSWKey();
-  AckAddSWKey::default_instance_ = new AckAddSWKey();
+  UpdateSWKey::default_instance_ = new UpdateSWKey();
+  AckUpdateSWKey::default_instance_ = new AckUpdateSWKey();
+  ReqSWKeyInfo::default_instance_ = new ReqSWKeyInfo();
+  AckSWKeyInfo::default_instance_ = new AckSWKeyInfo();
   SWRegist::default_instance_ = new SWRegist();
   AckSWRegist::default_instance_ = new AckSWRegist();
   FZResult::default_instance_ = new FZResult();
@@ -921,8 +983,10 @@ void protobuf_AddDesc_das_2eproto() {
   AckFZUserMessage::default_instance_->InitAsDefaultInstance();
   RequestFriends::default_instance_->InitAsDefaultInstance();
   AckFriends::default_instance_->InitAsDefaultInstance();
-  AddSWKey::default_instance_->InitAsDefaultInstance();
-  AckAddSWKey::default_instance_->InitAsDefaultInstance();
+  UpdateSWKey::default_instance_->InitAsDefaultInstance();
+  AckUpdateSWKey::default_instance_->InitAsDefaultInstance();
+  ReqSWKeyInfo::default_instance_->InitAsDefaultInstance();
+  AckSWKeyInfo::default_instance_->InitAsDefaultInstance();
   SWRegist::default_instance_->InitAsDefaultInstance();
   AckSWRegist::default_instance_->InitAsDefaultInstance();
   FZResult::default_instance_->InitAsDefaultInstance();
@@ -3620,7 +3684,7 @@ void RequestFZUserIdentity::Swap(RequestFZUserIdentity* other) {
 #ifndef _MSC_VER
 const int AckFZUserIdentity::kSeqnoFieldNumber;
 const int AckFZUserIdentity::kResultFieldNumber;
-const int AckFZUserIdentity::kSwverFieldNumber;
+const int AckFZUserIdentity::kVerFieldNumber;
 const int AckFZUserIdentity::kExtradataFieldNumber;
 #endif  // !_MSC_VER
 
@@ -3642,7 +3706,7 @@ void AckFZUserIdentity::SharedCtor() {
   _cached_size_ = 0;
   seqno_ = 0u;
   result_ = 0;
-  swver_ = 0;
+  ver_ = GOOGLE_LONGLONG(0);
   extradata_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -3684,7 +3748,7 @@ void AckFZUserIdentity::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     seqno_ = 0u;
     result_ = 0;
-    swver_ = 0;
+    ver_ = GOOGLE_LONGLONG(0);
     if (has_extradata()) {
       if (extradata_ != &::google::protobuf::internal::kEmptyString) {
         extradata_->clear();
@@ -3728,19 +3792,19 @@ bool AckFZUserIdentity::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(24)) goto parse_swver;
+        if (input->ExpectTag(24)) goto parse_ver;
         break;
       }
 
-      // required int32 swver = 3;
+      // required int64 ver = 3;
       case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_swver:
+         parse_ver:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &swver_)));
-          set_has_swver();
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &ver_)));
+          set_has_ver();
         } else {
           goto handle_uninterpreted;
         }
@@ -3793,9 +3857,9 @@ void AckFZUserIdentity::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->result(), output);
   }
 
-  // required int32 swver = 3;
-  if (has_swver()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(3, this->swver(), output);
+  // required int64 ver = 3;
+  if (has_ver()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->ver(), output);
   }
 
   // optional string extradata = 4;
@@ -3825,9 +3889,9 @@ void AckFZUserIdentity::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->result(), target);
   }
 
-  // required int32 swver = 3;
-  if (has_swver()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(3, this->swver(), target);
+  // required int64 ver = 3;
+  if (has_ver()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->ver(), target);
   }
 
   // optional string extradata = 4;
@@ -3865,11 +3929,11 @@ int AckFZUserIdentity::ByteSize() const {
           this->result());
     }
 
-    // required int32 swver = 3;
-    if (has_swver()) {
+    // required int64 ver = 3;
+    if (has_ver()) {
       total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->swver());
+        ::google::protobuf::internal::WireFormatLite::Int64Size(
+          this->ver());
     }
 
     // optional string extradata = 4;
@@ -3912,8 +3976,8 @@ void AckFZUserIdentity::MergeFrom(const AckFZUserIdentity& from) {
     if (from.has_result()) {
       set_result(from.result());
     }
-    if (from.has_swver()) {
-      set_swver(from.swver());
+    if (from.has_ver()) {
+      set_ver(from.ver());
     }
     if (from.has_extradata()) {
       set_extradata(from.extradata());
@@ -3944,7 +4008,7 @@ void AckFZUserIdentity::Swap(AckFZUserIdentity* other) {
   if (other != this) {
     std::swap(seqno_, other->seqno_);
     std::swap(result_, other->result_);
-    std::swap(swver_, other->swver_);
+    std::swap(ver_, other->ver_);
     std::swap(extradata_, other->extradata_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
@@ -5725,67 +5789,74 @@ void AckFriends::Swap(AckFriends* other) {
 // ===================================================================
 
 #ifndef _MSC_VER
-const int AddSWKey::kSeqnoFieldNumber;
-const int AddSWKey::kSwkeyFieldNumber;
-const int AddSWKey::kVerFieldNumber;
+const int UpdateSWKey::kSeqnoFieldNumber;
+const int UpdateSWKey::kSwkeyFieldNumber;
+const int UpdateSWKey::kDscrFieldNumber;
+const int UpdateSWKey::kVerFieldNumber;
+const int UpdateSWKey::kChangeFieldNumber;
 #endif  // !_MSC_VER
 
-AddSWKey::AddSWKey()
+UpdateSWKey::UpdateSWKey()
   : ::google::protobuf::Message() {
   SharedCtor();
 }
 
-void AddSWKey::InitAsDefaultInstance() {
+void UpdateSWKey::InitAsDefaultInstance() {
 }
 
-AddSWKey::AddSWKey(const AddSWKey& from)
+UpdateSWKey::UpdateSWKey(const UpdateSWKey& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
 }
 
-void AddSWKey::SharedCtor() {
+void UpdateSWKey::SharedCtor() {
   _cached_size_ = 0;
   seqno_ = 0u;
   swkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  ver_ = 0u;
+  dscr_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ver_ = GOOGLE_LONGLONG(0);
+  change_ = 0;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
-AddSWKey::~AddSWKey() {
+UpdateSWKey::~UpdateSWKey() {
   SharedDtor();
 }
 
-void AddSWKey::SharedDtor() {
+void UpdateSWKey::SharedDtor() {
   if (swkey_ != &::google::protobuf::internal::kEmptyString) {
     delete swkey_;
+  }
+  if (dscr_ != &::google::protobuf::internal::kEmptyString) {
+    delete dscr_;
   }
   if (this != default_instance_) {
   }
 }
 
-void AddSWKey::SetCachedSize(int size) const {
+void UpdateSWKey::SetCachedSize(int size) const {
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
 }
-const ::google::protobuf::Descriptor* AddSWKey::descriptor() {
+const ::google::protobuf::Descriptor* UpdateSWKey::descriptor() {
   protobuf_AssignDescriptorsOnce();
-  return AddSWKey_descriptor_;
+  return UpdateSWKey_descriptor_;
 }
 
-const AddSWKey& AddSWKey::default_instance() {
+const UpdateSWKey& UpdateSWKey::default_instance() {
   if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
   return *default_instance_;
 }
 
-AddSWKey* AddSWKey::default_instance_ = NULL;
+UpdateSWKey* UpdateSWKey::default_instance_ = NULL;
 
-AddSWKey* AddSWKey::New() const {
-  return new AddSWKey;
+UpdateSWKey* UpdateSWKey::New() const {
+  return new UpdateSWKey;
 }
 
-void AddSWKey::Clear() {
+void UpdateSWKey::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     seqno_ = 0u;
     if (has_swkey()) {
@@ -5793,13 +5864,1007 @@ void AddSWKey::Clear() {
         swkey_->clear();
       }
     }
-    ver_ = 0u;
+    if (has_dscr()) {
+      if (dscr_ != &::google::protobuf::internal::kEmptyString) {
+        dscr_->clear();
+      }
+    }
+    ver_ = GOOGLE_LONGLONG(0);
+    change_ = 0;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
 }
 
-bool AddSWKey::MergePartialFromCodedStream(
+bool UpdateSWKey::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required uint32 seqno = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &seqno_)));
+          set_has_seqno();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_swkey;
+        break;
+      }
+
+      // required string swkey = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_swkey:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_swkey()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->swkey().data(), this->swkey().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_dscr;
+        break;
+      }
+
+      // optional string dscr = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_dscr:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_dscr()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->dscr().data(), this->dscr().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(32)) goto parse_ver;
+        break;
+      }
+
+      // optional int64 ver = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_ver:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &ver_)));
+          set_has_ver();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(40)) goto parse_change;
+        break;
+      }
+
+      // optional int32 change = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_change:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &change_)));
+          set_has_change();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void UpdateSWKey::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
+  }
+
+  // required string swkey = 2;
+  if (has_swkey()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->swkey().data(), this->swkey().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      2, this->swkey(), output);
+  }
+
+  // optional string dscr = 3;
+  if (has_dscr()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->dscr().data(), this->dscr().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      3, this->dscr(), output);
+  }
+
+  // optional int64 ver = 4;
+  if (has_ver()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(4, this->ver(), output);
+  }
+
+  // optional int32 change = 5;
+  if (has_change()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->change(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* UpdateSWKey::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
+  }
+
+  // required string swkey = 2;
+  if (has_swkey()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->swkey().data(), this->swkey().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->swkey(), target);
+  }
+
+  // optional string dscr = 3;
+  if (has_dscr()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->dscr().data(), this->dscr().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->dscr(), target);
+  }
+
+  // optional int64 ver = 4;
+  if (has_ver()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(4, this->ver(), target);
+  }
+
+  // optional int32 change = 5;
+  if (has_change()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->change(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int UpdateSWKey::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required uint32 seqno = 1;
+    if (has_seqno()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->seqno());
+    }
+
+    // required string swkey = 2;
+    if (has_swkey()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->swkey());
+    }
+
+    // optional string dscr = 3;
+    if (has_dscr()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->dscr());
+    }
+
+    // optional int64 ver = 4;
+    if (has_ver()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int64Size(
+          this->ver());
+    }
+
+    // optional int32 change = 5;
+    if (has_change()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->change());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void UpdateSWKey::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const UpdateSWKey* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const UpdateSWKey*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void UpdateSWKey::MergeFrom(const UpdateSWKey& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_seqno()) {
+      set_seqno(from.seqno());
+    }
+    if (from.has_swkey()) {
+      set_swkey(from.swkey());
+    }
+    if (from.has_dscr()) {
+      set_dscr(from.dscr());
+    }
+    if (from.has_ver()) {
+      set_ver(from.ver());
+    }
+    if (from.has_change()) {
+      set_change(from.change());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void UpdateSWKey::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void UpdateSWKey::CopyFrom(const UpdateSWKey& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool UpdateSWKey::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+
+  return true;
+}
+
+void UpdateSWKey::Swap(UpdateSWKey* other) {
+  if (other != this) {
+    std::swap(seqno_, other->seqno_);
+    std::swap(swkey_, other->swkey_);
+    std::swap(dscr_, other->dscr_);
+    std::swap(ver_, other->ver_);
+    std::swap(change_, other->change_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata UpdateSWKey::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = UpdateSWKey_descriptor_;
+  metadata.reflection = UpdateSWKey_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int AckUpdateSWKey::kSeqnoFieldNumber;
+const int AckUpdateSWKey::kResultFieldNumber;
+const int AckUpdateSWKey::kSwkeyFieldNumber;
+#endif  // !_MSC_VER
+
+AckUpdateSWKey::AckUpdateSWKey()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void AckUpdateSWKey::InitAsDefaultInstance() {
+}
+
+AckUpdateSWKey::AckUpdateSWKey(const AckUpdateSWKey& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void AckUpdateSWKey::SharedCtor() {
+  _cached_size_ = 0;
+  seqno_ = 0u;
+  result_ = 0;
+  swkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+AckUpdateSWKey::~AckUpdateSWKey() {
+  SharedDtor();
+}
+
+void AckUpdateSWKey::SharedDtor() {
+  if (swkey_ != &::google::protobuf::internal::kEmptyString) {
+    delete swkey_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void AckUpdateSWKey::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* AckUpdateSWKey::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return AckUpdateSWKey_descriptor_;
+}
+
+const AckUpdateSWKey& AckUpdateSWKey::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
+  return *default_instance_;
+}
+
+AckUpdateSWKey* AckUpdateSWKey::default_instance_ = NULL;
+
+AckUpdateSWKey* AckUpdateSWKey::New() const {
+  return new AckUpdateSWKey;
+}
+
+void AckUpdateSWKey::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    seqno_ = 0u;
+    result_ = 0;
+    if (has_swkey()) {
+      if (swkey_ != &::google::protobuf::internal::kEmptyString) {
+        swkey_->clear();
+      }
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool AckUpdateSWKey::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required uint32 seqno = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &seqno_)));
+          set_has_seqno();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(16)) goto parse_result;
+        break;
+      }
+
+      // required int32 result = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_result:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &result_)));
+          set_has_result();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(26)) goto parse_swkey;
+        break;
+      }
+
+      // required string swkey = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_swkey:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_swkey()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->swkey().data(), this->swkey().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void AckUpdateSWKey::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
+  }
+
+  // required int32 result = 2;
+  if (has_result()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->result(), output);
+  }
+
+  // required string swkey = 3;
+  if (has_swkey()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->swkey().data(), this->swkey().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      3, this->swkey(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* AckUpdateSWKey::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
+  }
+
+  // required int32 result = 2;
+  if (has_result()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->result(), target);
+  }
+
+  // required string swkey = 3;
+  if (has_swkey()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->swkey().data(), this->swkey().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->swkey(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int AckUpdateSWKey::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required uint32 seqno = 1;
+    if (has_seqno()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->seqno());
+    }
+
+    // required int32 result = 2;
+    if (has_result()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->result());
+    }
+
+    // required string swkey = 3;
+    if (has_swkey()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->swkey());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void AckUpdateSWKey::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const AckUpdateSWKey* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const AckUpdateSWKey*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void AckUpdateSWKey::MergeFrom(const AckUpdateSWKey& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_seqno()) {
+      set_seqno(from.seqno());
+    }
+    if (from.has_result()) {
+      set_result(from.result());
+    }
+    if (from.has_swkey()) {
+      set_swkey(from.swkey());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void AckUpdateSWKey::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void AckUpdateSWKey::CopyFrom(const AckUpdateSWKey& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool AckUpdateSWKey::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
+
+  return true;
+}
+
+void AckUpdateSWKey::Swap(AckUpdateSWKey* other) {
+  if (other != this) {
+    std::swap(seqno_, other->seqno_);
+    std::swap(result_, other->result_);
+    std::swap(swkey_, other->swkey_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata AckUpdateSWKey::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = AckUpdateSWKey_descriptor_;
+  metadata.reflection = AckUpdateSWKey_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int ReqSWKeyInfo::kSeqnoFieldNumber;
+const int ReqSWKeyInfo::kSwkeyFieldNumber;
+#endif  // !_MSC_VER
+
+ReqSWKeyInfo::ReqSWKeyInfo()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void ReqSWKeyInfo::InitAsDefaultInstance() {
+}
+
+ReqSWKeyInfo::ReqSWKeyInfo(const ReqSWKeyInfo& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void ReqSWKeyInfo::SharedCtor() {
+  _cached_size_ = 0;
+  seqno_ = 0u;
+  swkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+ReqSWKeyInfo::~ReqSWKeyInfo() {
+  SharedDtor();
+}
+
+void ReqSWKeyInfo::SharedDtor() {
+  if (swkey_ != &::google::protobuf::internal::kEmptyString) {
+    delete swkey_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void ReqSWKeyInfo::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* ReqSWKeyInfo::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return ReqSWKeyInfo_descriptor_;
+}
+
+const ReqSWKeyInfo& ReqSWKeyInfo::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
+  return *default_instance_;
+}
+
+ReqSWKeyInfo* ReqSWKeyInfo::default_instance_ = NULL;
+
+ReqSWKeyInfo* ReqSWKeyInfo::New() const {
+  return new ReqSWKeyInfo;
+}
+
+void ReqSWKeyInfo::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    seqno_ = 0u;
+    if (has_swkey()) {
+      if (swkey_ != &::google::protobuf::internal::kEmptyString) {
+        swkey_->clear();
+      }
+    }
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool ReqSWKeyInfo::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+  ::google::protobuf::uint32 tag;
+  while ((tag = input->ReadTag()) != 0) {
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // required uint32 seqno = 1;
+      case 1: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &seqno_)));
+          set_has_seqno();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(18)) goto parse_swkey;
+        break;
+      }
+
+      // required string swkey = 2;
+      case 2: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_swkey:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_swkey()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->swkey().data(), this->swkey().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectAtEnd()) return true;
+        break;
+      }
+
+      default: {
+      handle_uninterpreted:
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          return true;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+  return true;
+#undef DO_
+}
+
+void ReqSWKeyInfo::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
+  }
+
+  // required string swkey = 2;
+  if (has_swkey()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->swkey().data(), this->swkey().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      2, this->swkey(), output);
+  }
+
+  if (!unknown_fields().empty()) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        unknown_fields(), output);
+  }
+}
+
+::google::protobuf::uint8* ReqSWKeyInfo::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // required uint32 seqno = 1;
+  if (has_seqno()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
+  }
+
+  // required string swkey = 2;
+  if (has_swkey()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->swkey().data(), this->swkey().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->swkey(), target);
+  }
+
+  if (!unknown_fields().empty()) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        unknown_fields(), target);
+  }
+  return target;
+}
+
+int ReqSWKeyInfo::ByteSize() const {
+  int total_size = 0;
+
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    // required uint32 seqno = 1;
+    if (has_seqno()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+          this->seqno());
+    }
+
+    // required string swkey = 2;
+    if (has_swkey()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->swkey());
+    }
+
+  }
+  if (!unknown_fields().empty()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        unknown_fields());
+  }
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void ReqSWKeyInfo::MergeFrom(const ::google::protobuf::Message& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  const ReqSWKeyInfo* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const ReqSWKeyInfo*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void ReqSWKeyInfo::MergeFrom(const ReqSWKeyInfo& from) {
+  GOOGLE_CHECK_NE(&from, this);
+  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    if (from.has_seqno()) {
+      set_seqno(from.seqno());
+    }
+    if (from.has_swkey()) {
+      set_swkey(from.swkey());
+    }
+  }
+  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
+}
+
+void ReqSWKeyInfo::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ReqSWKeyInfo::CopyFrom(const ReqSWKeyInfo& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ReqSWKeyInfo::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+
+  return true;
+}
+
+void ReqSWKeyInfo::Swap(ReqSWKeyInfo* other) {
+  if (other != this) {
+    std::swap(seqno_, other->seqno_);
+    std::swap(swkey_, other->swkey_);
+    std::swap(_has_bits_[0], other->_has_bits_[0]);
+    _unknown_fields_.Swap(&other->_unknown_fields_);
+    std::swap(_cached_size_, other->_cached_size_);
+  }
+}
+
+::google::protobuf::Metadata ReqSWKeyInfo::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = ReqSWKeyInfo_descriptor_;
+  metadata.reflection = ReqSWKeyInfo_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int AckSWKeyInfo::kSeqnoFieldNumber;
+const int AckSWKeyInfo::kSwkeyFieldNumber;
+const int AckSWKeyInfo::kVerFieldNumber;
+const int AckSWKeyInfo::kDscrFieldNumber;
+const int AckSWKeyInfo::kPcsnFieldNumber;
+const int AckSWKeyInfo::kRegTmFieldNumber;
+const int AckSWKeyInfo::kUsedFieldNumber;
+#endif  // !_MSC_VER
+
+AckSWKeyInfo::AckSWKeyInfo()
+  : ::google::protobuf::Message() {
+  SharedCtor();
+}
+
+void AckSWKeyInfo::InitAsDefaultInstance() {
+}
+
+AckSWKeyInfo::AckSWKeyInfo(const AckSWKeyInfo& from)
+  : ::google::protobuf::Message() {
+  SharedCtor();
+  MergeFrom(from);
+}
+
+void AckSWKeyInfo::SharedCtor() {
+  _cached_size_ = 0;
+  seqno_ = 0u;
+  swkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  ver_ = GOOGLE_LONGLONG(0);
+  dscr_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  pcsn_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  regtm_ = GOOGLE_LONGLONG(0);
+  used_ = 0;
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+}
+
+AckSWKeyInfo::~AckSWKeyInfo() {
+  SharedDtor();
+}
+
+void AckSWKeyInfo::SharedDtor() {
+  if (swkey_ != &::google::protobuf::internal::kEmptyString) {
+    delete swkey_;
+  }
+  if (dscr_ != &::google::protobuf::internal::kEmptyString) {
+    delete dscr_;
+  }
+  if (pcsn_ != &::google::protobuf::internal::kEmptyString) {
+    delete pcsn_;
+  }
+  if (this != default_instance_) {
+  }
+}
+
+void AckSWKeyInfo::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* AckSWKeyInfo::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return AckSWKeyInfo_descriptor_;
+}
+
+const AckSWKeyInfo& AckSWKeyInfo::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
+  return *default_instance_;
+}
+
+AckSWKeyInfo* AckSWKeyInfo::default_instance_ = NULL;
+
+AckSWKeyInfo* AckSWKeyInfo::New() const {
+  return new AckSWKeyInfo;
+}
+
+void AckSWKeyInfo::Clear() {
+  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
+    seqno_ = 0u;
+    if (has_swkey()) {
+      if (swkey_ != &::google::protobuf::internal::kEmptyString) {
+        swkey_->clear();
+      }
+    }
+    ver_ = GOOGLE_LONGLONG(0);
+    if (has_dscr()) {
+      if (dscr_ != &::google::protobuf::internal::kEmptyString) {
+        dscr_->clear();
+      }
+    }
+    if (has_pcsn()) {
+      if (pcsn_ != &::google::protobuf::internal::kEmptyString) {
+        pcsn_->clear();
+      }
+    }
+    regtm_ = GOOGLE_LONGLONG(0);
+    used_ = 0;
+  }
+  ::memset(_has_bits_, 0, sizeof(_has_bits_));
+  mutable_unknown_fields()->Clear();
+}
+
+bool AckSWKeyInfo::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!(EXPRESSION)) return false
   ::google::protobuf::uint32 tag;
@@ -5837,15 +6902,81 @@ bool AddSWKey::MergePartialFromCodedStream(
         break;
       }
 
-      // optional uint32 ver = 3;
+      // required int64 ver = 3;
       case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
          parse_ver:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &ver_)));
           set_has_ver();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(34)) goto parse_dscr;
+        break;
+      }
+
+      // optional string dscr = 4;
+      case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_dscr:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_dscr()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->dscr().data(), this->dscr().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(42)) goto parse_pcsn;
+        break;
+      }
+
+      // optional string pcsn = 5;
+      case 5: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_pcsn:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_pcsn()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->pcsn().data(), this->pcsn().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(48)) goto parse_regTm;
+        break;
+      }
+
+      // optional int64 regTm = 6;
+      case 6: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_regTm:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &regtm_)));
+          set_has_regtm();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(56)) goto parse_used;
+        break;
+      }
+
+      // optional int32 used = 7;
+      case 7: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_used:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &used_)));
+          set_has_used();
         } else {
           goto handle_uninterpreted;
         }
@@ -5869,7 +7000,7 @@ bool AddSWKey::MergePartialFromCodedStream(
 #undef DO_
 }
 
-void AddSWKey::SerializeWithCachedSizes(
+void AckSWKeyInfo::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // required uint32 seqno = 1;
   if (has_seqno()) {
@@ -5885,9 +7016,37 @@ void AddSWKey::SerializeWithCachedSizes(
       2, this->swkey(), output);
   }
 
-  // optional uint32 ver = 3;
+  // required int64 ver = 3;
   if (has_ver()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(3, this->ver(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->ver(), output);
+  }
+
+  // optional string dscr = 4;
+  if (has_dscr()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->dscr().data(), this->dscr().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      4, this->dscr(), output);
+  }
+
+  // optional string pcsn = 5;
+  if (has_pcsn()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->pcsn().data(), this->pcsn().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      5, this->pcsn(), output);
+  }
+
+  // optional int64 regTm = 6;
+  if (has_regtm()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(6, this->regtm(), output);
+  }
+
+  // optional int32 used = 7;
+  if (has_used()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(7, this->used(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -5896,7 +7055,7 @@ void AddSWKey::SerializeWithCachedSizes(
   }
 }
 
-::google::protobuf::uint8* AddSWKey::SerializeWithCachedSizesToArray(
+::google::protobuf::uint8* AckSWKeyInfo::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
   // required uint32 seqno = 1;
   if (has_seqno()) {
@@ -5913,9 +7072,39 @@ void AddSWKey::SerializeWithCachedSizes(
         2, this->swkey(), target);
   }
 
-  // optional uint32 ver = 3;
+  // required int64 ver = 3;
   if (has_ver()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(3, this->ver(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->ver(), target);
+  }
+
+  // optional string dscr = 4;
+  if (has_dscr()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->dscr().data(), this->dscr().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        4, this->dscr(), target);
+  }
+
+  // optional string pcsn = 5;
+  if (has_pcsn()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->pcsn().data(), this->pcsn().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        5, this->pcsn(), target);
+  }
+
+  // optional int64 regTm = 6;
+  if (has_regtm()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(6, this->regtm(), target);
+  }
+
+  // optional int32 used = 7;
+  if (has_used()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(7, this->used(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -5925,7 +7114,7 @@ void AddSWKey::SerializeWithCachedSizes(
   return target;
 }
 
-int AddSWKey::ByteSize() const {
+int AckSWKeyInfo::ByteSize() const {
   int total_size = 0;
 
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
@@ -5943,11 +7132,39 @@ int AddSWKey::ByteSize() const {
           this->swkey());
     }
 
-    // optional uint32 ver = 3;
+    // required int64 ver = 3;
     if (has_ver()) {
       total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        ::google::protobuf::internal::WireFormatLite::Int64Size(
           this->ver());
+    }
+
+    // optional string dscr = 4;
+    if (has_dscr()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->dscr());
+    }
+
+    // optional string pcsn = 5;
+    if (has_pcsn()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->pcsn());
+    }
+
+    // optional int64 regTm = 6;
+    if (has_regtm()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int64Size(
+          this->regtm());
+    }
+
+    // optional int32 used = 7;
+    if (has_used()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->used());
     }
 
   }
@@ -5962,10 +7179,10 @@ int AddSWKey::ByteSize() const {
   return total_size;
 }
 
-void AddSWKey::MergeFrom(const ::google::protobuf::Message& from) {
+void AckSWKeyInfo::MergeFrom(const ::google::protobuf::Message& from) {
   GOOGLE_CHECK_NE(&from, this);
-  const AddSWKey* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const AddSWKey*>(
+  const AckSWKeyInfo* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const AckSWKeyInfo*>(
       &from);
   if (source == NULL) {
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
@@ -5974,7 +7191,7 @@ void AddSWKey::MergeFrom(const ::google::protobuf::Message& from) {
   }
 }
 
-void AddSWKey::MergeFrom(const AddSWKey& from) {
+void AckSWKeyInfo::MergeFrom(const AckSWKeyInfo& from) {
   GOOGLE_CHECK_NE(&from, this);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_seqno()) {
@@ -5986,293 +7203,60 @@ void AddSWKey::MergeFrom(const AddSWKey& from) {
     if (from.has_ver()) {
       set_ver(from.ver());
     }
+    if (from.has_dscr()) {
+      set_dscr(from.dscr());
+    }
+    if (from.has_pcsn()) {
+      set_pcsn(from.pcsn());
+    }
+    if (from.has_regtm()) {
+      set_regtm(from.regtm());
+    }
+    if (from.has_used()) {
+      set_used(from.used());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
 
-void AddSWKey::CopyFrom(const ::google::protobuf::Message& from) {
+void AckSWKeyInfo::CopyFrom(const ::google::protobuf::Message& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void AddSWKey::CopyFrom(const AddSWKey& from) {
+void AckSWKeyInfo::CopyFrom(const AckSWKeyInfo& from) {
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool AddSWKey::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+bool AckSWKeyInfo::IsInitialized() const {
+  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
 
   return true;
 }
 
-void AddSWKey::Swap(AddSWKey* other) {
+void AckSWKeyInfo::Swap(AckSWKeyInfo* other) {
   if (other != this) {
     std::swap(seqno_, other->seqno_);
     std::swap(swkey_, other->swkey_);
     std::swap(ver_, other->ver_);
+    std::swap(dscr_, other->dscr_);
+    std::swap(pcsn_, other->pcsn_);
+    std::swap(regtm_, other->regtm_);
+    std::swap(used_, other->used_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
   }
 }
 
-::google::protobuf::Metadata AddSWKey::GetMetadata() const {
+::google::protobuf::Metadata AckSWKeyInfo::GetMetadata() const {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::Metadata metadata;
-  metadata.descriptor = AddSWKey_descriptor_;
-  metadata.reflection = AddSWKey_reflection_;
-  return metadata;
-}
-
-
-// ===================================================================
-
-#ifndef _MSC_VER
-const int AckAddSWKey::kSeqnoFieldNumber;
-const int AckAddSWKey::kResultFieldNumber;
-#endif  // !_MSC_VER
-
-AckAddSWKey::AckAddSWKey()
-  : ::google::protobuf::Message() {
-  SharedCtor();
-}
-
-void AckAddSWKey::InitAsDefaultInstance() {
-}
-
-AckAddSWKey::AckAddSWKey(const AckAddSWKey& from)
-  : ::google::protobuf::Message() {
-  SharedCtor();
-  MergeFrom(from);
-}
-
-void AckAddSWKey::SharedCtor() {
-  _cached_size_ = 0;
-  seqno_ = 0u;
-  result_ = 0;
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-AckAddSWKey::~AckAddSWKey() {
-  SharedDtor();
-}
-
-void AckAddSWKey::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void AckAddSWKey::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* AckAddSWKey::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return AckAddSWKey_descriptor_;
-}
-
-const AckAddSWKey& AckAddSWKey::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_das_2eproto();
-  return *default_instance_;
-}
-
-AckAddSWKey* AckAddSWKey::default_instance_ = NULL;
-
-AckAddSWKey* AckAddSWKey::New() const {
-  return new AckAddSWKey;
-}
-
-void AckAddSWKey::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    seqno_ = 0u;
-    result_ = 0;
-  }
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  mutable_unknown_fields()->Clear();
-}
-
-bool AckAddSWKey::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
-  ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required uint32 seqno = 1;
-      case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &seqno_)));
-          set_has_seqno();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(16)) goto parse_result;
-        break;
-      }
-
-      // required int32 result = 2;
-      case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_result:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &result_)));
-          set_has_result();
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectAtEnd()) return true;
-        break;
-      }
-
-      default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-  return true;
-#undef DO_
-}
-
-void AckAddSWKey::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // required uint32 seqno = 1;
-  if (has_seqno()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(1, this->seqno(), output);
-  }
-
-  // required int32 result = 2;
-  if (has_result()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->result(), output);
-  }
-
-  if (!unknown_fields().empty()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
-}
-
-::google::protobuf::uint8* AckAddSWKey::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
-  // required uint32 seqno = 1;
-  if (has_seqno()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(1, this->seqno(), target);
-  }
-
-  // required int32 result = 2;
-  if (has_result()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->result(), target);
-  }
-
-  if (!unknown_fields().empty()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  return target;
-}
-
-int AckAddSWKey::ByteSize() const {
-  int total_size = 0;
-
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    // required uint32 seqno = 1;
-    if (has_seqno()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->seqno());
-    }
-
-    // required int32 result = 2;
-    if (has_result()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::Int32Size(
-          this->result());
-    }
-
-  }
-  if (!unknown_fields().empty()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void AckAddSWKey::MergeFrom(const ::google::protobuf::Message& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  const AckAddSWKey* source =
-    ::google::protobuf::internal::dynamic_cast_if_available<const AckAddSWKey*>(
-      &from);
-  if (source == NULL) {
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-    MergeFrom(*source);
-  }
-}
-
-void AckAddSWKey::MergeFrom(const AckAddSWKey& from) {
-  GOOGLE_CHECK_NE(&from, this);
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_seqno()) {
-      set_seqno(from.seqno());
-    }
-    if (from.has_result()) {
-      set_result(from.result());
-    }
-  }
-  mutable_unknown_fields()->MergeFrom(from.unknown_fields());
-}
-
-void AckAddSWKey::CopyFrom(const ::google::protobuf::Message& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void AckAddSWKey::CopyFrom(const AckAddSWKey& from) {
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool AckAddSWKey::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
-
-  return true;
-}
-
-void AckAddSWKey::Swap(AckAddSWKey* other) {
-  if (other != this) {
-    std::swap(seqno_, other->seqno_);
-    std::swap(result_, other->result_);
-    std::swap(_has_bits_[0], other->_has_bits_[0]);
-    _unknown_fields_.Swap(&other->_unknown_fields_);
-    std::swap(_cached_size_, other->_cached_size_);
-  }
-}
-
-::google::protobuf::Metadata AckAddSWKey::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = AckAddSWKey_descriptor_;
-  metadata.reflection = AckAddSWKey_reflection_;
+  metadata.descriptor = AckSWKeyInfo_descriptor_;
+  metadata.reflection = AckSWKeyInfo_reflection_;
   return metadata;
 }
 
@@ -6283,7 +7267,6 @@ void AckAddSWKey::Swap(AckAddSWKey* other) {
 const int SWRegist::kSeqnoFieldNumber;
 const int SWRegist::kPcsnFieldNumber;
 const int SWRegist::kSwkeyFieldNumber;
-const int SWRegist::kVerFieldNumber;
 #endif  // !_MSC_VER
 
 SWRegist::SWRegist()
@@ -6305,7 +7288,6 @@ void SWRegist::SharedCtor() {
   seqno_ = 0u;
   pcsn_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   swkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  ver_ = 0u;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -6358,7 +7340,6 @@ void SWRegist::Clear() {
         swkey_->clear();
       }
     }
-    ver_ = 0u;
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -6415,22 +7396,6 @@ bool SWRegist::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(32)) goto parse_ver;
-        break;
-      }
-
-      // optional uint32 ver = 4;
-      case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
-         parse_ver:
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
-                 input, &ver_)));
-          set_has_ver();
-        } else {
-          goto handle_uninterpreted;
-        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -6476,11 +7441,6 @@ void SWRegist::SerializeWithCachedSizes(
       3, this->swkey(), output);
   }
 
-  // optional uint32 ver = 4;
-  if (has_ver()) {
-    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->ver(), output);
-  }
-
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -6514,11 +7474,6 @@ void SWRegist::SerializeWithCachedSizes(
         3, this->swkey(), target);
   }
 
-  // optional uint32 ver = 4;
-  if (has_ver()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->ver(), target);
-  }
-
   if (!unknown_fields().empty()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
@@ -6549,13 +7504,6 @@ int SWRegist::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->swkey());
-    }
-
-    // optional uint32 ver = 4;
-    if (has_ver()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::UInt32Size(
-          this->ver());
     }
 
   }
@@ -6594,9 +7542,6 @@ void SWRegist::MergeFrom(const SWRegist& from) {
     if (from.has_swkey()) {
       set_swkey(from.swkey());
     }
-    if (from.has_ver()) {
-      set_ver(from.ver());
-    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -6624,7 +7569,6 @@ void SWRegist::Swap(SWRegist* other) {
     std::swap(seqno_, other->seqno_);
     std::swap(pcsn_, other->pcsn_);
     std::swap(swkey_, other->swkey_);
-    std::swap(ver_, other->ver_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -6645,6 +7589,7 @@ void SWRegist::Swap(SWRegist* other) {
 #ifndef _MSC_VER
 const int AckSWRegist::kSeqnoFieldNumber;
 const int AckSWRegist::kResultFieldNumber;
+const int AckSWRegist::kVerFieldNumber;
 #endif  // !_MSC_VER
 
 AckSWRegist::AckSWRegist()
@@ -6665,6 +7610,7 @@ void AckSWRegist::SharedCtor() {
   _cached_size_ = 0;
   seqno_ = 0u;
   result_ = 0;
+  ver_ = GOOGLE_LONGLONG(0);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -6702,6 +7648,7 @@ void AckSWRegist::Clear() {
   if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     seqno_ = 0u;
     result_ = 0;
+    ver_ = GOOGLE_LONGLONG(0);
   }
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -6740,6 +7687,22 @@ bool AckSWRegist::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
+        if (input->ExpectTag(24)) goto parse_ver;
+        break;
+      }
+
+      // required int64 ver = 3;
+      case 3: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+         parse_ver:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &ver_)));
+          set_has_ver();
+        } else {
+          goto handle_uninterpreted;
+        }
         if (input->ExpectAtEnd()) return true;
         break;
       }
@@ -6772,6 +7735,11 @@ void AckSWRegist::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->result(), output);
   }
 
+  // required int64 ver = 3;
+  if (has_ver()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(3, this->ver(), output);
+  }
+
   if (!unknown_fields().empty()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
@@ -6788,6 +7756,11 @@ void AckSWRegist::SerializeWithCachedSizes(
   // required int32 result = 2;
   if (has_result()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->result(), target);
+  }
+
+  // required int64 ver = 3;
+  if (has_ver()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(3, this->ver(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -6813,6 +7786,13 @@ int AckSWRegist::ByteSize() const {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::Int32Size(
           this->result());
+    }
+
+    // required int64 ver = 3;
+    if (has_ver()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int64Size(
+          this->ver());
     }
 
   }
@@ -6848,6 +7828,9 @@ void AckSWRegist::MergeFrom(const AckSWRegist& from) {
     if (from.has_result()) {
       set_result(from.result());
     }
+    if (from.has_ver()) {
+      set_ver(from.ver());
+    }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
 }
@@ -6865,7 +7848,7 @@ void AckSWRegist::CopyFrom(const AckSWRegist& from) {
 }
 
 bool AckSWRegist::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000003) != 0x00000003) return false;
+  if ((_has_bits_[0] & 0x00000007) != 0x00000007) return false;
 
   return true;
 }
@@ -6874,6 +7857,7 @@ void AckSWRegist::Swap(AckSWRegist* other) {
   if (other != this) {
     std::swap(seqno_, other->seqno_);
     std::swap(result_, other->result_);
+    std::swap(ver_, other->ver_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);

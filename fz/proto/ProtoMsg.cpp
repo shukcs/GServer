@@ -33,7 +33,8 @@ google::protobuf::Message *PBAbSFactoryItem::createMessage(const string &name)
     DeclareRcvPB(SyncFZUserList);
     DeclareRcvPB(FZUserMessage);
     DeclareRcvPB(RequestFriends);
-    DeclareRcvPB(AddSWKey);
+    DeclareRcvPB(UpdateSWKey);
+    DeclareRcvPB(ReqSWKeyInfo);
     DeclareRcvPB(SWRegist);
     DeclareRcvPB(PostFZResult);
     DeclareRcvPB(RequestFZResults);

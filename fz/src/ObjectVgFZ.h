@@ -11,7 +11,8 @@ namespace das {
         class PostHeartBeat;
         class FZUserMessage;
         class RequestFriends;
-        class AddSWKey;
+        class UpdateSWKey;
+        class ReqSWKeyInfo;
         class SWRegist;
         class PostFZResult;
         class RequestFZResults;
@@ -44,8 +45,9 @@ public:
     const std::string &GetPswd()const;
     void SetAuth(int);
     int Authorize()const;
-    int GetVer()const;
+    uint64_t GetVer()const;
     bool GetAuth(AuthorizeType auth = Type_Common)const;
+    uint64_t GetCurVer(const std::string &pcsn);
 public:
     static int FZType();
     static bool CheckSWKey(const std::string &swk);
@@ -61,6 +63,7 @@ protected:
     void processCheckUser(const DBMessage &msg);
     void processFriends(const DBMessage &msg);
     void processInserSWSN(const DBMessage &msg);
+    void processQuerySWKey(const DBMessage &msg);
     void processSWRegist(const DBMessage &msg);
     void processAckFZRslt(const DBMessage &msg);
     void processAckFZRslts(const DBMessage &msg);
@@ -80,7 +83,8 @@ private:
     void _prcsReqNewFz(das::proto::RequestNewFZUser *msg);
     void _prcsFzMessage(das::proto::FZUserMessage *msg);
     void _prcsReqFriends(das::proto::RequestFriends *msg);
-    void _prcsAddSWKey(das::proto::AddSWKey *msg);
+    void _prcsUpdateSWKey(das::proto::UpdateSWKey *msg);
+    void _prcsReqSWKeyInfo(das::proto::ReqSWKeyInfo *msg);
     void _prcsSWRegist(das::proto::SWRegist *msg);
     void _prcsPostFZResult(das::proto::PostFZResult *msg);
     void _prcsRequestFZResults(const das::proto::RequestFZResults &msg);
@@ -98,10 +102,10 @@ private:
 private:
     friend class VgFZManager;
     int             m_auth;
-    bool            m_bInitFriends;
     int             m_seq;
-    int             m_ver;
+    uint64_t        m_ver;
     uint64_t        m_tmLastInfo;
+    bool            m_bInitFriends;
     std::string     m_pswd;
     std::string     m_check;
     std::string     m_pcsn;

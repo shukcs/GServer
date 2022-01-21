@@ -133,14 +133,10 @@ IObject *VgFZManager::prcsPBLogin(ISocket *s, const RequestFZUserIdentity *rgi)
         int rslt = !bLogin ? -1 : ((o->GetAuth(ObjectVgFZ::Type_Manager) || rgi->pcsn() == o->GetPCSn()) ? 1 : 0);
         if (rslt != 0)
         {
-            int ver = (bLogin && o->GetAuth(ObjectVgFZ::Type_Manager)) ? 1 : -1;
-            if (bLogin && ver < 1 && rgi->pcsn() == o->GetPCSn())
-                ver = o->GetVer();
-
             AckFZUserIdentity ack;
             ack.set_seqno(rgi->seqno());
             ack.set_result(rslt);
-            ack.set_swver(ver);
+            ack.set_ver(o->GetCurVer(o->GetPCSn()));
             ObjectAbsPB::SendProtoBuffTo(s, ack);
         }
 

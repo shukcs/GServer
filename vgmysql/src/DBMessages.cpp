@@ -9,7 +9,6 @@ using namespace SOCKETS_NAMESPACE;
 #endif
 
 static Variant sVarEmpty;
-static const string sStrEmpty;
 static const char *rcvId(DBMessage::OBjectFlag f, int objTp)
 {
     if (f == DBMessage::DB_Unknow)
@@ -73,71 +72,94 @@ DBMessage::DBMessage(const string &sender, int tpSend, MessageType ack, OBjectFl
 {
 }
 
-void *DBMessage::GetContent() const
-{
-    return NULL;
-}
-
-int DBMessage::GetContentLength() const
-{
-    return 0;
-}
-
 void DBMessage::SetWrite(const std::string &key, const Variant &v, int idx)
 {
-    if (!key.empty() && !v.IsNull())
-        m_writes[propertyKey(key, idx)] = v;
+    if (key.empty() || v.IsNull())
+        return;
+
+    if (idx < 0)
+        idx = m_writes[key].size();
+
+    m_writes[key][idx] = v;
 }
 
-const Variant &DBMessage::GetWrite(const std::string &key, int idx)const
+const Variant &DBMessage::GetWrite(const std::string &key, uint32_t idx)const
 {
-    VariantMap::const_iterator itr = m_writes.find(propertyKey(key, idx));
+    auto itr = m_writes.find(key);
     if (itr == m_writes.end())
         return sVarEmpty;
 
-    return itr->second;
+    auto itr2 = itr->second.find(idx);
+    if (itr2 == itr->second.end())
+        return sVarEmpty;
+
+    return itr2->second;
 }
 
 void DBMessage::SetRead(const std::string &key, const Variant &v, int idx)
 {
-    if (!key.empty() && !v.IsNull())
-        m_reads[propertyKey(key, idx)] = v;
+    if (key.empty() || v.IsNull())
+        return;
+
+    if (idx < 0)
+        idx = m_reads[key].size();
+
+    m_reads[key][idx] = v;
 }
 
 void DBMessage::AddRead(const std::string &key, const Variant &v, int idx)
 {
-    if (!key.empty() && !v.IsNull())
-        m_reads[propertyKey(key, idx)].Add(v);
+    if (key.empty() || v.IsNull())
+        return;
+
+    if (idx < 0)
+        idx = m_reads[key].size();
+
+    m_reads[key][idx].Add(v);
 }
 
-const Variant &DBMessage::GetRead(const std::string &key, int idx) const
+const Variant &DBMessage::GetRead(const std::string &key, uint32_t idx) const
 {
-    VariantMap::const_iterator itr = m_reads.find(propertyKey(key, idx));
+    auto itr = m_reads.find(key);
     if (itr == m_reads.end())
         return sVarEmpty;
 
-    return itr->second;
+    auto itr2 = itr->second.find(idx);
+    if (itr2 == itr->second.end())
+        return sVarEmpty;
+
+    return itr2->second;
 }
 
 void DBMessage::SetCondition(const std::string &key, const Variant &v, int idx)
 {
-    if (!key.empty() && !v.IsNull())
-        m_conditions[propertyKey(key, idx)] = v;
+    if (key.empty() || v.IsNull())
+        return;
+
+    if (idx < 0)
+        idx = m_conditions[key].size();
+
+    m_conditions[key][idx] = v;
 }
 
 void DBMessage::AddCondition(const std::string &key, const Variant &v, int idx)
 {
-    if (!key.empty() && !v.IsNull())
-        m_conditions[propertyKey(key, idx)].Add(v);
+    if (key.empty() || v.IsNull())
+        return;
+
+    if (idx < 0)
+        idx = m_conditions[key].size();
+
+    m_conditions[key][idx].Add(v);
 }
 
-const Variant &DBMessage::GetCondition(const string &key, int idx, const std::string &ju) const
+const Variant &DBMessage::GetCondition(const string &key, uint32_t idx, const std::string &ju) const
 {
-    auto itr = m_conditions.find(propertyKey(key, idx));
-    if (itr == m_conditions.end())
-        itr = m_conditions.find(propertyKey(key+":"+ju, idx));
+    const Variant & var = getCondition(key, idx);
+    if (var.IsNull())
+        return getCondition(key+":"+ju, idx);
 
-    return itr!=m_conditions.end() ? itr->second : sVarEmpty;
+    return var;
 }
 
 void DBMessage::SetSql(const std::string &sql, bool bQuerylist)
@@ -220,16 +242,35 @@ DBMessage *DBMessage::GenerateAck(ObjectDB *db) const
                 const Variant &v = GetRead(INCREASEField, i);
                 if (!v.IsNull())
                     ret->SetRead(INCREASEField, v, i);
+
             }
         }
-
+        ret->m_reads = m_reads;
         return ret;
     }
 
     return NULL;
 }
 
-string DBMessage::propertyKey(const string &key, int idx) const
+void *DBMessage::GetContent() const
 {
-    return idx<1 ? key : Utility::l2string(idx) + "." + key;
+    return NULL;
+}
+
+int DBMessage::GetContentLength() const
+{
+    return 0;
+}
+
+const Variant & DBMessage::getCondition(const std::string &key, uint32_t idx) const
+{
+    auto itr = m_conditions.find(key);
+    if (itr == m_conditions.end())
+        return sVarEmpty;
+
+    auto itr2 = itr->second.find(idx);
+    if (itr2 == itr->second.end())
+        return sVarEmpty;
+
+    return itr2->second;
 }

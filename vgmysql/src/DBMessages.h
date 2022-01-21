@@ -21,7 +21,7 @@ class ExecutItem;
 class DBMessage : public IMessage
 {
     CLASS_INFO(DBMessage)
-    typedef std::map<std::string, Variant> VariantMap;
+    typedef std::map<std::string, std::map<uint32_t, Variant> > VariantMap;
 public:
     enum OBjectFlag
     {
@@ -38,13 +38,13 @@ public:
     SHARED_SQL DBMessage(ObjectDB *senderv, int tpMsg, int tpRcv, const std::string &idRc);
     SHARED_SQL DBMessage(IObjectManager *mgr, const std::string &rcvDB);
     SHARED_SQL void SetWrite(const std::string &key, const Variant &v, int idx=0);
-    SHARED_SQL const Variant &GetWrite(const std::string &key, int idx = 0)const;
+    SHARED_SQL const Variant &GetWrite(const std::string &key, uint32_t idx = 0)const;
     SHARED_SQL void SetRead(const std::string &key, const Variant &v, int idx = 0);
     SHARED_SQL void AddRead(const std::string &key, const Variant &v, int idx = 0);
-    SHARED_SQL const Variant &GetRead(const std::string &key, int idx = 0)const;
+    SHARED_SQL const Variant &GetRead(const std::string &key, uint32_t idx = 0)const;
     SHARED_SQL void SetCondition(const std::string &key, const Variant &v, int idx = 0);
     SHARED_SQL void AddCondition(const std::string &key, const Variant &v, int idx = 0);
-    SHARED_SQL const Variant &GetCondition(const std::string &key, int idx = 0, const std::string &ju="=")const;
+    SHARED_SQL const Variant &GetCondition(const std::string &key, uint32_t idx = 0, const std::string &ju="=")const;
     SHARED_SQL void SetSql(const std::string &sql, bool bQuerylist = false);
     SHARED_SQL void AddSql(const std::string &sql);
     SHARED_SQL const StringList &GetSqls()const;
@@ -57,10 +57,9 @@ public:
     const std::string &GetRefFiled()const;
     DBMessage *GenerateAck(ObjectDB *db)const;
 protected:
-    std::string propertyKey(const std::string &key, int idx)const;
-
     void *GetContent() const;
     int GetContentLength() const;
+    const Variant &getCondition(const std::string &key, uint32_t idx = 0)const;
 protected:
     int             m_seq;
     MessageType     m_ackTp;
