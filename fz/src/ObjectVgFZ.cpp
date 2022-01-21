@@ -79,7 +79,7 @@ uint64_t ObjectVgFZ::GetCurVer(const std::string &pcsn)
     if (GetAuth(IObject::Type_Manager))
         return -1;
 
-    return pcsn == m_pcsn ? 0 : m_ver;
+    return pcsn != m_pcsn ? 0 : m_ver;
 }
 
 int ObjectVgFZ::FZType()
