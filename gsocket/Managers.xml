@@ -438,6 +438,7 @@
 					<item name="ver" ref="FZKeyReg"type="Write" />
 					<item name="dscr" type="Write" />
 					<item name="used" ref="FZKeyReg" type="Write" />
+					<item name="regTm" ref="FZKeyReg" type="Write" />
 					<item name="used" ref="FZKeyReg" type="Condition" />
 					<item name="swsn" type="Condition" />
 				</SQL>

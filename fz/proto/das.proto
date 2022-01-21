@@ -78,8 +78,8 @@ message AckNewFZUser {
 //=================================================================================================
 message RequestFZUserIdentity {
     required uint32 seqno         = 1;      //本包的包序号
-    required string user          = 2;      //设备类型UAV/TRACKER(devtype->type)
-    required string	pswd          = 3;      //扩展备用数据
+    required string user          = 2;      //用户
+    required string pswd          = 3;      //密码
     required string pcsn          = 4;      //pc序列号
 }
 
@@ -87,10 +87,10 @@ message RequestFZUserIdentity {
 //AckFZUserIdentity
 //=================================================================================================
 message AckFZUserIdentity {
-    required uint32 seqno       = 1;    //本包的包序号
-    required int32 	result      = 2;    //ID分配的结果
-    required int64	ver         = 3;    //软件注册版本<0未注册
-    optional string	extradata   = 4;    //扩展备用数据
+    required uint32   seqno       = 1;    //本包的包序号
+    required int32    result      = 2;    //ID分配的结果
+    required int64    ver         = 3;    //软件注册版本<0未注册
+    optional string   extradata   = 4;    //扩展备用数据
 }
 
 //=================================================================================================
@@ -99,7 +99,7 @@ message AckFZUserIdentity {
 message PostChangeFZPswd {
     required uint32 seqno       = 1;    //本包的包序号
     required string old         = 2;    //原密码
-    required string	pswd        = 3;    //新密码
+    required string pswd        = 3;    //新密码
 }
 
 //=================================================================================================
@@ -107,7 +107,7 @@ message PostChangeFZPswd {
 //=================================================================================================
 message AckChangeFZPswd {
     required uint32 seqno       = 1;    //本包的包序号
-    required int32 	result      = 2;    //ID分配的结果
+    required int32  result      = 2;    //修改结果
 }
 
 //=================================================================================================
@@ -157,7 +157,6 @@ message AckFriends {
     repeated string friends   = 2;  //好友列表
 }
 
-
 //=================================================================================================
 //UpdateSWKey
 //=================================================================================================
@@ -203,9 +202,9 @@ message AckSWKeyInfo {
 //SWRegist
 //=================================================================================================
 message SWRegist {
-    required uint32 seqno         = 1;      //本包的包序号
-    required string pcsn          = 2;      //主板sn
-    required string	swkey         = 3;      //软件序列号
+    required uint32    seqno         = 1;      //本包的包序号
+    required string    pcsn          = 2;      //主板sn
+    required string    swkey         = 3;      //软件序列号
 }
 
 //=================================================================================================
@@ -214,7 +213,7 @@ message SWRegist {
 message AckSWRegist {
     required uint32 seqno         = 1;      //本包的包序号
     required int32 result         = 2;      //结果0:reject
-	required int64 ver            = 3;      //序列号版本
+    required int64 ver            = 3;      //序列号版本
 }
 
 //=================================================================================================
@@ -258,7 +257,7 @@ message RequestFZResults {
 //=================================================================================================
 message AckFZResults {
     required uint32 seqno        = 1;      //本包的包序号
-	repeated FZResult rslt       = 2;
+    repeated FZResult rslt       = 2;
 }
 
 //=================================================================================================
@@ -269,8 +268,8 @@ message FZInfo {
     optional string grade       = 2; //年级
     optional string majr        = 3; //专业
     optional string id          = 4; //学号
-	optional string school      = 5; //学校
-	optional string births      = 6; //出生日期
+    optional string school      = 5; //学校
+    optional string births      = 6; //出生日期
     required string email       = 7; //e-mail
 }
 

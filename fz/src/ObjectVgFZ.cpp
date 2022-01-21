@@ -877,6 +877,7 @@ void ObjectVgFZ::_prcsSWRegist(SWRegist *pb)
     msg->SetSql("updateFZPCReg");
     msg->SetWrite("pcsn", m_pcsn);
     msg->SetWrite("used", 1);
+    msg->SetWrite("regTm", Utility::msTimeTick());
     msg->SetCondition("swsn", pb->swkey());
     msg->SetCondition("used", 0);
 
