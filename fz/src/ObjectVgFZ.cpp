@@ -261,12 +261,11 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
     int idx = msg.IndexofSql("queryFZPCReg");
     if (idx >= 0)
     {
-        auto var = msg.GetRead("ver", idx);
-        m_ver = var.IsNull() ? 0 : var.ToInt64();
-        if (m_pcsn.empty() || m_pcsn == "O.E.M")
+        m_ver = msg.GetRead("ver", idx).ToInt64();
+        if (m_pcsn.empty())
             m_ver = 0;
 
-        if (m_ver < 0)
+        if (m_ver == 0)
             m_pcsn = string();
     }
 
