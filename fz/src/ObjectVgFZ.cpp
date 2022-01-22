@@ -810,7 +810,7 @@ void ObjectVgFZ::_prcsUpdateSWKey(UpdateSWKey *pb)
     if (op == 2)
     {
         msg->SetWrite("used", 0);
-        msg->SetWrite("pcsn", "");
+        msg->SetWrite("pcsn", string("---"));
     }
     else
     {
