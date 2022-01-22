@@ -12,6 +12,7 @@
 #include "MailMessages.h"
 
 #define MD5KEY "$VIGA-CHANGSHA802"
+#define AutoReleaseMs 60000
 
 enum {
     WRITE_BUFFLEN = 1024 * 8,
@@ -538,7 +539,7 @@ void ObjectVgFZ::CheckTimer(uint64_t ms, char *buf, int len)
     ms -= m_tmLastInfo;
     if (ReleaseLater == m_stInit && ms > 100)
         Release();
-    else if (!GetAuth(Type_Manager) && (ms > 600000 || (!m_check.empty() && ms > 60000)))
+    else if (!GetAuth(Type_Manager) && ms>AutoReleaseMs)
         Release();
     else if (GetAuth(Type_Common) && ms > 15000)//³¬Ê±¹Ø±Õ
         IsInitaled() ? CloseLink() : Release();
