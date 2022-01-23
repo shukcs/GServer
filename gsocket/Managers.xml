@@ -483,6 +483,8 @@
 	</GSManager>
 	<MailManager>
 		<Object name="hsj8262@163.com" user="hsj8262@163.com" password="FAYDHQLPZJNLZLNB" host="smtp.163.com" port="465" smtps="1"/>
+		<Object name="78056557@qq.com" user="78056557@qq.com" password="aimfhgjbmdsgbheb" host="smtp.qq.com" port="465" smtps="1"/>
+		<Object name="hsj8262@foxmail.com" user="hsj8262@foxmail.com" password="ykavbbycgplebjbe" host="smtp.qq.com" port="465" smtps="1"/>
 	</MailManager>
 	<GVManager thread="2" buff="6144" >
 		<Object id="root" pswd="NIhao666" auth="7" />

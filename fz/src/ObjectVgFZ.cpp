@@ -262,9 +262,11 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
     int idx = msg.IndexofSql("queryFZPCReg");
     if (idx >= 0)
     {
-        m_ver = msg.GetRead("ver", idx).ToInt64();
-        if (m_pcsn.empty())
+        int32_t used = msg.GetRead("used").ToInt32();
+        if (m_pcsn.empty() || used==0)
             m_ver = 0;
+        else
+            m_ver = msg.GetRead("ver", idx).ToInt64();
 
         if (m_ver == 0)
             m_pcsn = string();
@@ -360,8 +362,8 @@ void ObjectVgFZ::processSWRegist(const DBMessage &msg)
             m_ver = ver;
 
         ack->set_ver(m_ver);
-        GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "PC %s register %s", m_pcsn.c_str(), bSuc? "success":"fail");
         WaitSend(ack);
+        GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "PC %s register %s", m_pcsn.c_str(), bSuc? "success":"fail");
     }
 
     if (!bSuc)
