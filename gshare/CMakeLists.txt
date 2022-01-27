@@ -27,6 +27,8 @@ set(SRC_LIST
 	src/Ipv4Address.h
 	src/Ipv6Address.cpp
 	src/Ipv6Address.h
+	src/IPCommon.cpp
+	src/IPCommon.h
 	src/Lock.cpp
 	src/Lock.h
 	src/LoopQueue.cpp

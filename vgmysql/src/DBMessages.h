@@ -53,9 +53,15 @@ public:
     SHARED_SQL int GetSeqNomb()const;
     SHARED_SQL bool IsQueryList() const;
     SHARED_SQL void SetRefFiled(const std::string &filed);
+    SHARED_SQL void SetLimit(uint32_t beg=0, uint16_t limit=200);
 
     const std::string &GetRefFiled()const;
     DBMessage *GenerateAck(ObjectDB *db)const;
+    uint32_t GetLimitBeg()const;
+    uint16_t GetLimit()const;
+
+    bool HasWrite(const std::string &key, uint32_t idx = 0)const;
+    bool HasCondition(const std::string &key, uint32_t idx = 0)const;
 protected:
     void *GetContent() const;
     int GetContentLength() const;
@@ -63,7 +69,9 @@ protected:
 protected:
     int             m_seq;
     MessageType     m_ackTp;
-    bool            m_bQueryList;
+    char            m_bQueryList;
+    uint16_t        m_limit;
+    uint32_t        m_begLimit;
     StringList      m_sqls;
     VariantMap      m_writes;
     VariantMap      m_conditions;

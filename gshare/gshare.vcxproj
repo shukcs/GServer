@@ -17,6 +17,7 @@
     <ClCompile Include="src\gsocket.cpp" />
     <ClCompile Include="src\gsocketmanager.cpp" />
     <ClCompile Include="src\IMessage.cpp" />
+    <ClCompile Include="src\IPCommon.cpp" />
     <ClCompile Include="src\Lock.cpp" />
     <ClCompile Include="src\LoopQueue.cpp" />
     <ClCompile Include="src\MD5lib.cpp" />
@@ -38,6 +39,7 @@
     <ClInclude Include="src\gsocketmanager.h" />
     <ClInclude Include="src\ILog.h" />
     <ClInclude Include="src\IMessage.h" />
+    <ClInclude Include="src\IPCommon.h" />
     <ClInclude Include="src\Lock.h" />
     <ClInclude Include="src\LoopQueue.h" />
     <ClInclude Include="src\MD5lib.h" />

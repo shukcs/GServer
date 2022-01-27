@@ -121,6 +121,7 @@ public:
     void SetBuff(const char *b, int sz);
     int GetBuffLength()const;
     bool IsNull()const;
+    bool IsValid()const;
     Variant &operator=(const Variant &oth);
     template<class E>
     void SetValue(const E &val)
@@ -144,7 +145,7 @@ private:
     VariantType elementListType()const;
 private:
     VariantType m_tp;
-    bool        m_bValide;
+    bool        m_bValid;
     union {
         int32_t             m_nS;
         uint32_t            m_nU;

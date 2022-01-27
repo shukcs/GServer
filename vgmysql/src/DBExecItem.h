@@ -31,6 +31,7 @@ public:
         List = StaticRef<<1,
     };
 public:
+    void SetNotStringParam(const string &param);
     void SetParam(const string &param, FieldType tp = NoBuff);
     void SetParam(const string &exFild, const string &param, FieldType tp = NoBuff);
     void SetParam(const list<string> &param);
@@ -93,11 +94,11 @@ private:
     ExecutItem      *m_exParam;
     unsigned long   m_lenMax;
     unsigned long   m_len;
-    char            m_bEmpty;
     FieldType       m_tpField;
+    char            m_bEmpty;
     string          m_name;
-    string          m_param;
     string          m_condition;
+    string          m_param;
 };
 
 class ExecutItem
@@ -130,6 +131,7 @@ public:
     void ClearData();
     ExecutType GetType()const;
     const std::string &GetName()const;
+    void SetLimit(uint32_t beg=0, uint16_t limit=200);
 
     string GetSqlString(MYSQL_BIND *paramBinds=NULL)const;
     MYSQL_BIND *GetParamBinds();
@@ -167,8 +169,10 @@ private:
     ExecutType        m_type;
     string            m_name;
     FiledVal          *m_autoIncrement;
-    bool              m_bHasForeignRefTable;
-    bool              m_bRef;
+    char              m_bHasForeignRefTable;
+    char              m_bRef;
+    uint16_t          m_nlimit;
+    uint32_t          m_limitBeg;
     string            m_group;
     StringList        m_tables;
     StringList        m_conditions;

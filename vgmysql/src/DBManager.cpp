@@ -94,16 +94,21 @@ void ObjectDB::_initSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx)
     for (FiledVal *fd : sql.Fields(ExecutItem::Write))
     {
         string name = fd->GetFieldName();
-        _initFieldByVarient(*fd, msg.GetWrite(name, idx));
+        if (msg.HasWrite(name, idx))
+            _initFieldByVarient(*fd, msg.GetWrite(name, idx));
     }
     for (FiledVal *fd : sql.Fields(ExecutItem::Condition))
     {
         string name = fd->GetFieldName();
         if (auto tmp = fd->ComplexSql())
             _initCmpSqlByMsg(*tmp, msg, idx);
-        else
+        else if (msg.HasCondition(name, idx))
             _initFieldByVarient(*fd, msg.GetCondition(name, idx, fd->GetJudge()));
     }
+    if (sql.GetType() != ExecutItem::Select)
+        return;
+
+    sql.SetLimit(msg.GetLimitBeg(), msg.GetLimit());
 }
 
 void ObjectDB::_initCmpSqlByMsg(ExecutItem &sql, const DBMessage &msg, int idx)
@@ -186,7 +191,9 @@ void ObjectDB::_initFieldByVarient(FiledVal &fd, const Variant &v)
     case Variant::Type_StringList:
         fd.SetParam(v.ToStringList()); break;
     case Variant::Type_bool:
-        fd.SetParam(v.ToBool() ? "1":"0"); break;
+        fd.SetNotStringParam(v.ToBool() ? "1" : "0"); break;
+    case Variant::Type_Unknow:
+        fd.SetNotStringParam("NULL"); break;
     default:
         break;
     }

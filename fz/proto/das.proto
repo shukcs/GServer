@@ -182,20 +182,30 @@ message AckUpdateSWKey {
 //=================================================================================================
 message ReqSWKeyInfo {
 	required uint32 seqno         = 1;      //本包的包序号
-	required string	swkey         = 2;      //软件序列号
+	optional string	swkey         = 2;      //软件序列号
+	optional string pcsn          = 3;      //pc序列号
+	optional int64  begTm         = 4;      //生成时间
+}
+
+//=================================================================================================
+//SWKeyInfo
+//=================================================================================================
+message SWKeyInfo {
+	required string	swkey         = 1;      //软件序列号
+	required int64  ver           = 2;      //软件版本号
+	required int64  genTm         = 3;      //注册时间
+	required int32  used          = 4;      //是否使用，0:没有
+	optional string	dscr          = 5;      //用户描述
+	optional string pcsn          = 6;      //pc序列号
+	optional int64  regTm         = 7;      //注册时间
 }
 
 //=================================================================================================
 //AckSWKeyInfo
 //=================================================================================================
 message AckSWKeyInfo {
-	required uint32 seqno         = 1;      //本包的包序号
-	required string	swkey         = 2;      //软件序列号
-	required int64  ver           = 3;      //软件版本号
-	optional string	dscr          = 4;      //用户描述
-	optional string pcsn          = 5;      //pc序列号
-	optional int64  regTm         = 6;      //注册时间
-	optional int32  used          = 7;      //是否使用，0:没有
+	required uint32      seqno     = 1;      //本包的包序号
+    repeated SWKeyInfo   keys      = 2;      //序列号
 }
 
 //=================================================================================================

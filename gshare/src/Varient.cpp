@@ -6,7 +6,7 @@ const static StringList sEmptyStrLs;
 ////////////////////////////////////////////////////////////////////////////////
 //Variant
 ////////////////////////////////////////////////////////////////////////////////
-Variant::Variant(VariantType tp) : m_tp(tp), m_bValide(false), m_nU64(0)
+Variant::Variant(VariantType tp) : m_tp(tp), m_bValid(false), m_nU64(0)
 {
     ensureConstruction(tp);
 }
@@ -16,51 +16,51 @@ Variant::Variant(const Variant &oth) : m_tp(Type_Unknow)
     *this = oth;
 }
 
-Variant::Variant(const std::string &str) : m_tp(Type_string), m_bValide(true), m_list(new string(str))
+Variant::Variant(const std::string &str) : m_tp(Type_string), m_bValid(true), m_list(new string(str))
 {
 }
 
-Variant::Variant(int sz, const char *buf) : m_tp(Type_buff), m_bValide(true), m_list(new string(buf, sz))
+Variant::Variant(int sz, const char *buf) : m_tp(Type_buff), m_bValid(true), m_list(new string(buf, sz))
 {
 }
 
-Variant::Variant(int32_t v) : m_tp(Type_int32), m_bValide(true), m_nS(v)
+Variant::Variant(int32_t v) : m_tp(Type_int32), m_bValid(true), m_nS(v)
 {
 }
 
-Variant::Variant(uint32_t v) : m_tp(Type_uint32), m_bValide(true), m_nU(v)
+Variant::Variant(uint32_t v) : m_tp(Type_uint32), m_bValid(true), m_nU(v)
 {
 }
 
-Variant::Variant(int16_t v) : m_tp(Type_int16), m_bValide(true), m_nS16(v)
+Variant::Variant(int16_t v) : m_tp(Type_int16), m_bValid(true), m_nS16(v)
 {
 }
 
-Variant::Variant(uint16_t v) : m_tp(Type_uint16), m_bValide(true), m_nU16(v)
+Variant::Variant(uint16_t v) : m_tp(Type_uint16), m_bValid(true), m_nU16(v)
 {
 }
 
-Variant::Variant(int8_t v) : m_tp(Type_int8), m_bValide(true), m_nS8(v)
+Variant::Variant(int8_t v) : m_tp(Type_int8), m_bValid(true), m_nS8(v)
 {
 }
 
-Variant::Variant(uint8_t v) : m_tp(Type_uint8), m_bValide(true), m_nU8(v)
+Variant::Variant(uint8_t v) : m_tp(Type_uint8), m_bValid(true), m_nU8(v)
 {
 }
 
-Variant::Variant(int64_t v) : m_tp(Type_int64), m_bValide(true), m_nS64(v)
+Variant::Variant(int64_t v) : m_tp(Type_int64), m_bValid(true), m_nS64(v)
 {
 }
 
-Variant::Variant(uint64_t v) : m_tp(Type_uint64), m_bValide(true), m_nU64(v)
+Variant::Variant(uint64_t v) : m_tp(Type_uint64), m_bValid(true), m_nU64(v)
 {
 }
 
-Variant::Variant(double v) : m_tp(Type_double), m_bValide(true), m_f64(v)
+Variant::Variant(double v) : m_tp(Type_double), m_bValid(true), m_f64(v)
 {
 }
 
-Variant::Variant(float v) : m_tp(Type_float), m_bValide(true), m_f32(v)
+Variant::Variant(float v) : m_tp(Type_float), m_bValid(true), m_f32(v)
 {
 }
 
@@ -68,7 +68,7 @@ Variant::Variant(bool v) : m_tp(Type_bool), m_bool(v)
 {
 }
 
-Variant::Variant(const StringList &v) : m_tp(Type_StringList), m_bValide(true), m_list(new StringList(v))
+Variant::Variant(const StringList &v) : m_tp(Type_StringList), m_bValid(true), m_list(new StringList(v))
 {
 }
 
@@ -100,7 +100,7 @@ bool Variant::Add(const Variant&v)
     case Variant::Type_uint64:
     case Variant::Type_double:
     case Variant::Type_float:
-        m_bValide = true;
+        m_bValid = true;
         ((list<Variant>*)m_list)->push_back(v);
         break;
     default:
@@ -240,10 +240,16 @@ bool Variant::IsNull() const
     return m_tp == Type_Unknow;
 }
 
+bool Variant::IsValid() const
+{
+    return m_bValid;
+}
+
 const list<Variant> &Variant::GetVarList() const
 {
     if (m_tp > Type_StringList && m_tp <= Type_ListF32)
         return *(list<Variant>*)m_list;
+
     if (Type_StringList == m_tp)
     {
         static list<Variant> ret;
@@ -300,7 +306,7 @@ Variant &Variant::operator=(const Variant &oth)
         ensureDestruct();
         ensureConstruction(oth.m_tp);
     }
-    m_bValide = oth.m_bValide;
+    m_bValid = oth.m_bValid;
     switch (m_tp)
     {
     case Type_string:

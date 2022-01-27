@@ -11,6 +11,7 @@
 #include <tinyxml.h>
 #include <string.h>
 #include <chrono>
+#include "Utility.h"
 
 #define LeftBraceCount(f) ((f&NumbLeftMask))
 #define RightBraceCount(f) ((f&NumbRightMask)>>8)
@@ -21,16 +22,16 @@ static const list<FiledVal*> lsFieldEmpty;
 //FiledVal
 ///////////////////////////////////////////////////////////////////////////////////////
 FiledVal::FiledVal(int tp, const std::string &name, int len): m_type(tp), m_buff(NULL)
-, m_exParam(NULL),m_lenMax(0), m_len(0), m_name(name), m_condition("="), m_bEmpty(1)
-, m_tpField(NoBuff)
+, m_exParam(NULL),m_lenMax(0), m_len(0), m_tpField(NoBuff), m_bEmpty(1), m_name(name)
+, m_condition("=")
 {
     InitBuff(len);
     transType(tp);
 }
 
 FiledVal::FiledVal(VGTableField *fild, bool bOth): m_type(-1), m_buff(NULL)
-, m_exParam(NULL), m_lenMax(0), m_len(0), m_condition("="), m_bEmpty(1)
-, m_tpField(NoBuff)
+, m_exParam(NULL), m_lenMax(0), m_len(0), m_tpField(NoBuff), m_bEmpty(1)
+, m_name(), m_condition("=")
 {
     if (fild)
     {
@@ -91,6 +92,24 @@ ExecutItem *FiledVal::ComplexSql() const
     return m_exParam;
 }
 
+void FiledVal::SetNotStringParam(const string &param)
+{
+    if (m_tpField & (StaticRef | StaticParam))
+        return;
+
+    if (param.length() > 0)
+    {
+        if (m_buff)
+        {
+            delete m_buff;
+            m_buff = NULL;
+        }
+        m_param = param;
+        m_bEmpty = 0;
+        m_tpField = NoBuff;
+    }
+}
+
 void FiledVal::SetParam(const string &param, FieldType tp)
 {
     if (m_tpField & (StaticRef | StaticParam))
@@ -98,11 +117,6 @@ void FiledVal::SetParam(const string &param, FieldType tp)
 
     if(param.length() > 0 && (NoBuff==tp || StaticRef==tp || StaticParam==tp))
     {
-        if(m_buff)
-        {
-            delete m_buff;
-            m_buff = NULL;
-        }
         m_len = 0;
         if (StaticParam==tp || NoBuff==tp)
             m_param = string("\'") + param + "\'";
@@ -365,7 +379,7 @@ string FiledVal::finallyString(const string &str, BraceFlag f)
 ///////////////////////////////////////////////////////////////////////////////////////
 ExecutItem::ExecutItem(ExecutType tp, const std::string &name): m_type(tp)
 , m_name(name), m_autoIncrement(NULL), m_bHasForeignRefTable(false)
-, m_bRef(false)
+, m_bRef(false), m_nlimit(200), m_limitBeg(0)
 {
 }
 
@@ -391,6 +405,15 @@ ExecutItem::ExecutType ExecutItem::GetType() const
 const std::string & ExecutItem::GetName() const
 {
     return m_name;
+}
+
+void ExecutItem::SetLimit(uint32_t beg, uint16_t limit)
+{
+    if (m_type == Select)
+    {
+        m_nlimit = limit;
+        m_limitBeg = beg;
+    }
 }
 
 const StringList &ExecutItem::ExecutTables() const
@@ -613,7 +636,7 @@ MYSQL_BIND *ExecutItem::TransformRead()
 
 bool ExecutItem::HasForeignRefTable() const
 {
-    return m_bHasForeignRefTable;
+    return m_bHasForeignRefTable!=0;
 }
 
 void ExecutItem::SetRef(bool b)
@@ -623,7 +646,7 @@ void ExecutItem::SetRef(bool b)
 
 bool ExecutItem::IsRef() const
 {
-    return m_bRef;
+    return m_bRef!=0;
 }
 
 void ExecutItem::transformBind(FiledVal *item, MYSQL_BIND &bind, bool bRead)
@@ -799,6 +822,14 @@ std::string ExecutItem::_toSelect(MYSQL_BIND *param, int &pos) const
     string sql = string("select") + fields+ " from" + _getTablesString() + _conditionsString(param, pos);
     if (!m_group.empty())
         sql += " group by " + m_group;
+
+    if (m_limitBeg > 0 || m_nlimit > 0)
+    {
+        if (m_limitBeg>0)
+            sql += " limit " + Utility::l2string(m_limitBeg) + "," + Utility::l2string(m_nlimit);
+        else
+            sql += " limit " + Utility::l2string(m_nlimit);
+    }
 
     return sql;
 }

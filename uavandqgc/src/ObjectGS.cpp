@@ -347,18 +347,17 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
     if (!ack || idx<0)
         return;
 
-    auto ids = msg.GetRead("id", idx).GetVarList();
-    auto bindeds = msg.GetRead("binded", idx).GetVarList();
-    auto binders = msg.GetRead("binder", idx).GetVarList();
-    auto lats = msg.GetRead("lat", idx).GetVarList();
-    auto lons = msg.GetRead("lon", idx).GetVarList();
-    auto timeBinds = msg.GetRead("timeBind", idx).GetVarList();
-    auto valids = msg.GetRead("valid", idx).GetVarList();
-    auto authChecks = msg.GetRead("authCheck", idx).GetVarList();
-    auto sims = msg.GetRead("simID", idx).GetVarList();
+    const StringList &ids = msg.GetRead("id", idx).ToStringList();
+    const VariantList &bindeds = msg.GetRead("binded", idx).GetVarList();
+    const StringList &binders = msg.GetRead("binder", idx).ToStringList();
+    const VariantList &lats = msg.GetRead("lat", idx).GetVarList();
+    const VariantList &lons = msg.GetRead("lon", idx).GetVarList();
+    const VariantList &timeBinds = msg.GetRead("timeBind", idx).GetVarList();
+    const VariantList &valids = msg.GetRead("valid", idx).GetVarList();
+    const StringList &authChecks = msg.GetRead("authCheck", idx).ToStringList();
+    const StringList &sims = msg.GetRead("simID", idx).ToStringList();
 
     ack->set_seqno(msg.GetSeqNomb());
-    auto idItr = ids.begin();
     auto bindedItr = bindeds.begin();
     auto binderItr = binders.begin();
     auto latItr = lats.begin();
@@ -368,15 +367,15 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
     auto authCheckItr = authChecks.begin();
     auto simItr = sims.begin();
 
-    for (; idItr != ids.end(); ++idItr)
+    for (const string &idItr : ids)
     {
         UavStatus *us = ack->add_status();
         us->set_result(1);
-        us->set_uavid(idItr->ToString());
+        us->set_uavid(idItr);
         string binder;
         if (binderItr != binders.end())
         {
-            binder = binderItr->ToString();
+            binder = *binderItr;
             us->set_binder(binder);
             ++binderItr;
         }
@@ -392,7 +391,7 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
         bool bAuth = (binder == m_id && bBind) || GetAuth(Type_Manager);
         if (authCheckItr != authChecks.end() && bAuth)
         {
-            us->set_authstring(authCheckItr->ToString());
+            us->set_authstring(*authCheckItr);
             ++authCheckItr;
         }
         if (validItr != valids.end())
@@ -413,7 +412,7 @@ void ObjectGS::processUavsInfo(const DBMessage &msg)
         }
         if (simItr != sims.end())
         {
-            us->set_simid(simItr->ToString());
+            us->set_simid(*simItr);
             ++simItr;
         }
     }
@@ -525,15 +524,15 @@ void ObjectGS::processFriends(const DBMessage &msg)
     const Variant &vUsr2 = msg.GetRead("usr2");
     if (vUsr1.GetType() == Variant::Type_StringList && vUsr2.GetType() == Variant::Type_StringList)
     {
-        for (const Variant &itr : vUsr1.GetVarList())
+        for (const string &itr : vUsr1.ToStringList())
         {
-            if (!itr.IsNull() && itr.ToString() != m_id)
-                m_friends.push_back(itr.ToString());
+            if (!itr.empty() && itr != m_id)
+                m_friends.push_back(itr);
         }
-        for (const Variant &itr : vUsr2.GetVarList())
+        for (const string &itr : vUsr2.ToStringList())
         {
-            if (!itr.IsNull() && itr.ToString() != m_id)
-                m_friends.push_back(itr.ToString());
+            if (!itr.empty() && itr != m_id)
+                m_friends.push_back(itr);
         }
     }
 }

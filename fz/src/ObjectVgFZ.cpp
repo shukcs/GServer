@@ -262,11 +262,9 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
     int idx = msg.IndexofSql("queryFZPCReg");
     if (idx >= 0)
     {
-        int32_t used = msg.GetRead("used").ToInt32();
-        if (m_pcsn.empty() || used==0)
+        m_ver = msg.GetRead("ver", idx).ToInt64();
+        if (m_pcsn.empty())
             m_ver = 0;
-        else
-            m_ver = msg.GetRead("ver", idx).ToInt64();
 
         if (m_ver == 0)
             m_pcsn = string();
@@ -335,18 +333,52 @@ void ObjectVgFZ::processQuerySWKey(const DBMessage &msg)
     if (!ack)
         return;
     ack->set_seqno(msg.GetSeqNomb());
-    ack->set_swkey(msg.GetRead("swsn").ToString());
-    const Variant&var = msg.GetRead("ver");
-    ack->set_ver(var.IsNull() ? 0 : var.ToInt64());
-    if (!var.IsNull())
+    const StringList &keys = msg.GetRead("swsn").ToStringList();
+    const StringList &pcsns = msg.GetRead("pcsn").ToStringList();
+    const StringList &dscrs = msg.GetRead("dscr").ToStringList();
+    const VariantList &vers = msg.GetRead("ver").GetVarList();
+    const VariantList &useds = msg.GetRead("used").GetVarList(); 
+    const VariantList &regTms = msg.GetRead("regTm").GetVarList();
+    const VariantList &genTms = msg.GetRead("genTm").GetVarList();
+
+    auto pcsn = pcsns.begin();
+    auto dscr = dscrs.begin();
+    auto verItr = vers.begin();
+    auto usedItr = useds.begin();
+    auto regTmItr = regTms.begin();
+    auto genTmItr = genTms.begin();
+    for (const string &key : keys)
     {
-        ack->set_dscr(msg.GetRead("dscr").ToString());
-        ack->set_pcsn(msg.GetRead("pcsn").ToString());
-        ack->set_regtm(msg.GetRead("regTm").ToInt64());
-        ack->set_used(msg.GetRead("used").ToInt32());
+        if (ack->ByteSize() > MaxSend)
+        {
+            WaitSend(ack);
+            ack = new AckSWKeyInfo;
+            if (!ack)
+                break;
+            ack->set_seqno(msg.GetSeqNomb());
+        }
+
+        auto swKey = ack->add_keys();
+        if (!swKey)
+            break;
+        swKey->set_swkey(key);
+        if (!pcsn->empty())
+            swKey->set_pcsn(*pcsn);
+        pcsn++;
+        if (!dscr->empty())
+            swKey->set_dscr(*dscr);
+        dscr++;
+
+        swKey->set_gentm(genTmItr++->ToInt64());
+        swKey->set_ver(verItr++->ToInt64());
+        swKey->set_used(usedItr++->ToInt32());
+        if (regTmItr->IsValid())
+            swKey->set_regtm(regTmItr->ToInt64());
+        regTmItr++;
     }
 
-    WaitSend(ack);
+    if (ack)
+        WaitSend(ack);
 }
 
 void ObjectVgFZ::processSWRegist(const DBMessage &msg)
@@ -362,8 +394,8 @@ void ObjectVgFZ::processSWRegist(const DBMessage &msg)
             m_ver = ver;
 
         ack->set_ver(m_ver);
-        WaitSend(ack);
         GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "PC %s register %s", m_pcsn.c_str(), bSuc? "success":"fail");
+        WaitSend(ack);
     }
 
     if (!bSuc)
@@ -805,14 +837,19 @@ void ObjectVgFZ::_prcsUpdateSWKey(UpdateSWKey *pb)
     int op = pb->has_change() ? pb->change() : 0;
     msg->SetSql(op == 0 ? "insertFZKey" : "updateFZPCReg");
     if (op!=0)
+    { 
         msg->SetCondition("swsn", pb->swkey());
+    }
     else
+    {
         msg->SetWrite("swsn", pb->swkey());
+        msg->SetWrite("genTm", Utility::msTimeTick());
+    }
 
     if (op == 2)
     {
         msg->SetWrite("used", 0);
-        msg->SetWrite("pcsn", string("---"));
+        msg->SetWrite("pcsn", Variant());
     }
     else
     {
@@ -828,7 +865,7 @@ void ObjectVgFZ::_prcsUpdateSWKey(UpdateSWKey *pb)
 
 void ObjectVgFZ::_prcsReqSWKeyInfo(das::proto::ReqSWKeyInfo *msg)
 {
-    if (!msg || !msg->has_swkey())
+    if (!msg)
         return;
 
     if (!GetAuth(IObject::Type_Manager))
@@ -836,8 +873,6 @@ void ObjectVgFZ::_prcsReqSWKeyInfo(das::proto::ReqSWKeyInfo *msg)
         if (auto ack = new AckSWKeyInfo)
         {
             ack->set_seqno(msg->seqno());
-            ack->set_swkey(msg->swkey());
-            ack->set_ver(0);
             WaitSend(ack);
         }
         return;
@@ -847,9 +882,14 @@ void ObjectVgFZ::_prcsReqSWKeyInfo(das::proto::ReqSWKeyInfo *msg)
         return;
 
     msgDB->SetSeqNomb(msg->seqno());
-    msgDB->SetSql("queryFZPCReg");
-    msgDB->SetRead("swsn", msg->swkey());
-    msgDB->SetCondition("swsn", msg->swkey());
+    msgDB->SetSql("queryFZPCReg", true);
+    if (msg->has_swkey())
+        msgDB->SetCondition("swsn", msg->swkey());
+    else if (msg->has_pcsn())
+        msgDB->SetCondition("pcsn", msg->pcsn());
+    else
+        msgDB->SetCondition("genTm", msg->has_begtm() ? msg->begtm() : 0);
+
     SendMsg(msgDB);
 }
 

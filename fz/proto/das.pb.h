@@ -54,6 +54,7 @@ class AckFriends;
 class UpdateSWKey;
 class AckUpdateSWKey;
 class ReqSWKeyInfo;
+class SWKeyInfo;
 class AckSWKeyInfo;
 class SWRegist;
 class AckSWRegist;
@@ -2088,7 +2089,7 @@ class ReqSWKeyInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 seqno() const;
   inline void set_seqno(::google::protobuf::uint32 value);
 
-  // required string swkey = 2;
+  // optional string swkey = 2;
   inline bool has_swkey() const;
   inline void clear_swkey();
   static const int kSwkeyFieldNumber = 2;
@@ -2100,20 +2101,45 @@ class ReqSWKeyInfo : public ::google::protobuf::Message {
   inline ::std::string* release_swkey();
   inline void set_allocated_swkey(::std::string* swkey);
 
+  // optional string pcsn = 3;
+  inline bool has_pcsn() const;
+  inline void clear_pcsn();
+  static const int kPcsnFieldNumber = 3;
+  inline const ::std::string& pcsn() const;
+  inline void set_pcsn(const ::std::string& value);
+  inline void set_pcsn(const char* value);
+  inline void set_pcsn(const char* value, size_t size);
+  inline ::std::string* mutable_pcsn();
+  inline ::std::string* release_pcsn();
+  inline void set_allocated_pcsn(::std::string* pcsn);
+
+  // optional int64 begTm = 4;
+  inline bool has_begtm() const;
+  inline void clear_begtm();
+  static const int kBegTmFieldNumber = 4;
+  inline ::google::protobuf::int64 begtm() const;
+  inline void set_begtm(::google::protobuf::int64 value);
+
   // @@protoc_insertion_point(class_scope:das.proto.ReqSWKeyInfo)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
   inline void set_has_swkey();
   inline void clear_has_swkey();
+  inline void set_has_pcsn();
+  inline void clear_has_pcsn();
+  inline void set_has_begtm();
+  inline void clear_has_begtm();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
   ::std::string* swkey_;
+  ::std::string* pcsn_;
+  ::google::protobuf::int64 begtm_;
   ::google::protobuf::uint32 seqno_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(4 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -2121,6 +2147,163 @@ class ReqSWKeyInfo : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static ReqSWKeyInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class SWKeyInfo : public ::google::protobuf::Message {
+ public:
+  SWKeyInfo();
+  virtual ~SWKeyInfo();
+
+  SWKeyInfo(const SWKeyInfo& from);
+
+  inline SWKeyInfo& operator=(const SWKeyInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const SWKeyInfo& default_instance();
+
+  void Swap(SWKeyInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  SWKeyInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const SWKeyInfo& from);
+  void MergeFrom(const SWKeyInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required string swkey = 1;
+  inline bool has_swkey() const;
+  inline void clear_swkey();
+  static const int kSwkeyFieldNumber = 1;
+  inline const ::std::string& swkey() const;
+  inline void set_swkey(const ::std::string& value);
+  inline void set_swkey(const char* value);
+  inline void set_swkey(const char* value, size_t size);
+  inline ::std::string* mutable_swkey();
+  inline ::std::string* release_swkey();
+  inline void set_allocated_swkey(::std::string* swkey);
+
+  // required int64 ver = 2;
+  inline bool has_ver() const;
+  inline void clear_ver();
+  static const int kVerFieldNumber = 2;
+  inline ::google::protobuf::int64 ver() const;
+  inline void set_ver(::google::protobuf::int64 value);
+
+  // required int64 genTm = 3;
+  inline bool has_gentm() const;
+  inline void clear_gentm();
+  static const int kGenTmFieldNumber = 3;
+  inline ::google::protobuf::int64 gentm() const;
+  inline void set_gentm(::google::protobuf::int64 value);
+
+  // required int32 used = 4;
+  inline bool has_used() const;
+  inline void clear_used();
+  static const int kUsedFieldNumber = 4;
+  inline ::google::protobuf::int32 used() const;
+  inline void set_used(::google::protobuf::int32 value);
+
+  // optional string dscr = 5;
+  inline bool has_dscr() const;
+  inline void clear_dscr();
+  static const int kDscrFieldNumber = 5;
+  inline const ::std::string& dscr() const;
+  inline void set_dscr(const ::std::string& value);
+  inline void set_dscr(const char* value);
+  inline void set_dscr(const char* value, size_t size);
+  inline ::std::string* mutable_dscr();
+  inline ::std::string* release_dscr();
+  inline void set_allocated_dscr(::std::string* dscr);
+
+  // optional string pcsn = 6;
+  inline bool has_pcsn() const;
+  inline void clear_pcsn();
+  static const int kPcsnFieldNumber = 6;
+  inline const ::std::string& pcsn() const;
+  inline void set_pcsn(const ::std::string& value);
+  inline void set_pcsn(const char* value);
+  inline void set_pcsn(const char* value, size_t size);
+  inline ::std::string* mutable_pcsn();
+  inline ::std::string* release_pcsn();
+  inline void set_allocated_pcsn(::std::string* pcsn);
+
+  // optional int64 regTm = 7;
+  inline bool has_regtm() const;
+  inline void clear_regtm();
+  static const int kRegTmFieldNumber = 7;
+  inline ::google::protobuf::int64 regtm() const;
+  inline void set_regtm(::google::protobuf::int64 value);
+
+  // @@protoc_insertion_point(class_scope:das.proto.SWKeyInfo)
+ private:
+  inline void set_has_swkey();
+  inline void clear_has_swkey();
+  inline void set_has_ver();
+  inline void clear_has_ver();
+  inline void set_has_gentm();
+  inline void clear_has_gentm();
+  inline void set_has_used();
+  inline void clear_has_used();
+  inline void set_has_dscr();
+  inline void clear_has_dscr();
+  inline void set_has_pcsn();
+  inline void clear_has_pcsn();
+  inline void set_has_regtm();
+  inline void clear_has_regtm();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* swkey_;
+  ::google::protobuf::int64 ver_;
+  ::google::protobuf::int64 gentm_;
+  ::std::string* dscr_;
+  ::std::string* pcsn_;
+  ::google::protobuf::int64 regtm_;
+  ::google::protobuf::int32 used_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static SWKeyInfo* default_instance_;
 };
 // -------------------------------------------------------------------
 
@@ -2185,92 +2368,30 @@ class AckSWKeyInfo : public ::google::protobuf::Message {
   inline ::google::protobuf::uint32 seqno() const;
   inline void set_seqno(::google::protobuf::uint32 value);
 
-  // required string swkey = 2;
-  inline bool has_swkey() const;
-  inline void clear_swkey();
-  static const int kSwkeyFieldNumber = 2;
-  inline const ::std::string& swkey() const;
-  inline void set_swkey(const ::std::string& value);
-  inline void set_swkey(const char* value);
-  inline void set_swkey(const char* value, size_t size);
-  inline ::std::string* mutable_swkey();
-  inline ::std::string* release_swkey();
-  inline void set_allocated_swkey(::std::string* swkey);
-
-  // required int64 ver = 3;
-  inline bool has_ver() const;
-  inline void clear_ver();
-  static const int kVerFieldNumber = 3;
-  inline ::google::protobuf::int64 ver() const;
-  inline void set_ver(::google::protobuf::int64 value);
-
-  // optional string dscr = 4;
-  inline bool has_dscr() const;
-  inline void clear_dscr();
-  static const int kDscrFieldNumber = 4;
-  inline const ::std::string& dscr() const;
-  inline void set_dscr(const ::std::string& value);
-  inline void set_dscr(const char* value);
-  inline void set_dscr(const char* value, size_t size);
-  inline ::std::string* mutable_dscr();
-  inline ::std::string* release_dscr();
-  inline void set_allocated_dscr(::std::string* dscr);
-
-  // optional string pcsn = 5;
-  inline bool has_pcsn() const;
-  inline void clear_pcsn();
-  static const int kPcsnFieldNumber = 5;
-  inline const ::std::string& pcsn() const;
-  inline void set_pcsn(const ::std::string& value);
-  inline void set_pcsn(const char* value);
-  inline void set_pcsn(const char* value, size_t size);
-  inline ::std::string* mutable_pcsn();
-  inline ::std::string* release_pcsn();
-  inline void set_allocated_pcsn(::std::string* pcsn);
-
-  // optional int64 regTm = 6;
-  inline bool has_regtm() const;
-  inline void clear_regtm();
-  static const int kRegTmFieldNumber = 6;
-  inline ::google::protobuf::int64 regtm() const;
-  inline void set_regtm(::google::protobuf::int64 value);
-
-  // optional int32 used = 7;
-  inline bool has_used() const;
-  inline void clear_used();
-  static const int kUsedFieldNumber = 7;
-  inline ::google::protobuf::int32 used() const;
-  inline void set_used(::google::protobuf::int32 value);
+  // repeated .das.proto.SWKeyInfo keys = 2;
+  inline int keys_size() const;
+  inline void clear_keys();
+  static const int kKeysFieldNumber = 2;
+  inline const ::das::proto::SWKeyInfo& keys(int index) const;
+  inline ::das::proto::SWKeyInfo* mutable_keys(int index);
+  inline ::das::proto::SWKeyInfo* add_keys();
+  inline const ::google::protobuf::RepeatedPtrField< ::das::proto::SWKeyInfo >&
+      keys() const;
+  inline ::google::protobuf::RepeatedPtrField< ::das::proto::SWKeyInfo >*
+      mutable_keys();
 
   // @@protoc_insertion_point(class_scope:das.proto.AckSWKeyInfo)
  private:
   inline void set_has_seqno();
   inline void clear_has_seqno();
-  inline void set_has_swkey();
-  inline void clear_has_swkey();
-  inline void set_has_ver();
-  inline void clear_has_ver();
-  inline void set_has_dscr();
-  inline void clear_has_dscr();
-  inline void set_has_pcsn();
-  inline void clear_has_pcsn();
-  inline void set_has_regtm();
-  inline void clear_has_regtm();
-  inline void set_has_used();
-  inline void clear_has_used();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
-  ::std::string* swkey_;
-  ::google::protobuf::int64 ver_;
-  ::std::string* dscr_;
+  ::google::protobuf::RepeatedPtrField< ::das::proto::SWKeyInfo > keys_;
   ::google::protobuf::uint32 seqno_;
-  ::google::protobuf::int32 used_;
-  ::std::string* pcsn_;
-  ::google::protobuf::int64 regtm_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(7 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(2 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -5965,7 +6086,7 @@ inline void ReqSWKeyInfo::set_seqno(::google::protobuf::uint32 value) {
   seqno_ = value;
 }
 
-// required string swkey = 2;
+// optional string swkey = 2;
 inline bool ReqSWKeyInfo::has_swkey() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -6035,6 +6156,400 @@ inline void ReqSWKeyInfo::set_allocated_swkey(::std::string* swkey) {
   }
 }
 
+// optional string pcsn = 3;
+inline bool ReqSWKeyInfo::has_pcsn() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void ReqSWKeyInfo::set_has_pcsn() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void ReqSWKeyInfo::clear_has_pcsn() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void ReqSWKeyInfo::clear_pcsn() {
+  if (pcsn_ != &::google::protobuf::internal::kEmptyString) {
+    pcsn_->clear();
+  }
+  clear_has_pcsn();
+}
+inline const ::std::string& ReqSWKeyInfo::pcsn() const {
+  return *pcsn_;
+}
+inline void ReqSWKeyInfo::set_pcsn(const ::std::string& value) {
+  set_has_pcsn();
+  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
+    pcsn_ = new ::std::string;
+  }
+  pcsn_->assign(value);
+}
+inline void ReqSWKeyInfo::set_pcsn(const char* value) {
+  set_has_pcsn();
+  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
+    pcsn_ = new ::std::string;
+  }
+  pcsn_->assign(value);
+}
+inline void ReqSWKeyInfo::set_pcsn(const char* value, size_t size) {
+  set_has_pcsn();
+  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
+    pcsn_ = new ::std::string;
+  }
+  pcsn_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* ReqSWKeyInfo::mutable_pcsn() {
+  set_has_pcsn();
+  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
+    pcsn_ = new ::std::string;
+  }
+  return pcsn_;
+}
+inline ::std::string* ReqSWKeyInfo::release_pcsn() {
+  clear_has_pcsn();
+  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = pcsn_;
+    pcsn_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void ReqSWKeyInfo::set_allocated_pcsn(::std::string* pcsn) {
+  if (pcsn_ != &::google::protobuf::internal::kEmptyString) {
+    delete pcsn_;
+  }
+  if (pcsn) {
+    set_has_pcsn();
+    pcsn_ = pcsn;
+  } else {
+    clear_has_pcsn();
+    pcsn_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional int64 begTm = 4;
+inline bool ReqSWKeyInfo::has_begtm() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void ReqSWKeyInfo::set_has_begtm() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void ReqSWKeyInfo::clear_has_begtm() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void ReqSWKeyInfo::clear_begtm() {
+  begtm_ = GOOGLE_LONGLONG(0);
+  clear_has_begtm();
+}
+inline ::google::protobuf::int64 ReqSWKeyInfo::begtm() const {
+  return begtm_;
+}
+inline void ReqSWKeyInfo::set_begtm(::google::protobuf::int64 value) {
+  set_has_begtm();
+  begtm_ = value;
+}
+
+// -------------------------------------------------------------------
+
+// SWKeyInfo
+
+// required string swkey = 1;
+inline bool SWKeyInfo::has_swkey() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void SWKeyInfo::set_has_swkey() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void SWKeyInfo::clear_has_swkey() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void SWKeyInfo::clear_swkey() {
+  if (swkey_ != &::google::protobuf::internal::kEmptyString) {
+    swkey_->clear();
+  }
+  clear_has_swkey();
+}
+inline const ::std::string& SWKeyInfo::swkey() const {
+  return *swkey_;
+}
+inline void SWKeyInfo::set_swkey(const ::std::string& value) {
+  set_has_swkey();
+  if (swkey_ == &::google::protobuf::internal::kEmptyString) {
+    swkey_ = new ::std::string;
+  }
+  swkey_->assign(value);
+}
+inline void SWKeyInfo::set_swkey(const char* value) {
+  set_has_swkey();
+  if (swkey_ == &::google::protobuf::internal::kEmptyString) {
+    swkey_ = new ::std::string;
+  }
+  swkey_->assign(value);
+}
+inline void SWKeyInfo::set_swkey(const char* value, size_t size) {
+  set_has_swkey();
+  if (swkey_ == &::google::protobuf::internal::kEmptyString) {
+    swkey_ = new ::std::string;
+  }
+  swkey_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* SWKeyInfo::mutable_swkey() {
+  set_has_swkey();
+  if (swkey_ == &::google::protobuf::internal::kEmptyString) {
+    swkey_ = new ::std::string;
+  }
+  return swkey_;
+}
+inline ::std::string* SWKeyInfo::release_swkey() {
+  clear_has_swkey();
+  if (swkey_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = swkey_;
+    swkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void SWKeyInfo::set_allocated_swkey(::std::string* swkey) {
+  if (swkey_ != &::google::protobuf::internal::kEmptyString) {
+    delete swkey_;
+  }
+  if (swkey) {
+    set_has_swkey();
+    swkey_ = swkey;
+  } else {
+    clear_has_swkey();
+    swkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required int64 ver = 2;
+inline bool SWKeyInfo::has_ver() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void SWKeyInfo::set_has_ver() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void SWKeyInfo::clear_has_ver() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void SWKeyInfo::clear_ver() {
+  ver_ = GOOGLE_LONGLONG(0);
+  clear_has_ver();
+}
+inline ::google::protobuf::int64 SWKeyInfo::ver() const {
+  return ver_;
+}
+inline void SWKeyInfo::set_ver(::google::protobuf::int64 value) {
+  set_has_ver();
+  ver_ = value;
+}
+
+// required int64 genTm = 3;
+inline bool SWKeyInfo::has_gentm() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void SWKeyInfo::set_has_gentm() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void SWKeyInfo::clear_has_gentm() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void SWKeyInfo::clear_gentm() {
+  gentm_ = GOOGLE_LONGLONG(0);
+  clear_has_gentm();
+}
+inline ::google::protobuf::int64 SWKeyInfo::gentm() const {
+  return gentm_;
+}
+inline void SWKeyInfo::set_gentm(::google::protobuf::int64 value) {
+  set_has_gentm();
+  gentm_ = value;
+}
+
+// required int32 used = 4;
+inline bool SWKeyInfo::has_used() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void SWKeyInfo::set_has_used() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void SWKeyInfo::clear_has_used() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void SWKeyInfo::clear_used() {
+  used_ = 0;
+  clear_has_used();
+}
+inline ::google::protobuf::int32 SWKeyInfo::used() const {
+  return used_;
+}
+inline void SWKeyInfo::set_used(::google::protobuf::int32 value) {
+  set_has_used();
+  used_ = value;
+}
+
+// optional string dscr = 5;
+inline bool SWKeyInfo::has_dscr() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void SWKeyInfo::set_has_dscr() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void SWKeyInfo::clear_has_dscr() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void SWKeyInfo::clear_dscr() {
+  if (dscr_ != &::google::protobuf::internal::kEmptyString) {
+    dscr_->clear();
+  }
+  clear_has_dscr();
+}
+inline const ::std::string& SWKeyInfo::dscr() const {
+  return *dscr_;
+}
+inline void SWKeyInfo::set_dscr(const ::std::string& value) {
+  set_has_dscr();
+  if (dscr_ == &::google::protobuf::internal::kEmptyString) {
+    dscr_ = new ::std::string;
+  }
+  dscr_->assign(value);
+}
+inline void SWKeyInfo::set_dscr(const char* value) {
+  set_has_dscr();
+  if (dscr_ == &::google::protobuf::internal::kEmptyString) {
+    dscr_ = new ::std::string;
+  }
+  dscr_->assign(value);
+}
+inline void SWKeyInfo::set_dscr(const char* value, size_t size) {
+  set_has_dscr();
+  if (dscr_ == &::google::protobuf::internal::kEmptyString) {
+    dscr_ = new ::std::string;
+  }
+  dscr_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* SWKeyInfo::mutable_dscr() {
+  set_has_dscr();
+  if (dscr_ == &::google::protobuf::internal::kEmptyString) {
+    dscr_ = new ::std::string;
+  }
+  return dscr_;
+}
+inline ::std::string* SWKeyInfo::release_dscr() {
+  clear_has_dscr();
+  if (dscr_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = dscr_;
+    dscr_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void SWKeyInfo::set_allocated_dscr(::std::string* dscr) {
+  if (dscr_ != &::google::protobuf::internal::kEmptyString) {
+    delete dscr_;
+  }
+  if (dscr) {
+    set_has_dscr();
+    dscr_ = dscr;
+  } else {
+    clear_has_dscr();
+    dscr_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional string pcsn = 6;
+inline bool SWKeyInfo::has_pcsn() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void SWKeyInfo::set_has_pcsn() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void SWKeyInfo::clear_has_pcsn() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void SWKeyInfo::clear_pcsn() {
+  if (pcsn_ != &::google::protobuf::internal::kEmptyString) {
+    pcsn_->clear();
+  }
+  clear_has_pcsn();
+}
+inline const ::std::string& SWKeyInfo::pcsn() const {
+  return *pcsn_;
+}
+inline void SWKeyInfo::set_pcsn(const ::std::string& value) {
+  set_has_pcsn();
+  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
+    pcsn_ = new ::std::string;
+  }
+  pcsn_->assign(value);
+}
+inline void SWKeyInfo::set_pcsn(const char* value) {
+  set_has_pcsn();
+  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
+    pcsn_ = new ::std::string;
+  }
+  pcsn_->assign(value);
+}
+inline void SWKeyInfo::set_pcsn(const char* value, size_t size) {
+  set_has_pcsn();
+  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
+    pcsn_ = new ::std::string;
+  }
+  pcsn_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* SWKeyInfo::mutable_pcsn() {
+  set_has_pcsn();
+  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
+    pcsn_ = new ::std::string;
+  }
+  return pcsn_;
+}
+inline ::std::string* SWKeyInfo::release_pcsn() {
+  clear_has_pcsn();
+  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = pcsn_;
+    pcsn_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void SWKeyInfo::set_allocated_pcsn(::std::string* pcsn) {
+  if (pcsn_ != &::google::protobuf::internal::kEmptyString) {
+    delete pcsn_;
+  }
+  if (pcsn) {
+    set_has_pcsn();
+    pcsn_ = pcsn;
+  } else {
+    clear_has_pcsn();
+    pcsn_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// optional int64 regTm = 7;
+inline bool SWKeyInfo::has_regtm() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void SWKeyInfo::set_has_regtm() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void SWKeyInfo::clear_has_regtm() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void SWKeyInfo::clear_regtm() {
+  regtm_ = GOOGLE_LONGLONG(0);
+  clear_has_regtm();
+}
+inline ::google::protobuf::int64 SWKeyInfo::regtm() const {
+  return regtm_;
+}
+inline void SWKeyInfo::set_regtm(::google::protobuf::int64 value) {
+  set_has_regtm();
+  regtm_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // AckSWKeyInfo
@@ -6061,280 +6576,29 @@ inline void AckSWKeyInfo::set_seqno(::google::protobuf::uint32 value) {
   seqno_ = value;
 }
 
-// required string swkey = 2;
-inline bool AckSWKeyInfo::has_swkey() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
+// repeated .das.proto.SWKeyInfo keys = 2;
+inline int AckSWKeyInfo::keys_size() const {
+  return keys_.size();
 }
-inline void AckSWKeyInfo::set_has_swkey() {
-  _has_bits_[0] |= 0x00000002u;
+inline void AckSWKeyInfo::clear_keys() {
+  keys_.Clear();
 }
-inline void AckSWKeyInfo::clear_has_swkey() {
-  _has_bits_[0] &= ~0x00000002u;
+inline const ::das::proto::SWKeyInfo& AckSWKeyInfo::keys(int index) const {
+  return keys_.Get(index);
 }
-inline void AckSWKeyInfo::clear_swkey() {
-  if (swkey_ != &::google::protobuf::internal::kEmptyString) {
-    swkey_->clear();
-  }
-  clear_has_swkey();
+inline ::das::proto::SWKeyInfo* AckSWKeyInfo::mutable_keys(int index) {
+  return keys_.Mutable(index);
 }
-inline const ::std::string& AckSWKeyInfo::swkey() const {
-  return *swkey_;
+inline ::das::proto::SWKeyInfo* AckSWKeyInfo::add_keys() {
+  return keys_.Add();
 }
-inline void AckSWKeyInfo::set_swkey(const ::std::string& value) {
-  set_has_swkey();
-  if (swkey_ == &::google::protobuf::internal::kEmptyString) {
-    swkey_ = new ::std::string;
-  }
-  swkey_->assign(value);
+inline const ::google::protobuf::RepeatedPtrField< ::das::proto::SWKeyInfo >&
+AckSWKeyInfo::keys() const {
+  return keys_;
 }
-inline void AckSWKeyInfo::set_swkey(const char* value) {
-  set_has_swkey();
-  if (swkey_ == &::google::protobuf::internal::kEmptyString) {
-    swkey_ = new ::std::string;
-  }
-  swkey_->assign(value);
-}
-inline void AckSWKeyInfo::set_swkey(const char* value, size_t size) {
-  set_has_swkey();
-  if (swkey_ == &::google::protobuf::internal::kEmptyString) {
-    swkey_ = new ::std::string;
-  }
-  swkey_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckSWKeyInfo::mutable_swkey() {
-  set_has_swkey();
-  if (swkey_ == &::google::protobuf::internal::kEmptyString) {
-    swkey_ = new ::std::string;
-  }
-  return swkey_;
-}
-inline ::std::string* AckSWKeyInfo::release_swkey() {
-  clear_has_swkey();
-  if (swkey_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = swkey_;
-    swkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckSWKeyInfo::set_allocated_swkey(::std::string* swkey) {
-  if (swkey_ != &::google::protobuf::internal::kEmptyString) {
-    delete swkey_;
-  }
-  if (swkey) {
-    set_has_swkey();
-    swkey_ = swkey;
-  } else {
-    clear_has_swkey();
-    swkey_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// required int64 ver = 3;
-inline bool AckSWKeyInfo::has_ver() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void AckSWKeyInfo::set_has_ver() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void AckSWKeyInfo::clear_has_ver() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void AckSWKeyInfo::clear_ver() {
-  ver_ = GOOGLE_LONGLONG(0);
-  clear_has_ver();
-}
-inline ::google::protobuf::int64 AckSWKeyInfo::ver() const {
-  return ver_;
-}
-inline void AckSWKeyInfo::set_ver(::google::protobuf::int64 value) {
-  set_has_ver();
-  ver_ = value;
-}
-
-// optional string dscr = 4;
-inline bool AckSWKeyInfo::has_dscr() const {
-  return (_has_bits_[0] & 0x00000008u) != 0;
-}
-inline void AckSWKeyInfo::set_has_dscr() {
-  _has_bits_[0] |= 0x00000008u;
-}
-inline void AckSWKeyInfo::clear_has_dscr() {
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline void AckSWKeyInfo::clear_dscr() {
-  if (dscr_ != &::google::protobuf::internal::kEmptyString) {
-    dscr_->clear();
-  }
-  clear_has_dscr();
-}
-inline const ::std::string& AckSWKeyInfo::dscr() const {
-  return *dscr_;
-}
-inline void AckSWKeyInfo::set_dscr(const ::std::string& value) {
-  set_has_dscr();
-  if (dscr_ == &::google::protobuf::internal::kEmptyString) {
-    dscr_ = new ::std::string;
-  }
-  dscr_->assign(value);
-}
-inline void AckSWKeyInfo::set_dscr(const char* value) {
-  set_has_dscr();
-  if (dscr_ == &::google::protobuf::internal::kEmptyString) {
-    dscr_ = new ::std::string;
-  }
-  dscr_->assign(value);
-}
-inline void AckSWKeyInfo::set_dscr(const char* value, size_t size) {
-  set_has_dscr();
-  if (dscr_ == &::google::protobuf::internal::kEmptyString) {
-    dscr_ = new ::std::string;
-  }
-  dscr_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckSWKeyInfo::mutable_dscr() {
-  set_has_dscr();
-  if (dscr_ == &::google::protobuf::internal::kEmptyString) {
-    dscr_ = new ::std::string;
-  }
-  return dscr_;
-}
-inline ::std::string* AckSWKeyInfo::release_dscr() {
-  clear_has_dscr();
-  if (dscr_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = dscr_;
-    dscr_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckSWKeyInfo::set_allocated_dscr(::std::string* dscr) {
-  if (dscr_ != &::google::protobuf::internal::kEmptyString) {
-    delete dscr_;
-  }
-  if (dscr) {
-    set_has_dscr();
-    dscr_ = dscr;
-  } else {
-    clear_has_dscr();
-    dscr_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional string pcsn = 5;
-inline bool AckSWKeyInfo::has_pcsn() const {
-  return (_has_bits_[0] & 0x00000010u) != 0;
-}
-inline void AckSWKeyInfo::set_has_pcsn() {
-  _has_bits_[0] |= 0x00000010u;
-}
-inline void AckSWKeyInfo::clear_has_pcsn() {
-  _has_bits_[0] &= ~0x00000010u;
-}
-inline void AckSWKeyInfo::clear_pcsn() {
-  if (pcsn_ != &::google::protobuf::internal::kEmptyString) {
-    pcsn_->clear();
-  }
-  clear_has_pcsn();
-}
-inline const ::std::string& AckSWKeyInfo::pcsn() const {
-  return *pcsn_;
-}
-inline void AckSWKeyInfo::set_pcsn(const ::std::string& value) {
-  set_has_pcsn();
-  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
-    pcsn_ = new ::std::string;
-  }
-  pcsn_->assign(value);
-}
-inline void AckSWKeyInfo::set_pcsn(const char* value) {
-  set_has_pcsn();
-  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
-    pcsn_ = new ::std::string;
-  }
-  pcsn_->assign(value);
-}
-inline void AckSWKeyInfo::set_pcsn(const char* value, size_t size) {
-  set_has_pcsn();
-  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
-    pcsn_ = new ::std::string;
-  }
-  pcsn_->assign(reinterpret_cast<const char*>(value), size);
-}
-inline ::std::string* AckSWKeyInfo::mutable_pcsn() {
-  set_has_pcsn();
-  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
-    pcsn_ = new ::std::string;
-  }
-  return pcsn_;
-}
-inline ::std::string* AckSWKeyInfo::release_pcsn() {
-  clear_has_pcsn();
-  if (pcsn_ == &::google::protobuf::internal::kEmptyString) {
-    return NULL;
-  } else {
-    ::std::string* temp = pcsn_;
-    pcsn_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-    return temp;
-  }
-}
-inline void AckSWKeyInfo::set_allocated_pcsn(::std::string* pcsn) {
-  if (pcsn_ != &::google::protobuf::internal::kEmptyString) {
-    delete pcsn_;
-  }
-  if (pcsn) {
-    set_has_pcsn();
-    pcsn_ = pcsn;
-  } else {
-    clear_has_pcsn();
-    pcsn_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  }
-}
-
-// optional int64 regTm = 6;
-inline bool AckSWKeyInfo::has_regtm() const {
-  return (_has_bits_[0] & 0x00000020u) != 0;
-}
-inline void AckSWKeyInfo::set_has_regtm() {
-  _has_bits_[0] |= 0x00000020u;
-}
-inline void AckSWKeyInfo::clear_has_regtm() {
-  _has_bits_[0] &= ~0x00000020u;
-}
-inline void AckSWKeyInfo::clear_regtm() {
-  regtm_ = GOOGLE_LONGLONG(0);
-  clear_has_regtm();
-}
-inline ::google::protobuf::int64 AckSWKeyInfo::regtm() const {
-  return regtm_;
-}
-inline void AckSWKeyInfo::set_regtm(::google::protobuf::int64 value) {
-  set_has_regtm();
-  regtm_ = value;
-}
-
-// optional int32 used = 7;
-inline bool AckSWKeyInfo::has_used() const {
-  return (_has_bits_[0] & 0x00000040u) != 0;
-}
-inline void AckSWKeyInfo::set_has_used() {
-  _has_bits_[0] |= 0x00000040u;
-}
-inline void AckSWKeyInfo::clear_has_used() {
-  _has_bits_[0] &= ~0x00000040u;
-}
-inline void AckSWKeyInfo::clear_used() {
-  used_ = 0;
-  clear_has_used();
-}
-inline ::google::protobuf::int32 AckSWKeyInfo::used() const {
-  return used_;
-}
-inline void AckSWKeyInfo::set_used(::google::protobuf::int32 value) {
-  set_has_used();
-  used_ = value;
+inline ::google::protobuf::RepeatedPtrField< ::das::proto::SWKeyInfo >*
+AckSWKeyInfo::mutable_keys() {
+  return &keys_;
 }
 
 // -------------------------------------------------------------------

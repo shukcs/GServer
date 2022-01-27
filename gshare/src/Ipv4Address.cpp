@@ -31,6 +31,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "Ipv4Address.h"
+#include "IPCommon.h"
 #include "Utility.h"
 #ifndef _WIN32
 #include <netdb.h>
@@ -71,7 +72,7 @@ Ipv4Address::Ipv4Address(const std::string& host,port_t port) : m_valid(false)
     if (host.size())
 	{
 		ipaddr_t a;
-		if (Utility::u2ip(host, a))
+		if (IPCommon::u2ip(host, a))
 		{
 			memcpy(&m_addr.sin_addr, &a, sizeof(struct in_addr));
 			m_valid = true;
@@ -113,14 +114,14 @@ bool Ipv4Address::Resolve(const std::string& hostname,struct in_addr& a)
 {
 	struct sockaddr_in sa;
 	memset(&a, 0, sizeof(a));
-	if (Utility::isipv4(hostname))
+	if (IPCommon::isipv4(hostname))
 	{
-		if (!Utility::u2ip(hostname, sa, AI_NUMERICHOST))
+		if (!IPCommon::u2ip(hostname, sa, AI_NUMERICHOST))
 			return false;
 		a = sa.sin_addr;
 		return true;
 	}
-	if (!Utility::u2ip(hostname, sa))
+	if (!IPCommon::u2ip(hostname, sa))
 		return false;
 	a = sa.sin_addr;
 	return true;
@@ -132,7 +133,7 @@ bool Ipv4Address::Reverse(struct in_addr& a,std::string& name)
 	memset(&sa, 0, sizeof(sa));
 	sa.sin_family = AF_INET;
 	sa.sin_addr = a;
-	return Utility::reverse((struct sockaddr *)&sa, sizeof(sa), name);
+	return IPCommon::reverse((struct sockaddr *)&sa, sizeof(sa), name);
 }
 
 std::string Ipv4Address::Convert(bool include_port)
@@ -149,7 +150,7 @@ std::string Ipv4Address::Convert(struct in_addr& a)
 	sa.sin_family = AF_INET;
 	sa.sin_addr = a;
 	std::string name;
-	Utility::reverse((struct sockaddr *)&sa, sizeof(sa), name, NI_NUMERICHOST);
+    IPCommon::reverse((struct sockaddr *)&sa, sizeof(sa), name, NI_NUMERICHOST);
 	return name;
 }
 

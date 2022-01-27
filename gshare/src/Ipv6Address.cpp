@@ -34,6 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifdef ENABLE_IPV6
 
 #include "Utility.h"
+#include "IPCommon.h"
 #ifndef _WIN32
 #include <netdb.h>
 #endif
@@ -69,7 +70,7 @@ Ipv6Address::Ipv6Address(const std::string& host,port_t port) : m_valid(false)
 	m_addr.sin6_port = htons( port );
 	{
 		struct in6_addr a;
-		if (Utility::u2ip(host, a))
+		if (IPCommon::u2ip(host, a))
 		{
 			m_addr.sin6_addr = a;
 			m_valid = true;
@@ -118,14 +119,14 @@ bool Ipv6Address::Resolve(const std::string& hostname,struct in6_addr& a)
 {
 	struct sockaddr_in6 sa;
 	memset(&a, 0, sizeof(a));
-	if (Utility::isipv6(hostname))
+	if (IPCommon::isipv6(hostname))
 	{
-		if (!Utility::u2ip(hostname, sa, AI_NUMERICHOST))
+		if (!IPCommon::u2ip(hostname, sa, AI_NUMERICHOST))
 			return false;
 		a = sa.sin6_addr;
 		return true;
 	}
-	if (!Utility::u2ip(hostname, sa))
+	if (!IPCommon::u2ip(hostname, sa))
 		return false;
 	a = sa.sin6_addr;
 	return true;
@@ -138,7 +139,7 @@ bool Ipv6Address::Reverse(struct in6_addr& a,std::string& name)
 	memset(&sa, 0, sizeof(sa));
 	sa.sin6_family = AF_INET6;
 	sa.sin6_addr = a;
-	return Utility::reverse((struct sockaddr *)&sa, sizeof(sa), name);
+	return IPCommon::reverse((struct sockaddr *)&sa, sizeof(sa), name);
 }
 
 
@@ -197,7 +198,7 @@ std::string Ipv6Address::Convert(struct in6_addr& a,bool mixed)
 		sa.sin6_family = AF_INET6;
 		sa.sin6_addr = a;
 		std::string name;
-		Utility::reverse((struct sockaddr *)&sa, sizeof(sa), name, NI_NUMERICHOST);
+		IPCommon::reverse((struct sockaddr *)&sa, sizeof(sa), name, NI_NUMERICHOST);
 		return name;
 	}
 	return slask;

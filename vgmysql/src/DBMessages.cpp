@@ -45,36 +45,37 @@ static const char *rcvId(DBMessage::OBjectFlag f, int objTp)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 DBMessage::DBMessage(IObject *sender, MessageType ack, OBjectFlag rcv)
 : IMessage(new MessageData(sender, DBExec), rcvId(rcv, sender->GetObjectType()), IObject::DBMySql)
-, m_seq(0), m_ackTp(ack), m_bQueryList(false)
+, m_seq(0), m_ackTp(ack), m_bQueryList(false), m_limit(200),m_begLimit(0)
 {
 }
 
 DBMessage::DBMessage(IObjectManager *sender, MessageType ack, OBjectFlag rcv)
 : IMessage(new MessageData(sender, DBExec), rcvId(rcv, sender->GetObjectType()), IObject::DBMySql)
-, m_seq(0), m_ackTp(ack), m_bQueryList(false)
+, m_seq(0), m_ackTp(ack), m_bQueryList(false), m_limit(200),m_begLimit(0)
 {
 }
 
 DBMessage::DBMessage(ObjectDB *sender, int tpMsg, int tpRcv, const std::string &idRcv)
 : IMessage(new MessageData(sender, tpMsg), idRcv, tpRcv), m_seq(0), m_ackTp(Unknown)
-, m_bQueryList(false)
+, m_bQueryList(false), m_limit(200), m_begLimit(0)
 {
 }
 
 DBMessage::DBMessage(IObjectManager *mgr, const string &str)
 : IMessage(new MessageData(mgr, DBExec), str, IObject::DBMySql)
+, m_limit(200), m_begLimit(0)
 {
 }
 
 DBMessage::DBMessage(const string &sender, int tpSend, MessageType ack, OBjectFlag rcv)
-    : IMessage(new MessageData(sender, tpSend, DBExec), rcvId(rcv, tpSend), IObject::DBMySql)
-    , m_seq(0), m_ackTp(ack), m_bQueryList(false)
+: IMessage(new MessageData(sender, tpSend, DBExec), rcvId(rcv, tpSend), IObject::DBMySql)
+, m_seq(0), m_ackTp(ack), m_bQueryList(false), m_limit(200), m_begLimit(0)
 {
 }
 
 void DBMessage::SetWrite(const std::string &key, const Variant &v, int idx)
 {
-    if (key.empty() || v.IsNull())
+    if (key.empty())
         return;
 
     if (idx < 0)
@@ -98,7 +99,7 @@ const Variant &DBMessage::GetWrite(const std::string &key, uint32_t idx)const
 
 void DBMessage::SetRead(const std::string &key, const Variant &v, int idx)
 {
-    if (key.empty() || v.IsNull())
+    if (key.empty())
         return;
 
     if (idx < 0)
@@ -109,7 +110,7 @@ void DBMessage::SetRead(const std::string &key, const Variant &v, int idx)
 
 void DBMessage::AddRead(const std::string &key, const Variant &v, int idx)
 {
-    if (key.empty() || v.IsNull())
+    if (key.empty())
         return;
 
     if (idx < 0)
@@ -133,7 +134,7 @@ const Variant &DBMessage::GetRead(const std::string &key, uint32_t idx) const
 
 void DBMessage::SetCondition(const std::string &key, const Variant &v, int idx)
 {
-    if (key.empty() || v.IsNull())
+    if (key.empty())
         return;
 
     if (idx < 0)
@@ -205,12 +206,18 @@ int DBMessage::GetSeqNomb() const
 
 bool DBMessage::IsQueryList() const
 {
-    return m_bQueryList;
+    return m_bQueryList!=0;
 }
 
 void DBMessage::SetRefFiled(const std::string &filed)
 {
     m_refFiled = filed;
+}
+
+void DBMessage::SetLimit(uint32_t beg, uint16_t limit)
+{
+    m_limit = limit;
+    m_begLimit = beg;
 }
 
 const std::string &DBMessage::GetRefFiled() const
@@ -250,6 +257,42 @@ DBMessage *DBMessage::GenerateAck(ObjectDB *db) const
     }
 
     return NULL;
+}
+
+uint32_t DBMessage::GetLimitBeg() const
+{
+    return IsQueryList() ? m_begLimit : 0;
+}
+
+uint16_t DBMessage::GetLimit() const
+{
+    return IsQueryList() ? m_limit : 1;
+}
+
+bool DBMessage::HasWrite(const std::string &key, uint32_t idx /*= 0*/) const
+{
+    auto itr = m_writes.find(key);
+    if (itr == m_writes.end())
+        return false;
+
+    auto itr2 = itr->second.find(idx);
+    if (itr2 == itr->second.end())
+        return false;
+
+    return true;
+}
+
+bool DBMessage::HasCondition(const std::string &key, uint32_t idx /*= 0*/) const
+{
+    auto itr = m_conditions.find(key);
+    if (itr == m_conditions.end())
+        return false;
+
+    auto itr2 = itr->second.find(idx);
+    if (itr2 == itr->second.end())
+        return false;
+
+    return true;
 }
 
 void *DBMessage::GetContent() const

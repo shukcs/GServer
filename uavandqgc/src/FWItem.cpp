@@ -5,6 +5,7 @@
 #include "VGMysql.h"
 #include "DBExecItem.h"
 #include "ObjectGS.h"
+#include <stdio.h>
 #if defined _WIN32 || defined _WIN64
 #include <Windows.h>
 #else
@@ -12,6 +13,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
+#include <string.h>
 #endif
 #include "FWAssist.h"
 

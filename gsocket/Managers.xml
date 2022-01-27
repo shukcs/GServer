@@ -379,6 +379,7 @@
 					<field name="ver" type="BIGINT" constraint="DEFAULT 1"/>
 					<field name="used" type="INT" constraint="DEFAULT 0" />
 					<field name="regTm" type="BIGINT" />
+					<field name="genTm" type="BIGINT" />
 					<field name="dscr" type="char(64)" />
 				</table>
 				<table name="FZResult">
@@ -432,6 +433,7 @@
 					<item name="swsn" type="Write" />
 					<item name="dscr" type="Write" />
 					<item name="ver" ref="FZKeyReg" type="Write" />
+					<item name="genTm" ref="FZKeyReg" type="Write" />
 				</SQL>
 				<SQL name="updateFZPCReg" table="FZKeyReg" type="Update" >
 					<item name="pcsn" type="Write" />
@@ -449,8 +451,10 @@
 					<item name="used" ref="FZKeyReg" type="Read" />
 					<item name="dscr" ref="FZKeyReg" type="Read" />
 					<item name="regTm" ref="FZKeyReg" type="Read" />
+					<item name="genTm" ref="FZKeyReg" type="Read" />
 					<item name="pcsn" type="Condition" />
 					<item name="swsn" type="Condition" />
+					<item name="genTm" ref="FZKeyReg" type="Condition" condition=">" />
 				</SQL>
 				<SQL name="insertFZResult" table="FZResult" type="Insert" >
 					<item name="user"  type="Write" />
@@ -475,6 +479,7 @@
 	</DBManager>
 	<VgFZManager thread="2" >
 		<Object id="root" pswd="NIhao666" auth="7" />
+		<Object id="admin" pswd="admin123" auth="3" />
 	</VgFZManager>
 	<UavManager thread="2" />
 	<GSManager thread="2" buff="6144" >
@@ -483,8 +488,6 @@
 	</GSManager>
 	<MailManager>
 		<Object name="hsj8262@163.com" user="hsj8262@163.com" password="FAYDHQLPZJNLZLNB" host="smtp.163.com" port="465" smtps="1"/>
-		<Object name="78056557@qq.com" user="78056557@qq.com" password="aimfhgjbmdsgbheb" host="smtp.qq.com" port="465" smtps="1"/>
-		<Object name="hsj8262@foxmail.com" user="hsj8262@foxmail.com" password="ykavbbycgplebjbe" host="smtp.qq.com" port="465" smtps="1"/>
 	</MailManager>
 	<GVManager thread="2" buff="6144" >
 		<Object id="root" pswd="NIhao666" auth="7" />

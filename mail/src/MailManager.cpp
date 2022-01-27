@@ -4,6 +4,13 @@
 #include "tinyxml.h"
 #include "ObjectManagers.h"
 #include "mailSmtp/quickmail.h"
+#if defined _WIN32 || defined _WIN64
+#include <winsock2.h>
+#endif
+#ifdef _MSC_VER
+#pragma comment(lib, "wsock32.lib")
+#pragma comment(lib, "ws2_32.lib")
+#endif
 
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
