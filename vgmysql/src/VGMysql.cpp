@@ -14,17 +14,15 @@
 using namespace std;
 static const char *sCharSetFmt = "default character set %s collate %s_general_ci";
 
-VGMySql::VGMySql() : m_bValid(false), m_binds(NULL) , m_stmt(NULL)
+VGMySql::VGMySql() : m_mysql(new MYSQL), m_bValid(false), m_binds(NULL) , m_stmt(NULL)
 {
-	m_mysql = mysql_init(NULL);
 	if(!m_mysql)
 		return;
 }
 
 VGMySql::VGMySql( const char *host, int port, const char *user, const char *pswd)
-: m_bValid(false), m_binds(NULL), m_stmt(NULL)
+: m_mysql(new MYSQL), m_bValid(false), m_binds(NULL), m_stmt(NULL)
 {
-	m_mysql = mysql_init(NULL);
 	if(!m_mysql)
 		return;
 
@@ -41,6 +39,8 @@ VGMySql::~VGMySql()
     _checkPrepare();
 	if (m_mysql)
 		 mysql_close(m_mysql);
+
+    delete m_mysql;
 }
 
 bool VGMySql::Execut(ExecutItem *item)
@@ -176,25 +176,26 @@ bool VGMySql::_canOperaterDB()
 {
 	if (m_bValid && mysql_ping(m_mysql)) //连接错误重来
 	{
-        const char *host = m_host.empty() ? NULL : m_host.c_str();
-        const char *user = m_user.empty() ? NULL : m_user.c_str();
-        const char *pswd = m_pswd.empty() ? NULL : m_pswd.c_str();
-		if (NULL == mysql_real_connect(m_mysql, host, user, pswd, NULL, m_nPort, NULL, 0))
-        {
-            printf("mysql_real_connect() failed %s\n", mysql_error(m_mysql));
+        if ( ConnectMySql(m_host.empty() ? NULL : m_host.c_str()
+           , m_nPort
+           , m_user.empty() ? NULL : m_user.c_str()
+           , m_pswd.empty() ? NULL : m_pswd.c_str()) )
+            EnterDatabase();
+        else
             return false;
-        }
-        EnterDatabase();
 	}
 	return m_bValid;
 }
 
-bool VGMySql::ConnectMySql( const char *host, int port, const char *user, const char *pswd, const char *db)
+bool VGMySql::ConnectMySql(const char *host, int port, const char *user, const char *pswd, const char *db)
 {
+    if (m_bValid && m_mysql)
+    {
+        _checkPrepare();
+        mysql_close(m_mysql);
+    }
     m_bValid = false;
-    if (!m_mysql)
-        return m_bValid;
-
+    m_mysql = mysql_init(m_mysql);
     if (mysql_real_connect(m_mysql, host, user, pswd, db, port, NULL, 0))
     {
         m_host = host ? host : string();
