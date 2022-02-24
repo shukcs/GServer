@@ -54,6 +54,7 @@ protected:
     bool _changeItem(ExecutItem *item);
     bool _selectItem(ExecutItem *item);
     std::string _getTablesString(const ExecutItem &item);
+    bool _reconnect();
     MYSQL_STMT *_prepareMySql(const std::string &fmt, MYSQL_BIND *binds, int nRead=0);
     void _checkPrepare();
 private:

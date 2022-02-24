@@ -176,10 +176,7 @@ bool VGMySql::_canOperaterDB()
 {
 	if (m_bValid && mysql_ping(m_mysql)) //连接错误重来
 	{
-        if ( ConnectMySql(m_host.empty() ? NULL : m_host.c_str()
-           , m_nPort
-           , m_user.empty() ? NULL : m_user.c_str()
-           , m_pswd.empty() ? NULL : m_pswd.c_str()) )
+        if (_reconnect())
             EnterDatabase();
         else
             return false;
@@ -189,25 +186,14 @@ bool VGMySql::_canOperaterDB()
 
 bool VGMySql::ConnectMySql(const char *host, int port, const char *user, const char *pswd, const char *db)
 {
-    if (m_bValid && m_mysql)
-    {
-        _checkPrepare();
-        mysql_close(m_mysql);
-    }
-    m_bValid = false;
-    m_mysql = mysql_init(m_mysql);
-    if (mysql_real_connect(m_mysql, host, user, pswd, db, port, NULL, 0))
+    if (!m_bValid)
     {
         m_host = host ? host : string();
         m_nPort = port;
         m_user = user ? user : string();
         m_pswd = pswd ? pswd : string();
-        m_bValid = true;
     }
-
-    if(!m_bValid)
-        printf("mysql_real_connect() failed, %s\n", mysql_error(m_mysql));
-
+    m_bValid = _reconnect();
     return m_bValid;
 }
 
@@ -361,6 +347,21 @@ std::string VGMySql::_getTablesString(const ExecutItem &item)
         ret += " " + table;
     }
     return ret;
+}
+
+bool VGMySql::_reconnect()
+{
+    if (m_bValid && m_mysql)
+    {
+        _checkPrepare();
+        mysql_close(m_mysql);
+    }
+    m_mysql = mysql_init(m_mysql);
+    if (mysql_real_connect(m_mysql, m_host.c_str(), m_user.c_str(), m_pswd.c_str(), NULL, m_nPort, NULL, 0))
+        return true;
+
+    printf("mysql_real_connect() failed, %s\n", mysql_error(m_mysql));
+    return false;
 }
 
 MYSQL_RES *VGMySql::Query(const std::string &sql)
