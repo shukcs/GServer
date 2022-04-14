@@ -683,10 +683,10 @@ ExecutItem *ExecutItem::parse(const TiXmlElement *e, const MysqlDB &db)
         return sql;
 
     if (const char *tmpC = e->Attribute("condition"))
-        sql->m_conditions = VGMySql::SplitString(tmpC, ";");
+        sql->m_conditions = Utility::SplitString(tmpC, ";");
     if (const char *tmpC = e->Attribute("group"))
         sql->m_group = tmpC;
-    sql->SetExecutTables(VGMySql::SplitString(table, ";"), db);
+    sql->SetExecutTables(Utility::SplitString(table, ";"), db);
     sql->_parseItems(e, db);
 
     return sql;
@@ -698,7 +698,7 @@ void ExecutItem::_parseItems(const TiXmlElement *e, const MysqlDB &db)
         return;
     
     const char *tmp = e->Attribute("all");
-    if (tmp && VGMySql::Str2int(tmp) != 0)
+    if (tmp && Utility::str2int(tmp) != 0)
     {
         for (const string &itr : m_tables)
         {

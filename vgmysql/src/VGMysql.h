@@ -46,8 +46,6 @@ public:
         }
         return false;
     }
-    static long Str2int(const std::string &str, unsigned radix = 10, bool *suc = NULL);
-    static std::list<std::string> SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty = true);
 protected:
 	bool _canOperaterDB();
 	bool _executChange(const std::string &sql, MYSQL_BIND *binds, FiledVal *i=NULL);

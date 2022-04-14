@@ -5,6 +5,7 @@
 #include "tinyxml.h"
 #include <stdio.h>
 #include <string.h>
+#include "Utility.h"
 
 using namespace std;
 static const char *sTriggerFmt = "CREATE TRIGGER %s %s %s ON %s FOR EACH ROW";
@@ -155,7 +156,7 @@ VGTrigger *VGTrigger::Parse(const TiXmlNode &node, const MysqlDB &db)
         ret->m_event = evt;
 
         if (const char *tmpRef = e.Attribute("refsql"))
-            ret->_addSqls(VGMySql::SplitString(tmpRef, ";"), db);
+            ret->_addSqls(Utility::SplitString(tmpRef, ";"), db);
         else
             ret->_parseSqls(e, db);
 

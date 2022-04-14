@@ -130,7 +130,7 @@ IObject *VgFZManager::prcsPBLogin(ISocket *s, const RequestFZUserIdentity *rgi)
         else
             Log(0, IObjectManager::GetObjectFlagID(o), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
 
-        int rslt = !bLogin ? -1 : ((o->GetAuth(ObjectVgFZ::Type_Manager) || rgi->pcsn() == o->GetPCSn()) ? 1 : 0);
+        int rslt = !bLogin ? -2 : ((o->GetAuth(ObjectVgFZ::Type_Manager) || rgi->pcsn() == o->GetPCSn()) ? 1 : 0);
         if (rslt != 0)
         {
             AckFZUserIdentity ack;

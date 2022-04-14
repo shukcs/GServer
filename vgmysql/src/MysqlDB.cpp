@@ -1,8 +1,9 @@
 #include "MysqlDB.h"
 #include "DBExecItem.h"
 #include "VGMysql.h"
-#include <tinyxml.h>
-#include <VGTrigger.h>
+#include "tinyxml.h"
+#include "VGTrigger.h"
+#include "Utility.h"
 
 //////////////////////////////////////////////////////////////////////
 //MysqlDB
@@ -164,7 +165,7 @@ string MysqlDB::parseDatabase(const TiXmlElement *e)
     m_ip = tmp ? tmp : "127.0.0.1";
 
     tmp = e->Attribute("port");
-    m_port = tmp ? VGMySql::Str2int(tmp):3306;
+    m_port = tmp ? Utility::str2int(tmp):3306;
 
     if (const char *tmpS = e->Attribute("charSet"))
         m_charSet = tmpS;

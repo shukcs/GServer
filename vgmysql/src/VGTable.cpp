@@ -9,7 +9,8 @@
 
 #include "MysqlDB.h"
 #include "VGMysql.h"
-#include <tinyxml.h>
+#include "tinyxml.h"
+#include "Utility.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 //VGConstraint
@@ -108,7 +109,7 @@ void VGTableField::SetConstrains(const string &n)
 {
     m_constraints.clear();
     
-    for (const string &itr : VGMySql::SplitString(n, ";"))
+    for (const string &itr : Utility::SplitString(n, ";"))
     {
         if (itr.length()>0)
             m_constraints.push_back(itr);
@@ -234,7 +235,7 @@ int VGTableField::_parseBits(const string &n)
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
         return 0;
 
-    int nTmp = VGMySql::Str2int(n.substr(1, n.length() - 2));
+    int nTmp = Utility::str2int(n.substr(1, n.length() - 2));
     if (nTmp > 0 && nTmp < 256)
         return (nTmp << 16) | MYSQL_TYPE_BIT;
 
@@ -246,7 +247,7 @@ int VGTableField::_parseChar(const string &n)
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
         return 0;
 
-    int nTmp = VGMySql::Str2int(n.substr(1, n.length()-2));
+    int nTmp = Utility::str2int(n.substr(1, n.length()-2));
     if(nTmp>0 && nTmp<256)
         return (nTmp << 16) | MYSQL_TYPE_STRING;
 
@@ -258,7 +259,7 @@ int VGTableField::_parseVarChar(const string &n)
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
         return 0;
 
-    int nTmp = VGMySql::Str2int(n.substr(1, n.length() - 2));
+    int nTmp = Utility::str2int(n.substr(1, n.length() - 2));
     nTmp = (nTmp + 7) / 8;
     if (nTmp > 0 && nTmp<0xffff)
         return (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
@@ -271,7 +272,7 @@ int VGTableField::_parseBinary(const string &n)
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
         return 0;
 
-    int nTmp = VGMySql::Str2int(n.substr(1, n.length() - 2));
+    int nTmp = Utility::str2int(n.substr(1, n.length() - 2));
     if (nTmp > 0 && nTmp<256)
         return (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
     return 0;
@@ -282,7 +283,7 @@ int VGTableField::_parseVarBinary(const string &n)
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
         return 0;
 
-    int nTmp = VGMySql::Str2int(n.substr(1, n.length() - 2));
+    int nTmp = Utility::str2int(n.substr(1, n.length() - 2));
     if (nTmp > 0 && nTmp<0xffff)
         return (nTmp << 16) | MYSQL_TYPE_VAR_STRING;
     return 0;
