@@ -389,6 +389,8 @@
 					<field name="usedTm" type="INT" />
 					<field name="type" type="INT" />
 					<field name="result" type="INT" />
+					<field name="uid" type="char(32)" />
+					<field name="info" type="VARCHAR(512)" />
 				</table>
 			</Tables>
 			<SQLs>
@@ -462,6 +464,8 @@
 					<item name="usedTm" ref="FZResult" type="Write" />
 					<item name="type" ref="FZResult" type="Write" />
 					<item name="result" ref="FZResult" type="Write" />
+					<item name="uid" type="Write" />
+					<item name="info" ref="FZResult" type="Write" />
 					<item type="AutoIncrement" />
 				</SQL>
 				<SQL name="queryFZResult" table="FZResult" type="Select" >
@@ -470,6 +474,8 @@
 					<item name="usedTm" ref="FZResult" type="Read" />
 					<item name="type" ref="FZResult" type="Read" />
 					<item name="result" ref="FZResult" type="Read" />
+					<item name="uid"  ref="FZResult" type="Read" />
+					<item name="info" ref="FZResult" type="Read" />
 					<item name="user" type="Condition" />
 					<item name="begTm" ref="FZResult" type="Condition" condition=">" />
 					<item name="begTm" ref="FZResult" type="Condition" condition="<" />

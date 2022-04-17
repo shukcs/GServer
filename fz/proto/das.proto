@@ -227,6 +227,21 @@ message AckSWRegist {
 }
 
 //=================================================================================================
+//TestInfo
+//=================================================================================================
+message TestInfo {
+    required string id        = 1;  //身份证号
+    required string name      = 2;  //姓名
+    required string sex       = 3;  //性别
+    required string address   = 4;  //住址
+    required string school    = 5;  //学校
+    required string cag       = 6;  //班级
+    required string stdid     = 7;  //学号
+    required string examiner  = 8;  //考官
+    required string comment   = 9;  //备注
+}
+
+//=================================================================================================
 //FZResult
 //=================================================================================================
 message FZResult {
@@ -235,6 +250,7 @@ message FZResult {
     required int32 usedTm     = 3;      //用时
     required int32 type       = 4;      //类型
     required int32 rslt       = 5;      //成绩
+    optional TestInfo info    = 6;      //考证信息
 }
 
 //=================================================================================================

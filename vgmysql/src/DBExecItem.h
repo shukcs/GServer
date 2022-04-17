@@ -82,11 +82,11 @@ protected:
     static FiledVal *parseFiled(const MysqlDB &db, const TiXmlElement &e, bool oth=false);
     static BraceFlag getBraceFlag(const string &str);
     static string finallyString(const string &str, BraceFlag f);
+    static FieldType transType(int sqlType);
 protected:
     FiledVal(int tp, const string &name = "", int len = 0);
     FiledVal(VGTableField *fild, bool bOth = false);
     virtual ~FiledVal();
-    void transType(int sqlType);
 private:
     friend class ExecutItem;
     int             m_type;

@@ -58,6 +58,7 @@ class SWKeyInfo;
 class AckSWKeyInfo;
 class SWRegist;
 class AckSWRegist;
+class TestInfo;
 class FZResult;
 class PostFZResult;
 class AckPostFZResult;
@@ -2616,6 +2617,213 @@ class AckSWRegist : public ::google::protobuf::Message {
 };
 // -------------------------------------------------------------------
 
+class TestInfo : public ::google::protobuf::Message {
+ public:
+  TestInfo();
+  virtual ~TestInfo();
+
+  TestInfo(const TestInfo& from);
+
+  inline TestInfo& operator=(const TestInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _unknown_fields_;
+  }
+
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return &_unknown_fields_;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const TestInfo& default_instance();
+
+  void Swap(TestInfo* other);
+
+  // implements Message ----------------------------------------------
+
+  TestInfo* New() const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const TestInfo& from);
+  void MergeFrom(const TestInfo& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // required string id = 1;
+  inline bool has_id() const;
+  inline void clear_id();
+  static const int kIdFieldNumber = 1;
+  inline const ::std::string& id() const;
+  inline void set_id(const ::std::string& value);
+  inline void set_id(const char* value);
+  inline void set_id(const char* value, size_t size);
+  inline ::std::string* mutable_id();
+  inline ::std::string* release_id();
+  inline void set_allocated_id(::std::string* id);
+
+  // required string name = 2;
+  inline bool has_name() const;
+  inline void clear_name();
+  static const int kNameFieldNumber = 2;
+  inline const ::std::string& name() const;
+  inline void set_name(const ::std::string& value);
+  inline void set_name(const char* value);
+  inline void set_name(const char* value, size_t size);
+  inline ::std::string* mutable_name();
+  inline ::std::string* release_name();
+  inline void set_allocated_name(::std::string* name);
+
+  // required string sex = 3;
+  inline bool has_sex() const;
+  inline void clear_sex();
+  static const int kSexFieldNumber = 3;
+  inline const ::std::string& sex() const;
+  inline void set_sex(const ::std::string& value);
+  inline void set_sex(const char* value);
+  inline void set_sex(const char* value, size_t size);
+  inline ::std::string* mutable_sex();
+  inline ::std::string* release_sex();
+  inline void set_allocated_sex(::std::string* sex);
+
+  // required string address = 4;
+  inline bool has_address() const;
+  inline void clear_address();
+  static const int kAddressFieldNumber = 4;
+  inline const ::std::string& address() const;
+  inline void set_address(const ::std::string& value);
+  inline void set_address(const char* value);
+  inline void set_address(const char* value, size_t size);
+  inline ::std::string* mutable_address();
+  inline ::std::string* release_address();
+  inline void set_allocated_address(::std::string* address);
+
+  // required string school = 5;
+  inline bool has_school() const;
+  inline void clear_school();
+  static const int kSchoolFieldNumber = 5;
+  inline const ::std::string& school() const;
+  inline void set_school(const ::std::string& value);
+  inline void set_school(const char* value);
+  inline void set_school(const char* value, size_t size);
+  inline ::std::string* mutable_school();
+  inline ::std::string* release_school();
+  inline void set_allocated_school(::std::string* school);
+
+  // required string cag = 6;
+  inline bool has_cag() const;
+  inline void clear_cag();
+  static const int kCagFieldNumber = 6;
+  inline const ::std::string& cag() const;
+  inline void set_cag(const ::std::string& value);
+  inline void set_cag(const char* value);
+  inline void set_cag(const char* value, size_t size);
+  inline ::std::string* mutable_cag();
+  inline ::std::string* release_cag();
+  inline void set_allocated_cag(::std::string* cag);
+
+  // required string stdid = 7;
+  inline bool has_stdid() const;
+  inline void clear_stdid();
+  static const int kStdidFieldNumber = 7;
+  inline const ::std::string& stdid() const;
+  inline void set_stdid(const ::std::string& value);
+  inline void set_stdid(const char* value);
+  inline void set_stdid(const char* value, size_t size);
+  inline ::std::string* mutable_stdid();
+  inline ::std::string* release_stdid();
+  inline void set_allocated_stdid(::std::string* stdid);
+
+  // required string examiner = 8;
+  inline bool has_examiner() const;
+  inline void clear_examiner();
+  static const int kExaminerFieldNumber = 8;
+  inline const ::std::string& examiner() const;
+  inline void set_examiner(const ::std::string& value);
+  inline void set_examiner(const char* value);
+  inline void set_examiner(const char* value, size_t size);
+  inline ::std::string* mutable_examiner();
+  inline ::std::string* release_examiner();
+  inline void set_allocated_examiner(::std::string* examiner);
+
+  // required string comment = 9;
+  inline bool has_comment() const;
+  inline void clear_comment();
+  static const int kCommentFieldNumber = 9;
+  inline const ::std::string& comment() const;
+  inline void set_comment(const ::std::string& value);
+  inline void set_comment(const char* value);
+  inline void set_comment(const char* value, size_t size);
+  inline ::std::string* mutable_comment();
+  inline ::std::string* release_comment();
+  inline void set_allocated_comment(::std::string* comment);
+
+  // @@protoc_insertion_point(class_scope:das.proto.TestInfo)
+ private:
+  inline void set_has_id();
+  inline void clear_has_id();
+  inline void set_has_name();
+  inline void clear_has_name();
+  inline void set_has_sex();
+  inline void clear_has_sex();
+  inline void set_has_address();
+  inline void clear_has_address();
+  inline void set_has_school();
+  inline void clear_has_school();
+  inline void set_has_cag();
+  inline void clear_has_cag();
+  inline void set_has_stdid();
+  inline void clear_has_stdid();
+  inline void set_has_examiner();
+  inline void clear_has_examiner();
+  inline void set_has_comment();
+  inline void clear_has_comment();
+
+  ::google::protobuf::UnknownFieldSet _unknown_fields_;
+
+  ::std::string* id_;
+  ::std::string* name_;
+  ::std::string* sex_;
+  ::std::string* address_;
+  ::std::string* school_;
+  ::std::string* cag_;
+  ::std::string* stdid_;
+  ::std::string* examiner_;
+  ::std::string* comment_;
+
+  mutable int _cached_size_;
+  ::google::protobuf::uint32 _has_bits_[(9 + 31) / 32];
+
+  friend void  protobuf_AddDesc_das_2eproto();
+  friend void protobuf_AssignDesc_das_2eproto();
+  friend void protobuf_ShutdownFile_das_2eproto();
+
+  void InitAsDefaultInstance();
+  static TestInfo* default_instance_;
+};
+// -------------------------------------------------------------------
+
 class FZResult : public ::google::protobuf::Message {
  public:
   FZResult();
@@ -2705,6 +2913,15 @@ class FZResult : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 rslt() const;
   inline void set_rslt(::google::protobuf::int32 value);
 
+  // optional .das.proto.TestInfo info = 6;
+  inline bool has_info() const;
+  inline void clear_info();
+  static const int kInfoFieldNumber = 6;
+  inline const ::das::proto::TestInfo& info() const;
+  inline ::das::proto::TestInfo* mutable_info();
+  inline ::das::proto::TestInfo* release_info();
+  inline void set_allocated_info(::das::proto::TestInfo* info);
+
   // @@protoc_insertion_point(class_scope:das.proto.FZResult)
  private:
   inline void set_has_id();
@@ -2717,6 +2934,8 @@ class FZResult : public ::google::protobuf::Message {
   inline void clear_has_type();
   inline void set_has_rslt();
   inline void clear_has_rslt();
+  inline void set_has_info();
+  inline void clear_has_info();
 
   ::google::protobuf::UnknownFieldSet _unknown_fields_;
 
@@ -2724,10 +2943,11 @@ class FZResult : public ::google::protobuf::Message {
   ::google::protobuf::int64 begtm_;
   ::google::protobuf::int32 usedtm_;
   ::google::protobuf::int32 type_;
+  ::das::proto::TestInfo* info_;
   ::google::protobuf::int32 rslt_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(5 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -6839,6 +7059,640 @@ inline void AckSWRegist::set_ver(::google::protobuf::int64 value) {
 
 // -------------------------------------------------------------------
 
+// TestInfo
+
+// required string id = 1;
+inline bool TestInfo::has_id() const {
+  return (_has_bits_[0] & 0x00000001u) != 0;
+}
+inline void TestInfo::set_has_id() {
+  _has_bits_[0] |= 0x00000001u;
+}
+inline void TestInfo::clear_has_id() {
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline void TestInfo::clear_id() {
+  if (id_ != &::google::protobuf::internal::kEmptyString) {
+    id_->clear();
+  }
+  clear_has_id();
+}
+inline const ::std::string& TestInfo::id() const {
+  return *id_;
+}
+inline void TestInfo::set_id(const ::std::string& value) {
+  set_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    id_ = new ::std::string;
+  }
+  id_->assign(value);
+}
+inline void TestInfo::set_id(const char* value) {
+  set_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    id_ = new ::std::string;
+  }
+  id_->assign(value);
+}
+inline void TestInfo::set_id(const char* value, size_t size) {
+  set_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    id_ = new ::std::string;
+  }
+  id_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* TestInfo::mutable_id() {
+  set_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    id_ = new ::std::string;
+  }
+  return id_;
+}
+inline ::std::string* TestInfo::release_id() {
+  clear_has_id();
+  if (id_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = id_;
+    id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void TestInfo::set_allocated_id(::std::string* id) {
+  if (id_ != &::google::protobuf::internal::kEmptyString) {
+    delete id_;
+  }
+  if (id) {
+    set_has_id();
+    id_ = id;
+  } else {
+    clear_has_id();
+    id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string name = 2;
+inline bool TestInfo::has_name() const {
+  return (_has_bits_[0] & 0x00000002u) != 0;
+}
+inline void TestInfo::set_has_name() {
+  _has_bits_[0] |= 0x00000002u;
+}
+inline void TestInfo::clear_has_name() {
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline void TestInfo::clear_name() {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    name_->clear();
+  }
+  clear_has_name();
+}
+inline const ::std::string& TestInfo::name() const {
+  return *name_;
+}
+inline void TestInfo::set_name(const ::std::string& value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void TestInfo::set_name(const char* value) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(value);
+}
+inline void TestInfo::set_name(const char* value, size_t size) {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  name_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* TestInfo::mutable_name() {
+  set_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    name_ = new ::std::string;
+  }
+  return name_;
+}
+inline ::std::string* TestInfo::release_name() {
+  clear_has_name();
+  if (name_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = name_;
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void TestInfo::set_allocated_name(::std::string* name) {
+  if (name_ != &::google::protobuf::internal::kEmptyString) {
+    delete name_;
+  }
+  if (name) {
+    set_has_name();
+    name_ = name;
+  } else {
+    clear_has_name();
+    name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string sex = 3;
+inline bool TestInfo::has_sex() const {
+  return (_has_bits_[0] & 0x00000004u) != 0;
+}
+inline void TestInfo::set_has_sex() {
+  _has_bits_[0] |= 0x00000004u;
+}
+inline void TestInfo::clear_has_sex() {
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline void TestInfo::clear_sex() {
+  if (sex_ != &::google::protobuf::internal::kEmptyString) {
+    sex_->clear();
+  }
+  clear_has_sex();
+}
+inline const ::std::string& TestInfo::sex() const {
+  return *sex_;
+}
+inline void TestInfo::set_sex(const ::std::string& value) {
+  set_has_sex();
+  if (sex_ == &::google::protobuf::internal::kEmptyString) {
+    sex_ = new ::std::string;
+  }
+  sex_->assign(value);
+}
+inline void TestInfo::set_sex(const char* value) {
+  set_has_sex();
+  if (sex_ == &::google::protobuf::internal::kEmptyString) {
+    sex_ = new ::std::string;
+  }
+  sex_->assign(value);
+}
+inline void TestInfo::set_sex(const char* value, size_t size) {
+  set_has_sex();
+  if (sex_ == &::google::protobuf::internal::kEmptyString) {
+    sex_ = new ::std::string;
+  }
+  sex_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* TestInfo::mutable_sex() {
+  set_has_sex();
+  if (sex_ == &::google::protobuf::internal::kEmptyString) {
+    sex_ = new ::std::string;
+  }
+  return sex_;
+}
+inline ::std::string* TestInfo::release_sex() {
+  clear_has_sex();
+  if (sex_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = sex_;
+    sex_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void TestInfo::set_allocated_sex(::std::string* sex) {
+  if (sex_ != &::google::protobuf::internal::kEmptyString) {
+    delete sex_;
+  }
+  if (sex) {
+    set_has_sex();
+    sex_ = sex;
+  } else {
+    clear_has_sex();
+    sex_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string address = 4;
+inline bool TestInfo::has_address() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
+}
+inline void TestInfo::set_has_address() {
+  _has_bits_[0] |= 0x00000008u;
+}
+inline void TestInfo::clear_has_address() {
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline void TestInfo::clear_address() {
+  if (address_ != &::google::protobuf::internal::kEmptyString) {
+    address_->clear();
+  }
+  clear_has_address();
+}
+inline const ::std::string& TestInfo::address() const {
+  return *address_;
+}
+inline void TestInfo::set_address(const ::std::string& value) {
+  set_has_address();
+  if (address_ == &::google::protobuf::internal::kEmptyString) {
+    address_ = new ::std::string;
+  }
+  address_->assign(value);
+}
+inline void TestInfo::set_address(const char* value) {
+  set_has_address();
+  if (address_ == &::google::protobuf::internal::kEmptyString) {
+    address_ = new ::std::string;
+  }
+  address_->assign(value);
+}
+inline void TestInfo::set_address(const char* value, size_t size) {
+  set_has_address();
+  if (address_ == &::google::protobuf::internal::kEmptyString) {
+    address_ = new ::std::string;
+  }
+  address_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* TestInfo::mutable_address() {
+  set_has_address();
+  if (address_ == &::google::protobuf::internal::kEmptyString) {
+    address_ = new ::std::string;
+  }
+  return address_;
+}
+inline ::std::string* TestInfo::release_address() {
+  clear_has_address();
+  if (address_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = address_;
+    address_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void TestInfo::set_allocated_address(::std::string* address) {
+  if (address_ != &::google::protobuf::internal::kEmptyString) {
+    delete address_;
+  }
+  if (address) {
+    set_has_address();
+    address_ = address;
+  } else {
+    clear_has_address();
+    address_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string school = 5;
+inline bool TestInfo::has_school() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void TestInfo::set_has_school() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void TestInfo::clear_has_school() {
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline void TestInfo::clear_school() {
+  if (school_ != &::google::protobuf::internal::kEmptyString) {
+    school_->clear();
+  }
+  clear_has_school();
+}
+inline const ::std::string& TestInfo::school() const {
+  return *school_;
+}
+inline void TestInfo::set_school(const ::std::string& value) {
+  set_has_school();
+  if (school_ == &::google::protobuf::internal::kEmptyString) {
+    school_ = new ::std::string;
+  }
+  school_->assign(value);
+}
+inline void TestInfo::set_school(const char* value) {
+  set_has_school();
+  if (school_ == &::google::protobuf::internal::kEmptyString) {
+    school_ = new ::std::string;
+  }
+  school_->assign(value);
+}
+inline void TestInfo::set_school(const char* value, size_t size) {
+  set_has_school();
+  if (school_ == &::google::protobuf::internal::kEmptyString) {
+    school_ = new ::std::string;
+  }
+  school_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* TestInfo::mutable_school() {
+  set_has_school();
+  if (school_ == &::google::protobuf::internal::kEmptyString) {
+    school_ = new ::std::string;
+  }
+  return school_;
+}
+inline ::std::string* TestInfo::release_school() {
+  clear_has_school();
+  if (school_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = school_;
+    school_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void TestInfo::set_allocated_school(::std::string* school) {
+  if (school_ != &::google::protobuf::internal::kEmptyString) {
+    delete school_;
+  }
+  if (school) {
+    set_has_school();
+    school_ = school;
+  } else {
+    clear_has_school();
+    school_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string cag = 6;
+inline bool TestInfo::has_cag() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void TestInfo::set_has_cag() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void TestInfo::clear_has_cag() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void TestInfo::clear_cag() {
+  if (cag_ != &::google::protobuf::internal::kEmptyString) {
+    cag_->clear();
+  }
+  clear_has_cag();
+}
+inline const ::std::string& TestInfo::cag() const {
+  return *cag_;
+}
+inline void TestInfo::set_cag(const ::std::string& value) {
+  set_has_cag();
+  if (cag_ == &::google::protobuf::internal::kEmptyString) {
+    cag_ = new ::std::string;
+  }
+  cag_->assign(value);
+}
+inline void TestInfo::set_cag(const char* value) {
+  set_has_cag();
+  if (cag_ == &::google::protobuf::internal::kEmptyString) {
+    cag_ = new ::std::string;
+  }
+  cag_->assign(value);
+}
+inline void TestInfo::set_cag(const char* value, size_t size) {
+  set_has_cag();
+  if (cag_ == &::google::protobuf::internal::kEmptyString) {
+    cag_ = new ::std::string;
+  }
+  cag_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* TestInfo::mutable_cag() {
+  set_has_cag();
+  if (cag_ == &::google::protobuf::internal::kEmptyString) {
+    cag_ = new ::std::string;
+  }
+  return cag_;
+}
+inline ::std::string* TestInfo::release_cag() {
+  clear_has_cag();
+  if (cag_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = cag_;
+    cag_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void TestInfo::set_allocated_cag(::std::string* cag) {
+  if (cag_ != &::google::protobuf::internal::kEmptyString) {
+    delete cag_;
+  }
+  if (cag) {
+    set_has_cag();
+    cag_ = cag;
+  } else {
+    clear_has_cag();
+    cag_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string stdid = 7;
+inline bool TestInfo::has_stdid() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void TestInfo::set_has_stdid() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void TestInfo::clear_has_stdid() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void TestInfo::clear_stdid() {
+  if (stdid_ != &::google::protobuf::internal::kEmptyString) {
+    stdid_->clear();
+  }
+  clear_has_stdid();
+}
+inline const ::std::string& TestInfo::stdid() const {
+  return *stdid_;
+}
+inline void TestInfo::set_stdid(const ::std::string& value) {
+  set_has_stdid();
+  if (stdid_ == &::google::protobuf::internal::kEmptyString) {
+    stdid_ = new ::std::string;
+  }
+  stdid_->assign(value);
+}
+inline void TestInfo::set_stdid(const char* value) {
+  set_has_stdid();
+  if (stdid_ == &::google::protobuf::internal::kEmptyString) {
+    stdid_ = new ::std::string;
+  }
+  stdid_->assign(value);
+}
+inline void TestInfo::set_stdid(const char* value, size_t size) {
+  set_has_stdid();
+  if (stdid_ == &::google::protobuf::internal::kEmptyString) {
+    stdid_ = new ::std::string;
+  }
+  stdid_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* TestInfo::mutable_stdid() {
+  set_has_stdid();
+  if (stdid_ == &::google::protobuf::internal::kEmptyString) {
+    stdid_ = new ::std::string;
+  }
+  return stdid_;
+}
+inline ::std::string* TestInfo::release_stdid() {
+  clear_has_stdid();
+  if (stdid_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = stdid_;
+    stdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void TestInfo::set_allocated_stdid(::std::string* stdid) {
+  if (stdid_ != &::google::protobuf::internal::kEmptyString) {
+    delete stdid_;
+  }
+  if (stdid) {
+    set_has_stdid();
+    stdid_ = stdid;
+  } else {
+    clear_has_stdid();
+    stdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string examiner = 8;
+inline bool TestInfo::has_examiner() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void TestInfo::set_has_examiner() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void TestInfo::clear_has_examiner() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void TestInfo::clear_examiner() {
+  if (examiner_ != &::google::protobuf::internal::kEmptyString) {
+    examiner_->clear();
+  }
+  clear_has_examiner();
+}
+inline const ::std::string& TestInfo::examiner() const {
+  return *examiner_;
+}
+inline void TestInfo::set_examiner(const ::std::string& value) {
+  set_has_examiner();
+  if (examiner_ == &::google::protobuf::internal::kEmptyString) {
+    examiner_ = new ::std::string;
+  }
+  examiner_->assign(value);
+}
+inline void TestInfo::set_examiner(const char* value) {
+  set_has_examiner();
+  if (examiner_ == &::google::protobuf::internal::kEmptyString) {
+    examiner_ = new ::std::string;
+  }
+  examiner_->assign(value);
+}
+inline void TestInfo::set_examiner(const char* value, size_t size) {
+  set_has_examiner();
+  if (examiner_ == &::google::protobuf::internal::kEmptyString) {
+    examiner_ = new ::std::string;
+  }
+  examiner_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* TestInfo::mutable_examiner() {
+  set_has_examiner();
+  if (examiner_ == &::google::protobuf::internal::kEmptyString) {
+    examiner_ = new ::std::string;
+  }
+  return examiner_;
+}
+inline ::std::string* TestInfo::release_examiner() {
+  clear_has_examiner();
+  if (examiner_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = examiner_;
+    examiner_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void TestInfo::set_allocated_examiner(::std::string* examiner) {
+  if (examiner_ != &::google::protobuf::internal::kEmptyString) {
+    delete examiner_;
+  }
+  if (examiner) {
+    set_has_examiner();
+    examiner_ = examiner;
+  } else {
+    clear_has_examiner();
+    examiner_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// required string comment = 9;
+inline bool TestInfo::has_comment() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void TestInfo::set_has_comment() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void TestInfo::clear_has_comment() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void TestInfo::clear_comment() {
+  if (comment_ != &::google::protobuf::internal::kEmptyString) {
+    comment_->clear();
+  }
+  clear_has_comment();
+}
+inline const ::std::string& TestInfo::comment() const {
+  return *comment_;
+}
+inline void TestInfo::set_comment(const ::std::string& value) {
+  set_has_comment();
+  if (comment_ == &::google::protobuf::internal::kEmptyString) {
+    comment_ = new ::std::string;
+  }
+  comment_->assign(value);
+}
+inline void TestInfo::set_comment(const char* value) {
+  set_has_comment();
+  if (comment_ == &::google::protobuf::internal::kEmptyString) {
+    comment_ = new ::std::string;
+  }
+  comment_->assign(value);
+}
+inline void TestInfo::set_comment(const char* value, size_t size) {
+  set_has_comment();
+  if (comment_ == &::google::protobuf::internal::kEmptyString) {
+    comment_ = new ::std::string;
+  }
+  comment_->assign(reinterpret_cast<const char*>(value), size);
+}
+inline ::std::string* TestInfo::mutable_comment() {
+  set_has_comment();
+  if (comment_ == &::google::protobuf::internal::kEmptyString) {
+    comment_ = new ::std::string;
+  }
+  return comment_;
+}
+inline ::std::string* TestInfo::release_comment() {
+  clear_has_comment();
+  if (comment_ == &::google::protobuf::internal::kEmptyString) {
+    return NULL;
+  } else {
+    ::std::string* temp = comment_;
+    comment_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+    return temp;
+  }
+}
+inline void TestInfo::set_allocated_comment(::std::string* comment) {
+  if (comment_ != &::google::protobuf::internal::kEmptyString) {
+    delete comment_;
+  }
+  if (comment) {
+    set_has_comment();
+    comment_ = comment;
+  } else {
+    clear_has_comment();
+    comment_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  }
+}
+
+// -------------------------------------------------------------------
+
 // FZResult
 
 // optional int64 id = 1;
@@ -6949,6 +7803,44 @@ inline ::google::protobuf::int32 FZResult::rslt() const {
 inline void FZResult::set_rslt(::google::protobuf::int32 value) {
   set_has_rslt();
   rslt_ = value;
+}
+
+// optional .das.proto.TestInfo info = 6;
+inline bool FZResult::has_info() const {
+  return (_has_bits_[0] & 0x00000020u) != 0;
+}
+inline void FZResult::set_has_info() {
+  _has_bits_[0] |= 0x00000020u;
+}
+inline void FZResult::clear_has_info() {
+  _has_bits_[0] &= ~0x00000020u;
+}
+inline void FZResult::clear_info() {
+  if (info_ != NULL) info_->::das::proto::TestInfo::Clear();
+  clear_has_info();
+}
+inline const ::das::proto::TestInfo& FZResult::info() const {
+  return info_ != NULL ? *info_ : *default_instance_->info_;
+}
+inline ::das::proto::TestInfo* FZResult::mutable_info() {
+  set_has_info();
+  if (info_ == NULL) info_ = new ::das::proto::TestInfo;
+  return info_;
+}
+inline ::das::proto::TestInfo* FZResult::release_info() {
+  clear_has_info();
+  ::das::proto::TestInfo* temp = info_;
+  info_ = NULL;
+  return temp;
+}
+inline void FZResult::set_allocated_info(::das::proto::TestInfo* info) {
+  delete info_;
+  info_ = info;
+  if (info) {
+    set_has_info();
+  } else {
+    clear_has_info();
+  }
 }
 
 // -------------------------------------------------------------------

@@ -24,6 +24,70 @@ enum {
 using namespace das::proto;
 using namespace google::protobuf;
 using namespace std;
+
+static bool trans2TestInfo(TestInfo *tInfo, const string &id, const string &info)
+{
+    if (!tInfo || id.empty())
+        return false;
+
+    tInfo->set_id(id);
+
+    auto strLs = Utility::SplitString(info, "$#$", false);
+    tInfo->set_name(!strLs.empty() ? strLs.front() : string());
+    if (!strLs.empty())
+        strLs.pop_front();
+    tInfo->set_sex(!strLs.empty() ? strLs.front() : string());
+    if (!strLs.empty())
+        strLs.pop_front();
+    tInfo->set_address(!strLs.empty() ? strLs.front() : string());
+    if (!strLs.empty())
+        strLs.pop_front();
+    tInfo->set_school(!strLs.empty() ? strLs.front() : string());
+    if (!strLs.empty())
+        strLs.pop_front();
+    tInfo->set_cag(!strLs.empty() ? strLs.front() : string());
+    if (!strLs.empty())
+        strLs.pop_front();
+    tInfo->set_stdid(!strLs.empty() ? strLs.front() : string());
+    if (!strLs.empty())
+        strLs.pop_front();
+    tInfo->set_examiner(!strLs.empty() ? strLs.front() : string());
+    if (!strLs.empty())
+        strLs.pop_front();
+    tInfo->set_comment(!strLs.empty() ? strLs.front() : string());
+    if (!strLs.empty())
+        strLs.pop_front();
+
+    return true;
+}              
+
+static string packTestInfo(const TestInfo &tInfo)
+{
+    string ret = tInfo.has_name() ? tInfo.name() : string();
+    ret += "$#$";
+    if (tInfo.has_sex())
+        ret += tInfo.sex();
+    ret += "$#$";
+    if (tInfo.has_address())
+        ret += tInfo.address();
+    ret += "$#$";
+    if (tInfo.has_school())
+        ret += tInfo.school();
+    ret += "$#$";
+    if (tInfo.has_cag())
+        ret += tInfo.cag();
+    ret += "$#$";
+    if (tInfo.has_stdid())
+        ret += tInfo.stdid();
+    ret += "$#$";
+    if (tInfo.has_examiner())
+        ret += tInfo.examiner();
+    ret += "$#$";
+    if (tInfo.has_comment())
+        ret += tInfo.comment();
+
+    return ret;
+}
 ////////////////////////////////////////////////////////////////////////////////
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
@@ -427,11 +491,15 @@ void ObjectVgFZ::processAckFZRslts(const DBMessage &msg)
     const VariantList &usedTms = msg.GetRead("usedTm").GetVarList();
     const VariantList &types = msg.GetRead("type").GetVarList();
     const VariantList &results = msg.GetRead("result").GetVarList();
+    const StringList &uids = msg.GetRead("uid").ToStringList();
+    const StringList &infos = msg.GetRead("info").ToStringList();
 
     auto begItr = begTms.begin();
     auto usedItr = usedTms.begin();
     auto typeItr = types.begin();
     auto rsltItr = results.begin();
+    auto uidItr = uids.begin();
+    auto infoItr = infos.begin();
     for (const Variant &id : ids)
     {
         if (ack->ByteSize() > MaxSend)
@@ -451,6 +519,13 @@ void ObjectVgFZ::processAckFZRslts(const DBMessage &msg)
         result->set_usedtm(usedItr++->ToInt32());
         result->set_type(typeItr++->ToInt32());
         result->set_rslt(rsltItr++->ToInt32());
+        if (!uidItr->empty())
+        {
+            if (!trans2TestInfo(result->mutable_info(), *uidItr, *infoItr))
+                delete result->release_info();
+        }
+        ++uidItr;
+        ++infoItr;
     }
 
     if (ack)
@@ -933,6 +1008,7 @@ void ObjectVgFZ::_prcsPostFZResult(PostFZResult *rslt)
     if (!rslt || !rslt->has_rslt())
         return;
 
+    const FZResult &fzRslt = rslt->rslt();
     DBMessage *msg = new DBMessage(this, IMessage::InserFZRslt);
     if (!msg)
         return;
@@ -940,10 +1016,15 @@ void ObjectVgFZ::_prcsPostFZResult(PostFZResult *rslt)
     msg->SetSql("insertFZResult");
     msg->SetSeqNomb(rslt->seqno());
     msg->SetWrite("user", GetObjectID());
-    msg->SetWrite("begTm", rslt->rslt().has_begtm() ? rslt->rslt().begtm() : Utility::msTimeTick());
-    msg->SetWrite("usedTm", rslt->rslt().usedtm());
-    msg->SetWrite("type", rslt->rslt().type());
-    msg->SetWrite("result", rslt->rslt().rslt());
+    msg->SetWrite("begTm", fzRslt.has_begtm() ? fzRslt.begtm() : Utility::msTimeTick());
+    msg->SetWrite("usedTm", fzRslt.usedtm());
+    msg->SetWrite("type", fzRslt.type());
+    msg->SetWrite("result", fzRslt.rslt());
+    if (fzRslt.has_info())
+    {
+        msg->SetWrite("uid", fzRslt.info().id());
+        msg->SetWrite("info", packTestInfo(fzRslt.info()));
+    }
 
     SendMsg(msg);
 }

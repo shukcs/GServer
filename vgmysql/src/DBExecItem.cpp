@@ -22,11 +22,10 @@ static const list<FiledVal*> lsFieldEmpty;
 //FiledVal
 ///////////////////////////////////////////////////////////////////////////////////////
 FiledVal::FiledVal(int tp, const std::string &name, int len): m_type(tp), m_buff(NULL)
-, m_exParam(NULL),m_lenMax(0), m_len(0), m_tpField(NoBuff), m_bEmpty(1), m_name(name)
+, m_exParam(NULL),m_lenMax(0), m_len(0), m_tpField(transType(tp)), m_bEmpty(1), m_name(name)
 , m_condition("=")
 {
     InitBuff(len);
-    transType(tp);
 }
 
 FiledVal::FiledVal(VGTableField *fild, bool bOth): m_type(-1), m_buff(NULL)
@@ -38,7 +37,7 @@ FiledVal::FiledVal(VGTableField *fild, bool bOth): m_type(-1), m_buff(NULL)
         m_type = fild->GetType();
         m_name = fild->GetName(bOth);
         InitBuff(fild->GetLength());
-        transType(m_type);
+        m_tpField = transType(m_type);
     }
 }
 
@@ -47,29 +46,30 @@ FiledVal::~FiledVal()
     delete m_buff;
 }
 
-void FiledVal::transType(int sqlType)
+FiledVal::FieldType FiledVal::transType(int sqlType)
 {
     switch (sqlType)
     {
     case MYSQL_TYPE_TINY:
-        m_tpField = Int8; break;
+        return Int8;
     case MYSQL_TYPE_SHORT:
-        m_tpField = Int16; break;
+        return Int16;
     case MYSQL_TYPE_LONG:
-        m_tpField = Int32; break;
+        return Int32;
     case MYSQL_TYPE_FLOAT:
-        m_tpField = Float; break;
+        return Float;
     case MYSQL_TYPE_DOUBLE:
-        m_tpField = Double; break;
+        return Double;
     case MYSQL_TYPE_LONGLONG:
-        m_tpField = Int64; break;
+        return Int64;
     case MYSQL_TYPE_VAR_STRING:
-        m_tpField = Buff; break;
+        return Buff;
     case MYSQL_TYPE_STRING:
-        m_tpField = String; break;
+        return String;
     default:
         break;
     }
+    return NoBuff;
 }
 
 void FiledVal::SetFieldName(const string &name)

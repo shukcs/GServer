@@ -79,7 +79,7 @@ Variant::~Variant()
 
 bool Variant::Add(const Variant&v)
 {
-    if (!v.isBasicalType() || (Type_Unknow != m_tp && m_tp != v.elementListType()))
+    if (!v.isBasicalType() || (Type_Unknow!=m_tp && m_tp!=v.elementListType()))
         return false;
 
     if (m_tp == Type_Unknow)
@@ -89,7 +89,9 @@ bool Variant::Add(const Variant&v)
     {
     case Variant::Type_string:
     case Variant::Type_buff:
-        ((StringList*)m_list)->push_back(*(string*)v.m_list); break;
+        m_bValid = true;
+        ((StringList*)m_list)->push_back(v.ToString());
+        break;
     case Variant::Type_int32:
     case Variant::Type_uint32:
     case Variant::Type_int16:
