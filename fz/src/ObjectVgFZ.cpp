@@ -1,4 +1,4 @@
-#include "ObjectVgFZ.h"
+ï»¿#include "ObjectVgFZ.h"
 #include "socketBase.h"
 #include "das.pb.h"
 #include "ProtoMsg.h"
@@ -55,8 +55,6 @@ static bool trans2TestInfo(TestInfo *tInfo, const string &id, const string &info
     if (!strLs.empty())
         strLs.pop_front();
     tInfo->set_comment(!strLs.empty() ? strLs.front() : string());
-    if (!strLs.empty())
-        strLs.pop_front();
 
     return true;
 }              
@@ -650,7 +648,7 @@ void ObjectVgFZ::CheckTimer(uint64_t ms, char *buf, int len)
         Release();
     else if (!GetAuth(Type_Manager) && ms>AutoReleaseMs)
         Release();
-    else if (GetAuth(Type_Common) && ms > 15000)//³¬Ê±¹Ø±Õ
+    else if (GetAuth(Type_Common) && ms > 15000)//è¶…æ—¶å…³é—­
         IsInitaled() ? CloseLink() : Release();
 }
 

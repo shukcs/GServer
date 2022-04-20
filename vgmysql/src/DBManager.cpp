@@ -220,10 +220,8 @@ void ObjectDB::_save2Message(const FiledVal &fd, DBMessage &msg, int idx)
     case FiledVal::Float:
         v = fd.IsEmpty() ? Variant(Variant::Type_float) : fd.GetValue<float>(); break;
     case FiledVal::String:
-        v = fd.IsEmpty() ? Variant(Variant::Type_string) : string((char*)fd.GetBuff(), fd.GetValidLen()); break;
     case FiledVal::Buff:
-        v = fd.IsEmpty() ? Variant(Variant::Type_buff) : Variant(fd.GetValidLen(), (char*)fd.GetBuff()); break;
-        break;
+        v = fd.IsEmpty() ? Variant(Variant::Type_string) : string((char*)fd.GetBuff(), fd.GetValidLen()); break;
     }
 
     msg.IsQueryList() ? msg.AddRead(fd.GetFieldName(), v, idx): msg.SetRead(fd.GetFieldName(), v, idx);
