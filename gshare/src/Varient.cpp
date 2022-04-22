@@ -118,7 +118,7 @@ Variant::VariantType Variant::GetType() const
 
 const string &Variant::ToString() const
 {
-    if (Type_string == m_tp)
+    if (Type_string==m_tp || Type_buff==m_tp)
         return *(string*)m_list;
 
     return Utility::EmptyStr();

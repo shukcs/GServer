@@ -390,7 +390,7 @@
 					<field name="type" type="INT" />
 					<field name="result" type="INT" />
 					<field name="uid" type="char(32)" />
-					<field name="info" type="VARCHAR(512)" />
+					<field name="info" type="VARCHAR(1024)" />
 				</table>
 			</Tables>
 			<SQLs>
