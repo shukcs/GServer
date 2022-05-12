@@ -196,11 +196,9 @@ int ILink::GetSendRemain() const
 
 void ILink::OnSockClose(ISocket *s)
 {
-    if (m_sock==s && WaitSin())
-    {
+    Lock l(m_mtxS);
+    if (m_sock==s)
         m_sock = NULL;
-        PostSin();
-    }
     m_Stat |= Stat_Close;
     OnConnected(false);
 }
