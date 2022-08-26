@@ -250,7 +250,12 @@ message FZResult {
     required int32 usedTm     = 3;      //用时
     required int32 type       = 4;      //类型
     required int32 rslt       = 5;      //成绩
-    optional TestInfo info    = 6;      //考证信息
+    required float angVax     = 6;      //角度最大误差
+    required float altVax     = 7;      //高程最大误差
+    required float horVax     = 8;      //水平最大误差
+    required float maxVel     = 9;      //最大平飞速度
+    required float minVel     = 10;     //1/8圈后最小平飞速度
+    optional TestInfo info    = 11;     //考证信息
 }
 
 //=================================================================================================

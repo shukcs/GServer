@@ -2913,10 +2913,45 @@ class FZResult : public ::google::protobuf::Message {
   inline ::google::protobuf::int32 rslt() const;
   inline void set_rslt(::google::protobuf::int32 value);
 
-  // optional .das.proto.TestInfo info = 6;
+  // required float angVax = 6;
+  inline bool has_angvax() const;
+  inline void clear_angvax();
+  static const int kAngVaxFieldNumber = 6;
+  inline float angvax() const;
+  inline void set_angvax(float value);
+
+  // required float altVax = 7;
+  inline bool has_altvax() const;
+  inline void clear_altvax();
+  static const int kAltVaxFieldNumber = 7;
+  inline float altvax() const;
+  inline void set_altvax(float value);
+
+  // required float horVax = 8;
+  inline bool has_horvax() const;
+  inline void clear_horvax();
+  static const int kHorVaxFieldNumber = 8;
+  inline float horvax() const;
+  inline void set_horvax(float value);
+
+  // required float maxVel = 9;
+  inline bool has_maxvel() const;
+  inline void clear_maxvel();
+  static const int kMaxVelFieldNumber = 9;
+  inline float maxvel() const;
+  inline void set_maxvel(float value);
+
+  // required float minVel = 10;
+  inline bool has_minvel() const;
+  inline void clear_minvel();
+  static const int kMinVelFieldNumber = 10;
+  inline float minvel() const;
+  inline void set_minvel(float value);
+
+  // optional .das.proto.TestInfo info = 11;
   inline bool has_info() const;
   inline void clear_info();
-  static const int kInfoFieldNumber = 6;
+  static const int kInfoFieldNumber = 11;
   inline const ::das::proto::TestInfo& info() const;
   inline ::das::proto::TestInfo* mutable_info();
   inline ::das::proto::TestInfo* release_info();
@@ -2934,6 +2969,16 @@ class FZResult : public ::google::protobuf::Message {
   inline void clear_has_type();
   inline void set_has_rslt();
   inline void clear_has_rslt();
+  inline void set_has_angvax();
+  inline void clear_has_angvax();
+  inline void set_has_altvax();
+  inline void clear_has_altvax();
+  inline void set_has_horvax();
+  inline void clear_has_horvax();
+  inline void set_has_maxvel();
+  inline void clear_has_maxvel();
+  inline void set_has_minvel();
+  inline void clear_has_minvel();
   inline void set_has_info();
   inline void clear_has_info();
 
@@ -2943,11 +2988,16 @@ class FZResult : public ::google::protobuf::Message {
   ::google::protobuf::int64 begtm_;
   ::google::protobuf::int32 usedtm_;
   ::google::protobuf::int32 type_;
-  ::das::proto::TestInfo* info_;
   ::google::protobuf::int32 rslt_;
+  float angvax_;
+  float altvax_;
+  float horvax_;
+  float maxvel_;
+  float minvel_;
+  ::das::proto::TestInfo* info_;
 
   mutable int _cached_size_;
-  ::google::protobuf::uint32 _has_bits_[(6 + 31) / 32];
+  ::google::protobuf::uint32 _has_bits_[(11 + 31) / 32];
 
   friend void  protobuf_AddDesc_das_2eproto();
   friend void protobuf_AssignDesc_das_2eproto();
@@ -7805,15 +7855,125 @@ inline void FZResult::set_rslt(::google::protobuf::int32 value) {
   rslt_ = value;
 }
 
-// optional .das.proto.TestInfo info = 6;
-inline bool FZResult::has_info() const {
+// required float angVax = 6;
+inline bool FZResult::has_angvax() const {
   return (_has_bits_[0] & 0x00000020u) != 0;
 }
-inline void FZResult::set_has_info() {
+inline void FZResult::set_has_angvax() {
   _has_bits_[0] |= 0x00000020u;
 }
-inline void FZResult::clear_has_info() {
+inline void FZResult::clear_has_angvax() {
   _has_bits_[0] &= ~0x00000020u;
+}
+inline void FZResult::clear_angvax() {
+  angvax_ = 0;
+  clear_has_angvax();
+}
+inline float FZResult::angvax() const {
+  return angvax_;
+}
+inline void FZResult::set_angvax(float value) {
+  set_has_angvax();
+  angvax_ = value;
+}
+
+// required float altVax = 7;
+inline bool FZResult::has_altvax() const {
+  return (_has_bits_[0] & 0x00000040u) != 0;
+}
+inline void FZResult::set_has_altvax() {
+  _has_bits_[0] |= 0x00000040u;
+}
+inline void FZResult::clear_has_altvax() {
+  _has_bits_[0] &= ~0x00000040u;
+}
+inline void FZResult::clear_altvax() {
+  altvax_ = 0;
+  clear_has_altvax();
+}
+inline float FZResult::altvax() const {
+  return altvax_;
+}
+inline void FZResult::set_altvax(float value) {
+  set_has_altvax();
+  altvax_ = value;
+}
+
+// required float horVax = 8;
+inline bool FZResult::has_horvax() const {
+  return (_has_bits_[0] & 0x00000080u) != 0;
+}
+inline void FZResult::set_has_horvax() {
+  _has_bits_[0] |= 0x00000080u;
+}
+inline void FZResult::clear_has_horvax() {
+  _has_bits_[0] &= ~0x00000080u;
+}
+inline void FZResult::clear_horvax() {
+  horvax_ = 0;
+  clear_has_horvax();
+}
+inline float FZResult::horvax() const {
+  return horvax_;
+}
+inline void FZResult::set_horvax(float value) {
+  set_has_horvax();
+  horvax_ = value;
+}
+
+// required float maxVel = 9;
+inline bool FZResult::has_maxvel() const {
+  return (_has_bits_[0] & 0x00000100u) != 0;
+}
+inline void FZResult::set_has_maxvel() {
+  _has_bits_[0] |= 0x00000100u;
+}
+inline void FZResult::clear_has_maxvel() {
+  _has_bits_[0] &= ~0x00000100u;
+}
+inline void FZResult::clear_maxvel() {
+  maxvel_ = 0;
+  clear_has_maxvel();
+}
+inline float FZResult::maxvel() const {
+  return maxvel_;
+}
+inline void FZResult::set_maxvel(float value) {
+  set_has_maxvel();
+  maxvel_ = value;
+}
+
+// required float minVel = 10;
+inline bool FZResult::has_minvel() const {
+  return (_has_bits_[0] & 0x00000200u) != 0;
+}
+inline void FZResult::set_has_minvel() {
+  _has_bits_[0] |= 0x00000200u;
+}
+inline void FZResult::clear_has_minvel() {
+  _has_bits_[0] &= ~0x00000200u;
+}
+inline void FZResult::clear_minvel() {
+  minvel_ = 0;
+  clear_has_minvel();
+}
+inline float FZResult::minvel() const {
+  return minvel_;
+}
+inline void FZResult::set_minvel(float value) {
+  set_has_minvel();
+  minvel_ = value;
+}
+
+// optional .das.proto.TestInfo info = 11;
+inline bool FZResult::has_info() const {
+  return (_has_bits_[0] & 0x00000400u) != 0;
+}
+inline void FZResult::set_has_info() {
+  _has_bits_[0] |= 0x00000400u;
+}
+inline void FZResult::clear_has_info() {
+  _has_bits_[0] &= ~0x00000400u;
 }
 inline void FZResult::clear_info() {
   if (info_ != NULL) info_->::das::proto::TestInfo::Clear();

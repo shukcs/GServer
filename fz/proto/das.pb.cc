@@ -557,12 +557,17 @@ void protobuf_AssignDesc_das_2eproto() {
       ::google::protobuf::MessageFactory::generated_factory(),
       sizeof(TestInfo));
   FZResult_descriptor_ = file->message_type(24);
-  static const int FZResult_offsets_[6] = {
+  static const int FZResult_offsets_[11] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, begtm_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, usedtm_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, rslt_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, angvax_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, altvax_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, horvax_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, maxvel_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, minvel_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZResult, info_),
   };
   FZResult_reflection_ =
@@ -970,29 +975,31 @@ void protobuf_AddDesc_das_2eproto() {
     "\003 \002(\003\"\221\001\n\010TestInfo\022\n\n\002id\030\001 \002(\t\022\014\n\004name\030\002"
     " \002(\t\022\013\n\003sex\030\003 \002(\t\022\017\n\007address\030\004 \002(\t\022\016\n\006sc"
     "hool\030\005 \002(\t\022\013\n\003cag\030\006 \002(\t\022\r\n\005stdid\030\007 \002(\t\022\020"
-    "\n\010examiner\030\010 \002(\t\022\017\n\007comment\030\t \002(\t\"t\n\010FZR"
-    "esult\022\n\n\002id\030\001 \001(\003\022\r\n\005begTm\030\002 \001(\003\022\016\n\006used"
-    "Tm\030\003 \002(\005\022\014\n\004type\030\004 \002(\005\022\014\n\004rslt\030\005 \002(\005\022!\n\004"
-    "info\030\006 \001(\0132\023.das.proto.TestInfo\"@\n\014PostF"
-    "ZResult\022\r\n\005seqno\030\001 \002(\r\022!\n\004rslt\030\002 \002(\0132\023.d"
-    "as.proto.FZResult\",\n\017AckPostFZResult\022\r\n\005"
-    "seqno\030\001 \002(\r\022\n\n\002id\030\002 \002(\003\"\?\n\020RequestFZResu"
-    "lts\022\r\n\005seqno\030\001 \002(\r\022\r\n\005tmbeg\030\002 \001(\003\022\r\n\005tme"
-    "nd\030\003 \001(\003\"@\n\014AckFZResults\022\r\n\005seqno\030\001 \002(\r\022"
-    "!\n\004rslt\030\002 \003(\0132\023.das.proto.FZResult\"n\n\006FZ"
-    "Info\022\014\n\004name\030\001 \001(\t\022\r\n\005grade\030\002 \001(\t\022\014\n\004maj"
-    "r\030\003 \001(\t\022\n\n\002id\030\004 \001(\t\022\016\n\006school\030\005 \001(\t\022\016\n\006b"
-    "irths\030\006 \001(\t\022\r\n\005email\030\007 \002(\t\"<\n\nPostFZInfo"
-    "\022\r\n\005seqno\030\001 \002(\r\022\037\n\004info\030\002 \002(\0132\021.das.prot"
-    "o.FZInfo\",\n\rAckPostFZInfo\022\r\n\005seqno\030\001 \002(\r"
-    "\022\014\n\004rslt\030\002 \002(\005\"\036\n\rRequestFZInfo\022\r\n\005seqno"
-    "\030\001 \002(\r\";\n\tAckFZInfo\022\r\n\005seqno\030\001 \002(\r\022\037\n\004in"
-    "fo\030\002 \001(\0132\021.das.proto.FZInfo\";\n\rPostGetFZ"
-    "Pswd\022\r\n\005seqno\030\001 \002(\r\022\r\n\005email\030\002 \002(\t\022\014\n\004us"
-    "er\030\003 \002(\t\"+\n\014AckGetFZPswd\022\r\n\005seqno\030\001 \002(\r\022"
-    "\014\n\004rslt\030\002 \002(\005*g\n\tFZMsgType\022\020\n\014DeleteFrie"
-    "nd\020\001\022\021\n\rRequestFriend\020\002\022\017\n\013AgreeFriend\020\003"
-    "\022\020\n\014RejectFriend\020\004\022\010\n\004Text\020\005\022\010\n\004Land\020\006", 2558);
+    "\n\010examiner\030\010 \002(\t\022\017\n\007comment\030\t \002(\t\"\304\001\n\010FZ"
+    "Result\022\n\n\002id\030\001 \001(\003\022\r\n\005begTm\030\002 \001(\003\022\016\n\006use"
+    "dTm\030\003 \002(\005\022\014\n\004type\030\004 \002(\005\022\014\n\004rslt\030\005 \002(\005\022\016\n"
+    "\006angVax\030\006 \002(\002\022\016\n\006altVax\030\007 \002(\002\022\016\n\006horVax\030"
+    "\010 \002(\002\022\016\n\006maxVel\030\t \002(\002\022\016\n\006minVel\030\n \002(\002\022!\n"
+    "\004info\030\013 \001(\0132\023.das.proto.TestInfo\"@\n\014Post"
+    "FZResult\022\r\n\005seqno\030\001 \002(\r\022!\n\004rslt\030\002 \002(\0132\023."
+    "das.proto.FZResult\",\n\017AckPostFZResult\022\r\n"
+    "\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \002(\003\"\?\n\020RequestFZRes"
+    "ults\022\r\n\005seqno\030\001 \002(\r\022\r\n\005tmbeg\030\002 \001(\003\022\r\n\005tm"
+    "end\030\003 \001(\003\"@\n\014AckFZResults\022\r\n\005seqno\030\001 \002(\r"
+    "\022!\n\004rslt\030\002 \003(\0132\023.das.proto.FZResult\"n\n\006F"
+    "ZInfo\022\014\n\004name\030\001 \001(\t\022\r\n\005grade\030\002 \001(\t\022\014\n\004ma"
+    "jr\030\003 \001(\t\022\n\n\002id\030\004 \001(\t\022\016\n\006school\030\005 \001(\t\022\016\n\006"
+    "births\030\006 \001(\t\022\r\n\005email\030\007 \002(\t\"<\n\nPostFZInf"
+    "o\022\r\n\005seqno\030\001 \002(\r\022\037\n\004info\030\002 \002(\0132\021.das.pro"
+    "to.FZInfo\",\n\rAckPostFZInfo\022\r\n\005seqno\030\001 \002("
+    "\r\022\014\n\004rslt\030\002 \002(\005\"\036\n\rRequestFZInfo\022\r\n\005seqn"
+    "o\030\001 \002(\r\";\n\tAckFZInfo\022\r\n\005seqno\030\001 \002(\r\022\037\n\004i"
+    "nfo\030\002 \001(\0132\021.das.proto.FZInfo\";\n\rPostGetF"
+    "ZPswd\022\r\n\005seqno\030\001 \002(\r\022\r\n\005email\030\002 \002(\t\022\014\n\004u"
+    "ser\030\003 \002(\t\"+\n\014AckGetFZPswd\022\r\n\005seqno\030\001 \002(\r"
+    "\022\014\n\004rslt\030\002 \002(\005*g\n\tFZMsgType\022\020\n\014DeleteFri"
+    "end\020\001\022\021\n\rRequestFriend\020\002\022\017\n\013AgreeFriend\020"
+    "\003\022\020\n\014RejectFriend\020\004\022\010\n\004Text\020\005\022\010\n\004Land\020\006", 2639);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "das.proto", &protobuf_RegisterTypes);
   PostHeartBeat::default_instance_ = new PostHeartBeat();
@@ -8984,6 +8991,11 @@ const int FZResult::kBegTmFieldNumber;
 const int FZResult::kUsedTmFieldNumber;
 const int FZResult::kTypeFieldNumber;
 const int FZResult::kRsltFieldNumber;
+const int FZResult::kAngVaxFieldNumber;
+const int FZResult::kAltVaxFieldNumber;
+const int FZResult::kHorVaxFieldNumber;
+const int FZResult::kMaxVelFieldNumber;
+const int FZResult::kMinVelFieldNumber;
 const int FZResult::kInfoFieldNumber;
 #endif  // !_MSC_VER
 
@@ -9009,6 +9021,11 @@ void FZResult::SharedCtor() {
   usedtm_ = 0;
   type_ = 0;
   rslt_ = 0;
+  angvax_ = 0;
+  altvax_ = 0;
+  horvax_ = 0;
+  maxvel_ = 0;
+  minvel_ = 0;
   info_ = NULL;
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -9051,6 +9068,13 @@ void FZResult::Clear() {
     usedtm_ = 0;
     type_ = 0;
     rslt_ = 0;
+    angvax_ = 0;
+    altvax_ = 0;
+    horvax_ = 0;
+  }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    maxvel_ = 0;
+    minvel_ = 0;
     if (has_info()) {
       if (info_ != NULL) info_->::das::proto::TestInfo::Clear();
     }
@@ -9140,12 +9164,92 @@ bool FZResult::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(50)) goto parse_info;
+        if (input->ExpectTag(53)) goto parse_angVax;
         break;
       }
 
-      // optional .das.proto.TestInfo info = 6;
+      // required float angVax = 6;
       case 6: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_angVax:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &angvax_)));
+          set_has_angvax();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(61)) goto parse_altVax;
+        break;
+      }
+
+      // required float altVax = 7;
+      case 7: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_altVax:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &altvax_)));
+          set_has_altvax();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(69)) goto parse_horVax;
+        break;
+      }
+
+      // required float horVax = 8;
+      case 8: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_horVax:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &horvax_)));
+          set_has_horvax();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(77)) goto parse_maxVel;
+        break;
+      }
+
+      // required float maxVel = 9;
+      case 9: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_maxVel:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &maxvel_)));
+          set_has_maxvel();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(85)) goto parse_minVel;
+        break;
+      }
+
+      // required float minVel = 10;
+      case 10: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_FIXED32) {
+         parse_minVel:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &minvel_)));
+          set_has_minvel();
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(90)) goto parse_info;
+        break;
+      }
+
+      // optional .das.proto.TestInfo info = 11;
+      case 11: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_info:
@@ -9201,10 +9305,35 @@ void FZResult::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->rslt(), output);
   }
 
-  // optional .das.proto.TestInfo info = 6;
+  // required float angVax = 6;
+  if (has_angvax()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(6, this->angvax(), output);
+  }
+
+  // required float altVax = 7;
+  if (has_altvax()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(7, this->altvax(), output);
+  }
+
+  // required float horVax = 8;
+  if (has_horvax()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(8, this->horvax(), output);
+  }
+
+  // required float maxVel = 9;
+  if (has_maxvel()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(9, this->maxvel(), output);
+  }
+
+  // required float minVel = 10;
+  if (has_minvel()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(10, this->minvel(), output);
+  }
+
+  // optional .das.proto.TestInfo info = 11;
   if (has_info()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      6, this->info(), output);
+      11, this->info(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -9240,11 +9369,36 @@ void FZResult::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->rslt(), target);
   }
 
-  // optional .das.proto.TestInfo info = 6;
+  // required float angVax = 6;
+  if (has_angvax()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(6, this->angvax(), target);
+  }
+
+  // required float altVax = 7;
+  if (has_altvax()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(7, this->altvax(), target);
+  }
+
+  // required float horVax = 8;
+  if (has_horvax()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(8, this->horvax(), target);
+  }
+
+  // required float maxVel = 9;
+  if (has_maxvel()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(9, this->maxvel(), target);
+  }
+
+  // required float minVel = 10;
+  if (has_minvel()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteFloatToArray(10, this->minvel(), target);
+  }
+
+  // optional .das.proto.TestInfo info = 11;
   if (has_info()) {
     target = ::google::protobuf::internal::WireFormatLite::
       WriteMessageNoVirtualToArray(
-        6, this->info(), target);
+        11, this->info(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -9293,7 +9447,34 @@ int FZResult::ByteSize() const {
           this->rslt());
     }
 
-    // optional .das.proto.TestInfo info = 6;
+    // required float angVax = 6;
+    if (has_angvax()) {
+      total_size += 1 + 4;
+    }
+
+    // required float altVax = 7;
+    if (has_altvax()) {
+      total_size += 1 + 4;
+    }
+
+    // required float horVax = 8;
+    if (has_horvax()) {
+      total_size += 1 + 4;
+    }
+
+  }
+  if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    // required float maxVel = 9;
+    if (has_maxvel()) {
+      total_size += 1 + 4;
+    }
+
+    // required float minVel = 10;
+    if (has_minvel()) {
+      total_size += 1 + 4;
+    }
+
+    // optional .das.proto.TestInfo info = 11;
     if (has_info()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
@@ -9342,6 +9523,23 @@ void FZResult::MergeFrom(const FZResult& from) {
     if (from.has_rslt()) {
       set_rslt(from.rslt());
     }
+    if (from.has_angvax()) {
+      set_angvax(from.angvax());
+    }
+    if (from.has_altvax()) {
+      set_altvax(from.altvax());
+    }
+    if (from.has_horvax()) {
+      set_horvax(from.horvax());
+    }
+  }
+  if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
+    if (from.has_maxvel()) {
+      set_maxvel(from.maxvel());
+    }
+    if (from.has_minvel()) {
+      set_minvel(from.minvel());
+    }
     if (from.has_info()) {
       mutable_info()->::das::proto::TestInfo::MergeFrom(from.info());
     }
@@ -9362,7 +9560,7 @@ void FZResult::CopyFrom(const FZResult& from) {
 }
 
 bool FZResult::IsInitialized() const {
-  if ((_has_bits_[0] & 0x0000001c) != 0x0000001c) return false;
+  if ((_has_bits_[0] & 0x000003fc) != 0x000003fc) return false;
 
   if (has_info()) {
     if (!this->info().IsInitialized()) return false;
@@ -9377,6 +9575,11 @@ void FZResult::Swap(FZResult* other) {
     std::swap(usedtm_, other->usedtm_);
     std::swap(type_, other->type_);
     std::swap(rslt_, other->rslt_);
+    std::swap(angvax_, other->angvax_);
+    std::swap(altvax_, other->altvax_);
+    std::swap(horvax_, other->horvax_);
+    std::swap(maxvel_, other->maxvel_);
+    std::swap(minvel_, other->minvel_);
     std::swap(info_, other->info_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);

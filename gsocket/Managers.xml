@@ -389,6 +389,11 @@
 					<field name="usedTm" type="INT" />
 					<field name="type" type="INT" />
 					<field name="result" type="INT" />
+					<field name="angvax"  type="float" />
+					<field name="altvax"  type="float" />
+					<field name="horvax"  type="float" />
+					<field name="maxvel"  type="float" />
+					<field name="minvel"  type="float" />
 					<field name="uid" type="char(32)" />
 					<field name="info" type="VARCHAR(1024)" />
 				</table>
@@ -464,6 +469,11 @@
 					<item name="usedTm" ref="FZResult" type="Write" />
 					<item name="type" ref="FZResult" type="Write" />
 					<item name="result" ref="FZResult" type="Write" />
+					<item name="angvax" ref="FZResult" type="Write" />
+					<item name="altvax" ref="FZResult" type="Write" />
+					<item name="horvax" ref="FZResult" type="Write" />
+					<item name="maxvel" ref="FZResult" type="Write" />
+					<item name="minvel" ref="FZResult" type="Write" />
 					<item name="uid" type="Write" />
 					<item name="info" ref="FZResult" type="Write" />
 					<item type="AutoIncrement" />
@@ -475,6 +485,11 @@
 					<item name="type" ref="FZResult" type="Read" />
 					<item name="result" ref="FZResult" type="Read" />
 					<item name="uid"  ref="FZResult" type="Read" />
+					<item name="angvax"  ref="FZResult" type="Read" />
+					<item name="altvax"  ref="FZResult" type="Read" />
+					<item name="horvax"  ref="FZResult" type="Read" />
+					<item name="maxvel"  ref="FZResult" type="Read" />
+					<item name="minvel"  ref="FZResult" type="Read" />
 					<item name="info" ref="FZResult" type="Read" />
 					<item name="user" type="Condition" />
 					<item name="begTm" ref="FZResult" type="Condition" condition=">" />

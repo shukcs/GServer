@@ -489,6 +489,11 @@ void ObjectVgFZ::processAckFZRslts(const DBMessage &msg)
     const VariantList &usedTms = msg.GetRead("usedTm").GetVarList();
     const VariantList &types = msg.GetRead("type").GetVarList();
     const VariantList &results = msg.GetRead("result").GetVarList();
+    const VariantList &angVaxs = msg.GetRead("angvax").GetVarList();
+    const VariantList &altVaxs = msg.GetRead("altvax").GetVarList();
+    const VariantList &horVaxs = msg.GetRead("horvax").GetVarList();
+    const VariantList &maxVels = msg.GetRead("maxvel").GetVarList();
+    const VariantList &minVels = msg.GetRead("minvel").GetVarList();
     const StringList &uids = msg.GetRead("uid").ToStringList();
     const StringList &infos = msg.GetRead("info").ToStringList();
 
@@ -498,6 +503,11 @@ void ObjectVgFZ::processAckFZRslts(const DBMessage &msg)
     auto rsltItr = results.begin();
     auto uidItr = uids.begin();
     auto infoItr = infos.begin();
+    auto angVaxItr = angVaxs.begin();
+    auto altVaxItr = altVaxs.begin();
+    auto horVaxItr = horVaxs.begin();
+    auto maxVelItr = maxVels.begin();
+    auto minVelItr = minVels.begin();
     for (const Variant &id : ids)
     {
         if (ack->ByteSize() > MaxSend)
@@ -517,6 +527,11 @@ void ObjectVgFZ::processAckFZRslts(const DBMessage &msg)
         result->set_usedtm(usedItr++->ToInt32());
         result->set_type(typeItr++->ToInt32());
         result->set_rslt(rsltItr++->ToInt32());
+        result->set_angvax(angVaxItr++->ToFloat());
+        result->set_altvax(altVaxItr++->ToFloat());
+        result->set_horvax(horVaxItr++->ToFloat());
+        result->set_maxvel(maxVelItr++->ToFloat());
+        result->set_minvel(minVelItr++->ToFloat());
         if (!uidItr->empty())
         {
             if (!trans2TestInfo(result->mutable_info(), *uidItr, *infoItr))
@@ -1018,6 +1033,11 @@ void ObjectVgFZ::_prcsPostFZResult(PostFZResult *rslt)
     msg->SetWrite("usedTm", fzRslt.usedtm());
     msg->SetWrite("type", fzRslt.type());
     msg->SetWrite("result", fzRslt.rslt());
+    msg->SetWrite("angvax", fzRslt.angvax());
+    msg->SetWrite("horvax", fzRslt.horvax());
+    msg->SetWrite("altvax", fzRslt.altvax());
+    msg->SetWrite("maxvel", fzRslt.maxvel());
+    msg->SetWrite("minvel", fzRslt.minvel());
     if (fzRslt.has_info())
     {
         msg->SetWrite("uid", fzRslt.info().id());
