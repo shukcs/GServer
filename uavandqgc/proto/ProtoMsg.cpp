@@ -172,9 +172,8 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
     try {
         ret = m_msg->ParseFromArray(buff, len);
     }
-    catch (...)
-    {
-        throw;
+    catch (...) {
+        return false;
     }
 
     return ret;

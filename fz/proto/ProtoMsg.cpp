@@ -148,7 +148,7 @@ bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
     }
     catch (...)
     {
-        throw;
+        return false;
     }
 
     return ret;
