@@ -375,7 +375,7 @@
 				</table>
 				<table name="FZKeyReg">
 					<field name="swsn" type="char(32)" constraint="primary key"/>
-					<field name="pcsn" type="char(32)" />
+					<field name="pcsn" type="char(64)" />
 					<field name="ver" type="BIGINT" constraint="DEFAULT 1"/>
 					<field name="used" type="INT" constraint="DEFAULT 0" />
 					<field name="regTm" type="BIGINT" />

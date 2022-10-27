@@ -38,7 +38,7 @@ bool GLibrary::Load(const string &nameLib, const string &path)
         file += "/";
 
     file += nameLib + ".dll";
-    m_module = LoadLibrary(file.c_str());
+    m_module = LoadLibraryA(file.c_str());
 #else
     if (last != '/')
         file += "/";

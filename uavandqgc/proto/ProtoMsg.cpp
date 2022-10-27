@@ -110,53 +110,55 @@ google::protobuf::Message *ProtoMsg::DeatachProto(bool clear)
 bool ProtoMsg::Parse(const char *buff, uint32_t &len)
 {
     uint32_t pos = 0;
-    uint32_t n = 0;
     _clear();
-    while (pos+17<len && (n = Utility::FindString(buff+pos, len-pos, PROTOFLAG)) >= 0)
+    while (len > pos + 17)
     {
-        if (n >= 8)
+        int n = Utility::FindString(buff + pos, len - pos, PROTOFLAG);
+        if (n < 0)
         {
-            pos += n-8;
-            uint32_t szMsg = Utility::fromBigendian(buff+pos);
-            if (szMsg>Max_PBSize || szMsg<18)
+            pos = len - 17;
+            break;
+        }
+
+        if (n < 8)
+        {
+            pos += n + 10;
+            continue;
+        }
+
+        pos += n - 8;
+        uint32_t szMsg = Utility::fromBigendian(buff + pos);
+        if (szMsg > Max_PBSize || szMsg < 18)
+        {
+            pos += 18;
+            continue;
+        }
+
+        if (szMsg + 4 <= len - pos)
+        {
+            uint32_t crc = Utility::Crc32(buff + pos + 4, szMsg - 4);
+            if (crc != (uint32_t)Utility::fromBigendian(buff + pos + szMsg))
             {
                 pos += 18;
                 continue;
             }
 
-            if (szMsg+4 <= len-pos)
+            uint32_t nameLen = Utility::fromBigendian(buff + pos + 4);
+            m_name = string(buff + pos + 8, nameLen - 1);
+            uint32_t tmp = pos + 8 + nameLen;
+            pos += szMsg + 4;
+            if (_parse(m_name, buff + tmp, szMsg - 8 - nameLen))
             {
-                uint32_t crc = Utility::Crc32(buff+pos+4, szMsg-4);
-                if (crc != (uint32_t)Utility::fromBigendian(buff+pos+szMsg))
-                {
-                    pos += 18;
-                    continue;
-                }
-
-                uint32_t nameLen = Utility::fromBigendian(buff + pos + 4);
-                m_name = string(buff + pos + 8, nameLen - 1);
-                uint32_t tmp = pos + 8 + nameLen;
-                pos += szMsg + 4;
-                if (_parse(m_name, buff+tmp, szMsg-8-nameLen))
-                    break;
-
-                m_name.clear();
-                continue;
+                len = pos;
+                return true;
             }
-            break;
-        }
-        else
-        {
-            pos += n + 10;
+
+            _clear();
         }
     }
- 
-    if (n < 8)
-        len = len > 17 ? len-17 : 0;
-    else if (pos > 0 || n >= 8)
-        len = pos;
 
-    return !m_name.empty();
+    len = pos;
+    return false;
 }
 
 bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)

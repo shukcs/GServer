@@ -88,7 +88,7 @@ message RequestFZUserIdentity {
 //=================================================================================================
 message AckFZUserIdentity {
     required uint32   seqno       = 1;    //本包的包序号
-    required int32    result      = 2;    //ID分配的结果
+    required int32    result      = 2;    //-1：密码错误
     required int64    ver         = 3;    //软件注册版本<0未注册
     optional string   extradata   = 4;    //扩展备用数据
 }
@@ -230,15 +230,15 @@ message AckSWRegist {
 //TestInfo
 //=================================================================================================
 message TestInfo {
-    required string id        = 1;  //身份证号
-    required string name      = 2;  //姓名
-    required string sex       = 3;  //性别
-    required string address   = 4;  //住址
-    required string school    = 5;  //学校
-    required string cag       = 6;  //班级
-    required string stdid     = 7;  //学号
-    required string examiner  = 8;  //考官
-    required string comment   = 9;  //备注
+    required string id            = 1;  //身份证号
+    required string name          = 2;  //姓名
+    required string sex           = 3;  //性别
+    required string birthday      = 4;  //住址
+    required string address       = 5;  //学校
+    required string nationality   = 6;  //班级
+    required string email         = 7;  //学号
+    required string examiner      = 8;  //考官
+    required string phone_number  = 9;  //备注
 }
 
 //=================================================================================================
@@ -297,7 +297,7 @@ message AckFZResults {
 message FZInfo {
     optional string name        = 1; //姓名
     optional string grade       = 2; //年级
-    optional string majr        = 3; //专业
+    optional string major       = 3; //专业
     optional string id          = 4; //学号
     optional string school      = 5; //学校
     optional string births      = 6; //出生日期

@@ -39,22 +39,22 @@ static bool trans2TestInfo(TestInfo *tInfo, const string &id, const string &info
     tInfo->set_sex(!strLs.empty() ? strLs.front() : string());
     if (!strLs.empty())
         strLs.pop_front();
+    tInfo->set_birthday(!strLs.empty() ? strLs.front() : string());
+    if (!strLs.empty())
+        strLs.pop_front();
     tInfo->set_address(!strLs.empty() ? strLs.front() : string());
     if (!strLs.empty())
         strLs.pop_front();
-    tInfo->set_school(!strLs.empty() ? strLs.front() : string());
+    tInfo->set_nationality(!strLs.empty() ? strLs.front() : string());
     if (!strLs.empty())
         strLs.pop_front();
-    tInfo->set_cag(!strLs.empty() ? strLs.front() : string());
-    if (!strLs.empty())
-        strLs.pop_front();
-    tInfo->set_stdid(!strLs.empty() ? strLs.front() : string());
+    tInfo->set_email(!strLs.empty() ? strLs.front() : string());
     if (!strLs.empty())
         strLs.pop_front();
     tInfo->set_examiner(!strLs.empty() ? strLs.front() : string());
     if (!strLs.empty())
         strLs.pop_front();
-    tInfo->set_comment(!strLs.empty() ? strLs.front() : string());
+    tInfo->set_phone_number(!strLs.empty() ? strLs.front() : string());
 
     return true;
 }              
@@ -69,20 +69,20 @@ static string packTestInfo(const TestInfo &tInfo)
     if (tInfo.has_address())
         ret += tInfo.address();
     ret += "$#$";
-    if (tInfo.has_school())
-        ret += tInfo.school();
+    if (tInfo.has_birthday())
+        ret += tInfo.birthday();
     ret += "$#$";
-    if (tInfo.has_cag())
-        ret += tInfo.cag();
+    if (tInfo.has_nationality())
+        ret += tInfo.nationality();
     ret += "$#$";
-    if (tInfo.has_stdid())
-        ret += tInfo.stdid();
+    if (tInfo.has_email())
+        ret += tInfo.email();
     ret += "$#$";
     if (tInfo.has_examiner())
         ret += tInfo.examiner();
     ret += "$#$";
-    if (tInfo.has_comment())
-        ret += tInfo.comment();
+    if (tInfo.has_phone_number())
+        ret += tInfo.phone_number();
 
     return ret;
 }
@@ -1096,7 +1096,7 @@ void ObjectVgFZ::_prcsRequestFZInfo(const RequestFZInfo &msg)
             auto itr = strLs.begin();
             info->set_name(*itr++);
             info->set_grade(*itr++);
-            info->set_majr(*itr++);
+            info->set_major(*itr++);
             info->set_id(*itr++);
             info->set_school(*itr++);
             info->set_births(*itr);
@@ -1144,7 +1144,7 @@ bool ObjectVgFZ::_saveInfo(const FZInfo &info)
     str += "#;#";
     str += info.has_grade() ? info.grade() : string();
     str += "#;#";
-    str += info.has_majr() ? info.majr() : string();
+    str += info.has_major() ? info.major() : string();
     str += "#;#";
     str += info.has_id() ? info.id() : string();
     str += "#;#";

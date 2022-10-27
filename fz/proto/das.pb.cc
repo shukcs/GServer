@@ -538,12 +538,12 @@ void protobuf_AssignDesc_das_2eproto() {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, sex_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, birthday_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, address_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, school_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, cag_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, stdid_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, nationality_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, email_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, examiner_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, comment_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TestInfo, phone_number_),
   };
   TestInfo_reflection_ =
     new ::google::protobuf::internal::GeneratedMessageReflection(
@@ -650,7 +650,7 @@ void protobuf_AssignDesc_das_2eproto() {
   static const int FZInfo_offsets_[7] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, grade_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, majr_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, major_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, id_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, school_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(FZInfo, births_),
@@ -972,34 +972,35 @@ void protobuf_AddDesc_das_2eproto() {
     ".SWKeyInfo\"6\n\010SWRegist\022\r\n\005seqno\030\001 \002(\r\022\014\n"
     "\004pcsn\030\002 \002(\t\022\r\n\005swkey\030\003 \002(\t\"9\n\013AckSWRegis"
     "t\022\r\n\005seqno\030\001 \002(\r\022\016\n\006result\030\002 \002(\005\022\013\n\003ver\030"
-    "\003 \002(\003\"\221\001\n\010TestInfo\022\n\n\002id\030\001 \002(\t\022\014\n\004name\030\002"
-    " \002(\t\022\013\n\003sex\030\003 \002(\t\022\017\n\007address\030\004 \002(\t\022\016\n\006sc"
-    "hool\030\005 \002(\t\022\013\n\003cag\030\006 \002(\t\022\r\n\005stdid\030\007 \002(\t\022\020"
-    "\n\010examiner\030\010 \002(\t\022\017\n\007comment\030\t \002(\t\"\304\001\n\010FZ"
-    "Result\022\n\n\002id\030\001 \001(\003\022\r\n\005begTm\030\002 \001(\003\022\016\n\006use"
-    "dTm\030\003 \002(\005\022\014\n\004type\030\004 \002(\005\022\014\n\004rslt\030\005 \002(\005\022\016\n"
-    "\006angVax\030\006 \002(\002\022\016\n\006altVax\030\007 \002(\002\022\016\n\006horVax\030"
-    "\010 \002(\002\022\016\n\006maxVel\030\t \002(\002\022\016\n\006minVel\030\n \002(\002\022!\n"
-    "\004info\030\013 \001(\0132\023.das.proto.TestInfo\"@\n\014Post"
-    "FZResult\022\r\n\005seqno\030\001 \002(\r\022!\n\004rslt\030\002 \002(\0132\023."
-    "das.proto.FZResult\",\n\017AckPostFZResult\022\r\n"
-    "\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \002(\003\"\?\n\020RequestFZRes"
-    "ults\022\r\n\005seqno\030\001 \002(\r\022\r\n\005tmbeg\030\002 \001(\003\022\r\n\005tm"
-    "end\030\003 \001(\003\"@\n\014AckFZResults\022\r\n\005seqno\030\001 \002(\r"
-    "\022!\n\004rslt\030\002 \003(\0132\023.das.proto.FZResult\"n\n\006F"
-    "ZInfo\022\014\n\004name\030\001 \001(\t\022\r\n\005grade\030\002 \001(\t\022\014\n\004ma"
-    "jr\030\003 \001(\t\022\n\n\002id\030\004 \001(\t\022\016\n\006school\030\005 \001(\t\022\016\n\006"
-    "births\030\006 \001(\t\022\r\n\005email\030\007 \002(\t\"<\n\nPostFZInf"
-    "o\022\r\n\005seqno\030\001 \002(\r\022\037\n\004info\030\002 \002(\0132\021.das.pro"
-    "to.FZInfo\",\n\rAckPostFZInfo\022\r\n\005seqno\030\001 \002("
-    "\r\022\014\n\004rslt\030\002 \002(\005\"\036\n\rRequestFZInfo\022\r\n\005seqn"
-    "o\030\001 \002(\r\";\n\tAckFZInfo\022\r\n\005seqno\030\001 \002(\r\022\037\n\004i"
-    "nfo\030\002 \001(\0132\021.das.proto.FZInfo\";\n\rPostGetF"
-    "ZPswd\022\r\n\005seqno\030\001 \002(\r\022\r\n\005email\030\002 \002(\t\022\014\n\004u"
-    "ser\030\003 \002(\t\"+\n\014AckGetFZPswd\022\r\n\005seqno\030\001 \002(\r"
-    "\022\014\n\004rslt\030\002 \002(\005*g\n\tFZMsgType\022\020\n\014DeleteFri"
-    "end\020\001\022\021\n\rRequestFriend\020\002\022\017\n\013AgreeFriend\020"
-    "\003\022\020\n\014RejectFriend\020\004\022\010\n\004Text\020\005\022\010\n\004Land\020\006", 2639);
+    "\003 \002(\003\"\240\001\n\010TestInfo\022\n\n\002id\030\001 \002(\t\022\014\n\004name\030\002"
+    " \002(\t\022\013\n\003sex\030\003 \002(\t\022\020\n\010birthday\030\004 \002(\t\022\017\n\007a"
+    "ddress\030\005 \002(\t\022\023\n\013nationality\030\006 \002(\t\022\r\n\005ema"
+    "il\030\007 \002(\t\022\020\n\010examiner\030\010 \002(\t\022\024\n\014phone_numb"
+    "er\030\t \002(\t\"\304\001\n\010FZResult\022\n\n\002id\030\001 \001(\003\022\r\n\005beg"
+    "Tm\030\002 \001(\003\022\016\n\006usedTm\030\003 \002(\005\022\014\n\004type\030\004 \002(\005\022\014"
+    "\n\004rslt\030\005 \002(\005\022\016\n\006angVax\030\006 \002(\002\022\016\n\006altVax\030\007"
+    " \002(\002\022\016\n\006horVax\030\010 \002(\002\022\016\n\006maxVel\030\t \002(\002\022\016\n\006"
+    "minVel\030\n \002(\002\022!\n\004info\030\013 \001(\0132\023.das.proto.T"
+    "estInfo\"@\n\014PostFZResult\022\r\n\005seqno\030\001 \002(\r\022!"
+    "\n\004rslt\030\002 \002(\0132\023.das.proto.FZResult\",\n\017Ack"
+    "PostFZResult\022\r\n\005seqno\030\001 \002(\r\022\n\n\002id\030\002 \002(\003\""
+    "\?\n\020RequestFZResults\022\r\n\005seqno\030\001 \002(\r\022\r\n\005tm"
+    "beg\030\002 \001(\003\022\r\n\005tmend\030\003 \001(\003\"@\n\014AckFZResults"
+    "\022\r\n\005seqno\030\001 \002(\r\022!\n\004rslt\030\002 \003(\0132\023.das.prot"
+    "o.FZResult\"o\n\006FZInfo\022\014\n\004name\030\001 \001(\t\022\r\n\005gr"
+    "ade\030\002 \001(\t\022\r\n\005major\030\003 \001(\t\022\n\n\002id\030\004 \001(\t\022\016\n\006"
+    "school\030\005 \001(\t\022\016\n\006births\030\006 \001(\t\022\r\n\005email\030\007 "
+    "\002(\t\"<\n\nPostFZInfo\022\r\n\005seqno\030\001 \002(\r\022\037\n\004info"
+    "\030\002 \002(\0132\021.das.proto.FZInfo\",\n\rAckPostFZIn"
+    "fo\022\r\n\005seqno\030\001 \002(\r\022\014\n\004rslt\030\002 \002(\005\"\036\n\rReque"
+    "stFZInfo\022\r\n\005seqno\030\001 \002(\r\";\n\tAckFZInfo\022\r\n\005"
+    "seqno\030\001 \002(\r\022\037\n\004info\030\002 \001(\0132\021.das.proto.FZ"
+    "Info\";\n\rPostGetFZPswd\022\r\n\005seqno\030\001 \002(\r\022\r\n\005"
+    "email\030\002 \002(\t\022\014\n\004user\030\003 \002(\t\"+\n\014AckGetFZPsw"
+    "d\022\r\n\005seqno\030\001 \002(\r\022\014\n\004rslt\030\002 \002(\005*g\n\tFZMsgT"
+    "ype\022\020\n\014DeleteFriend\020\001\022\021\n\rRequestFriend\020\002"
+    "\022\017\n\013AgreeFriend\020\003\022\020\n\014RejectFriend\020\004\022\010\n\004T"
+    "ext\020\005\022\010\n\004Land\020\006", 2655);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "das.proto", &protobuf_RegisterTypes);
   PostHeartBeat::default_instance_ = new PostHeartBeat();
@@ -8301,12 +8302,12 @@ void AckSWRegist::Swap(AckSWRegist* other) {
 const int TestInfo::kIdFieldNumber;
 const int TestInfo::kNameFieldNumber;
 const int TestInfo::kSexFieldNumber;
+const int TestInfo::kBirthdayFieldNumber;
 const int TestInfo::kAddressFieldNumber;
-const int TestInfo::kSchoolFieldNumber;
-const int TestInfo::kCagFieldNumber;
-const int TestInfo::kStdidFieldNumber;
+const int TestInfo::kNationalityFieldNumber;
+const int TestInfo::kEmailFieldNumber;
 const int TestInfo::kExaminerFieldNumber;
-const int TestInfo::kCommentFieldNumber;
+const int TestInfo::kPhoneNumberFieldNumber;
 #endif  // !_MSC_VER
 
 TestInfo::TestInfo()
@@ -8328,12 +8329,12 @@ void TestInfo::SharedCtor() {
   id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   sex_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  birthday_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   address_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  school_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  cag_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  stdid_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  nationality_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  email_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   examiner_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  comment_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  phone_number_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -8351,23 +8352,23 @@ void TestInfo::SharedDtor() {
   if (sex_ != &::google::protobuf::internal::kEmptyString) {
     delete sex_;
   }
+  if (birthday_ != &::google::protobuf::internal::kEmptyString) {
+    delete birthday_;
+  }
   if (address_ != &::google::protobuf::internal::kEmptyString) {
     delete address_;
   }
-  if (school_ != &::google::protobuf::internal::kEmptyString) {
-    delete school_;
+  if (nationality_ != &::google::protobuf::internal::kEmptyString) {
+    delete nationality_;
   }
-  if (cag_ != &::google::protobuf::internal::kEmptyString) {
-    delete cag_;
-  }
-  if (stdid_ != &::google::protobuf::internal::kEmptyString) {
-    delete stdid_;
+  if (email_ != &::google::protobuf::internal::kEmptyString) {
+    delete email_;
   }
   if (examiner_ != &::google::protobuf::internal::kEmptyString) {
     delete examiner_;
   }
-  if (comment_ != &::google::protobuf::internal::kEmptyString) {
-    delete comment_;
+  if (phone_number_ != &::google::protobuf::internal::kEmptyString) {
+    delete phone_number_;
   }
   if (this != default_instance_) {
   }
@@ -8411,24 +8412,24 @@ void TestInfo::Clear() {
         sex_->clear();
       }
     }
+    if (has_birthday()) {
+      if (birthday_ != &::google::protobuf::internal::kEmptyString) {
+        birthday_->clear();
+      }
+    }
     if (has_address()) {
       if (address_ != &::google::protobuf::internal::kEmptyString) {
         address_->clear();
       }
     }
-    if (has_school()) {
-      if (school_ != &::google::protobuf::internal::kEmptyString) {
-        school_->clear();
+    if (has_nationality()) {
+      if (nationality_ != &::google::protobuf::internal::kEmptyString) {
+        nationality_->clear();
       }
     }
-    if (has_cag()) {
-      if (cag_ != &::google::protobuf::internal::kEmptyString) {
-        cag_->clear();
-      }
-    }
-    if (has_stdid()) {
-      if (stdid_ != &::google::protobuf::internal::kEmptyString) {
-        stdid_->clear();
+    if (has_email()) {
+      if (email_ != &::google::protobuf::internal::kEmptyString) {
+        email_->clear();
       }
     }
     if (has_examiner()) {
@@ -8438,9 +8439,9 @@ void TestInfo::Clear() {
     }
   }
   if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
-    if (has_comment()) {
-      if (comment_ != &::google::protobuf::internal::kEmptyString) {
-        comment_->clear();
+    if (has_phone_number()) {
+      if (phone_number_ != &::google::protobuf::internal::kEmptyString) {
+        phone_number_->clear();
       }
     }
   }
@@ -8500,12 +8501,29 @@ bool TestInfo::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(34)) goto parse_address;
+        if (input->ExpectTag(34)) goto parse_birthday;
         break;
       }
 
-      // required string address = 4;
+      // required string birthday = 4;
       case 4: {
+        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+         parse_birthday:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_birthday()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+            this->birthday().data(), this->birthday().length(),
+            ::google::protobuf::internal::WireFormat::PARSE);
+        } else {
+          goto handle_uninterpreted;
+        }
+        if (input->ExpectTag(42)) goto parse_address;
+        break;
+      }
+
+      // required string address = 5;
+      case 5: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
          parse_address:
@@ -8517,53 +8535,36 @@ bool TestInfo::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(42)) goto parse_school;
+        if (input->ExpectTag(50)) goto parse_nationality;
         break;
       }
 
-      // required string school = 5;
-      case 5: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_school:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_school()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->school().data(), this->school().length(),
-            ::google::protobuf::internal::WireFormat::PARSE);
-        } else {
-          goto handle_uninterpreted;
-        }
-        if (input->ExpectTag(50)) goto parse_cag;
-        break;
-      }
-
-      // required string cag = 6;
+      // required string nationality = 6;
       case 6: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_cag:
+         parse_nationality:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_cag()));
+                input, this->mutable_nationality()));
           ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->cag().data(), this->cag().length(),
+            this->nationality().data(), this->nationality().length(),
             ::google::protobuf::internal::WireFormat::PARSE);
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(58)) goto parse_stdid;
+        if (input->ExpectTag(58)) goto parse_email;
         break;
       }
 
-      // required string stdid = 7;
+      // required string email = 7;
       case 7: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_stdid:
+         parse_email:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_stdid()));
+                input, this->mutable_email()));
           ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->stdid().data(), this->stdid().length(),
+            this->email().data(), this->email().length(),
             ::google::protobuf::internal::WireFormat::PARSE);
         } else {
           goto handle_uninterpreted;
@@ -8585,19 +8586,19 @@ bool TestInfo::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(74)) goto parse_comment;
+        if (input->ExpectTag(74)) goto parse_phone_number;
         break;
       }
 
-      // required string comment = 9;
+      // required string phone_number = 9;
       case 9: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_comment:
+         parse_phone_number:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_comment()));
+                input, this->mutable_phone_number()));
           ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->comment().data(), this->comment().length(),
+            this->phone_number().data(), this->phone_number().length(),
             ::google::protobuf::internal::WireFormat::PARSE);
         } else {
           goto handle_uninterpreted;
@@ -8651,40 +8652,40 @@ void TestInfo::SerializeWithCachedSizes(
       3, this->sex(), output);
   }
 
-  // required string address = 4;
+  // required string birthday = 4;
+  if (has_birthday()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->birthday().data(), this->birthday().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      4, this->birthday(), output);
+  }
+
+  // required string address = 5;
   if (has_address()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->address().data(), this->address().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      4, this->address(), output);
+      5, this->address(), output);
   }
 
-  // required string school = 5;
-  if (has_school()) {
+  // required string nationality = 6;
+  if (has_nationality()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->school().data(), this->school().length(),
+      this->nationality().data(), this->nationality().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      5, this->school(), output);
+      6, this->nationality(), output);
   }
 
-  // required string cag = 6;
-  if (has_cag()) {
+  // required string email = 7;
+  if (has_email()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->cag().data(), this->cag().length(),
+      this->email().data(), this->email().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      6, this->cag(), output);
-  }
-
-  // required string stdid = 7;
-  if (has_stdid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->stdid().data(), this->stdid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    ::google::protobuf::internal::WireFormatLite::WriteString(
-      7, this->stdid(), output);
+      7, this->email(), output);
   }
 
   // required string examiner = 8;
@@ -8696,13 +8697,13 @@ void TestInfo::SerializeWithCachedSizes(
       8, this->examiner(), output);
   }
 
-  // required string comment = 9;
-  if (has_comment()) {
+  // required string phone_number = 9;
+  if (has_phone_number()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->comment().data(), this->comment().length(),
+      this->phone_number().data(), this->phone_number().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      9, this->comment(), output);
+      9, this->phone_number(), output);
   }
 
   if (!unknown_fields().empty()) {
@@ -8743,44 +8744,44 @@ void TestInfo::SerializeWithCachedSizes(
         3, this->sex(), target);
   }
 
-  // required string address = 4;
+  // required string birthday = 4;
+  if (has_birthday()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
+      this->birthday().data(), this->birthday().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE);
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        4, this->birthday(), target);
+  }
+
+  // required string address = 5;
   if (has_address()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
       this->address().data(), this->address().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        4, this->address(), target);
+        5, this->address(), target);
   }
 
-  // required string school = 5;
-  if (has_school()) {
+  // required string nationality = 6;
+  if (has_nationality()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->school().data(), this->school().length(),
+      this->nationality().data(), this->nationality().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        5, this->school(), target);
+        6, this->nationality(), target);
   }
 
-  // required string cag = 6;
-  if (has_cag()) {
+  // required string email = 7;
+  if (has_email()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->cag().data(), this->cag().length(),
+      this->email().data(), this->email().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        6, this->cag(), target);
-  }
-
-  // required string stdid = 7;
-  if (has_stdid()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->stdid().data(), this->stdid().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE);
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        7, this->stdid(), target);
+        7, this->email(), target);
   }
 
   // required string examiner = 8;
@@ -8793,14 +8794,14 @@ void TestInfo::SerializeWithCachedSizes(
         8, this->examiner(), target);
   }
 
-  // required string comment = 9;
-  if (has_comment()) {
+  // required string phone_number = 9;
+  if (has_phone_number()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->comment().data(), this->comment().length(),
+      this->phone_number().data(), this->phone_number().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        9, this->comment(), target);
+        9, this->phone_number(), target);
   }
 
   if (!unknown_fields().empty()) {
@@ -8835,32 +8836,32 @@ int TestInfo::ByteSize() const {
           this->sex());
     }
 
-    // required string address = 4;
+    // required string birthday = 4;
+    if (has_birthday()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->birthday());
+    }
+
+    // required string address = 5;
     if (has_address()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->address());
     }
 
-    // required string school = 5;
-    if (has_school()) {
+    // required string nationality = 6;
+    if (has_nationality()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->school());
+          this->nationality());
     }
 
-    // required string cag = 6;
-    if (has_cag()) {
+    // required string email = 7;
+    if (has_email()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->cag());
-    }
-
-    // required string stdid = 7;
-    if (has_stdid()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->stdid());
+          this->email());
     }
 
     // required string examiner = 8;
@@ -8872,11 +8873,11 @@ int TestInfo::ByteSize() const {
 
   }
   if (_has_bits_[8 / 32] & (0xffu << (8 % 32))) {
-    // required string comment = 9;
-    if (has_comment()) {
+    // required string phone_number = 9;
+    if (has_phone_number()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->comment());
+          this->phone_number());
     }
 
   }
@@ -8915,25 +8916,25 @@ void TestInfo::MergeFrom(const TestInfo& from) {
     if (from.has_sex()) {
       set_sex(from.sex());
     }
+    if (from.has_birthday()) {
+      set_birthday(from.birthday());
+    }
     if (from.has_address()) {
       set_address(from.address());
     }
-    if (from.has_school()) {
-      set_school(from.school());
+    if (from.has_nationality()) {
+      set_nationality(from.nationality());
     }
-    if (from.has_cag()) {
-      set_cag(from.cag());
-    }
-    if (from.has_stdid()) {
-      set_stdid(from.stdid());
+    if (from.has_email()) {
+      set_email(from.email());
     }
     if (from.has_examiner()) {
       set_examiner(from.examiner());
     }
   }
   if (from._has_bits_[8 / 32] & (0xffu << (8 % 32))) {
-    if (from.has_comment()) {
-      set_comment(from.comment());
+    if (from.has_phone_number()) {
+      set_phone_number(from.phone_number());
     }
   }
   mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -8962,12 +8963,12 @@ void TestInfo::Swap(TestInfo* other) {
     std::swap(id_, other->id_);
     std::swap(name_, other->name_);
     std::swap(sex_, other->sex_);
+    std::swap(birthday_, other->birthday_);
     std::swap(address_, other->address_);
-    std::swap(school_, other->school_);
-    std::swap(cag_, other->cag_);
-    std::swap(stdid_, other->stdid_);
+    std::swap(nationality_, other->nationality_);
+    std::swap(email_, other->email_);
     std::swap(examiner_, other->examiner_);
-    std::swap(comment_, other->comment_);
+    std::swap(phone_number_, other->phone_number_);
     std::swap(_has_bits_[0], other->_has_bits_[0]);
     _unknown_fields_.Swap(&other->_unknown_fields_);
     std::swap(_cached_size_, other->_cached_size_);
@@ -10648,7 +10649,7 @@ void AckFZResults::Swap(AckFZResults* other) {
 #ifndef _MSC_VER
 const int FZInfo::kNameFieldNumber;
 const int FZInfo::kGradeFieldNumber;
-const int FZInfo::kMajrFieldNumber;
+const int FZInfo::kMajorFieldNumber;
 const int FZInfo::kIdFieldNumber;
 const int FZInfo::kSchoolFieldNumber;
 const int FZInfo::kBirthsFieldNumber;
@@ -10673,7 +10674,7 @@ void FZInfo::SharedCtor() {
   _cached_size_ = 0;
   name_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   grade_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
-  majr_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  major_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   id_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   school_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
   births_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
@@ -10692,8 +10693,8 @@ void FZInfo::SharedDtor() {
   if (grade_ != &::google::protobuf::internal::kEmptyString) {
     delete grade_;
   }
-  if (majr_ != &::google::protobuf::internal::kEmptyString) {
-    delete majr_;
+  if (major_ != &::google::protobuf::internal::kEmptyString) {
+    delete major_;
   }
   if (id_ != &::google::protobuf::internal::kEmptyString) {
     delete id_;
@@ -10744,9 +10745,9 @@ void FZInfo::Clear() {
         grade_->clear();
       }
     }
-    if (has_majr()) {
-      if (majr_ != &::google::protobuf::internal::kEmptyString) {
-        majr_->clear();
+    if (has_major()) {
+      if (major_ != &::google::protobuf::internal::kEmptyString) {
+        major_->clear();
       }
     }
     if (has_id()) {
@@ -10809,19 +10810,19 @@ bool FZInfo::MergePartialFromCodedStream(
         } else {
           goto handle_uninterpreted;
         }
-        if (input->ExpectTag(26)) goto parse_majr;
+        if (input->ExpectTag(26)) goto parse_major;
         break;
       }
 
-      // optional string majr = 3;
+      // optional string major = 3;
       case 3: {
         if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
-         parse_majr:
+         parse_major:
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_majr()));
+                input, this->mutable_major()));
           ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-            this->majr().data(), this->majr().length(),
+            this->major().data(), this->major().length(),
             ::google::protobuf::internal::WireFormat::PARSE);
         } else {
           goto handle_uninterpreted;
@@ -10934,13 +10935,13 @@ void FZInfo::SerializeWithCachedSizes(
       2, this->grade(), output);
   }
 
-  // optional string majr = 3;
-  if (has_majr()) {
+  // optional string major = 3;
+  if (has_major()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->majr().data(), this->majr().length(),
+      this->major().data(), this->major().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     ::google::protobuf::internal::WireFormatLite::WriteString(
-      3, this->majr(), output);
+      3, this->major(), output);
   }
 
   // optional string id = 4;
@@ -11007,14 +11008,14 @@ void FZInfo::SerializeWithCachedSizes(
         2, this->grade(), target);
   }
 
-  // optional string majr = 3;
-  if (has_majr()) {
+  // optional string major = 3;
+  if (has_major()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8String(
-      this->majr().data(), this->majr().length(),
+      this->major().data(), this->major().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE);
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        3, this->majr(), target);
+        3, this->major(), target);
   }
 
   // optional string id = 4;
@@ -11082,11 +11083,11 @@ int FZInfo::ByteSize() const {
           this->grade());
     }
 
-    // optional string majr = 3;
-    if (has_majr()) {
+    // optional string major = 3;
+    if (has_major()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
-          this->majr());
+          this->major());
     }
 
     // optional string id = 4;
@@ -11150,8 +11151,8 @@ void FZInfo::MergeFrom(const FZInfo& from) {
     if (from.has_grade()) {
       set_grade(from.grade());
     }
-    if (from.has_majr()) {
-      set_majr(from.majr());
+    if (from.has_major()) {
+      set_major(from.major());
     }
     if (from.has_id()) {
       set_id(from.id());
@@ -11191,7 +11192,7 @@ void FZInfo::Swap(FZInfo* other) {
   if (other != this) {
     std::swap(name_, other->name_);
     std::swap(grade_, other->grade_);
-    std::swap(majr_, other->majr_);
+    std::swap(major_, other->major_);
     std::swap(id_, other->id_);
     std::swap(school_, other->school_);
     std::swap(births_, other->births_);
