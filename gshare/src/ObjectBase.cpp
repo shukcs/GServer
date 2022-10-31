@@ -775,7 +775,7 @@ void IObjectManager::AddLoginData(ISocket *s, const void *buf, int len)
 
     bool bInitial = m_loginSockets.find(s) == m_loginSockets.end();
     LoginBuff &tmp = m_loginSockets[s];
-    if (m_loginSockets.find(s) == m_loginSockets.end())
+    if (bInitial)
         tmp.initial();
     int cp = sizeof(tmp.buff) - tmp.pos;
     if (len < cp)
