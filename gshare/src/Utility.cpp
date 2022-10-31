@@ -20,6 +20,7 @@
 #include <map>
 #include <string.h>
 #include <chrono>
+#include <thread>
 #include "zlib.h"
 
 #if !defined _WIN32 && !defined _WIN64
@@ -1033,14 +1034,7 @@ bool Utility::ChangeDirectory(const string &to_dir)
 
 void Utility::Sleep(int ms)
 {
-#if defined _WIN32 || defined _WIN64
-	::Sleep(ms);
-#else
-	struct timeval tv;
-	tv.tv_sec = ms / 1000;
-	tv.tv_usec = (ms % 1000) * 1000;
-	select(0, NULL, NULL, NULL, &tv);
-#endif
+    std::this_thread::sleep_for(milliseconds(ms));
 }
 
 bool Utility::PipeCmd(char* buff, int len, const char *cmd)

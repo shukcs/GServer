@@ -85,7 +85,7 @@ void VGTrigger::SetExecuteBeforeEvent(bool b)
 
 bool VGTrigger::AddExecuteItem(ExecutItem *i)
 {
-    if (i && !VGMySql::IsContainsInList(m_execItems, i))
+    if (i && !Utility::IsContainsInList(m_execItems, i))
     {
         m_execItems.push_back(i);
         return true;

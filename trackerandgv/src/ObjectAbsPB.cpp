@@ -51,19 +51,19 @@ int ObjectAbsPB::ProcessReceive(void *buf, int len, uint64_t ms)
 
 void ObjectAbsPB::send(google::protobuf::Message *msg, char *buf, int len)
 {
-    WaitSin();
     int sendSz = serialize(*msg, buf, len);
     if (sendSz == Send(buf, sendSz))
         delete msg;
-    PostSin();
 }
 
 void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
 {
-    WaitSin();
-    if(msg)
-        m_protosSend.Push(msg);
-    PostSin();
+    if (msg)
+    {
+        WaitSin();
+        m_protosSend.push(msg);
+        PostSin();
+    }
 }
 
 int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int sz)
@@ -103,8 +103,11 @@ void ObjectAbsPB::CheckTimer(uint64_t ms, char *buf, int len)
 {
     ILink::CheckTimer(ms, buf, len);
     Message *msg = NULL;
-    if (GetSendRemain()>0 && m_protosSend.Pop(msg))
+
+    WaitSin();
+    if (GetSendRemain()>0 && Utility::Pop(m_protosSend, msg))
         send(msg, buf, len);
+    PostSin();
 }
 
 void ObjectAbsPB::CopyAndSend(const google::protobuf::Message &msg)

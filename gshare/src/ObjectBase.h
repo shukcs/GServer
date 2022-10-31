@@ -3,6 +3,7 @@
 
 #include <map>
 #include <list>
+#include <queue>
 #include "LoopQueue.h"
 
 #ifdef __GNUC__
@@ -27,7 +28,7 @@ class IObject;
 class ISocketManager;
 class TiXmlElement;
 
-typedef LoopQueue<IMessage*> MessageQue;
+typedef std::queue<IMessage*> MessageQue;
 
 class ILink
 {
@@ -133,16 +134,6 @@ public:
 public:
     SHARED_DECL static IObjectManager *GetManagerByType(int);
     SHARED_DECL static bool SendMsg(IMessage *msg);
-    template<typename T, typename Contianer = std::list<T> >
-    static bool IsContainsInList(const Contianer ls, const T &e)
-    {
-        for (const T &itr : ls)
-        {
-            if (itr == e)
-                return true;
-        }
-        return false;
-    }
 protected:
     void PushReleaseMsg(IMessage *);
 protected:
@@ -174,7 +165,7 @@ protected:
     typedef std::list<std::string> StringList;
     typedef std::map<int, StringList> SubcribeList;
     typedef std::map<std::string, SubcribeList> MessageSubcribes;
-    typedef LoopQueue<SubcribeStruct *> SubcribeQueue;
+    typedef std::queue<SubcribeStruct *> SubcribeQueue;
     typedef struct _LoginBuff
     {
         uint16_t pos;
@@ -230,9 +221,10 @@ protected:
     virtual IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len) = 0;
 private:
     friend class ObjectManagers;
+    friend class BussinessThread;
     ILog                            *m_log;
     IMutex                          *m_mtxBs;
-    IMutex                          *m_mtxQue;
+    IMutex                          *m_mtxMsgs;
     std::list<BussinessThread*>     m_lsThread;
     MapObjects                      m_objects;
     MessageQue                      m_messages;         //接收消息队列

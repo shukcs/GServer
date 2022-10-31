@@ -38,7 +38,7 @@ private:
     void send(google::protobuf::Message *msg, char *buf, int len);
 protected:
     ProtoMsg                              *m_p;
-    LoopQueue<google::protobuf::Message*> m_protosSend;
+    std::queue<google::protobuf::Message*> m_protosSend;
 };
 
 class AbsPBManager : public IObjectManager

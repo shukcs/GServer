@@ -23,7 +23,7 @@ public:
     bool ConnectTo(const std::string &hostRemote, int port);
     uint16_t GetPort()const;
     std::string GetHost()const;
-    void Close();
+    void Close(bool bCur);
     int CopyRcv(char *buf, int sz)const;
     void ClearRcv(int len);
     bool IsConnect()const;

@@ -4,6 +4,7 @@
 #include "stdconfig.h"
 #include <list>
 #include <string>
+#include <queue>
 
 #define DoubleEqual(a, b) (0 == (int)(((a)-(b))*0x100000))
 typedef std::list<std::string> StringList;
@@ -74,6 +75,27 @@ namespace Utility
     SHARED_DECL void Sleep(int ms);
     SHARED_DECL bool PipeCmd(char* buff, int len, const char *cmd);
     SHARED_DECL void Dump(const std::string &file, int sig);
+
+    template<typename T, typename Contianer = std::list<T> >
+    static bool IsContainsInList(const Contianer &ls, const T &e)
+    {
+        for (const T &itr : ls)
+        {
+            if (itr == e)
+                return true;
+        }
+        return false;
+    }
+    template<typename T, typename Contianer = std::queue<T> >
+    static bool Pop(Contianer &q, T &e)
+    {
+        if (q.empty())
+            return false;
+
+        e = q.back();
+        q.pop();
+        return true;
+    }
 }
 
 #endif // _SOCKETS_Utility_H

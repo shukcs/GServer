@@ -15,14 +15,14 @@ using namespace SOCKETS_NAMESPACE;
 #endif
 
 typedef std::map<std::string, ILink*> MapLinks;
-typedef LoopQueue<ILink*> LinksQue;
+typedef std::queue<ILink*> LinksQue;
 //////////////////////////////////////////////////////////////////
 //BussinessThread
 //////////////////////////////////////////////////////////////////
 class BussinessThread : public Thread
 {
 public:
-    BussinessThread(IObjectManager *mgr) :Thread(true), m_mgr(mgr)
+    BussinessThread(IObjectManager &mgr) :Thread(true), m_mgr(mgr)
     , m_mtx(NULL), m_mtxQue(new Mutex), m_szBuff(0), m_buff(NULL)
     {
     }
@@ -47,11 +47,46 @@ public:
 
         return m_mtx;
     }
+    bool AddOneLink(ILink *l)
+    {
+        Lock ll(m_mtxQue);
+        m_linksAdd.push(l);
+        return true;
+    }
+    int LinkCount()const
+    {
+        Lock ll(m_mtxQue);
+        return m_linksAdd.size() + m_links.size();
+    }
+    ILink *PopAddLink()
+    {
+        ILink *l = NULL;
+        Lock ll(m_mtxQue);
+        if (Utility::Pop(m_linksAdd, l))
+            return l;
+
+        return NULL;
+    }
+    bool PushRelaseMsg(IMessage *ms)
+    {
+        Lock l(m_mtxQue);
+        m_lsMsgRelease.push(ms);
+        return true;
+    }
+    char *AllocBuff()const
+    {
+        return m_buff;
+    }
+    int m_BuffSize()const
+    {
+        return m_szBuff;
+    }
 protected:
     void ReleasePrcsdMsg()
     {
         IMessage *tmp = NULL;
-        while (m_lsMsgRelease.Pop(tmp))
+        Lock l(m_mtxQue);
+        while (Utility::Pop(m_lsMsgRelease, tmp))
         {
             delete tmp;
         }
@@ -83,20 +118,17 @@ protected:
     }
     bool RunLoop()
     {
-        if (!m_mgr)
-            return false;
         ReleasePrcsdMsg();
         ProcessAddLinks();
-        bool ret = m_mgr->ProcessBussiness(this);
-        if (m_mgr->IsReceiveData() && CheckLinks())
+        bool ret = m_mgr.ProcessBussiness(this);
+        if (m_mgr.IsReceiveData() && CheckLinks())
             return true;
 
         return ret;
     }
     void ProcessAddLinks()
     {
-        ILink *l = NULL;
-        while (m_linksAdd.Pop(l))
+        while (ILink *l = PopAddLink())
         {
             if (!l || l->GetThread())
                 continue;
@@ -110,16 +142,8 @@ protected:
             l->SetMutex(GetMutex());
         }
     }
-    bool PushRelaseMsg(IMessage *ms)
-    {
-        Lock l(m_mtxQue);
-        return m_lsMsgRelease.Push(ms);
-    }
 private:
-    friend class ILink;
-    friend class IObject;
-    friend class IObjectManager;
-    IObjectManager  *m_mgr;
+    IObjectManager  &m_mgr;
     IMutex          *m_mtx;
     IMutex          *m_mtxQue;
     int             m_szBuff;
@@ -187,7 +211,6 @@ void ILink::OnLogined(bool suc, ISocket *s)
 
 int ILink::GetSendRemain() const
 {
-    Lock l(m_mtxS);
     if (m_sock && m_sock->IsNoWriteData())
         return m_sock->GetSendRemain();
 
@@ -324,11 +347,11 @@ void ILink::processSocket(ISocket &s, BussinessThread &t)
         SetSocket(&s);
         FreshLogin(Utility::msTimeTick());
         m_Stat = Stat_Link;
-        t.m_linksAdd.Push(this);
+        t.AddOneLink(this);
     }
     else if (m_sock != &s)
     {
-        s.Close();
+        s.Close(false);
     }
 }
 
@@ -344,12 +367,12 @@ bool ILink::PrcsBussiness(uint64_t ms, BussinessThread &t)
     bool ret = false;
     if (IsChanged())
     {
-        int len = CopyData(t.m_buff, t.m_szBuff);
-        len = ProcessReceive(t.m_buff, len, ms);
+        int len = CopyData(t.AllocBuff(), t.m_BuffSize());
+        len = ProcessReceive(t.AllocBuff(), len, ms);
         ClearRecv(len);
         ret = true;
     }
-    CheckTimer(ms, t.m_buff, t.m_szBuff);
+    CheckTimer(ms, t.AllocBuff(), t.m_BuffSize());
     return ret;
 }
 
@@ -455,7 +478,7 @@ IObjectManager *IObject::GetManagerByType(int tp)
 //IObjectManager
 ///////////////////////////////////////////////////////////////////
 IObjectManager::IObjectManager() : m_log(NULL), m_mtxBs(new Mutex())
-, m_mtxQue(new Mutex())
+, m_mtxMsgs(new Mutex())
 {
 }
 
@@ -496,11 +519,7 @@ bool IObjectManager::ProcessBussiness(BussinessThread *s)
         ProcessEvents();
 
         if (IsReceiveData())
-        {
-            m_mtxBs->Lock();
             ret = ProcessLogins(s);
-            m_mtxBs->Unlock();
-        }
     }
     return ret;
 }
@@ -539,7 +558,8 @@ void IObjectManager::Log(int err, const std::string &obj, int evT, const char *f
 void IObjectManager::ProcessMessage()
 {
     IMessage *msg = NULL;
-    while (m_messages.Pop(msg))
+    Lock l(m_mtxMsgs);
+    while (Utility::Pop(m_messages, msg))
     {
         if (!msg)
             continue;
@@ -582,6 +602,7 @@ void IObjectManager::ProcessMessage()
 
 bool IObjectManager::ProcessLogins(BussinessThread *t)
 {
+    Lock l(m_mtxBs);
     if (!t || m_loginSockets.empty())
         return false;
 
@@ -659,8 +680,8 @@ void IObjectManager::PushManagerMessage(IMessage *msg)
     if (!msg)
         return;
 
-    Lock l(m_mtxQue);
-    m_messages.Push(msg);
+    Lock l(m_mtxMsgs);
+    m_messages.push(msg);
 }
 
 bool IObjectManager::SendMsg(IMessage *msg)
@@ -709,7 +730,7 @@ void IObjectManager::InitThread(uint16_t nThread, uint16_t bufSz)
 
     for (int i=0; i<nThread; ++i)
     {
-        BussinessThread *t = new BussinessThread(this);
+        BussinessThread *t = new BussinessThread(*this);
         if(t)
         {
             t->InitialBuff(bufSz);
@@ -733,17 +754,16 @@ void IObjectManager::OnSocketClose(ISocket *s)
     if (!IsReceiveData())
         return;
 
-    if (m_mtxBs && s)
+    if (s)
     {
-        m_mtxBs->Lock();
+        Lock l(m_mtxBs);
         m_loginSockets.erase(s);
-        m_mtxBs->Unlock();
     }
 }
 
 void IObjectManager::AddLoginData(ISocket *s, const void *buf, int len)
 {
-    if (!s)
+    if (!s || !buf)
         return;
 
     Lock l(m_mtxBs);
@@ -755,7 +775,7 @@ void IObjectManager::AddLoginData(ISocket *s, const void *buf, int len)
 
     bool bInitial = m_loginSockets.find(s) == m_loginSockets.end();
     LoginBuff &tmp = m_loginSockets[s];
-    if (!bInitial)
+    if (m_loginSockets.find(s) == m_loginSockets.end())
         tmp.initial();
     int cp = sizeof(tmp.buff) - tmp.pos;
     if (len < cp)
@@ -773,12 +793,13 @@ IObjectManager *IObjectManager::MangerOfType(int type)
 void IObjectManager::PrcsSubcribes()
 {
     SubcribeStruct *sub = NULL;
-    while (m_subcribeQue.Pop(sub))
+    Lock l(m_mtxMsgs);
+    while (Utility::Pop(m_subcribeQue, sub))
     {
         if (sub->m_bSubcribe)
         {
             StringList &ls = m_subcribes[sub->m_sender][sub->m_msgType];
-            if (!IObject::IsContainsInList(ls, sub->m_subcribeId))
+            if (!Utility::IsContainsInList(ls, sub->m_subcribeId))
                 ls.push_back(sub->m_subcribeId);
         }
         else
@@ -833,27 +854,25 @@ const StringList &IObjectManager::getMessageSubcribes(IMessage *msg)
 
 void IObjectManager::Subcribe(const string &dsub, const std::string &sender, int tpMsg)
 {
-    if (!m_mtxQue || dsub.empty() || sender.empty() || tpMsg < 0)
+    if (!m_mtxMsgs || dsub.empty() || sender.empty() || tpMsg < 0)
         return;
 
     if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, tpMsg, true))
     {
-        m_mtxQue->Lock();
-        m_subcribeQue.Push(sub);
-        m_mtxQue->Unlock();
+        Lock l(m_mtxMsgs);
+        m_subcribeQue.push(sub);
     }
 }
 
 void IObjectManager::Unsubcribe(const string &dsub, const std::string &sender, int tpMsg)
 {
-    if (!m_mtxQue || dsub.empty() || sender.empty() || tpMsg < 0)
+    if (!m_mtxMsgs || dsub.empty() || sender.empty() || tpMsg < 0)
         return;
 
     if (SubcribeStruct *sub = new SubcribeStruct(dsub, sender, tpMsg, false))
     {
-        m_mtxQue->Lock();
-        m_subcribeQue.Push(sub);
-        m_mtxQue->Unlock();
+        Lock l(m_mtxMsgs);
+        m_subcribeQue.push(sub);
     }
 }
 
@@ -869,7 +888,7 @@ BussinessThread *IObjectManager::GetPropertyThread() const
         if (ret==t)
             continue;
 
-        int tmp = t->m_links.size() + t->m_linksAdd.ElementCount();
+        int tmp = t->LinkCount();
         if (minLink == -1 || tmp < minLink)
         {
             minLink = tmp;

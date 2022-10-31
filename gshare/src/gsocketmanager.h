@@ -6,6 +6,7 @@
 #include "socketBase.h"
 #include <map>
 #include <list>
+#include <queue>
 
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
@@ -17,9 +18,9 @@ class ILink;
 
 class GSocketManager : public ISocketManager
 {
-    typedef LoopQueue<ISocket *> SocketQue;
-    typedef LoopQueue<ILink *> SocketHandleQue;
-    typedef LoopQueue<int> SocketPrcsQue;
+    typedef std::queue<ISocket *> SocketQue;
+    typedef std::queue<ILink *> SocketHandleQue;
+    typedef std::queue<int> SocketPrcsQue;
     typedef std::map<ISocket *, FuncOnBinded> SocketBindedCallbacks;
     typedef std::list<ISocket *> SocketList;
     typedef std::map<int64_t, SocketList> SecSocketMap;
@@ -50,7 +51,7 @@ maxSock:支持最大连接数
     bool SokectPoll(unsigned ms);
     ISocket *GetSockByHandle(int handle)const;
     void CloseThread();
-    GSocketManager *GetManagerofLeastSocket()const;
+    GSocketManager *GetManagerOfLeastSocket()const;
     bool SetNonblocking(ISocket *sock);
     bool IsOpenEpoll()const;
     void InitEpoll();
@@ -66,12 +67,14 @@ private:
     void _remove(int h);
     void _addSocketHandle(int h, bool bListen=false);
     int _createSocket(int tp=SOCK_STREAM);
-    void _close(ISocket *sock, bool prcs=true);
+    void _close(ISocket *sock, bool prcs = true);
+    void _closeAfterSend(ISocket *sock);
     void _addAcceptSocket(ISocket *sock, int64_t sec);
     void _checkSocketTimeout(int64_t sec);
 #if !defined _WIN32 && !defined _WIN64
     bool _isCloseEvent(uint32_t e)const;
 #endif
+    void _earseListen(ISocket &sock);
 private:
     int                         m_openMax;
     IMutex                      *m_mtx;
@@ -80,7 +83,6 @@ private:
     SocketPrcsQue               m_socketsPrcs;      //等待处理队列
     SocketQue                   m_socketsRemove;    //等待销毁队列
     SocketQue                   m_socketsAdd;       //等待监控队列
-    SocketHandleQue             m_handlesRelease;   //等待监控队列
     std::list<GSocketManager*>  m_othManagers;
     char                        m_buff[1024];
     static bool                 s_bRun;

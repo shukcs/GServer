@@ -15,7 +15,7 @@ using namespace SOCKETS_NAMESPACE
 #endif
 
 GSocket::GSocket(ISocketManager *parent): m_parent(parent)
-,m_mgrPrcs(NULL), m_object(NULL), m_fd(-1), m_bListen(false)
+,m_mgrPrcs(NULL), m_link(NULL), m_fd(-1), m_bListen(false)
 , m_bAccept(false), m_stat(UnConnected), m_address(NULL)
 , m_buffSocket(new LoopQueBuff(1024)), m_mgrLogin(NULL)
 , m_checkTm(-1)
@@ -30,13 +30,13 @@ GSocket::~GSocket()
 
 ILink *GSocket::GetHandleLink() const
 {
-    return m_object;
+    return m_link;
 }
 
 void GSocket::SetHandleLink(ILink *o)
 {
-    m_object = o;
-    if (m_object)
+    m_link = o;
+    if (m_link)
         m_mgrLogin = NULL;
 }
 
@@ -91,11 +91,11 @@ bool GSocket::IsListenSocket() const
     return m_bListen;
 }
 
-void GSocket::Close()
+void GSocket::Close(bool bAfterSnd)
 {
     if (m_stat == Binded || m_stat == Connected)
     {
-        m_stat = ISocket::Closing;
+        m_stat = bAfterSnd ? Closing : CloseLater;
         if (m_mgrPrcs)
             m_mgrPrcs->AddWaitPrcsSocket(this);
     }
@@ -197,9 +197,9 @@ void GSocket::OnRead(const void *buf, int len)
     if (!buf || len <= 0)
         return;
 
-    if (m_object)
+    if (m_link)
     {
-        m_object->Receive(buf, len);
+        m_link->Receive(buf, len);
     }
     else if (m_mgrLogin)
     {
@@ -215,15 +215,15 @@ void GSocket::OnRead(const void *buf, int len)
 void GSocket::OnClose()
 {
     m_stat = ISocket::Closed;
-    if (m_object)
-        m_object->OnSockClose(this);
+    if (m_link)
+        m_link->OnSockClose(this);
     else if (m_mgrLogin)
         m_mgrLogin->OnSocketClose(this);
 
     if (m_parent)
         m_parent->ReleaseSocket(this);
     m_mgrLogin = NULL;
-    m_object = NULL;
+    m_link = NULL;
 }
 
 void GSocket::OnConnect(bool b)
@@ -232,8 +232,8 @@ void GSocket::OnConnect(bool b)
     if (!b && m_buffSocket)
         m_buffSocket->Clear();
 
-    if (m_object)
-        m_object->OnConnected(b);
+    if (m_link)
+        m_link->OnConnected(b);
 }
 
 void GSocket::OnBind(bool binded)

@@ -29,7 +29,7 @@ handle:是创建他的线程，如果handle不为空，GSocket调用Close才能�
     SHARED_DECL bool ConnectTo(const std::string &hostRemote, int port);
     uint16_t GetPort()const;
     std::string GetHost()const;
-    void Close();
+    void Close(bool bAfterSnd=true) override;
     bool Reconnect();
 public:
      static SHARED_DECL ILog &GetLog();
@@ -50,7 +50,7 @@ protected:
     void SetAddress(SocketAddress *);
     int GetSocketHandle()const;
     void SetSocketHandle(int fd);
-    ISocketManager *GetParent()const;
+    ISocketManager *GetParent()const override;
     bool IsReconnectable()const;
     bool IsWriteEnabled()const;
     void EnableWrite(bool);
@@ -78,7 +78,7 @@ protected:
     friend class GSocketManager;
     ISocketManager  *m_parent;
     ISocketManager  *m_mgrPrcs;
-    ILink           *m_object;
+    ILink           *m_link;
     int             m_fd;
     bool            m_bListen;
     bool            m_bAccept;

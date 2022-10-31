@@ -312,7 +312,7 @@ void ObjectVgFZ::processFZ2FZ(const Message &msg, int tp)
 
         if (gsmsg->type() == DeleteFriend)
             m_friends.remove(gsmsg->from());
-        else if (gsmsg->type() == AgreeFriend && !IsContainsInList(m_friends, gsmsg->from()))
+        else if (gsmsg->type() == AgreeFriend && !Utility::IsContainsInList(m_friends, gsmsg->from()))
             m_friends.push_back(gsmsg->from());
     }
 
@@ -853,7 +853,7 @@ void ObjectVgFZ::_prcsFzMessage(FZUserMessage *msg)
     if (!msg)
         return;
 
-    if (msg->type()>RejectFriend && !IsContainsInList(m_friends, msg->to()))
+    if (msg->type()>RejectFriend && !Utility::IsContainsInList(m_friends, msg->to()))
     {
         if (auto ack = new AckFZUserMessage)
         {
@@ -863,7 +863,7 @@ void ObjectVgFZ::_prcsFzMessage(FZUserMessage *msg)
         }
         return;
     }
-    if (msg->type() == AgreeFriend && !IsContainsInList(m_friends, msg->to()))
+    if (msg->type() == AgreeFriend && !Utility::IsContainsInList(m_friends, msg->to()))
     {
         m_friends.push_back(msg->to());
         addDBFriend(m_id, msg->to());

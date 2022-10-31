@@ -71,7 +71,7 @@ bool GXClientSocket::IsListenSocket() const
     return false;
 }
 
-void GXClientSocket::Close()
+void GXClientSocket::Close(bool)
 {
     if (m_stat == Binded || m_stat == Connected)
     {

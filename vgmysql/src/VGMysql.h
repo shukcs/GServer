@@ -36,16 +36,6 @@ public:
     bool CreateTrigger(VGTrigger *trigger);
 public:
     MYSQL_RES *Query(const std::string &sql);
-    template<typename T, typename Contianer = std::list<T> >
-    static bool IsContainsInList(const Contianer ls, const T &e)
-    {
-        for (const T &itr : ls)
-        {
-            if (itr == e)
-                return true;
-        }
-        return false;
-    }
 protected:
 	bool _canOperaterDB();
 	bool _executChange(const std::string &sql, MYSQL_BIND *binds, FiledVal *i=NULL);
