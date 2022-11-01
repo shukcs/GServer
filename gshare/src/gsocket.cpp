@@ -33,9 +33,9 @@ ILink *GSocket::GetHandleLink() const
     return m_link;
 }
 
-void GSocket::SetHandleLink(ILink *o)
+void GSocket::SetHandleLink(ILink *l)
 {
-    m_link = o;
+    m_link = l;
     if (m_link)
         m_mgrLogin = NULL;
 }

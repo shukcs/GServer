@@ -204,16 +204,16 @@ void ObjectTracker::_ackPartParameters(const std::string &gv, const das::proto::
     }
 }
 
-void ObjectTracker::CheckTimer(uint64_t ms, char *buf, int len)
+void ObjectTracker::CheckTimer(uint64_t ms)
 {
-    if (!GetSocket() && IsConnect())
+    if (IsConnect())
     {
         if (auto mss = new ObjectSignal(this, ObjectGV::GVType(), ObjectSignal::S_Logout))
             SendMsg(mss);
         if (auto mss = new ObjectSignal(this, GXClient::GXClientType(), ObjectSignal::S_Logout))
             SendMsg(mss);
     }
-    ObjectAbsPB::CheckTimer(ms, buf, len);
+    ObjectAbsPB::CheckTimer(ms);
     ms -= m_tmPos;
     if (ms > 600000)
         Release();

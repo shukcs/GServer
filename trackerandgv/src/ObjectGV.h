@@ -54,7 +54,7 @@ protected:
     void ackSyncDeviceis();
     void processEvent(const IMessage &msg, int tp);
     void InitObject();
-    void CheckTimer(uint64_t ms, char *buf, int len);
+    void CheckTimer(uint64_t ms)override;
     bool IsAllowRelease()const;
     void FreshLogin(uint64_t ms);
 private:

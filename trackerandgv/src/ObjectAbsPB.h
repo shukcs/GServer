@@ -30,12 +30,10 @@ protected:
     virtual void PrcsProtoBuff(uint64_t) = 0;
     IObject *GetParObject();
     ILink *GetLink();
-    void CheckTimer(uint64_t ms, char *buf, int len);
     void CopyAndSend(const google::protobuf::Message &msg);
-
-    static int serialize(const google::protobuf::Message &ms, char*buf, int sz);
-private:
-    void send(google::protobuf::Message *msg, char *buf, int len);
+protected:
+    static int serialize(const google::protobuf::Message *ms, char*buf, int sz);
+    static void releaseProtobuf(google::protobuf::Message *msg);
 protected:
     ProtoMsg                              *m_p;
     std::queue<google::protobuf::Message*> m_protosSend;

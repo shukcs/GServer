@@ -244,9 +244,9 @@ void ObjectGV::InitObject()
         m_stInit = IObject::Initialed;
 }
 
-void ObjectGV::CheckTimer(uint64_t ms, char *buf, int len)
+void ObjectGV::CheckTimer(uint64_t ms)
 {
-    ObjectAbsPB::CheckTimer(ms, buf, len);
+    ObjectAbsPB::CheckTimer(ms);
     ms -= m_tmLastInfo;
     if (ms > 60000)
         Release();

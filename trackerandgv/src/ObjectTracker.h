@@ -42,13 +42,13 @@ public:
 public:
     static int TrackerType();
 protected:
-    virtual int GetObjectType()const;
-    virtual void ProcessMessage(const IMessage *msg);
+    virtual int GetObjectType()const override;
+    virtual void ProcessMessage(const IMessage *msg)override;
     void PrcsProtoBuff(uint64_t);
 
-    void CheckTimer(uint64_t ms, char *buf, int len);
-    void OnConnected(bool bConnected);
-    void InitObject();
+    void CheckTimer(uint64_t ms)override;
+    void OnConnected(bool bConnected)override;
+    void InitObject()override;
     void _respondLogin(const das::proto::RequestTrackerIdentityAuthentication &ra);
     void _respond3rdLogin(const das::proto::Request3rdIdentityAuthentication &ra);
     void OnLogined(bool suc, ISocket *s = NULL);

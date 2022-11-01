@@ -214,6 +214,9 @@ bool GSocketManager::PrcsSockets()
             continue;
 
         ISocket::SocketStat st = s->GetSocketStat();
+        if (ISocket::Closing == st || ISocket::CloseLater == st)
+            s->SetHandleLink(NULL);
+
         if (ISocket::Closing == st)
             _close(s);
         else if (ISocket::CloseLater == st)
@@ -428,10 +431,10 @@ int GSocketManager::_createSocket(int tp)
 
 void GSocketManager::_close(ISocket *sock, bool prcs)
 {
+    sock->OnClose();
     _remove(sock->GetSocketHandle());
     if (prcs)
         _earseListen(*sock);
-    sock->OnClose();
 }
 
 void GSocketManager::_closeAfterSend(ISocket *sock)
@@ -497,7 +500,7 @@ int GSocketManager::_bind(ISocket *sock)
     struct sockaddr_in serveraddr = {0};
     serveraddr = *(sockaddr_in*)&**sock->GetAddress();//htons(portnumber);
     bool binded = true;
-    if(SOCKET_ERROR == bind(listenfd, (sockaddr *)&serveraddr, sizeof(serveraddr)))
+    if(SOCKET_ERROR == ::bind(listenfd, (sockaddr *)&serveraddr, sizeof(serveraddr)))
     {
         closesocket(listenfd);
         listenfd = -1;

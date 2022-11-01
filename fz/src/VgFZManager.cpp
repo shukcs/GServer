@@ -121,7 +121,7 @@ IObject *VgFZManager::prcsPBLogin(ISocket *s, const RequestFZUserIdentity *rgi)
 
     string usr = Utility::Lower(rgi->user());
     string pswd = rgi->pswd();
-    ObjectVgFZ *o = (ObjectVgFZ*)GetObjectByID(usr);
+    ObjectVgFZ *o = dynamic_cast<ObjectVgFZ *>(GetObjectByID(usr));
     if (o)
     {
         bool bLogin = !o->IsConnect() && o->IsInitaled() && o->m_pswd==pswd;
@@ -160,7 +160,7 @@ IObject *VgFZManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewFZUser
         return NULL;
 
     string userId = Utility::Lower(msg->user());
-    ObjectVgFZ *o = (ObjectVgFZ *)GetObjectByID(userId);
+    ObjectVgFZ *o = dynamic_cast<ObjectVgFZ *>(GetObjectByID(userId));
     if (o && (o->GetSocket() || !o->IsAllowRelease()))
     {
         AckNewFZUser ack;
@@ -187,7 +187,7 @@ IObject * VgFZManager::prcsPostGetFZPswd(ISocket *s, const PostGetFZPswd *msg)
         return NULL;
 
     string userId = Utility::Lower(msg->user());
-    ObjectVgFZ *o = (ObjectVgFZ *)GetObjectByID(userId);
+    ObjectVgFZ *o = dynamic_cast<ObjectVgFZ *>(GetObjectByID(userId));
     if (o && (o->GetSocket() || !o->IsAllowRelease()))
     {
         AckGetFZPswd ack;

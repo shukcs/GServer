@@ -241,7 +241,7 @@ void ObjectUav::PrcsProtoBuff(uint64_t tm)
         _prcsABOperation((PostABOperation *)m_p->GetProtoMessage());
 }
 
-void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
+void ObjectUav::CheckTimer(uint64_t ms)
 {
     if (!GetSocket() && IsConnect())
     {
@@ -249,7 +249,7 @@ void ObjectUav::CheckTimer(uint64_t ms, char *buf, int len)
         SendMsg(new ObjectSignal(this, GXClient::GXClientType(), ObjectSignal::S_Logout));
     }
 
-    ObjectAbsPB::CheckTimer(ms, buf, len);
+    ObjectAbsPB::CheckTimer(ms);
     auto msDiff = ms - m_tmLastPos;
     if (ReleaseLater == m_stInit && ms > 100)
     {

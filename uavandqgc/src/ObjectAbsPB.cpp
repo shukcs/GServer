@@ -30,7 +30,7 @@ bool ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
     if (s)
     {
         char buf[256] = { 0 };
-        int sz = serialize(msg, buf, 256);
+        int sz = serialize(&msg, buf, 256);
         if (sz > 0)
             return sz == s->Send(sz, buf);
     }
@@ -52,94 +52,34 @@ int ObjectAbsPB::ProcessReceive(void *buf, int len, uint64_t ms)
     return pos;
 }
 
-void ObjectAbsPB::send(char *buf, int len)
+bool ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
 {
-    int lenSnd = GetSendRemain();
-    if (lenSnd < 1)
-        return;
-
-    for (auto itr = m_protosList.begin(); itr != m_protosList.end(); )
+    auto mgr = GetManager();
+    if (!mgr)
     {
-        int sendSz = serialize(**itr, buf, len);
-        lenSnd -= sendSz;
-        if (lenSnd < 0)
-            return;
-
-        Send(buf, sendSz);
-        delete *itr;
-        itr = m_protosList.erase(itr);
+        delete msg;
+        return false;
     }
-    WaitSin();
-    for (auto itr = m_protosMap.begin(); itr != m_protosMap.end(); ++itr)
-    {
-        if (itr->second)
-            continue;
+    auto ret = mgr->SendData2Link(GetObjectID()
+        , std::bind(&ObjectAbsPB::serialize, msg, std::placeholders::_1, std::placeholders::_2)
+        , std::bind(&ObjectAbsPB::releaseProtobuf, msg));
 
-        int sendSz = serialize(*itr->first, buf, len);
-        lenSnd -= sendSz;
-        if (lenSnd < 0)
-            break;
-        if (sendSz == Send(buf, sendSz))
-            itr->second = true;
-    }
-    PostSin();
+    if (!ret)
+        delete msg;
+
+    return ret;
 }
 
-void ObjectAbsPB::clearProto()
+int ObjectAbsPB::serialize(const google::protobuf::Message *msg, char*buf, int sz)
 {
-    for (auto itr = m_protosList.begin(); itr != m_protosList.end(); )
-    {
-        delete *itr;
-        itr = m_protosList.erase(itr);
-    }
-
-    WaitSin();
-    for (auto itr = m_protosMap.begin(); itr != m_protosMap.end(); ++itr)
-    {
-        itr->second = true;
-    }
-    PostSin();
-}
-
-void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
-{
-    if (!msg)
-        return;
-
-    if (IsLinkThread())
-    {
-        m_protosList.push_back(msg);
-    }
-    else 
-    {
-        WaitSin();
-        for (auto itr = m_protosMap.begin(); itr != m_protosMap.end(); )
-        {
-            if (itr->second)
-            {
-                delete itr->first;
-                itr = m_protosMap.erase(itr);
-            }
-            else
-            {
-                ++itr;
-            }
-        }
-        m_protosMap[msg] = false;
-        PostSin();
-    }
-}
-
-int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int sz)
-{
-    if (!buf)
+    if (!buf || !msg)
         return 0;
 
-    const string &name = msg.GetDescriptor()->full_name();
+    const string &name = msg->GetDescriptor()->full_name();
     if (name.length() < 1)
         return 0;
     int nameLen = name.length() + 1;
-    int proroLen = msg.ByteSize();
+    int proroLen = msg->ByteSize();
     int len = nameLen + proroLen + 8;
     if (sz < len + 4)
         return 0;
@@ -147,10 +87,15 @@ int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int s
     Utility::toBigendian(len, buf);
     Utility::toBigendian(nameLen, buf + 4);
     strcpy(buf + 8, name.c_str());
-    msg.SerializeToArray(buf + nameLen + 8, proroLen);
+    msg->SerializeToArray(buf + nameLen + 8, proroLen);
     int crc = Utility::Crc32(buf + 4, len - 4);
     Utility::toBigendian(crc, buf + len);
     return len + 4;
+}
+
+void ObjectAbsPB::releaseProtobuf(google::protobuf::Message *msg)
+{
+    delete msg;
 }
 
 IObject *ObjectAbsPB::GetParObject()
@@ -161,17 +106,6 @@ IObject *ObjectAbsPB::GetParObject()
 ILink *ObjectAbsPB::GetLink()
 {
     return this;
-}
-
-void ObjectAbsPB::CheckTimer(uint64_t ms, char *buf, int len)
-{
-    ILink::CheckTimer(ms, buf, len);
-    if (!GetSocket())
-    {
-        clearProto();
-        return;
-    }
-    send(buf, len);
 }
 
 void ObjectAbsPB::CopyAndSend(const Message &msg)

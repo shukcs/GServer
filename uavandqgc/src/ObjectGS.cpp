@@ -923,9 +923,9 @@ void ObjectGS::InitObject()
     }
 }
 
-void ObjectGS::CheckTimer(uint64_t ms, char *buf, int len)
+void ObjectGS::CheckTimer(uint64_t ms)
 {
-    ObjectAbsPB::CheckTimer(ms, buf, len);
+    ObjectAbsPB::CheckTimer(ms);
     ms -= m_tmLastInfo;
     if(m_auth > Type_ALL && ms>50)
         Release();

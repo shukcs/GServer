@@ -60,13 +60,13 @@ public:
     static int UAVType();
     static void InitialUAV(const DBMessage &msg, ObjectUav &uav, uint32_t idx=0);
 protected:
-    virtual int GetObjectType()const;
-    virtual void ProcessMessage(const IMessage *msg);
+    virtual int GetObjectType()const override;
+    virtual void ProcessMessage(const IMessage *msg) override;
     void PrcsProtoBuff(uint64_t);
 
-    void CheckTimer(uint64_t ms, char *buf, int len);
-    void OnConnected(bool bConnected);
-    void InitObject();
+    void CheckTimer(uint64_t ms)override;
+    void OnConnected(bool bConnected)override;
+    void InitObject()override;
     void _respondLogin(int seq, int res);
     void OnLogined(bool suc, ISocket *s=NULL);
     void FreshLogin(uint64_t ms);

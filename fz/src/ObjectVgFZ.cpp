@@ -655,9 +655,9 @@ void ObjectVgFZ::InitObject()
     }
 }
 
-void ObjectVgFZ::CheckTimer(uint64_t ms, char *buf, int len)
+void ObjectVgFZ::CheckTimer(uint64_t ms)
 {
-    ObjectAbsPB::CheckTimer(ms, buf, len);
+    ObjectAbsPB::CheckTimer(ms);
     ms -= m_tmLastInfo;
     if (ReleaseLater == m_stInit && ms > 100)
         Release();

@@ -28,7 +28,7 @@ bool ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
         return false;
 
     char buf[256] = { 0 };
-    int sz = serialize(msg, buf, 256);
+    int sz = serialize(&msg, buf, 256);
     if (sz > 0)
         return sz==s->Send(sz, buf);
 
@@ -49,13 +49,6 @@ int ObjectAbsPB::ProcessReceive(void *buf, int len, uint64_t ms)
     return pos;
 }
 
-void ObjectAbsPB::send(google::protobuf::Message *msg, char *buf, int len)
-{
-    int sendSz = serialize(*msg, buf, len);
-    if (sendSz == Send(buf, sendSz))
-        delete msg;
-}
-
 void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
 {
     if (msg)
@@ -66,16 +59,16 @@ void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
     }
 }
 
-int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int sz)
+int ObjectAbsPB::serialize(const google::protobuf::Message *msg, char*buf, int sz)
 {
-    if (!buf)
+    if (!buf || !msg)
         return 0;
 
-    const string &name = msg.GetDescriptor()->full_name();
+    const string &name = msg->GetDescriptor()->full_name();
     if (name.length() < 1)
         return 0;
     int nameLen = name.length() + 1;
-    int proroLen = msg.ByteSize();
+    int proroLen = msg->ByteSize();
     int len = nameLen + proroLen + 8;
     if (sz < len + 4)
         return 0;
@@ -83,10 +76,15 @@ int ObjectAbsPB::serialize(const google::protobuf::Message &msg, char*buf, int s
     Utility::toBigendian(len, buf);
     Utility::toBigendian(nameLen, buf + 4);
     strcpy(buf + 8, name.c_str());
-    msg.SerializeToArray(buf + nameLen + 8, proroLen);
+    msg->SerializeToArray(buf + nameLen + 8, proroLen);
     int crc = Utility::Crc32(buf + 4, len - 4);
     Utility::toBigendian(crc, buf + len);
     return len + 4;
+}
+
+void ObjectAbsPB::releaseProtobuf(google::protobuf::Message *msg)
+{
+    delete msg;
 }
 
 IObject *ObjectAbsPB::GetParObject()
@@ -97,17 +95,6 @@ IObject *ObjectAbsPB::GetParObject()
 ILink *ObjectAbsPB::GetLink()
 {
     return this;
-}
-
-void ObjectAbsPB::CheckTimer(uint64_t ms, char *buf, int len)
-{
-    ILink::CheckTimer(ms, buf, len);
-    Message *msg = NULL;
-
-    WaitSin();
-    if (GetSendRemain()>0 && Utility::Pop(m_protosSend, msg))
-        send(msg, buf, len);
-    PostSin();
 }
 
 void ObjectAbsPB::CopyAndSend(const google::protobuf::Message &msg)
