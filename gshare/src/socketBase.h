@@ -3,11 +3,13 @@
 
 #include <string>
 
+namespace std {
+    class mutex;
+}
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
 
-class IMutex;
 class ILink;
 class IObjectManager;
 class ISocketManager;

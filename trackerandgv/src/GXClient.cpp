@@ -8,7 +8,6 @@
 #include "Thread.h"
 #include "gsocketmanager.h"
 #include "ObjectAbsPB.h"
-#include "IMutex.h"
 #include "Lock.h"
 #include "ProtoMsg.h"
 #include "TrackerManager.h"
@@ -39,7 +38,7 @@ class GXThread : public Thread
 {
 public:
     GXThread(ISocketManager *mgr)
-        :Thread(), m_mgr(mgr)
+        :Thread("GXThread"), m_mgr(mgr)
     {
         SetRunning();
     }
@@ -99,7 +98,7 @@ int GXClient::GXClientType()
 //GXManager
 ///////////////////////////////////////////////////////////////////////////////////////////
 GXManager::GXManager() :IObjectManager(), m_sockMgr(GSocketManager::CreateManager(0,10000))
-, m_parse(new ProtoMsg), m_tmCheck(0), m_seq(1)
+, m_parse(new ProtoMsg), m_tmCheck(0), m_seq(1), m_mtx(new std::mutex())
 {
     if (m_sockMgr)
         m_thread = new GXThread(m_sockMgr);
@@ -127,11 +126,8 @@ ISocketManager *GXManager::GetSocketManager() const
 
 void GXManager::PushEvent(const std::string &id, GXClient::GX_Stat st)
 {
-    if (WaitMgrSin())
-    {
-        m_events.push_back(GXEvent(id, st));
-        PostMgrSin();
-    }
+    Lock l(m_mtx);
+    m_events.push_back(GXEvent(id, st));
 }
 
 void GXManager::OnRead(GXClientSocket &s)
@@ -243,34 +239,31 @@ void GXManager::ProcessPostInfo(const Tracker2GXMessage &msg)
 
 void GXManager::ProcessEvents()
 {
-    if (WaitMgrSin())
+    Lock l(m_mtx);
+    for (auto itr = m_events.begin(); itr != m_events.end();)
     {
-        for (auto itr = m_events.begin(); itr != m_events.end();)
+        if (itr->first.empty() && itr->second == GXClient::St_Connect)
         {
-            if (itr->first.empty() && itr->second == GXClient::St_Connect)
+            uavLoginGx();
+        }
+        else
+        {
+            auto itrO = m_objects.find(itr->first);
+            if (itrO != m_objects.end())
             {
-                uavLoginGx();
-            }
-            else
-            {
-                auto itrO = m_objects.find(itr->first);
-                if (itrO != m_objects.end())
+                auto o = itrO->second;
+                o->SetStat(itr->second);
+                if (o->IsChanged())
                 {
-                    auto o = itrO->second;
-                    o->SetStat(itr->second);
-                    if (o->IsChanged())
-                    {
-                        o->ClearChanged();
-                        SendMsg(new GX2TrackerMessage(o->GetID(), o->GetStat()));
-                    }
+                    o->ClearChanged();
+                    SendMsg(new GX2TrackerMessage(o->GetID(), o->GetStat()));
                 }
             }
-            itr = m_events.erase(itr);
         }
-        sendPositionInfo();
-        checkSocket(Utility::msTimeTick());
-        PostMgrSin();
+        itr = m_events.erase(itr);
     }
+    sendPositionInfo();
+    checkSocket(Utility::msTimeTick());
 }
 
 void GXManager::_prcsLoginAck(AckUavIdentityAuthentication *ack)

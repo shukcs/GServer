@@ -35,8 +35,7 @@ protected:
     static int serialize(const google::protobuf::Message *ms, char*buf, int sz);
     static void releaseProtobuf(google::protobuf::Message *msg);
 protected:
-    ProtoMsg                              *m_p;
-    std::queue<google::protobuf::Message*> m_protosSend;
+    ProtoMsg          *m_p;
 };
 
 class AbsPBManager : public IObjectManager

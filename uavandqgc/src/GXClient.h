@@ -2,7 +2,6 @@
 #define __GX_CLINENT_H__
 
 #include "ObjectBase.h"
-
 namespace google {
     namespace protobuf {
         class Message;
@@ -23,7 +22,6 @@ namespace SOCKETS_NAMESPACE {
 class ISocketManager;
 class GXLinkThread;
 class Uav2GXMessage;
-class IMutex;
 class ProtoMsg;
 class GXClientSocket;
 
@@ -95,6 +93,7 @@ private:
     ProtoMsg                    *m_parse;
     GXLinkThread                *m_thread;
     uint64_t                    m_tmCheck;
+    std::mutex                  *m_mtx;
     char                        m_bufPublic[1024];
     EventsQue                   m_events;
     std::list<GXClientSocket*>  m_sockets;

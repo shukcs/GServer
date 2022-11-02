@@ -4,7 +4,6 @@
 #include "ProtoMsg.h"
 #include "Messages.h"
 #include "Utility.h"
-#include "Lock.h"
 
 using namespace das::proto;
 using namespace google::protobuf;
@@ -51,12 +50,18 @@ int ObjectAbsPB::ProcessReceive(void *buf, int len, uint64_t ms)
 
 void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
 {
-    if (msg)
+    auto mgr = GetManager();
+    if (!mgr)
     {
-        WaitSin();
-        m_protosSend.push(msg);
-        PostSin();
+        delete msg;
+        return;
     }
+    auto ret = mgr->SendData2Link(GetObjectID()
+        , std::bind(&ObjectAbsPB::serialize, msg, std::placeholders::_1, std::placeholders::_2)
+        , std::bind(&ObjectAbsPB::releaseProtobuf, msg));
+
+    if (!ret)
+        delete msg;
 }
 
 int ObjectAbsPB::serialize(const google::protobuf::Message *msg, char*buf, int sz)

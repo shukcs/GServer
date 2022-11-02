@@ -43,8 +43,6 @@ protected:
     }
 };
 
-#define DeclareRcvPB(msg) static PBFactoryItem<msg> g_pb##msg;
-
 class ProtoMsg
 {
 public:
@@ -62,5 +60,6 @@ private:
     std::string                 m_name;
 };
 
+#define DeclareRcvPB(msg) static PBFactoryItem<msg> g_pb##msg;
 #endif//__PROTO_MSG_H__
 

@@ -1,5 +1,4 @@
 ﻿#include "gsocketmanager.h"
-#include "Mutex.h"
 #include "gsocket.h"
 #include "Thread.h"
 #include "Utility.h"
@@ -46,7 +45,7 @@ using namespace SOCKETS_NAMESPACE
 class ThreadMgr : public Thread
 {
 public:
-    ThreadMgr(ISocketManager *sm):Thread(), m_mgr(sm) {}
+    ThreadMgr(ISocketManager *sm, const string &name):Thread(name.c_str()), m_mgr(sm) {}
     ~ThreadMgr()
     {
         delete m_mgr;
@@ -67,7 +66,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////
 bool GSocketManager::s_bRun = true;
 GSocketManager::GSocketManager(int nThread, int maxSock) : m_openMax(maxSock)
-,m_mtx(new Mutex) , m_thread(nullptr)
+,m_mtx(new std::mutex) , m_thread(nullptr)
 {
     InitEpoll();
     InitThread(nThread);
@@ -131,7 +130,7 @@ bool GSocketManager::Poll(unsigned ms)
 void GSocketManager::AddProcessThread()
 {
     GSocketManager *m = new GSocketManager(0, m_openMax);
-    ThreadMgr *t = new ThreadMgr(m);
+    ThreadMgr *t = new ThreadMgr(m, "GSocketManager");
     if (m &&t)
     {
         m->m_thread = t;
@@ -249,7 +248,7 @@ GSocketManager *GSocketManager::GetManagerOfLeastSocket() const
     GSocketManager *ret = nullptr;
     for (GSocketManager *itr : m_othManagers)
     {
-        int tmp = itr->m_sockets.size();
+        int tmp = itr->CountSocket();
         if (count < 0 || tmp < count)
         {
             count = tmp;
@@ -380,6 +379,11 @@ void GSocketManager::CloseServer()
     }
 }
 
+uint32_t GSocketManager::CountSocket() const
+{
+    return m_sockets.size();
+}
+
 bool GSocketManager::IsRun() const
 {
     return s_bRun;
@@ -431,10 +435,10 @@ int GSocketManager::_createSocket(int tp)
 
 void GSocketManager::_close(ISocket *sock, bool prcs)
 {
-    sock->OnClose();
     _remove(sock->GetSocketHandle());
     if (prcs)
         _earseListen(*sock);
+    sock->OnClose();
 }
 
 void GSocketManager::_closeAfterSend(ISocket *sock)

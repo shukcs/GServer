@@ -16,7 +16,7 @@ namespace Utility
     SHARED_DECL int FindString(const char *src, int len, const std::string &str);
     SHARED_DECL int FindString(const std::string &src, const std::string &str);
     SHARED_DECL StringList SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty = true); 
-    std::string Trim(const std::string& str);
+    SHARED_DECL std::string Trim(const std::string& str);
     SHARED_DECL void ReplacePart(std::string &str, char part, char rpc);
     SHARED_DECL uint32_t Crc32(const char *src, int len);
     SHARED_DECL std::string base64(const char *str_in, int len);
@@ -92,7 +92,7 @@ namespace Utility
         if (q.empty())
             return false;
 
-        e = q.back();
+        e = q.front();
         q.pop();
         return true;
     }

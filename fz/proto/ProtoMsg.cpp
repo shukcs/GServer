@@ -92,8 +92,7 @@ bool ProtoMsg::Parse(const char *buff, uint32_t &len)
         {
             pos = len - 17;
             break;
-        }
-        
+        }   
         if (n < 8)
         {
             pos += n + 10;

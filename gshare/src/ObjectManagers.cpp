@@ -1,8 +1,5 @@
 ﻿#include "ObjectManagers.h"
 #include "ObjectBase.h"
-#include "Thread.h"
-#include "Mutex.h"
-#include "Lock.h"
 #include "socketBase.h"
 #include "IMessage.h"
 #include "GOutLog.h"

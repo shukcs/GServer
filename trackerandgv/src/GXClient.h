@@ -23,7 +23,6 @@ using namespace SOCKETS_NAMESPACE;
 class ISocketManager;
 class GXThread;
 class Tracker2GXMessage;
-class IMutex;
 class ProtoMsg;
 class GXClientSocket;
 
@@ -96,6 +95,7 @@ private:
     GXThread                    *m_thread;
     uint64_t                    m_tmCheck;
     uint32_t                    m_seq;
+    std::mutex                  *m_mtx;
     char                        m_bufPublic[1024];
     EventsQue                   m_events;
     std::list<GXClientSocket*>  m_sockets;

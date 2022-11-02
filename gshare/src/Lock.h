@@ -2,20 +2,19 @@
 #define _SOCKETS_Lock_H
 
 #include "stdconfig.h"
+#include <mutex>
+
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
 
-class IMutex;
-/** IMutex encapsulation class. 
-	\ingroup threading */
 class SHARED_DECL Lock
 {
 public:
-	Lock(IMutex *);
+	Lock(std::mutex *);
 	~Lock();
 private:
-	IMutex *m_mutex;
+	std::mutex *m_mutex;
 };
 
 

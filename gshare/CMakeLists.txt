@@ -33,8 +33,6 @@ set(SRC_LIST
 	src/Lock.h
 	src/LoopQueue.cpp
 	src/LoopQueue.h
-	src/Mutex.cpp
-	src/Mutex.h
 	src/IMessage.cpp
 	src/IMessage.h
 	src/ObjectBase.cpp

@@ -1,24 +1,20 @@
-﻿#include "IMutex.h"
-#include "Lock.h"
+﻿#include "Lock.h"
 
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
 
-
-Lock::Lock(IMutex *m) : m_mutex(m)
+Lock::Lock(std::mutex *m) : m_mutex(m)
 {
     if(m_mutex)
-	    m_mutex->Lock();
+	    m_mutex->lock();
 }
-
 
 Lock::~Lock()
 {
     if (m_mutex)
-        m_mutex->Unlock();
+        m_mutex->unlock();
 }
-
 
 #ifdef SOCKETS_NAMESPACE
 }

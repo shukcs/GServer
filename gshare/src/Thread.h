@@ -11,24 +11,15 @@ namespace SOCKETS_NAMESPACE {
 #endif
 
 #ifdef _WIN32
-// to be
-//typedef DWORD  threadfunc_t;
-//typedef LPVOID threadparam_t;
-//#define STDPREFIX WINAPI
 typedef unsigned threadfunc_t;
-typedef void * threadparam_t;
-#define STDPREFIX __stdcall
 #else
-
-typedef void * threadfunc_t;
-typedef void * threadparam_t;
-#define STDPREFIX
+typedef void *threadfunc_t;
 #endif
 
 class SHARED_DECL Thread
 {
 public:
-	Thread(bool run=false, unsigned ms=5); //ms: sleep time(unit: ms)while nothing to do in loop
+	Thread(const char *name=NULL, bool run=false, unsigned ms=5); //ms: sleep time(unit: ms)while nothing to do in loop
 	virtual ~Thread();
 #ifdef _WIN32
     HANDLE GetThread()const;
@@ -41,24 +32,24 @@ public:
 
 	bool IsDeleteOnExit()const;
 	void SetDeleteOnExit(bool x = true);
-
-    virtual void PostSin();  //sin decrease, for syc
-    virtual void WaitSin();  //sin increase, for syc
 protected:
     virtual bool RunLoop() = 0;//
 private:
-    static threadfunc_t STDPREFIX StartThread(threadparam_t);
+    bool setThreadName(const char *name);
 private:
-    unsigned m_threadId;
+    static threadfunc_t StartThread(Thread *p);
+private:
+    unsigned m_threadId = 0;
+    bool m_running = false;
+    unsigned m_msSleep = 5;
+    bool m_bDeleteOnExit = true;
 #ifdef _WIN32
     HANDLE m_thread;
 #else
     pthread_t m_thread;
     pthread_attr_t m_attr;
 #endif
-	bool m_running;
-	unsigned m_msSleep;
-    bool m_bDeleteOnExit;
+    char m_name[32] = {0};
 };
 
 #ifdef SOCKETS_NAMESPACE

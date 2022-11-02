@@ -13,6 +13,9 @@
 #define PACKEDSTRUCT( _Strc ) __pragma( pack(push, 1) ) _Strc __pragma( pack(pop) )
 #endif
 
+namespace std {
+    class mutex;
+}
 class SubcribeStruct;
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
@@ -21,7 +24,6 @@ class IObject;
 class ISocket;
 class IObjectManager;
 class BussinessThread;
-class IMutex;
 class IMessage;
 class ILog;
 class SocketHandle;
@@ -57,7 +59,7 @@ public:
     int CopyData(void *data, int len)const;
     virtual void OnConnected(bool bConnected) = 0;
     virtual IObject *GetParObject() = 0;
-    void SetMutex(IMutex *m);
+    void SetMutex(std::mutex *m);
     void SetThread(BussinessThread *t);
     BussinessThread *GetThread()const;
     void processSocket(ISocket &s, BussinessThread &t);
@@ -69,8 +71,6 @@ protected:
     SHARED_DECL virtual void OnLogined(bool suc, ISocket *s = NULL);
     SHARED_DECL void ClearRecv(int n = -1);
     SHARED_DECL void Release();
-    SHARED_DECL bool WaitSin();
-    SHARED_DECL void PostSin();
     SHARED_DECL bool IsLinkThread()const;
     virtual void FreshLogin(uint64_t ms) = 0;
 protected:
@@ -84,7 +84,7 @@ private:
     friend class BussinessThread;
     ISocket                 *m_sock;
     LoopQueBuff             *m_recv;
-    IMutex                  *m_mtxS;
+    std::mutex              *m_mtxS;
     BussinessThread         *m_thread;
     bool                    m_bChanged;
     uint32_t                m_Stat;
@@ -187,7 +187,7 @@ public:
     SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
     SHARED_DECL void Subcribe(const std::string &dsub, const std::string &sender, int tpMsg);
     SHARED_DECL void Unsubcribe(const std::string &dsub, const std::string &sender, int tpMsg);
-    SHARED_DECL bool SendData2Link(const std::string &id, SerierlizeDataFuc pfSrlz, ProcessDataFuc pfPrc);
+    SHARED_DECL bool SendData2Link(const std::string &id, const SerierlizeDataFuc &pfSrlz, const ProcessDataFuc &pfPrc);
     SHARED_DECL virtual bool IsReceiveData()const;
 
     void PushManagerMessage(IMessage *);
@@ -214,8 +214,6 @@ protected:
     SHARED_DECL virtual bool IsHasReuest(const char *buf, int len)const;
     SHARED_DECL virtual void ProcessEvents();
     SHARED_DECL bool Exist(IObject *obj)const;
-    SHARED_DECL bool WaitMgrSin();
-    SHARED_DECL void PostMgrSin();
     const StringList &getMessageSubcribes(IMessage *msg);
     void PrcsSubcribes();
     void SubcribesProcess(IMessage *msg);
@@ -228,8 +226,8 @@ private:
     friend class ObjectManagers;
     friend class BussinessThread;
     ILog                            *m_log;
-    IMutex                          *m_mtxLogin;
-    IMutex                          *m_mtxMsgs;
+    std::mutex                      *m_mtxLogin;
+    std::mutex                      *m_mtxMsgs;
     std::list<BussinessThread*>     m_lsThread;
     MapObjects                      m_objects;
     MessageQue                      m_messages;         //接收消息队列

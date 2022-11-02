@@ -11,7 +11,6 @@
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
-class IMutex;
 class Thread;
 class ILog;
 class ILink;
@@ -58,6 +57,7 @@ maxSock:支持最大连接数
     void Release();
     void SetBindedCB(ISocket *s, FuncOnBinded cb);
     void CloseServer();
+    uint32_t CountSocket()const;
 private:
     int _bind(ISocket *sock);
     int _connect(ISocket *sock);
@@ -77,7 +77,7 @@ private:
     void _earseListen(ISocket &sock);
 private:
     int                         m_openMax;
-    IMutex                      *m_mtx;
+    std::mutex                  *m_mtx;
     Thread                      *m_thread;
     std::map<int, ISocket*>     m_sockets;
     SocketPrcsQue               m_socketsPrcs;      //等待处理队列

@@ -7,7 +7,6 @@
 #include "VGMysql.h"
 #include "DBExecItem.h"
 #include "DBMessages.h"
-#include "Lock.h"
 
 using namespace das::proto;
 using namespace google::protobuf;

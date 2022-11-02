@@ -10,15 +10,23 @@
 #include "Thread.h"
 #include "Utility.h"
 
+#ifdef _WIN32
+typedef HRESULT(*SetThreadDescFunc)(HANDLE hThread, PCWSTR lpThreadDescription);
+static SetThreadDescFunc s_pfSetThreadDesc = NULL;
+#else
+typedef void* (*ThreadFunc)(void*);
+#endif
 
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
 #endif
 
-Thread::Thread(bool run, unsigned ms): m_threadId(0)
-,m_thread(0), m_running(false), m_msSleep(ms)
-, m_bDeleteOnExit(true)
+Thread::Thread(const char *name, bool run, unsigned ms): m_threadId(0)
+, m_running(false), m_msSleep(ms), m_bDeleteOnExit(true), m_thread(0)
 {
+    if (name)
+        strncpy(m_name, name, sizeof(m_name));
+
     SetRunning(run);
 }
 
@@ -27,7 +35,7 @@ Thread::~Thread()
     if (m_running)
     {
         SetRunning(false);
-        Utility::Sleep(100);
+        Utility::Sleep(50);
     }
 #ifdef _WIN32
     if (m_thread)
@@ -37,12 +45,11 @@ Thread::~Thread()
 #endif
 }
 
-threadfunc_t STDPREFIX Thread::StartThread(threadparam_t zz)
+threadfunc_t Thread::StartThread(Thread *p)
 {
-    Thread *p = (Thread *)zz;
-    if (!p)
-        return NULL;
     p->m_threadId = Utility::ThreadID();
+    p->setThreadName(p->m_name);
+    printf("%s: %s start!\n", __FUNCTION__, p->m_name);
     while (p && p->IsRunning())
     {
         if (!p->RunLoop())
@@ -87,11 +94,11 @@ void Thread::SetRunning(bool bRun)
     {
 #if defined _WIN32 || defined _WIN64
         //m_thread = ::CreateThread(NULL, 0, StartThread, this, 0, &m_dwThreadId);
-        m_thread = (HANDLE)_beginthreadex(NULL, 0, &StartThread, this, 0, (uint32_t*)&m_threadId);
+        m_thread = (HANDLE)_beginthreadex(NULL, 0, (_beginthreadex_proc_type)&StartThread, this, 0, (uint32_t*)&m_threadId);
 #else
         pthread_attr_init(&m_attr);
         pthread_attr_setdetachstate(&m_attr, PTHREAD_CREATE_DETACHED);
-        if (pthread_create(&m_thread, &m_attr, StartThread, this) == -1)
+        if (pthread_create(&m_thread, &m_attr, (ThreadFunc)StartThread, this) == -1)
         {
             perror("Thread: create failed");
             SetRunning(false);
@@ -110,10 +117,24 @@ void Thread::SetDeleteOnExit(bool x)
     m_bDeleteOnExit = x;
 }
 
-void Thread::PostSin()
+bool Thread::setThreadName(const char *name)
 {
-}
+    if (!name || name[0]==0)
+        return false;
+#ifdef _WIN32
+    ///.Kernel32函数SetThreadDescription(HANDLE, PCWSTR)修改线程名字
+    if (s_pfSetThreadDesc == NULL)
+    {
+        HINSTANCE h = LoadLibraryA("Kernel32");
+        s_pfSetThreadDesc = h ? (SetThreadDescFunc)GetProcAddress(h, "SetThreadDescription") : NULL;
+    }
+    if (s_pfSetThreadDesc != NULL)
+        return s_pfSetThreadDesc(GetCurrentThread(), Utility::Utf8ToUnicode(name).c_str())==S_OK;
 
-void Thread::WaitSin()
-{
+    return false;
+#elif defined(__APPLE__)
+    return 0 == pthread_setname_np(m_name);
+#else
+    return 0 == pthread_setname_np(pthread_self(), m_name);
+#endif
 }
