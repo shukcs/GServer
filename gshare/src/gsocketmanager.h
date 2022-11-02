@@ -58,6 +58,8 @@ maxSock:支持最大连接数
     void SetBindedCB(ISocket *s, FuncOnBinded cb);
     void CloseServer();
     uint32_t CountSocket()const;
+protected:
+    int PopWaitSock();
 private:
     int _bind(ISocket *sock);
     int _connect(ISocket *sock);

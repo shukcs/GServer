@@ -215,7 +215,7 @@ void VgFZManager::LoadConfig(const TiXmlElement *root)
     if (cfg)
     {
         const char *tmp = cfg->Attribute("thread");
-        int n = tmp ? (int)Utility::str2int(tmp) : 1;
+        int n = tmp ? (int)Utility::str2int(tmp) : 2;
         tmp = cfg->Attribute("buff");
         int buSz = tmp ? (int)Utility::str2int(tmp) : 6144;
         InitThread(n, buSz);

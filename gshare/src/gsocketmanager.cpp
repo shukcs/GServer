@@ -45,7 +45,7 @@ using namespace SOCKETS_NAMESPACE
 class ThreadMgr : public Thread
 {
 public:
-    ThreadMgr(ISocketManager *sm, const string &name):Thread(name.c_str()), m_mgr(sm) {}
+    ThreadMgr(ISocketManager *sm) : Thread(), m_mgr(sm) {}
     ~ThreadMgr()
     {
         delete m_mgr;
@@ -130,7 +130,7 @@ bool GSocketManager::Poll(unsigned ms)
 void GSocketManager::AddProcessThread()
 {
     GSocketManager *m = new GSocketManager(0, m_openMax);
-    ThreadMgr *t = new ThreadMgr(m, "GSocketManager");
+    ThreadMgr *t = new ThreadMgr(m);
     if (m &&t)
     {
         m->m_thread = t;
@@ -141,8 +141,8 @@ void GSocketManager::AddProcessThread()
 
 bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
 {
-    int fd = s != nullptr ? s->GetSocketHandle() : -1;
-    if (fd==-1 || m_sockets.find(fd)==m_sockets.end())
+    int fd = s!=NULL ? s->GetSocketHandle() : -1;
+    if (fd==-1)
         return false;
 
     Lock l(m_mtx);//应对不同线程
@@ -205,8 +205,7 @@ bool GSocketManager::PrcsSockets()
 {
     bool ret = false;
     int fd;
-    Lock l(m_mtx);
-    while (Utility::Pop(m_socketsPrcs, fd))
+    while ((fd = PopWaitSock()) > 0)
     {
         ISocket *s = GetSockByHandle(fd);
         if (NULL == s)
@@ -382,6 +381,14 @@ void GSocketManager::CloseServer()
 uint32_t GSocketManager::CountSocket() const
 {
     return m_sockets.size();
+}
+
+int GSocketManager::PopWaitSock()
+{
+    int ret = 0;
+    Lock l(m_mtx);
+    Utility::Pop(m_socketsPrcs, ret);
+    return ret;
 }
 
 bool GSocketManager::IsRun() const

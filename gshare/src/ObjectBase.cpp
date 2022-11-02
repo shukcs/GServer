@@ -35,7 +35,7 @@ class BussinessThread : public Thread
     };
     typedef std::queue<ProcessSend *> ProcessSendQue;
 public:
-    BussinessThread(IObjectManager &mgr) :Thread("BussinessThread", true), m_mgr(mgr)
+    BussinessThread(IObjectManager &mgr) :Thread(true), m_mgr(mgr)
     , m_mtx(NULL), m_mtxQue(new std::mutex), m_szBuff(0), m_buff(NULL)
     {
     }
@@ -395,9 +395,9 @@ void ILink::CloseLink()
     if (m_sock)
     {
         m_sock->Close();
-        m_Stat &= ~Stat_Link;
         m_sock = NULL;
     }
+    m_Stat = Stat_Close;
 }
 
 bool ILink::Receive(const void *buf, int len)
@@ -444,11 +444,12 @@ BussinessThread *ILink::GetThread() const
 
 void ILink::processSocket(ISocket &s, BussinessThread &t)
 {
-    if (!m_sock)
+    if (NULL == m_sock)
     {
         SetSocket(&s);
         FreshLogin(Utility::msTimeTick());
-        t.AddOneLink(this);
+        if (!m_thread)
+            t.AddOneLink(this);
     }
     else if (m_sock != &s)
     {
@@ -690,10 +691,8 @@ bool IObjectManager::ProcessLogins(BussinessThread *t)
         if (o)
         {
             AddObject(o);
-            ILink *link = o->GetLink();
-            if (link->GetThread() == NULL)
+            if (auto link = o->GetLink())
                 link->processSocket(*s, *GetPropertyThread());
-
             itr = m_loginSockets.erase(itr);
             ret = true;
         }

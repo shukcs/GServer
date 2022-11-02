@@ -19,7 +19,7 @@ typedef void *threadfunc_t;
 class SHARED_DECL Thread
 {
 public:
-	Thread(const char *name=NULL, bool run=false, unsigned ms=5); //ms: sleep time(unit: ms)while nothing to do in loop
+	Thread(bool run=false, unsigned ms=5); //ms: sleep time(unit: ms)while nothing to do in loop
 	virtual ~Thread();
 #ifdef _WIN32
     HANDLE GetThread()const;
@@ -35,21 +35,18 @@ public:
 protected:
     virtual bool RunLoop() = 0;//
 private:
-    bool setThreadName(const char *name);
-private:
     static threadfunc_t StartThread(Thread *p);
 private:
-    unsigned m_threadId = 0;
-    bool m_running = false;
-    unsigned m_msSleep = 5;
-    bool m_bDeleteOnExit = true;
+    unsigned m_threadId;
+    bool m_running;
+    unsigned m_msSleep;
+    bool m_bDeleteOnExit;
 #ifdef _WIN32
     HANDLE m_thread;
 #else
     pthread_t m_thread;
     pthread_attr_t m_attr;
 #endif
-    char m_name[32] = {0};
 };
 
 #ifdef SOCKETS_NAMESPACE

@@ -21,12 +21,9 @@ typedef void* (*ThreadFunc)(void*);
 using namespace SOCKETS_NAMESPACE;
 #endif
 
-Thread::Thread(const char *name, bool run, unsigned ms): m_threadId(0)
-, m_running(false), m_msSleep(ms), m_bDeleteOnExit(true), m_thread(0)
+Thread::Thread(bool run, unsigned ms): m_threadId(0), m_running(false)
+, m_msSleep(ms), m_bDeleteOnExit(true), m_thread(0)
 {
-    if (name)
-        strncpy(m_name, name, sizeof(m_name));
-
     SetRunning(run);
 }
 
@@ -48,8 +45,6 @@ Thread::~Thread()
 threadfunc_t Thread::StartThread(Thread *p)
 {
     p->m_threadId = Utility::ThreadID();
-    p->setThreadName(p->m_name);
-    printf("%s: %s start!\n", __FUNCTION__, p->m_name);
     while (p && p->IsRunning())
     {
         if (!p->RunLoop())
@@ -117,24 +112,25 @@ void Thread::SetDeleteOnExit(bool x)
     m_bDeleteOnExit = x;
 }
 
-bool Thread::setThreadName(const char *name)
-{
-    if (!name || name[0]==0)
-        return false;
-#ifdef _WIN32
-    ///.Kernel32函数SetThreadDescription(HANDLE, PCWSTR)修改线程名字
-    if (s_pfSetThreadDesc == NULL)
-    {
-        HINSTANCE h = LoadLibraryA("Kernel32");
-        s_pfSetThreadDesc = h ? (SetThreadDescFunc)GetProcAddress(h, "SetThreadDescription") : NULL;
-    }
-    if (s_pfSetThreadDesc != NULL)
-        return s_pfSetThreadDesc(GetCurrentThread(), Utility::Utf8ToUnicode(name).c_str())==S_OK;
-
-    return false;
-#elif defined(__APPLE__)
-    return 0 == pthread_setname_np(m_name);
-#else
-    return 0 == pthread_setname_np(pthread_self(), m_name);
-#endif
-}
+//bool Thread::setThreadName(const char *name)
+//{
+//    if (!name || name[0]==0)
+//        return false;
+//#ifdef _WIN32
+//    ///.Kernel32函数SetThreadDescription(HANDLE, PCWSTR)修改线程名字
+//    bool ret = false;
+//    if (s_pfSetThreadDesc == NULL)
+//    {
+//        HINSTANCE h = LoadLibraryA("Kernel32");
+//        s_pfSetThreadDesc = h ? (SetThreadDescFunc)GetProcAddress(h, "SetThreadDescription") : NULL;
+//    }
+//    if (s_pfSetThreadDesc != NULL)
+//        ret = s_pfSetThreadDesc(GetCurrentThread(), Utility::Utf8ToUnicode(name).c_str()) == S_OK;
+//
+//    return ret;
+//#elif defined(__APPLE__)
+//    return 0 == pthread_setname_np(m_name);
+//#else
+//    return 0 == pthread_setname_np(pthread_self(), m_name);
+//#endif
+//}

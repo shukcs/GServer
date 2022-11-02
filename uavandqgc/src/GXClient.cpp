@@ -24,7 +24,7 @@ class GXLinkThread : public Thread
 {
 public:
     GXLinkThread(ISocketManager *mgr)
-        :Thread("GXLinkThread", false), m_mgr(mgr)
+        :Thread(false), m_mgr(mgr)
     {
         SetRunning();
     }

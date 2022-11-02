@@ -38,9 +38,8 @@ class GXThread : public Thread
 {
 public:
     GXThread(ISocketManager *mgr)
-        :Thread("GXThread"), m_mgr(mgr)
+        :Thread(true), m_mgr(mgr)
     {
-        SetRunning();
     }
 protected:
     bool RunLoop()
