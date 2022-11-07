@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\protobuf\parse\ProtoMsg.h" />
     <ClInclude Include="proto\das.pb.h" />
     <ClInclude Include="src\GVManager.h" />
     <ClInclude Include="src\GXClient.h" />
@@ -22,8 +23,8 @@
     <ClInclude Include="src\TrackerManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\protobuf\parse\ProtoMsg.cpp" />
     <ClCompile Include="proto\das.pb.cc" />
-    <ClCompile Include="proto\ProtoMsg.cpp" />
     <ClCompile Include="src\GVManager.cpp" />
     <ClCompile Include="src\GXClient.cpp" />
     <ClCompile Include="src\GXLink.cpp" />
@@ -87,7 +88,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>./src;../gshare/src;./proto;../protobuf/;../vgmysql/src;../tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;../gshare/src;./proto;../protobuf/;../protobuf/parse;../vgmysql/src;../tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>obj\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -134,7 +135,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>./src;./proto;../gshare/src;../protobuf/;../vgmysql/src;../tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;./proto;../gshare/src;../protobuf/;../protobuf/parse;../vgmysql/src;../tinyxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>obj\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>

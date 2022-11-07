@@ -8,16 +8,17 @@ INCLUDE_DIRECTORIES(
 	./proto
 	./mavLink
 	../protobuf
+	../protobuf/parse/
 	../gshare/src
 	../vgmysql/src
 	../mail/src
 	../tinyxml
 )
 set(SRC_LIST
-	../protobuf/ProtoMsg.h
 	proto/das.pb.cc
 	proto/das.pb.h
-	proto/ProtoMsg.cpp
+	../protobuf/parse/ProtoMsg.cpp
+	../protobuf/parse/ProtoMsg.h
 	src/GSManager.cpp
 	src/GSManager.h
 	src/FWItem.cpp

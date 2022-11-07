@@ -26,6 +26,10 @@ using namespace SOCKETS_NAMESPACE;
 UavManager::UavManager() : AbsPBManager()
 , m_lastId(0)
 {
+    typedef IObject *(UavManager::*PrcsLoginFunc)(ISocket *, const void *);
+    InitPrcsLogin(
+        std::bind((PrcsLoginFunc)&UavManager::PrcsProtoBuff
+            , this, std::placeholders::_1, std::placeholders::_2));
 }
 
 UavManager::~UavManager()
@@ -53,14 +57,14 @@ int UavManager::GetObjectType() const
     return IObject::Plant;
 }
 
-IObject *UavManager::PrcsProtoBuff(ISocket *s)
+IObject *UavManager::PrcsProtoBuff(ISocket *s, const Message *proto)
 {
-    if (!s || !m_p)
+    if (!s)
         return NULL;
 
-    if (m_p->GetMsgName() == d_p_ClassName(RequestUavIdentityAuthentication))
+    if (proto->GetDescriptor()->full_name() == d_p_ClassName(RequestUavIdentityAuthentication))
     {
-        RequestUavIdentityAuthentication *rua = (RequestUavIdentityAuthentication *)m_p->GetProtoMessage();
+        auto rua = (const RequestUavIdentityAuthentication *)proto;
         return _checkLogin(s, *rua);
     }
 

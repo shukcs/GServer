@@ -16,8 +16,8 @@
     <ClCompile Include="src\ObjectVgFZ.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="proto\ProtoMsg.cpp">
-      <Filter>proto</Filter>
+    <ClCompile Include="..\protobuf\parse\ProtoMsg.cpp">
+      <Filter>parse</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -36,6 +36,9 @@
     <ClInclude Include="src\ObjectVgFZ.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="..\protobuf\parse\ProtoMsg.h">
+      <Filter>parse</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="proto">
@@ -43,6 +46,9 @@
     </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{7b58aac2-37bf-48d7-ae3e-45396daaf499}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="parse">
+      <UniqueIdentifier>{7dc1d81e-904f-408b-a0b2-b847f70bea30}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

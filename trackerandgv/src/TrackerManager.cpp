@@ -19,6 +19,10 @@ using namespace das::proto;
 ////////////////////////////////////////////////////////////////////////////////
 TrackerManager::TrackerManager() : AbsPBManager()
 {
+    typedef IObject *(TrackerManager::*PrcsLoginFunc)(ISocket *, const void *);
+    InitPrcsLogin(
+        std::bind((PrcsLoginFunc)&TrackerManager::PrcsProtoBuff
+            , this, std::placeholders::_1, std::placeholders::_2));
 }
 
 TrackerManager::~TrackerManager()
@@ -51,24 +55,25 @@ int TrackerManager::GetObjectType() const
     return ObjectTracker::TrackerType();
 }
 
-IObject *TrackerManager::PrcsProtoBuff(ISocket *s)
+IObject *TrackerManager::PrcsProtoBuff(ISocket *s, const google::protobuf::Message *proto)
 {
-    if (!s || !m_p)
+    if (!s)
         return NULL;
 
-    if (m_p->GetMsgName() == d_p_ClassName(RequestTrackerIdentityAuthentication))
+    const string &name = proto->GetDescriptor()->full_name();
+    if (name == d_p_ClassName(RequestTrackerIdentityAuthentication))
     {
-        auto *rua = (RequestTrackerIdentityAuthentication *)m_p->GetProtoMessage();
+        auto *rua = (const RequestTrackerIdentityAuthentication *)proto;
         return _checkLogin(s, *rua);
     }
-    if (m_p->GetMsgName() == d_p_ClassName(Request3rdIdentityAuthentication))
+    if (name == d_p_ClassName(Request3rdIdentityAuthentication))
     {
-        auto *rua = (Request3rdIdentityAuthentication *)m_p->GetProtoMessage();
+        auto rua = (const Request3rdIdentityAuthentication *)proto;
         return _check3rdLogin(s, *rua);
     }
-    if (m_p->GetMsgName() == d_p_ClassName(RequestProgramUpgrade))
+    if (name == d_p_ClassName(RequestProgramUpgrade))
     {
-       return _checkProgram(s, *(RequestProgramUpgrade*)m_p->GetProtoMessage());
+       return _checkProgram(s, *(const RequestProgramUpgrade*)proto);
     }
 
     return NULL;

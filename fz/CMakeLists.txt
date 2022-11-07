@@ -7,16 +7,17 @@ INCLUDE_DIRECTORIES(
 	./src
 	./proto
 	../protobuf
+	../protobuf/parse
 	../gshare/src
 	../vgmysql/src
 	../mail/src
 	../tinyxml
 )
 set(SRC_LIST
-	../protobuf/ProtoMsg.h
 	proto/das.pb.cc
 	proto/das.pb.h
-	proto/ProtoMsg.cpp
+	../protobuf/parse/ProtoMsg.cpp
+	../protobuf/parse/ProtoMsg.h
 	src/Messages.cpp
 	src/Messages.h
 	src/ObjectAbsPB.cpp

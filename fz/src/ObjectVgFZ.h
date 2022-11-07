@@ -52,11 +52,6 @@ public:
     static int FZType();
     static bool CheckSWKey(const std::string &swk);
 protected:
-    void OnConnected(bool bConnected);
-    int GetObjectType()const;
-    void ProcessMessage(const IMessage *msg);
-    void PrcsProtoBuff(uint64_t);
-
     void processFZ2FZ(const google::protobuf::Message &msg, int tp);
     void processFZInfo(const DBMessage &msg);
     void processFZInsert(const DBMessage &msg);
@@ -69,13 +64,18 @@ protected:
     void processAckFZRslts(const DBMessage &msg);
     void processMailRslt(const MailRsltMessage &msg);
 
-    bool ackLogin(const DBMessage &msg);
     void forGetPswd(const DBMessage &msg);
-    void InitObject();
-    void CheckTimer(uint64_t ms)override;
-    bool IsAllowRelease()const;
-    void FreshLogin(uint64_t ms);
     bool CheckMail(const std::string &str);
+    bool ackLogin(const DBMessage &msg);
+
+    void OnConnected(bool bConnected) override;
+    int GetObjectType()const override;
+    void ProcessMessage(const IMessage *msg) override;
+    void InitObject()override;
+    void CheckTimer(uint64_t ms)override;
+    bool IsAllowRelease()const override;
+    void FreshLogin(uint64_t ms) override;
+    void ProcessRcvPack(const void *pack)override;
 private:
     void _prcsLogin(das::proto::RequestFZUserIdentity *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);

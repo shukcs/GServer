@@ -29,7 +29,7 @@ handle:是创建他的线程，如果handle不为空，GSocket调用Close才能�
     SHARED_DECL bool ConnectTo(const std::string &hostRemote, int port);
     uint16_t GetPort()const;
     std::string GetHost()const;
-    void Close(bool bAfterSnd=true) override;
+    void Close(bool bNotAfterSnd =true) override;
     bool Reconnect();
 public:
      static SHARED_DECL ILog &GetLog();

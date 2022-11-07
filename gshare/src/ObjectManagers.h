@@ -4,6 +4,9 @@
 #include <map>
 #include "LoopQueue.h"
 
+namespace std {
+    class mutex;
+}
 #ifdef SOCKETS_NAMESPACE
 namespace SOCKETS_NAMESPACE {
 #endif
@@ -62,14 +65,15 @@ public:
     void RemoveManager(int type);
     IObjectManager *GetManagerByType(int tp)const;
 
-    void ProcessReceive(ISocket *sock, void const *buf, int len);
+    int ProcessReceive(ISocket *sock, void const *buf, int len, IObjectManager *m=NULL);
 private:
     ObjectManagers();
     ~ObjectManagers();
 private:
     TiXmlElement                        *m_cfg;
+    std::mutex                          *m_mutex;
     std::map<int, IObjectManager*>      m_managersMap;
-    char                                m_buff[1024];
+    char                                m_buff[512];
 };
 
 #ifdef SOCKETS_NAMESPACE

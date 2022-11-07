@@ -43,21 +43,10 @@ protected:
     }
 };
 
-class ProtoMsg
-{
-public:
-    ProtoMsg();
-    ~ProtoMsg();
-    const std::string &GetMsgName()const;
-    google::protobuf::Message *GetProtoMessage()const;
-    google::protobuf::Message *DeatachProto(bool clear=true);
-    bool Parse(const char *buff, uint32_t &len);
-protected:
-    bool _parse(const std::string &name, const char *buff, int len);
-    void _clear();
-private:
-    google::protobuf::Message   *m_msg;
-    std::string                 m_name;
+namespace ProtobufParse {
+    google::protobuf::Message *Parse(const char *buff, uint32_t &len);
+    uint32_t serialize(const google::protobuf::Message *msg, char*buf, uint32_t sz);
+    void releaseProtobuf(google::protobuf::Message *msg);
 };
 
 #define DeclareRcvPB(msg) static PBFactoryItem<msg> g_pb##msg;

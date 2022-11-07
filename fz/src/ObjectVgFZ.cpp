@@ -207,92 +207,88 @@ void ObjectVgFZ::_prcsHeartBeat(das::proto::PostHeartBeat *hb)
 void ObjectVgFZ::ProcessMessage(const IMessage *msg)
 {
     int tp = msg->GetMessgeType();
-    if(m_p)
+    switch (tp)
     {
-        switch (tp)
-        {
-        case IMessage::User2User:
-        case IMessage::User2UserAck:
-            processFZ2FZ(*(Message*)msg->GetContent(), tp);
-            break;
-        case IMessage::SyncDeviceis:
-            ackSyncDeviceis();
-            break;
-        case IMessage::UserInsertRslt:
-            processFZInsert(*(DBMessage*)msg);
-            break;
-        case IMessage::UserQueryRslt:
-            processFZInfo(*(DBMessage*)msg);
-            break;
-        case IMessage::UserCheckRslt:
-            processCheckUser(*(DBMessage*)msg);
-            break;
-        case IMessage::FriendQueryRslt:
-            processFriends(*(DBMessage*)msg);
-            break;
-        case IMessage::UpdateSWKeysRslt:
-            processInserSWSN(*(DBMessage*)msg);
-            break;
-        case IMessage::SWRegistRslt:
-            processSWRegist(*(DBMessage*)msg);
-            break;
-        case IMessage::QuerySWKeyInfoRslt:
-            processQuerySWKey(*(DBMessage*)msg);
-            break;
-        case IMessage::InserFZRslt:
-            processAckFZRslt(*(DBMessage*)msg);
-            break;
-        case IMessage::QueryFZRslt:
-            processAckFZRslts(*(DBMessage*)msg);
-            break;
-        case IMessage::MailRslt:
-            processMailRslt(*(MailRsltMessage*)msg);
-            break;
-        default:
-            break;
-        }
+    case IMessage::User2User:
+    case IMessage::User2UserAck:
+        processFZ2FZ(*(Message*)msg->GetContent(), tp);
+        break;
+    case IMessage::SyncDeviceis:
+        ackSyncDeviceis();
+        break;
+    case IMessage::UserInsertRslt:
+        processFZInsert(*(DBMessage*)msg);
+        break;
+    case IMessage::UserQueryRslt:
+        processFZInfo(*(DBMessage*)msg);
+        break;
+    case IMessage::UserCheckRslt:
+        processCheckUser(*(DBMessage*)msg);
+        break;
+    case IMessage::FriendQueryRslt:
+        processFriends(*(DBMessage*)msg);
+        break;
+    case IMessage::UpdateSWKeysRslt:
+        processInserSWSN(*(DBMessage*)msg);
+        break;
+    case IMessage::SWRegistRslt:
+        processSWRegist(*(DBMessage*)msg);
+        break;
+    case IMessage::QuerySWKeyInfoRslt:
+        processQuerySWKey(*(DBMessage*)msg);
+        break;
+    case IMessage::InserFZRslt:
+        processAckFZRslt(*(DBMessage*)msg);
+        break;
+    case IMessage::QueryFZRslt:
+        processAckFZRslts(*(DBMessage*)msg);
+        break;
+    case IMessage::MailRslt:
+        processMailRslt(*(MailRsltMessage*)msg);
+        break;
+    default:
+        break;
     }
 }
 
-void ObjectVgFZ::PrcsProtoBuff(uint64_t ms)
+void ObjectVgFZ::ProcessRcvPack(const void *pack)
 {
-    if (!m_p)
-        return;
+    auto proto = (Message*)pack;
+    const string &strMsg = proto->GetDescriptor()->full_name();
 
-    string strMsg = m_p->GetMsgName();
     if (strMsg == d_p_ClassName(RequestFZUserIdentity))
-        _prcsLogin((RequestFZUserIdentity*)m_p->GetProtoMessage());
+        _prcsLogin((RequestFZUserIdentity*)proto);
     else if (strMsg == d_p_ClassName(RequestNewFZUser))
-        _prcsReqNewFz((RequestNewFZUser*)m_p->GetProtoMessage());
+        _prcsReqNewFz((RequestNewFZUser*)proto);
     else if (strMsg == d_p_ClassName(PostHeartBeat))
-        _prcsHeartBeat((PostHeartBeat *)m_p->GetProtoMessage());
+        _prcsHeartBeat((PostHeartBeat *)proto);
     else if (strMsg == d_p_ClassName(FZUserMessage))
-        _prcsFzMessage((FZUserMessage *)m_p->GetProtoMessage());
+        _prcsFzMessage((FZUserMessage *)proto);
     else if (strMsg == d_p_ClassName(SyncFZUserList))
-        _prcsSyncDeviceList((SyncFZUserList *)m_p->GetProtoMessage());
+        _prcsSyncDeviceList((SyncFZUserList *)proto);
     else if (strMsg == d_p_ClassName(RequestFriends))
-        _prcsReqFriends((RequestFriends *)m_p->GetProtoMessage());
+        _prcsReqFriends((RequestFriends *)proto);
     else if (strMsg == d_p_ClassName(UpdateSWKey))
-        _prcsUpdateSWKey((UpdateSWKey *)m_p->GetProtoMessage());
+        _prcsUpdateSWKey((UpdateSWKey *)proto);
     else if (strMsg == d_p_ClassName(ReqSWKeyInfo))
-        _prcsReqSWKeyInfo((ReqSWKeyInfo *)m_p->GetProtoMessage());
+        _prcsReqSWKeyInfo((ReqSWKeyInfo *)proto);
     else if (strMsg == d_p_ClassName(SWRegist))
-        _prcsSWRegist((SWRegist*)m_p->GetProtoMessage());
+        _prcsSWRegist((SWRegist*)proto);
     else if (strMsg == d_p_ClassName(PostFZResult))
-        _prcsPostFZResult((PostFZResult*)m_p->GetProtoMessage());
+        _prcsPostFZResult((PostFZResult*)proto);
     else if (strMsg == d_p_ClassName(RequestFZResults))
-        _prcsRequestFZResults(*(RequestFZResults*)m_p->GetProtoMessage());
+        _prcsRequestFZResults(*(RequestFZResults*)proto);
     else if (strMsg == d_p_ClassName(PostFZInfo))
-        _prcsPostFZInfo(*(PostFZInfo *)m_p->GetProtoMessage());
+        _prcsPostFZInfo(*(PostFZInfo *)proto);
     else if (strMsg == d_p_ClassName(RequestFZInfo))
-        _prcsRequestFZInfo(*(RequestFZInfo *)m_p->GetProtoMessage());
+        _prcsRequestFZInfo(*(RequestFZInfo *)proto);
     else if (strMsg == d_p_ClassName(PostGetFZPswd))
-        _prcsPostGetFZPswd(*(PostGetFZPswd *)m_p->GetProtoMessage());
+        _prcsPostGetFZPswd(*(PostGetFZPswd *)proto);
     else if (strMsg == d_p_ClassName(PostChangeFZPswd))
-        _prcsPostChangeFZPswd(*(PostChangeFZPswd *)m_p->GetProtoMessage());
+        _prcsPostChangeFZPswd(*(PostChangeFZPswd *)proto);
 
     if (m_stInit == IObject::Initialed)
-        m_tmLastInfo = ms;
+        m_tmLastInfo = Utility::msTimeTick();
 }
 
 void ObjectVgFZ::processFZ2FZ(const Message &msg, int tp)

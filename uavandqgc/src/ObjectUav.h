@@ -62,18 +62,18 @@ public:
 protected:
     virtual int GetObjectType()const override;
     virtual void ProcessMessage(const IMessage *msg) override;
-    void PrcsProtoBuff(uint64_t);
-
     void CheckTimer(uint64_t ms)override;
     void OnConnected(bool bConnected)override;
     void InitObject()override;
+    void OnLogined(bool suc, ISocket *s=NULL)override;
+    void FreshLogin(uint64_t ms)override;
+    void ProcessRcvPack(const void *pack)override;
+
     void _respondLogin(int seq, int res);
-    void OnLogined(bool suc, ISocket *s=NULL);
-    void FreshLogin(uint64_t ms);
 protected:
     static IMessage *AckControl2Uav(const das::proto::PostControl2Uav &msg, int res, ObjectUav *obj = NULL);
 private:
-    void _prcsRcvPostOperationInfo(das::proto::PostOperationInformation *msg, uint64_t tm);
+    void _prcsRcvPostOperationInfo(das::proto::PostOperationInformation *msg);
     void _prcsRcvPost2Gs(das::proto::PostStatus2GroundStation *msg);
     void _prcsAssist(das::proto::PostOperationAssist *msg);
     void _prcsABPoint(das::proto::PostABPoint *msg);

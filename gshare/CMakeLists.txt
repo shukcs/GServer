@@ -39,6 +39,8 @@ set(SRC_LIST
 	src/ObjectBase.h
 	src/ObjectManagers.cpp
 	src/ObjectManagers.h
+	src/BussinessThread.cpp
+	src/BussinessThread.h
 	src/socket_include.cpp
 	src/socket_include.h
 	src/Thread.cpp

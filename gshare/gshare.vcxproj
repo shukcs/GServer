@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Base64.cpp" />
+    <ClCompile Include="src\BussinessThread.cpp" />
     <ClCompile Include="src\GLibrary.cpp" />
     <ClCompile Include="src\GOutLog.cpp" />
     <ClCompile Include="src\gsocket.cpp" />
@@ -32,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Base64.h" />
+    <ClInclude Include="src\BussinessThread.h" />
     <ClInclude Include="src\GLibrary.h" />
     <ClInclude Include="src\GOutLog.h" />
     <ClInclude Include="src\gsocket.h" />

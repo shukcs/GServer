@@ -26,65 +26,39 @@ PBAbSFactoryItem::PBAbSFactoryItem(const string &name)
 
 google::protobuf::Message *PBAbSFactoryItem::createMessage(const string &name)
 {
-    DeclareRcvPB(PostHeartBeat);
-    DeclareRcvPB(AckHeartBeat);
-    DeclareRcvPB(RequestFZUserIdentity);
-    DeclareRcvPB(RequestNewFZUser);
-    DeclareRcvPB(SyncFZUserList);
-    DeclareRcvPB(FZUserMessage);
-    DeclareRcvPB(RequestFriends);
-    DeclareRcvPB(UpdateSWKey);
-    DeclareRcvPB(ReqSWKeyInfo);
-    DeclareRcvPB(SWRegist);
-    DeclareRcvPB(PostFZResult);
-    DeclareRcvPB(RequestFZResults);
-    DeclareRcvPB(AckFZResults);
-    DeclareRcvPB(PostFZInfo);
-    DeclareRcvPB(RequestFZInfo);
-    DeclareRcvPB(PostGetFZPswd);
-    DeclareRcvPB(PostChangeFZPswd);
-
     auto itr = s_MapPbCreate.find(name);
     if (itr != s_MapPbCreate.end())
         return itr->second->Create();
     return NULL;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
-//ProtoMsg
+//ProtobufParse
 ////////////////////////////////////////////////////////////////////////////////
-ProtoMsg::ProtoMsg():m_msg(NULL)
+static google::protobuf::Message *parseProtobuf(const std::string &name, const char *buff, int len)
 {
+    if (!buff || len < 0)
+        return false;
+
+    auto msg = PBAbSFactoryItem::createMessage(name);
+    if (!msg)
+        return NULL;
+
+    try {
+        if (msg->ParseFromArray(buff, len))
+            return msg;
+    }
+    catch (...)
+    {
+        delete msg;
+        return NULL;
+    }
+    return NULL;
 }
 
-ProtoMsg::~ProtoMsg()
-{
-    delete m_msg;
-}
-
-const string &ProtoMsg::GetMsgName() const
-{
-    return m_name;
-}
-
-google::protobuf::Message *ProtoMsg::GetProtoMessage() const
-{
-    return m_msg;
-}
-
-google::protobuf::Message *ProtoMsg::DeatachProto(bool clear)
-{
-    google::protobuf::Message *ret = m_msg;
-    m_msg = NULL;
-    if(clear)
-        m_name.clear();
-
-    return ret;
-}
-
-bool ProtoMsg::Parse(const char *buff, uint32_t &len)
+google::protobuf::Message *ProtobufParse::Parse(const char *buff, uint32_t &len)
 {
     uint32_t pos = 0;
-    _clear();
     while (len > pos + 17)
     {
         int n = Utility::FindString(buff + pos, len - pos, PROTOFLAG);
@@ -117,46 +91,45 @@ bool ProtoMsg::Parse(const char *buff, uint32_t &len)
             }
 
             uint32_t nameLen = Utility::fromBigendian(buff + pos + 4);
-            m_name = string(buff + pos + 8, nameLen - 1);
+            string name = string(buff + pos + 8, nameLen - 1);
             uint32_t tmp = pos + 8 + nameLen;
             pos += szMsg + 4;
-            if (_parse(m_name, buff + tmp, szMsg - 8 - nameLen))
+            if (auto msg = parseProtobuf(name, buff + tmp, szMsg - 8 - nameLen))
             {
                 len = pos;
-                return true;
+                return msg;
             }
-
-            _clear();
         }
     }
 
     len = pos;
-    return false;
+    return NULL;
 }
 
-bool ProtoMsg::_parse(const std::string &name, const char *buff, int len)
+uint32_t ProtobufParse::serialize(const google::protobuf::Message *msg, char*buf, uint32_t sz)
 {
-    if (!buff || len < 0)
-        return false;
-  
-    m_msg = PBAbSFactoryItem::createMessage(name);
-    bool ret = false;
-    if (!m_msg)
-        return ret;
+    if (!msg || !buf)
+        return 0;
 
-    try {
-        ret = m_msg->ParseFromArray(buff, len);
-    }
-    catch (...)
-    {
-        return false;
-    }
+    const string &name = msg->GetDescriptor()->full_name();
+    if (name.length() < 1)
+        return 0;
+    uint32_t nameLen = name.length() + 1;
+    uint32_t proroLen = msg->ByteSize();
+    uint32_t len = nameLen + proroLen + 8;
+    if (sz < len + 4)
+        return 0;
 
-    return ret;
+    Utility::toBigendian(len, buf);
+    Utility::toBigendian(nameLen, buf + 4);
+    strcpy(buf + 8, name.c_str());
+    msg->SerializeToArray(buf + nameLen + 8, proroLen);
+    int crc = Utility::Crc32(buf + 4, len - 4);
+    Utility::toBigendian(crc, buf + len);
+    return len + 4;
 }
 
-void ProtoMsg::_clear()
+void ProtobufParse::releaseProtobuf(google::protobuf::Message *msg)
 {
-    ReleasePointer(m_msg);
-    m_name.clear();
+    delete msg;
 }

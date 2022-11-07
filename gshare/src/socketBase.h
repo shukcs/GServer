@@ -70,7 +70,7 @@ public:
     //无限制调用函数
     virtual SocketStat GetSocketStat()const = 0;
     virtual bool IsListenSocket()const = 0;
-    virtual void Close(bool bAfterSnd=true) = 0;
+    virtual void Close(bool bNotAfterSnd =true) = 0;
     virtual std::string GetHost()const = 0;
     virtual uint16_t GetPort()const = 0;
 };

@@ -43,7 +43,7 @@ public:
     static uint32_t toIntID(const std::string &uavid);
 protected:
     int GetObjectType()const;
-    IObject *PrcsProtoBuff(ISocket *s);
+    IObject *PrcsProtoBuff(ISocket *s, const google::protobuf::Message *proto);
     bool PrcsPublicMsg(const IMessage &msg);
     void LoadConfig(const TiXmlElement *root);
     bool IsHasReuest(const char *buf, int len)const;

@@ -57,10 +57,14 @@ public:
 public:
     static int GSType();
 protected:
-    void OnConnected(bool bConnected);
-    int GetObjectType()const;
-    void ProcessMessage(const IMessage *msg);
-    void PrcsProtoBuff(uint64_t);
+    void OnConnected(bool bConnected)override;
+    int GetObjectType()const override;
+    void ProcessMessage(const IMessage *msg)override;
+    void InitObject()override;
+    void CheckTimer(uint64_t ms)override;
+    bool IsAllowRelease()const override;
+    void FreshLogin(uint64_t ms)override;
+    void ProcessRcvPack(const void *pack);
 
     void processGs2Gs(const google::protobuf::Message &msg, int tp);
     void processControlUser(const google::protobuf::Message &msg);
@@ -81,10 +85,6 @@ protected:
     void processGSInsert(const DBMessage &msg);
     void processMissions(const DBMessage &msg);
     void processMissionsAcreage(const DBMessage &msg);
-    void InitObject();
-    void CheckTimer(uint64_t ms)override;
-    bool IsAllowRelease()const;
-    void FreshLogin(uint64_t ms);
 private:
     void _prcsLogin(das::proto::RequestGSIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);

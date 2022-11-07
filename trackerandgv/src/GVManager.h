@@ -34,7 +34,7 @@ public:
     static std::string CatString(const std::string &s1, const std::string &s2);
 protected:
     int GetObjectType()const;
-    IObject *PrcsProtoBuff(ISocket *s);
+    IObject *PrcsProtoBuff(ISocket *, const google::protobuf::Message *);
 
     bool PrcsPublicMsg(const IMessage &msg);
 

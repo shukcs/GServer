@@ -32,8 +32,8 @@ class ISocketManager;
 class TiXmlElement;
 
 typedef std::queue<IMessage*> MessageQue;
-typedef std::function<int(char *, int len)> SerierlizeDataFuc;
-typedef std::function<void(void)> ProcessDataFuc;
+typedef void *(*ParsePackFuc)(const char *, uint32_t &len);
+typedef void(*RelaesePackFuc)(void *data);
 class ILink
 {
     enum LinkStat {
@@ -46,19 +46,15 @@ public:
     SHARED_DECL ILink();
     SHARED_DECL virtual ~ILink();
 
-    SHARED_DECL void OnSockClose(ISocket *s);
+    SHARED_DECL void OnSockClose();
     SHARED_DECL virtual void CheckTimer(uint64_t ms);
     SHARED_DECL bool IsRealse();
     SHARED_DECL ISocket *GetSocket()const;
     SHARED_DECL void CloseLink();
-public:
-    bool PrcsBussiness(uint64_t ms, BussinessThread &t);
-    virtual int ProcessReceive(void *buf, int len, uint64_t) = 0;
-    bool Receive(const void *buf, int len);
-    bool IsChanged()const;
-    int CopyData(void *data, int len)const;
     virtual void OnConnected(bool bConnected) = 0;
     virtual IObject *GetParObject() = 0;
+public:
+    bool Receive(const void *buf, int len);
     void SetMutex(std::mutex *m);
     void SetThread(BussinessThread *t);
     BussinessThread *GetThread()const;
@@ -69,25 +65,37 @@ protected:
     SHARED_DECL bool IsConnect()const;
     SHARED_DECL bool ChangeLogind(bool b);
     SHARED_DECL virtual void OnLogined(bool suc, ISocket *s = NULL);
-    SHARED_DECL void ClearRecv(int n = -1);
     SHARED_DECL void Release();
     SHARED_DECL bool IsLinkThread()const;
     virtual void FreshLogin(uint64_t ms) = 0;
+    virtual void ProcessRcvPack(const void *pack) = 0;
 protected:
     void SetSocket(ISocket *s);
     bool IsLinked()const;
     int GetSendRemain()const;
     void SendData(char *buf, int len);
+    int ParsePack(const char *buf, int len);
+    ParsePackFuc GetParseRcv()const;
+    RelaesePackFuc GetRlsPacket()const;
+    void AddProcessRcv(void *pack, bool bUsed = true);
+    void ProcessRcvPacks();
+    void *PopRcv(bool bUsed = true);
 protected:
     bool                    m_bLogined;
 private:
+    bool _adjustBuff(const char *buf, int len);
+    void _cleanRcvPacks(bool bUnuse=false);
+private:
     friend class BussinessThread;
     ISocket                 *m_sock;
-    LoopQueBuff             *m_recv;
+    char                    *m_recv;
+    uint16_t                m_szRcv;
+    uint16_t                m_pos;
     std::mutex              *m_mtxS;
     BussinessThread         *m_thread;
-    bool                    m_bChanged;
     uint32_t                m_Stat;
+    std::queue<void *>      m_packetsRcv;
+    std::queue<void *>      m_packetsUsed;
 };
 
 class IObject
@@ -165,20 +173,15 @@ protected:
 class IObjectManager
 {
 protected:
+    typedef std::function<IObject *(ISocket *, const void *)> PrcsLoginHandle;
     typedef std::map<std::string, IObject*> MapObjects;
     typedef std::list<std::string> StringList;
     typedef std::map<int, StringList> SubcribeList;
     typedef std::map<std::string, SubcribeList> MessageSubcribes;
     typedef std::queue<SubcribeStruct *> SubcribeQueue;
-    typedef struct _LoginBuff {
-        uint16_t pos;
-        char buff[1024];
-        void initial()
-        {
-            pos = 0;
-        }
-    }LoginBuff;
-    typedef std::map<ISocket *, LoginBuff> LoginMap;
+    typedef std::map<ISocket*, void*> LoginMap;
+    typedef uint32_t(*SerierlizePackFuc)(void *data, char *, uint32_t len);
+    typedef std::function<void(void)> MessageHandler;
 public:
     SHARED_DECL virtual ~IObjectManager();
     virtual int GetObjectType()const = 0;
@@ -187,7 +190,7 @@ public:
     SHARED_DECL void Log(int err, const std::string &obj, int evT, const char *fmt, ...);
     SHARED_DECL void Subcribe(const std::string &dsub, const std::string &sender, int tpMsg);
     SHARED_DECL void Unsubcribe(const std::string &dsub, const std::string &sender, int tpMsg);
-    SHARED_DECL bool SendData2Link(const std::string &id, const SerierlizeDataFuc &pfSrlz, const ProcessDataFuc &pfPrc);
+    SHARED_DECL bool SendData2Link(const std::string &id, void *data);
     SHARED_DECL virtual bool IsReceiveData()const;
 
     void PushManagerMessage(IMessage *);
@@ -197,7 +200,7 @@ public:
     bool ProcessLogins(BussinessThread *s);
     BussinessThread *GetThread(int id = -1)const;
     void OnSocketClose(ISocket *s);
-    void AddLoginData(ISocket *s, const void *buf, int len);
+    int AddLoginData(ISocket *s, const char *buf=NULL, uint32_t len=0);
 public:
     SHARED_DECL static IObjectManager *MangerOfType(int type);
     SHARED_DECL static bool SendMsg(IMessage *msg);
@@ -205,6 +208,9 @@ public:
     SHARED_DECL static std::string GetObjectFlagID(IObject *o);
 protected:
     SHARED_DECL IObjectManager();
+
+    SHARED_DECL void InitPackPrcs(SerierlizePackFuc srlz, ParsePackFuc rcv, RelaesePackFuc rls);
+    SHARED_DECL void InitPrcsLogin(const PrcsLoginHandle &);
 
     SHARED_DECL IObject *GetObjectByID(const std::string &id)const;
     SHARED_DECL IObject *GetFirstObject()const;
@@ -220,20 +226,23 @@ protected:
 protected:
     BussinessThread *GetPropertyThread()const;
     BussinessThread *CurThread()const;
-protected:
-    virtual IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len) = 0;
 private:
     friend class ObjectManagers;
     friend class BussinessThread;
+    friend class ILink;
     ILog                            *m_log;
     std::mutex                      *m_mtxLogin;
     std::mutex                      *m_mtxMsgs;
+    SerierlizePackFuc               m_pfSrlzPack;
+    ParsePackFuc                    m_pfParsePack;
+    RelaesePackFuc                  m_pfRlsPack;
     std::list<BussinessThread*>     m_lsThread;
     MapObjects                      m_objects;
     MessageQue                      m_messages;         //接收消息队列
     MessageSubcribes                m_subcribes;        //订阅消息
     SubcribeQueue                   m_subcribeQue;
     LoginMap                        m_loginSockets;
+    PrcsLoginHandle                 m_pfPrcsLogin;
 };
 
 #ifdef SOCKETS_NAMESPACE

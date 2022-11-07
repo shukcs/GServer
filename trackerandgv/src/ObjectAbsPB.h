@@ -25,15 +25,11 @@ public:
 public:
     static bool SendProtoBuffTo(ISocket *s, const google::protobuf::Message &ms);
 protected:
-    int ProcessReceive(void *buf, int len, uint64_t ms);
     void WaitSend(google::protobuf::Message *msg);
-    virtual void PrcsProtoBuff(uint64_t) = 0;
-    IObject *GetParObject();
-    ILink *GetLink();
     void CopyAndSend(const google::protobuf::Message &msg);
-protected:
-    static int serialize(const google::protobuf::Message *ms, char*buf, int sz);
-    static void releaseProtobuf(google::protobuf::Message *msg);
+
+    IObject *GetParObject()override;
+    ILink *GetLink()override;
 protected:
     ProtoMsg          *m_p;
 };
@@ -45,9 +41,7 @@ public:
     virtual ~AbsPBManager();
 protected:
     IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
-    virtual IObject *PrcsProtoBuff(ISocket *s) = 0;
 protected:
-    ProtoMsg    *m_p;
 };
 #endif // __OBJECT_ABS_PB_H__
 

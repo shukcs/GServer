@@ -83,7 +83,7 @@ int ObjectGS::GetObjectType() const
 
 void ObjectGS::_prcsLogin(RequestGSIdentityAuthentication *msg)
 {
-    if (msg && m_p)
+    if (msg)
     {
         bool bSuc = m_pswd == msg->password();
         OnLogined(bSuc);
@@ -140,142 +140,140 @@ void ObjectGS::_prcsProgram(PostProgram *msg)
 
 void ObjectGS::ProcessMessage(const IMessage *msg)
 {
+    if (!msg)
+        return;
     int tp = msg->GetMessgeType();
-    if(m_p)
+    switch (tp)
     {
-        switch (tp)
-        {
-        case IMessage::BindUavRslt:
-        case IMessage::QueryDeviceRslt:
-        case IMessage::ControlDeviceRslt:
-        case IMessage::SychMissionRslt:
-        case IMessage::PostORRslt:
-        case IMessage::DeviceAllocationRslt:
-        case IMessage::PushUavSndInfo:
-        case IMessage::ControlUser:
-            processControlUser(*((GSOrUavMessage *)msg)->GetProtobuf());
-            break;
-        case IMessage::User2User:
-        case IMessage::User2UserAck:
-            processGs2Gs(*(Message*)msg->GetContent(), tp);
-            break;
-        case IMessage::SyncDeviceis:
-            ackSyncDeviceis();
-            break;
-        case IMessage::SuspendRslt:
-            processSuspend(*(DBMessage*)msg);
-            break;
-        case IMessage::DeviceisQueryRslt:
-            processUavsInfo(*(DBMessage*)msg);
-            break;
-        case IMessage::DeviceBindRslt:
-            processBind(*(DBMessage*)msg);
-            break;
-        case IMessage::UserInsertRslt:
-            processGSInsert(*(DBMessage*)msg);
-            break;
-        case IMessage::UserQueryRslt:
-            processGSInfo(*(DBMessage*)msg);
-            break;
-        case IMessage::UserCheckRslt:
-            processCheckGS(*(DBMessage*)msg);
-            break;
-        case IMessage::LandInsertRslt:
-            processPostLandRslt(*(DBMessage*)msg);
-            break;
-        case IMessage::LandQueryRslt:
-            processQueryLands(*(DBMessage*)msg);
-            break;
-        case IMessage::CountLandRslt:
-            processCountLandRslt(*(DBMessage*)msg);
-            break;
-        case IMessage::CountPlanRslt:
-            processCountPlanRslt(*(DBMessage*)msg);
-            break;
-        case IMessage::DeleteLandRslt:
-            processDeleteLandRslt(*(DBMessage*)msg);
-            break;
-        case IMessage::DeletePlanRslt:
-            processDeletePlanRslt(*(DBMessage*)msg);
-            break;
-        case IMessage::PlanInsertRslt:
-            processPostPlanRslt(*(DBMessage*)msg);
-            break;
-        case IMessage::PlanQueryRslt:
-            processQueryPlans(*(DBMessage*)msg);
-            break;
-        case IMessage::FriendQueryRslt:
-            processFriends(*(DBMessage*)msg);
-            break;
-        case IMessage::QueryMissionsRslt:
-            processMissions(*(DBMessage*)msg);
-            break;
-        case IMessage::QueryMissionsAcreageRslt:
-            processMissionsAcreage(*(DBMessage*)msg);
-            break;
-        default:
-            break;
-        }
+    case IMessage::BindUavRslt:
+    case IMessage::QueryDeviceRslt:
+    case IMessage::ControlDeviceRslt:
+    case IMessage::SychMissionRslt:
+    case IMessage::PostORRslt:
+    case IMessage::DeviceAllocationRslt:
+    case IMessage::PushUavSndInfo:
+    case IMessage::ControlUser:
+        processControlUser(*((GSOrUavMessage *)msg)->GetProtobuf());
+        break;
+    case IMessage::User2User:
+    case IMessage::User2UserAck:
+        processGs2Gs(*(Message*)msg->GetContent(), tp);
+        break;
+    case IMessage::SyncDeviceis:
+        ackSyncDeviceis();
+        break;
+    case IMessage::SuspendRslt:
+        processSuspend(*(DBMessage*)msg);
+        break;
+    case IMessage::DeviceisQueryRslt:
+        processUavsInfo(*(DBMessage*)msg);
+        break;
+    case IMessage::DeviceBindRslt:
+        processBind(*(DBMessage*)msg);
+        break;
+    case IMessage::UserInsertRslt:
+        processGSInsert(*(DBMessage*)msg);
+        break;
+    case IMessage::UserQueryRslt:
+        processGSInfo(*(DBMessage*)msg);
+        break;
+    case IMessage::UserCheckRslt:
+        processCheckGS(*(DBMessage*)msg);
+        break;
+    case IMessage::LandInsertRslt:
+        processPostLandRslt(*(DBMessage*)msg);
+        break;
+    case IMessage::LandQueryRslt:
+        processQueryLands(*(DBMessage*)msg);
+        break;
+    case IMessage::CountLandRslt:
+        processCountLandRslt(*(DBMessage*)msg);
+        break;
+    case IMessage::CountPlanRslt:
+        processCountPlanRslt(*(DBMessage*)msg);
+        break;
+    case IMessage::DeleteLandRslt:
+        processDeleteLandRslt(*(DBMessage*)msg);
+        break;
+    case IMessage::DeletePlanRslt:
+        processDeletePlanRslt(*(DBMessage*)msg);
+        break;
+    case IMessage::PlanInsertRslt:
+        processPostPlanRslt(*(DBMessage*)msg);
+        break;
+    case IMessage::PlanQueryRslt:
+        processQueryPlans(*(DBMessage*)msg);
+        break;
+    case IMessage::FriendQueryRslt:
+        processFriends(*(DBMessage*)msg);
+        break;
+    case IMessage::QueryMissionsRslt:
+        processMissions(*(DBMessage*)msg);
+        break;
+    case IMessage::QueryMissionsAcreageRslt:
+        processMissionsAcreage(*(DBMessage*)msg);
+        break;
+    default:
+        break;
     }
 }
 
-void ObjectGS::PrcsProtoBuff(uint64_t ms)
+void ObjectGS::ProcessRcvPack(const void *pack)
 {
-    if (!m_p)
-        return;
+    auto proto = (Message*)pack;
 
-    string strMsg = m_p->GetMsgName();
+    const string &strMsg = proto->GetDescriptor()->full_name();
     if (strMsg == d_p_ClassName(RequestGSIdentityAuthentication))
-        _prcsLogin((RequestGSIdentityAuthentication*)m_p->GetProtoMessage());
+        _prcsLogin((RequestGSIdentityAuthentication*)proto);
     else if (strMsg == d_p_ClassName(RequestNewGS))
-        _prcsReqNewGs((RequestNewGS*)m_p->GetProtoMessage());
+        _prcsReqNewGs((RequestNewGS*)proto);
     else if (strMsg == d_p_ClassName(PostHeartBeat))
-        _prcsHeartBeat((PostHeartBeat *)m_p->GetProtoMessage());
+        _prcsHeartBeat((PostHeartBeat *)proto);
     else if (strMsg == d_p_ClassName(PostProgram))
-        _prcsProgram((PostProgram *)m_p->GetProtoMessage());
+        _prcsProgram((PostProgram *)proto);
     else if (strMsg == d_p_ClassName(SyncDeviceList))
-        _prcsSyncDeviceList((SyncDeviceList *)m_p->GetProtoMessage());
+        _prcsSyncDeviceList((SyncDeviceList *)proto);
     else if (strMsg == d_p_ClassName(RequestBindUav))
-        _prcsReqBind(*(RequestBindUav *)m_p->GetProtoMessage());
+        _prcsReqBind(*(RequestBindUav *)proto);
     else if (strMsg == d_p_ClassName(PostControl2Uav))
-        _prcsControl2Uav((PostControl2Uav*)m_p->DeatachProto());
+        _prcsControl2Uav((PostControl2Uav*)proto);
     else if (strMsg == d_p_ClassName(RequestIdentityAllocation))
-        _prcsUavIDAllication((RequestIdentityAllocation *)m_p->DeatachProto());
+        _prcsUavIDAllication((RequestIdentityAllocation *)proto);
     else if (strMsg == d_p_ClassName(RequestUavStatus))
-        _prcsReqUavs((RequestUavStatus *)m_p->DeatachProto());
+        _prcsReqUavs((RequestUavStatus *)proto);
     else if (strMsg == d_p_ClassName(PostParcelDescription))
-        _prcsPostLand((PostParcelDescription *)m_p->GetProtoMessage());
+        _prcsPostLand((PostParcelDescription *)proto);
     else if (strMsg == d_p_ClassName(RequestParcelDescriptions))
-        _prcsReqLand((RequestParcelDescriptions *)m_p->GetProtoMessage());
+        _prcsReqLand((RequestParcelDescriptions *)proto);
     else if (strMsg == d_p_ClassName(DeleteParcelDescription))
-        _prcsDeleteLand((DeleteParcelDescription *)m_p->GetProtoMessage());
+        _prcsDeleteLand((DeleteParcelDescription *)proto);
     else if (strMsg == d_p_ClassName(PostOperationDescription))
-        _prcsPostPlan((PostOperationDescription *)m_p->GetProtoMessage());
+        _prcsPostPlan((PostOperationDescription *)proto);
     else if (strMsg == d_p_ClassName(RequestOperationDescriptions))
-        _prcsReqPlan((RequestOperationDescriptions *)m_p->GetProtoMessage());
+        _prcsReqPlan((RequestOperationDescriptions *)proto);
     else if (strMsg == d_p_ClassName(DeleteOperationDescription))
-        _prcsDeletePlan((DeleteOperationDescription*)m_p->GetProtoMessage());
+        _prcsDeletePlan((DeleteOperationDescription*)proto);
     else if (strMsg == d_p_ClassName(PostOperationRoute))
-        _prcsPostMission((PostOperationRoute*)m_p->DeatachProto());
+        _prcsPostMission((PostOperationRoute*)proto);
     else if (strMsg == d_p_ClassName(GroundStationsMessage))
-        _prcsGsMessage((GroundStationsMessage*)m_p->DeatachProto());
+        _prcsGsMessage((GroundStationsMessage*)proto);
     else if (strMsg == d_p_ClassName(RequestFriends))
-        _prcsReqFriends((RequestFriends*)m_p->GetProtoMessage());
+        _prcsReqFriends((RequestFriends*)proto);
     else if (strMsg == d_p_ClassName(RequestUavMission))
-        _prcsReqMissons(*(RequestUavMission*)m_p->GetProtoMessage());
+        _prcsReqMissons(*(RequestUavMission*)proto);
     else if (strMsg == d_p_ClassName(RequestUavMissionAcreage))
-        _prcsReqMissonsAcreage(*(RequestUavMissionAcreage*)m_p->GetProtoMessage());
+        _prcsReqMissonsAcreage(*(RequestUavMissionAcreage*)proto);
     else if (strMsg == d_p_ClassName(RequestMissionSuspend))
-        _prcsReqSuspend(*(RequestMissionSuspend*)m_p->GetProtoMessage());
+        _prcsReqSuspend(*(RequestMissionSuspend*)proto);
     else if (strMsg == d_p_ClassName(RequestOperationAssist))
-        _prcsReqAssists((RequestOperationAssist*)m_p->DeatachProto());
+        _prcsReqAssists((RequestOperationAssist*)proto);
     else if (strMsg == d_p_ClassName(RequestABPoint))
-        _prcsReqABPoint((RequestABPoint*)m_p->DeatachProto());
+        _prcsReqABPoint((RequestABPoint*)proto);
     else if (strMsg == d_p_ClassName(RequestOperationReturn))
-        _prcsReqReturn((RequestOperationReturn*)m_p->DeatachProto());
+        _prcsReqReturn((RequestOperationReturn*)proto);
 
     if (m_stInit == IObject::Initialed)
-        m_tmLastInfo = ms;
+        m_tmLastInfo = Utility::msTimeTick();
 }
 
 void ObjectGS::processGs2Gs(const Message &msg, int tp)
@@ -959,7 +957,7 @@ void ObjectGS::_prcsReqUavs(RequestUavStatus *msg)
 
     if (GS2UavMessage *ms = new GS2UavMessage(this, string()))
     {
-        ms->AttachProto(msg);
+        ms->SetPBContent(*msg);
         SendMsg(ms);
     }
 }
@@ -1009,7 +1007,7 @@ void ObjectGS::_prcsControl2Uav(das::proto::PostControl2Uav *msg)
 
     if (GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid()))
     {
-        ms->AttachProto(msg);
+        ms->SetPBContent(*msg);
         SendMsg(ms);
     }
 }
@@ -1250,7 +1248,7 @@ void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
     {
         if (GS2UavMessage *ms = new GS2UavMessage(this, string()))
         {
-            ms->AttachProto(msg);
+            ms->SetPBContent(*msg);
             SendMsg(ms);
             return;
         }
@@ -1377,7 +1375,7 @@ void ObjectGS::_prcsPostMission(PostOperationRoute *msg)
     const OperationRoute &ort = msg->or_();
     if (GS2UavMessage *ms = new GS2UavMessage(this, ort.uavid()))
     {
-        ms->AttachProto(msg);
+        ms->SetPBContent(*msg);
         SendMsg(ms);
         GetManager()->Log(0, IObjectManager::GetObjectFlagID(this), 0, "PostOperationRoute acreage:%f, ridges:%d!", ort.acreage(), ort.ridgebeg_size());
     }
@@ -1454,7 +1452,7 @@ void ObjectGS::_prcsGsMessage(GroundStationsMessage *msg)
 
     if (Gs2GsMessage *ms = new Gs2GsMessage(this, msg->to()))
     {
-        ms->AttachProto(msg);
+        ms->SetPBContent(*msg);
         SendMsg(ms);
     }
 }
@@ -1562,7 +1560,7 @@ void ObjectGS::_prcsReqABPoint(RequestABPoint *msg)
         delete msg;
         return;
     }
-    ms->AttachProto(msg);
+    ms->SetPBContent(*msg);
     SendMsg(ms);
 }
 
@@ -1577,7 +1575,7 @@ void ObjectGS::_prcsReqReturn(RequestOperationReturn *msg)
         delete msg;
         return;
     }
-    ms->AttachProto(msg);
+    ms->SetPBContent(*msg);
     SendMsg(ms);
 }
 

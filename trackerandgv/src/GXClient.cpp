@@ -97,7 +97,7 @@ int GXClient::GXClientType()
 //GXManager
 ///////////////////////////////////////////////////////////////////////////////////////////
 GXManager::GXManager() :IObjectManager(), m_sockMgr(GSocketManager::CreateManager(0,10000))
-, m_parse(new ProtoMsg), m_tmCheck(0), m_seq(1), m_mtx(new std::mutex())
+, m_tmCheck(0), m_seq(1), m_mtx(new std::mutex())
 {
     if (m_sockMgr)
         m_thread = new GXThread(m_sockMgr);
@@ -134,11 +134,12 @@ void GXManager::OnRead(GXClientSocket &s)
     int len = s.CopyRcv(m_bufPublic, sizeof(m_bufPublic));
     int pos = 0;
     uint32_t tmp = len;
-    while (m_parse && len > 18 && m_parse->Parse(m_bufPublic + pos, tmp))
+    while (auto proto = ProtobufParse::Parse(m_bufPublic + pos, tmp))
     {
         pos += tmp;
         tmp = len - pos;
-        PrcsProtoBuff();
+        PrcsProtoBuff(proto);
+        delete proto;
     }
     pos += tmp;
     s.ClearRcv(pos);
@@ -175,16 +176,16 @@ IObject *GXManager::PrcsNotObjectReceive(ISocket *, const char *, int)
     return NULL;
 }
 
-void GXManager::PrcsProtoBuff()
+void GXManager::PrcsProtoBuff(const google::protobuf::Message *proto)
 {
-    if (!m_parse)
+    if (!proto)
         return;
 
-    string strMsg = m_parse->GetMsgName();
+    const string &strMsg = proto->GetDescriptor()->full_name();
     if (strMsg == d_p_ClassName(AckUavIdentityAuthentication))
-        _prcsLoginAck((AckUavIdentityAuthentication*)m_parse->GetProtoMessage());
+        _prcsLoginAck((const AckUavIdentityAuthentication*)proto);
     else if (strMsg == d_p_ClassName(AckOperationInformation))
-        _prcsInformationAck((AckOperationInformation*)m_parse->GetProtoMessage());
+        _prcsInformationAck((const AckOperationInformation*)proto);
 }
 
 void GXManager::LoadConfig(const TiXmlElement *)
@@ -265,7 +266,7 @@ void GXManager::ProcessEvents()
     checkSocket(Utility::msTimeTick());
 }
 
-void GXManager::_prcsLoginAck(AckUavIdentityAuthentication *ack)
+void GXManager::_prcsLoginAck(const AckUavIdentityAuthentication *ack)
 {
     if (!ack)
         return;
@@ -273,7 +274,7 @@ void GXManager::_prcsLoginAck(AckUavIdentityAuthentication *ack)
     PushEvent(ack->uavid(), ack->result() == 1 ? GXClient::St_Authed : GXClient::St_AuthFail);
 }
 
-void GXManager::_prcsInformationAck(AckOperationInformation *)
+void GXManager::_prcsInformationAck(const AckOperationInformation *)
 {
 }
 

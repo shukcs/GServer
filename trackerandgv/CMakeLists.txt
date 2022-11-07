@@ -7,15 +7,16 @@ INCLUDE_DIRECTORIES(
 	./src
 	./proto
 	../protobuf
+	../protobuf/parse
 	../gshare/src
 	../gshare/src
 	../tinyxml
 )
 set(SRC_LIST
-	../protobuf/ProtoMsg.h
+	../protobuf/parse/ProtoMsg.cpp
+	../protobuf/parse/ProtoMsg.h
 	proto/das.pb.cc
 	proto/das.pb.h
-	proto/ProtoMsg.cpp
 	src/GVManager.cpp
 	src/GVManager.h
 	src/GXClient.cpp

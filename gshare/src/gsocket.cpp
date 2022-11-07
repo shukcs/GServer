@@ -34,8 +34,6 @@ ILink *GSocket::GetHandleLink() const
 void GSocket::SetHandleLink(ILink *l)
 {
     m_link = l;
-    if (m_link)
-        m_mgrLogin = NULL;
 }
 
 bool GSocket::Bind(int port, const std::string &hostLocal)
@@ -89,11 +87,11 @@ bool GSocket::IsListenSocket() const
     return m_bListen;
 }
 
-void GSocket::Close(bool bAfterSnd)
+void GSocket::Close(bool bNotAfterSnd)
 {
     if (m_stat == Binded || m_stat == Connected)
     {
-        m_stat = bAfterSnd ? Closing : CloseLater;
+        m_stat = bNotAfterSnd ? Closing : CloseLater;
         if (m_mgrPrcs)
             m_mgrPrcs->AddWaitPrcsSocket(this);
     }
@@ -198,15 +196,15 @@ void GSocket::OnRead(const void *buf, int len)
     if (m_link)
     {
         m_link->Receive(buf, len);
-    }
-    else if (m_mgrLogin)
-    {
-        m_mgrLogin->AddLoginData(this, buf, len);
+        if (m_mgrLogin)
+            m_mgrLogin->AddLoginData(this);
     }
     else
     {
         m_buffSocket->Push(buf, len, true);
-        ObjectManagers::Instance().ProcessReceive(this, buf, len);
+        auto used = ObjectManagers::Instance().ProcessReceive(this, buf, len, m_mgrLogin);
+        if (used > 0)
+            m_buffSocket->Clear(used);
     }
 }
 
@@ -214,7 +212,7 @@ void GSocket::OnClose()
 {
     m_stat = ISocket::Closed;
     if (m_link)
-        m_link->OnSockClose(this);
+        m_link->OnSockClose();
     else if (m_mgrLogin)
         m_mgrLogin->OnSocketClose(this);
 

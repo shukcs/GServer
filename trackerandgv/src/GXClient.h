@@ -74,7 +74,7 @@ protected:
     int GetObjectType()const;
     bool PrcsPublicMsg(const IMessage &msg);
     IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
-    void PrcsProtoBuff();
+    void PrcsProtoBuff(const google::protobuf::Message *);
     void LoadConfig(const TiXmlElement *root);
     bool IsReceiveData()const;
 
@@ -82,8 +82,8 @@ protected:
     void ProcessPostInfo(const Tracker2GXMessage &msg);
     void ProcessEvents();
 private:
-    void _prcsLoginAck(das::proto::AckUavIdentityAuthentication *prt);
-    void _prcsInformationAck(das::proto::AckOperationInformation *prt);
+    void _prcsLoginAck(const das::proto::AckUavIdentityAuthentication *prt);
+    void _prcsInformationAck(const das::proto::AckOperationInformation *prt);
     void prepareSocket(GXClient *o);
     void uavLoginGx();
     void sendPositionInfo();
@@ -91,7 +91,6 @@ private:
     void checkSocket(uint64_t ms);
 private:
     ISocketManager              *m_sockMgr;
-    ProtoMsg                    *m_parse;
     GXThread                    *m_thread;
     uint64_t                    m_tmCheck;
     uint32_t                    m_seq;

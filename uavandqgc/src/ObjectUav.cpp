@@ -68,16 +68,13 @@ int ObjectUav::GetObjectType() const
 
 void ObjectUav::_respondLogin(int seq, int res)
 {
-    if(m_p && GetSocket())
+    if (auto ack = new AckUavIdentityAuthentication)
     {
-        if (auto ack = new AckUavIdentityAuthentication)
-        {
-            ack->set_seqno(seq);
-            ack->set_result(res);
-            WaitSend(ack);
-        }
-        OnLogined(true);
+        ack->set_seqno(seq);
+        ack->set_result(res);
+        WaitSend(ack);
     }
+    OnLogined(true);
 }
 
 void ObjectUav::OnLogined(bool suc, ISocket *s)
@@ -213,32 +210,30 @@ void ObjectUav::ProcessMessage(const IMessage *msg)
     }
 }
 
-void ObjectUav::PrcsProtoBuff(uint64_t tm)
+void ObjectUav::ProcessRcvPack(const void *pack)
 {
-    if (!m_p)
-        return;
-
-    const string &name = m_p->GetMsgName();
+    auto proto = (Message*)pack;
+    const string &name = proto->GetDescriptor()->full_name();
     if (name == d_p_ClassName(RequestUavIdentityAuthentication))
-        _respondLogin(((RequestUavIdentityAuthentication*)m_p->GetProtoMessage())->seqno(), 1);
+        _respondLogin(((RequestUavIdentityAuthentication*)proto)->seqno(), 1);
     else if (name == d_p_ClassName(PostOperationInformation))
-        _prcsRcvPostOperationInfo((PostOperationInformation *)m_p->DeatachProto(), tm);
+        _prcsRcvPostOperationInfo((PostOperationInformation *)proto);
     else if (name == d_p_ClassName(PostStatus2GroundStation))
-        _prcsRcvPost2Gs((PostStatus2GroundStation *)m_p->GetProtoMessage());
+        _prcsRcvPost2Gs((PostStatus2GroundStation *)proto);
     else if (name == d_p_ClassName(PostOperationAssist))
-        _prcsAssist((PostOperationAssist *)m_p->DeatachProto());
+        _prcsAssist((PostOperationAssist *)proto);
     else if (name == d_p_ClassName(PostABPoint))
-        _prcsABPoint((PostABPoint *)m_p->DeatachProto());
+        _prcsABPoint((PostABPoint *)proto);
     else if (name == d_p_ClassName(PostOperationReturn))
-        _prcsReturn((PostOperationReturn *)m_p->DeatachProto());
+        _prcsReturn((PostOperationReturn *)proto);
     else if (name == d_p_ClassName(RequestRouteMissions))
-        _prcsRcvReqMissions((RequestRouteMissions *)m_p->GetProtoMessage());
+        _prcsRcvReqMissions((RequestRouteMissions *)proto);
     else if (name == d_p_ClassName(RequestPositionAuthentication))
-        _prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
+        _prcsPosAuth((RequestPositionAuthentication *)proto);
     else if (name == d_p_ClassName(PostBlocks))
-        _prcsPostBlocks((PostBlocks *)m_p->GetProtoMessage());
+        _prcsPostBlocks((PostBlocks *)proto);
     else if (name == d_p_ClassName(PostABOperation))
-        _prcsABOperation((PostABOperation *)m_p->GetProtoMessage());
+        _prcsABOperation((PostABOperation *)proto);
 }
 
 void ObjectUav::CheckTimer(uint64_t ms)
@@ -293,17 +288,18 @@ void ObjectUav::InitObject()
     }
 }
 
-void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg, uint64_t tm)
+void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg)
 {
     if (!msg)
         return;
 
+    auto tm = Utility::msTimeTick();
     if (m_stInit == IObject::Initialed)
         m_tmLastPos = tm;
 
     if (auto ms = new Uav2GSMessage(this, m_bBind?m_lastBinder:string()))
     {
-        ms->AttachProto(msg);
+        ms->SetPBContent(*msg);
         SendMsg(ms);
     }
 

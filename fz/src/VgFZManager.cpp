@@ -20,8 +20,16 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 //VgFZManager
 ////////////////////////////////////////////////////////////////////////////////
-VgFZManager::VgFZManager() : AbsPBManager()
+VgFZManager::VgFZManager() : IObjectManager()
 {
+    typedef IObject *(VgFZManager::*PrcsLoginFunc)(ISocket *, const void *);
+    InitPackPrcs((SerierlizePackFuc)&ProtobufParse::serialize
+        , (ParsePackFuc)&ProtobufParse::Parse
+        , (RelaesePackFuc)&ProtobufParse::releaseProtobuf);
+
+    InitPrcsLogin(
+        std::bind((PrcsLoginFunc)&VgFZManager::PrcsProtoBuff
+            , this, std::placeholders::_1, std::placeholders::_2));
 }
 
 VgFZManager::~VgFZManager()
@@ -70,19 +78,15 @@ int VgFZManager::GetObjectType() const
     return IObject::VgFZ;
 }
 
-IObject *VgFZManager::PrcsProtoBuff(ISocket *s)
+IObject *VgFZManager::PrcsProtoBuff(ISocket *s, const google::protobuf::Message *proto)
 {
-    if (!m_p)
-        return NULL;
-
-    const string &name = m_p->GetMsgName();
-    Message *pb = m_p->GetProtoMessage();
+    const string name = proto->GetTypeName();
     if (name == d_p_ClassName(RequestFZUserIdentity))
-        return prcsPBLogin(s, (const RequestFZUserIdentity *)pb);
+        return prcsPBLogin(s, (const RequestFZUserIdentity *)proto);
     else if (name == d_p_ClassName(RequestNewFZUser))
-        return prcsPBNewGs(s, (const RequestNewFZUser *)pb);
+        return prcsPBNewGs(s, (const RequestNewFZUser *)proto);
     else if (name == d_p_ClassName(PostGetFZPswd))
-        return prcsPostGetFZPswd(s, (const PostGetFZPswd *)pb);
+        return prcsPostGetFZPswd(s, (const PostGetFZPswd *)proto);
 
     return NULL;
 }
@@ -98,6 +102,21 @@ bool VgFZManager::PrcsPublicMsg(const IMessage &ms)
         break;
     }
     return true;
+}
+
+void VgFZManager::ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb)
+{
+    if (auto msg = new DBMessage(this, "DBLog"))
+    {
+        msg->SetSql("insertLog");
+
+        msg->SetWrite("event", evT);
+        msg->SetWrite("error", err);
+        msg->SetWrite("object", obj);
+        msg->SetWrite("evntdesc", dscb);
+        if (!SendMsg(msg))
+            delete msg;
+    }
 }
 
 void VgFZManager::processGSMessage(const FZ2FZMessage &gsM)
@@ -250,4 +269,20 @@ bool VgFZManager::IsHasReuest(const char *buf, int len) const
         || Utility::FindString(buf, len, d_p_ClassName(PostGetFZPswd)) >= 8;
 }
 
-DECLARE_MANAGER_ITEM(VgFZManager)
+DECLARE_MANAGER_ITEM(VgFZManager)DeclareRcvPB(PostHeartBeat);
+DeclareRcvPB(AckHeartBeat);
+DeclareRcvPB(RequestFZUserIdentity);
+DeclareRcvPB(RequestNewFZUser);
+DeclareRcvPB(SyncFZUserList);
+DeclareRcvPB(FZUserMessage);
+DeclareRcvPB(RequestFriends);
+DeclareRcvPB(UpdateSWKey);
+DeclareRcvPB(ReqSWKeyInfo);
+DeclareRcvPB(SWRegist);
+DeclareRcvPB(PostFZResult);
+DeclareRcvPB(RequestFZResults);
+DeclareRcvPB(AckFZResults);
+DeclareRcvPB(PostFZInfo);
+DeclareRcvPB(RequestFZInfo);
+DeclareRcvPB(PostGetFZPswd);
+DeclareRcvPB(PostChangeFZPswd);

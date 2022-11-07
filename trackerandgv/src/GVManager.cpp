@@ -20,6 +20,10 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 GVManager::GVManager() : AbsPBManager()
 {
+    typedef IObject *(GVManager::*PrcsLoginFunc)(ISocket *, const void *);
+    InitPrcsLogin(
+        std::bind((PrcsLoginFunc)&GVManager::PrcsProtoBuff
+            , this, std::placeholders::_1, std::placeholders::_2));
 }
 
 GVManager::~GVManager()
@@ -41,15 +45,11 @@ int GVManager::GetObjectType() const
     return ObjectGV::GVType();
 }
 
-IObject *GVManager::PrcsProtoBuff(ISocket *s)
+IObject *GVManager::PrcsProtoBuff(ISocket *s, const google::protobuf::Message *proto)
 {
-    if (!m_p)
-        return NULL;
-
-    const string &name = m_p->GetMsgName();
-    Message *pb = m_p->GetProtoMessage();
+    const string &name = proto->GetDescriptor()->full_name();
     if (name == d_p_ClassName(RequestIVIdentityAuthentication))
-        return prcsPBLogin(s, (const RequestIVIdentityAuthentication *)pb);
+        return prcsPBLogin(s, (const RequestIVIdentityAuthentication *)proto);
 
     return NULL;
 }

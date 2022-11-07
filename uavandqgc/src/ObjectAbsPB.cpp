@@ -15,13 +15,12 @@ using namespace std;
 //ObjectUav
 ////////////////////////////////////////////////////////////////////////////////
 ObjectAbsPB::ObjectAbsPB(const std::string &id): IObject(id)
-, ILink(), m_p(new ProtoMsg)
+, ILink()
 {
 }
 
 ObjectAbsPB::~ObjectAbsPB()
 {
-    delete m_p;
 }
 
 bool ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
@@ -29,26 +28,12 @@ bool ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
     if (s)
     {
         char buf[256] = { 0 };
-        int sz = serialize(&msg, buf, 256);
+        int sz = ProtobufParse::serialize(&msg, buf, 256);
         if (sz > 0)
             return sz == s->Send(sz, buf);
     }
 
     return false;
-}
-
-int ObjectAbsPB::ProcessReceive(void *buf, int len, uint64_t ms)
-{
-    int pos = 0;
-    uint32_t l = len;
-    while (m_p && l > 18 && m_p->Parse((char*)buf + pos, l))
-    {
-        pos += l;
-        l = len - pos;
-        PrcsProtoBuff(ms);
-    }
-    pos += l;
-    return pos;
 }
 
 bool ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
@@ -59,42 +44,12 @@ bool ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
         delete msg;
         return false;
     }
-    auto ret = mgr->SendData2Link(GetObjectID()
-        , std::bind(&ObjectAbsPB::serialize, msg, std::placeholders::_1, std::placeholders::_2)
-        , std::bind(&ObjectAbsPB::releaseProtobuf, msg));
+    auto ret = mgr->SendData2Link(GetObjectID(), msg);
 
     if (!ret)
         delete msg;
 
     return ret;
-}
-
-int ObjectAbsPB::serialize(const google::protobuf::Message *msg, char*buf, int sz)
-{
-    if (!buf || !msg)
-        return 0;
-
-    const string &name = msg->GetDescriptor()->full_name();
-    if (name.length() < 1)
-        return 0;
-    int nameLen = name.length() + 1;
-    int proroLen = msg->ByteSize();
-    int len = nameLen + proroLen + 8;
-    if (sz < len + 4)
-        return 0;
-
-    Utility::toBigendian(len, buf);
-    Utility::toBigendian(nameLen, buf + 4);
-    strcpy(buf + 8, name.c_str());
-    msg->SerializeToArray(buf + nameLen + 8, proroLen);
-    int crc = Utility::Crc32(buf + 4, len - 4);
-    Utility::toBigendian(crc, buf + len);
-    return len + 4;
-}
-
-void ObjectAbsPB::releaseProtobuf(google::protobuf::Message *msg)
-{
-    delete msg;
 }
 
 IObject *ObjectAbsPB::GetParObject()
@@ -121,30 +76,15 @@ void ObjectAbsPB::CopyAndSend(const Message &msg)
 ////////////////////////////////////////////////////////////////////////////////
 //AbsPBManager
 ////////////////////////////////////////////////////////////////////////////////
-AbsPBManager::AbsPBManager():m_p(new ProtoMsg)
+AbsPBManager::AbsPBManager()
 {
+    InitPackPrcs((SerierlizePackFuc)&ProtobufParse::serialize
+        , (ParsePackFuc)&ProtobufParse::Parse
+        , (RelaesePackFuc)&ProtobufParse::releaseProtobuf);
 }
 
 AbsPBManager::~AbsPBManager()
 {
-    delete m_p;
-}
-
-IObject *AbsPBManager::PrcsNotObjectReceive(ISocket *s, const char *buf, int len)
-{
-    uint32_t pos = 0;
-    uint32_t l = len;
-    IObject *o = NULL;
-    while (m_p->Parse(buf + pos, l))
-    {
-        pos += l;
-        l = len - pos;
-        o = PrcsProtoBuff(s);
-        if (o)
-            break;
-    }
-
-    return o;
 }
 
 void AbsPBManager::ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb)
@@ -161,3 +101,47 @@ void AbsPBManager::ToCurrntLog(int err, const std::string &obj, int evT, const s
             delete msg;
     }
 }
+
+DeclareRcvPB(PostHeartBeat);
+DeclareRcvPB(RequestNewGS);
+DeclareRcvPB(RequestIdentityAllocation);
+DeclareRcvPB(AckUavIdentityAuthentication);
+DeclareRcvPB(RequestGSIdentityAuthentication);
+DeclareRcvPB(RequestUavIdentityAuthentication);
+DeclareRcvPB(PostProgram);
+DeclareRcvPB(AckNotifyProgram);
+DeclareRcvPB(RequestProgram);
+DeclareRcvPB(SyncDeviceList);
+DeclareRcvPB(AckUpdateDeviceList);
+DeclareRcvPB(PostParcelDescription);
+DeclareRcvPB(DeleteParcelDescription);
+DeclareRcvPB(RequestParcelDescriptions);
+DeclareRcvPB(PostOperationDescription);
+DeclareRcvPB(DeleteOperationDescription);
+DeclareRcvPB(RequestOperationDescriptions);
+DeclareRcvPB(PostOperationRoute);
+DeclareRcvPB(PostOperationInformation);
+DeclareRcvPB(AckOperationInformation);
+DeclareRcvPB(AckPostOperationRoute);
+DeclareRcvPB(SyscOperationRoutes);
+DeclareRcvPB(RequestRouteMissions);
+DeclareRcvPB(RequestUavStatus);
+DeclareRcvPB(RequestBindUav);
+DeclareRcvPB(RequestUavProductInfos);
+DeclareRcvPB(PostControl2Uav);
+DeclareRcvPB(PostStatus2GroundStation);
+DeclareRcvPB(RequestPositionAuthentication);
+DeclareRcvPB(RequestFriends);
+DeclareRcvPB(GroundStationsMessage);
+DeclareRcvPB(AckGroundStationsMessage);
+DeclareRcvPB(RequestMissionSuspend);
+DeclareRcvPB(RequestUavMissionAcreage);
+DeclareRcvPB(RequestUavMission);
+DeclareRcvPB(PostOperationAssist);
+DeclareRcvPB(RequestOperationAssist);
+DeclareRcvPB(PostABPoint);
+DeclareRcvPB(RequestABPoint);
+DeclareRcvPB(PostOperationReturn);
+DeclareRcvPB(RequestOperationReturn);
+DeclareRcvPB(PostBlocks);
+DeclareRcvPB(PostABOperation);

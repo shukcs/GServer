@@ -3,6 +3,8 @@
 #include "socketBase.h"
 #include "IMessage.h"
 #include "GOutLog.h"
+#include "Lock.h"
+#include <mutex>
 
 using namespace std;
 
@@ -36,15 +38,16 @@ void ManagerAbstractItem::Unregister()
 {
     ObjectManagers::Instance().RemoveManager(m_type);
 }
-////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 //ObjectManagers
-////////////////////////////////////////////////////////////
-ObjectManagers::ObjectManagers():m_cfg(NULL)
+//////////////////////////////////////////////////////////////////////
+ObjectManagers::ObjectManagers():m_cfg(NULL), m_mutex(new std::mutex)
 {
 }
 
 ObjectManagers::~ObjectManagers()
 {
+    delete m_mutex;
 }
 
 ObjectManagers &ObjectManagers::Instance()
@@ -120,27 +123,33 @@ IObjectManager *ObjectManagers::GetManagerByType(int tp) const
     return NULL;
 }
 
-void ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len)
+int ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len, IObjectManager *mgr)
 {
     if (!sock)
-        return;
+        return 0;
 
-    if (ILink *link = sock->GetHandleLink())
-    {
-        link->Receive(buf, len);
-        return;
-    }
-
+    int ret = 0;
+    Lock l(m_mutex);
     len = sock->CopyData(m_buff, sizeof(m_buff));
-    for (const pair<int, IObjectManager*> &m : m_managersMap)
+    if (mgr)
     {
-        IObjectManager *mgr = m.second;
-        if (mgr->IsHasReuest(m_buff, len))
+        ret = mgr->AddLoginData(sock, (const char *)m_buff, len);
+    }
+    else
+    {
+        for (const pair<int, IObjectManager*> &m : m_managersMap)
         {
-            sock->SetLogin(mgr);
-            mgr->AddLoginData(sock, buf, len);
-            sock->ClearBuff();
-            return;
+            if (m.second->IsHasReuest(m_buff, len))
+            {
+                mgr = m.second;
+                sock->SetLogin(mgr);
+                ret = mgr->AddLoginData(sock, (const char *)m_buff, len);
+                break;
+            }
         }
     }
+    if (mgr==NULL && len==sizeof(m_buff))
+        sock->Close();
+
+    return ret;
 }

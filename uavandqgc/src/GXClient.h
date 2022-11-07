@@ -73,7 +73,7 @@ protected:
     int GetObjectType()const;
     bool PrcsPublicMsg(const IMessage &msg);
     IObject *PrcsNotObjectReceive(ISocket *s, const char *buf, int len);
-    void PrcsProtoBuff();
+    void PrcsProtoBuff(const google::protobuf::Message *proto);
     void LoadConfig(const TiXmlElement *root);
     bool IsReceiveData()const;
 
@@ -90,7 +90,6 @@ private:
     void checkSocket(uint64_t ms);
 private:
     ISocketManager              *m_sockMgr;
-    ProtoMsg                    *m_parse;
     GXLinkThread                *m_thread;
     uint64_t                    m_tmCheck;
     std::mutex                  *m_mtx;

@@ -166,23 +166,25 @@ void ObjectGV::ProcessMessage(const IMessage *msg)
     }
 }
 
-void ObjectGV::PrcsProtoBuff(uint64_t ms)
+void ObjectGV::ProcessRcvPack(const void *pack)
 {
-    if (!m_p)
+    if (!pack)
         return;
+    auto proto = (const Message *)pack;
 
-    m_tmLastInfo = ms;
-    string strMsg = m_p->GetMsgName();
+    const string &strMsg = proto->GetDescriptor()->full_name();
     if (strMsg == d_p_ClassName(RequestGVIdentityAuthentication))
-        _prcsLogin((RequestGVIdentityAuthentication*)m_p->GetProtoMessage());
+        _prcsLogin((RequestGVIdentityAuthentication*)proto);
     else if (strMsg == d_p_ClassName(PostHeartBeat))
-        _prcsHeartBeat((PostHeartBeat *)m_p->GetProtoMessage());
+        _prcsHeartBeat((PostHeartBeat *)proto);
     else if (strMsg == d_p_ClassName(SyncDeviceList))
-        _prcsSyncDevice((SyncDeviceList *)m_p->DeatachProto());
+        _prcsSyncDevice((SyncDeviceList *)proto);
     else if (strMsg == d_p_ClassName(QueryParameters))
-        _prcsQueryParameters((QueryParameters *)m_p->DeatachProto());
+        _prcsQueryParameters((QueryParameters *)proto);
     else if (strMsg == d_p_ClassName(ConfigureParameters))
-        _prcsConfigureParameters((ConfigureParameters *)m_p->DeatachProto());
+        _prcsConfigureParameters((ConfigureParameters *)proto);
+
+    m_tmLastInfo = Utility::usTimeTick();
 }
 
 void ObjectGV::process2GsMsg(const google::protobuf::Message *msg)

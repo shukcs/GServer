@@ -128,28 +128,29 @@ void ObjectTracker::ProcessMessage(const IMessage *msg)
     }
 }
 
-void ObjectTracker::PrcsProtoBuff(uint64_t ms)
+void ObjectTracker::ProcessRcvPack(const void *pack)
 {
     if (!m_p)
         return;
+    auto ptoto = (const Message*)pack;
 
-    const string &name = m_p->GetMsgName();
+    const string &name = ptoto->GetDescriptor()->full_name();
     if (name == d_p_ClassName(RequestTrackerIdentityAuthentication))
-        _respondLogin(*(RequestTrackerIdentityAuthentication*)m_p->GetProtoMessage());
+        _respondLogin(*(RequestTrackerIdentityAuthentication*)ptoto);
     if (name == d_p_ClassName(Request3rdIdentityAuthentication))
-        _respond3rdLogin(*(Request3rdIdentityAuthentication*)m_p->GetProtoMessage());
+        _respond3rdLogin(*(Request3rdIdentityAuthentication*)ptoto);
     else if (name == d_p_ClassName(RequestPositionAuthentication))
-        _prcsPosAuth((RequestPositionAuthentication *)m_p->GetProtoMessage());
+        _prcsPosAuth((RequestPositionAuthentication *)ptoto);
     else if (name == d_p_ClassName(PostOperationInformation))
-        _prcsOperationInformation((PostOperationInformation *)m_p->DeatachProto(), ms);
+        _prcsOperationInformation((PostOperationInformation *)ptoto);
     else if (name == d_p_ClassName(AckQueryParameters))
-        _prcsAckQueryParameters((AckQueryParameters *)m_p->DeatachProto());
+        _prcsAckQueryParameters((AckQueryParameters *)ptoto);
     else if (name == d_p_ClassName(AckConfigurParameters))
-        _prcsAckConfigurParameters((AckConfigurParameters *)m_p->DeatachProto());
+        _prcsAckConfigurParameters((AckConfigurParameters *)ptoto);
     else if (name == d_p_ClassName(RequestProgramUpgrade))
-        _prcsProgramUpgrade((RequestProgramUpgrade *)m_p->GetProtoMessage());
+        _prcsProgramUpgrade((RequestProgramUpgrade *)ptoto);
     else if (name == d_p_ClassName(PostHeartBeat))
-        _prcsHeartBeat(*(PostHeartBeat *)m_p->GetProtoMessage());
+        _prcsHeartBeat(*(PostHeartBeat *)ptoto);
 }
 
 int ObjectTracker::_checkPos(double lat, double lon, double alt)
@@ -263,11 +264,12 @@ void ObjectTracker::_prcsPosAuth(RequestPositionAuthentication *msg)
     }
 }
 
-void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg, uint64_t ms)
+void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg)
 {
     if (!msg)
         return;
 
+    auto ms = Utility::msTimeTick();
     for (int i = 0; (int64_t)ms - m_tmPos > 2000 && i < msg->oi_size(); ++i)
     {
         auto oi = msg->mutable_oi(i);

@@ -61,7 +61,7 @@ bool ObjectMail::Parse(const TiXmlElement &e)
         m_host = tmp;
 
     if (const char *tmp = e.Attribute("port"))
-        m_port = Utility::str2int(tmp);
+        m_port = (int)Utility::str2int(tmp);
 
     if (const char *tmp = e.Attribute("smtps"))
         m_smtps = Utility::str2int(tmp) > 0;

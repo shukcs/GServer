@@ -401,14 +401,22 @@ UavMission::~UavMission()
 
 void UavMission::PrcsPostAssists(PostOperationAssist *msg)
 {
-    ReleasePointer(m_assists);
-    m_assists = msg;
+    if (!msg)
+        return;
+    if (!m_assists)
+        m_assists = new PostOperationAssist;
+
+    m_assists->CopyFrom(*msg);
 }
 
 void UavMission::PrcsPostABPoint(PostABPoint *msg)
 {
-    ReleasePointer(m_abPoints);
-    m_abPoints = msg;
+    if (!msg)
+        return;
+
+    if (!m_abPoints)
+        m_abPoints = new PostABPoint;
+    m_abPoints->CopyFrom(*msg);
 }
 
 void UavMission::PrcsPostReturn(PostOperationReturn *msg)
@@ -416,8 +424,9 @@ void UavMission::PrcsPostReturn(PostOperationReturn *msg)
     if (!msg)
         return;
 
-    ReleasePointer(m_return);
-    m_return = msg;
+    if (!m_return)
+        m_return = new PostOperationReturn;
+    m_return->CopyFrom(*msg);
     if (msg->mission() && m_mission && m_mission->GetPlanId()== msg->msid())
         _missionFinish(msg->msitem());
     else if (!msg->mission() && m_missionAB)

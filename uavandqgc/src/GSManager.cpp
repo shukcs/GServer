@@ -24,6 +24,10 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 GSManager::GSManager() : AbsPBManager()
 {
+    typedef IObject *(GSManager::*PrcsLoginFunc)(ISocket *, const void *);
+    InitPrcsLogin(
+        std::bind((PrcsLoginFunc)&GSManager::PrcsProtoBuff
+            , this, std::placeholders::_1, std::placeholders::_2));
 }
 
 GSManager::~GSManager()
@@ -72,17 +76,16 @@ int GSManager::GetObjectType() const
     return IObject::GroundStation;
 }
 
-IObject *GSManager::PrcsProtoBuff(ISocket *s)
+IObject *GSManager::PrcsProtoBuff(ISocket *s, const google::protobuf::Message *proto)
 {
-    if (!m_p)
+    if (!s || !proto)
         return NULL;
 
-    const string &name = m_p->GetMsgName();
-    Message *pb = m_p->GetProtoMessage();
+    const string &name = proto->GetDescriptor()->full_name();
     if (name == d_p_ClassName(RequestGSIdentityAuthentication))
-        return prcsPBLogin(s, (const RequestGSIdentityAuthentication *)pb);
+        return prcsPBLogin(s, (const RequestGSIdentityAuthentication *)proto);
     else if (name == d_p_ClassName(RequestNewGS))
-        return prcsPBNewGs(s, (const RequestNewGS *)pb);
+        return prcsPBNewGs(s, (const RequestNewGS *)proto);
 
     return NULL;
 }

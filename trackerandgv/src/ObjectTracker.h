@@ -44,27 +44,27 @@ public:
 protected:
     virtual int GetObjectType()const override;
     virtual void ProcessMessage(const IMessage *msg)override;
-    void PrcsProtoBuff(uint64_t);
-
+    void ProcessRcvPack(const void *pack)override;
+    void OnLogined(bool suc, ISocket *s = NULL)override;
     void CheckTimer(uint64_t ms)override;
     void OnConnected(bool bConnected)override;
     void InitObject()override;
-    void _respondLogin(const das::proto::RequestTrackerIdentityAuthentication &ra);
-    void _respond3rdLogin(const das::proto::Request3rdIdentityAuthentication &ra);
-    void OnLogined(bool suc, ISocket *s = NULL);
-    bool IsAllowRelease()const;
-    ILink *GetLink();
-    void FreshLogin(uint64_t ms);
+    bool IsAllowRelease()const override;
+    ILink *GetLink()override;
+    void FreshLogin(uint64_t ms)override;
 private:
     void _prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
-    void _prcsOperationInformation(das::proto::PostOperationInformation *msg, uint64_t ms);
+    void _prcsOperationInformation(das::proto::PostOperationInformation *msg);
     void _prcsAckQueryParameters(das::proto::AckQueryParameters *msg);
     void _prcsAckConfigurParameters(das::proto::AckConfigurParameters *msg);
     void _prcsProgramUpgrade(das::proto::RequestProgramUpgrade *msg);
     void _prcsHeartBeat(const das::proto::PostHeartBeat &msg);
+
     int _checkPos(double lat, double lon, double alt);
     void _checkFile();
     void _ackPartParameters(const std::string &gv, const das::proto::QueryParameters &qp);
+    void _respondLogin(const das::proto::RequestTrackerIdentityAuthentication &ra);
+    void _respond3rdLogin(const das::proto::Request3rdIdentityAuthentication &ra);
 private:
     friend class TrackerManager;
     std::string                     m_strSim;

@@ -26,7 +26,7 @@ using namespace SOCKETS_NAMESPACE;
 class ProtoMsg;
 class ObjectVgFZ;
 class FZ2FZMessage;
-class VgFZManager : public AbsPBManager
+class VgFZManager : public IObjectManager
 {
 public:
     VgFZManager();
@@ -37,17 +37,17 @@ public:
 public:
     static std::string CatString(const std::string &s1, const std::string &s2);
 protected:
-    int GetObjectType()const;
-    IObject *PrcsProtoBuff(ISocket *s);
-
-    bool PrcsPublicMsg(const IMessage &msg);
-    void processGSMessage(const FZ2FZMessage &gsM);
-
+    int GetObjectType()const override;
+    bool PrcsPublicMsg(const IMessage &msg)override;
+    void ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb)override;
+    void LoadConfig(const TiXmlElement *root)override;
+    bool IsHasReuest(const char *buf, int len)const override;
+private:
     IObject *prcsPBLogin(ISocket *s, const das::proto::RequestFZUserIdentity *msg);
+    IObject *PrcsProtoBuff(ISocket *s, const google::protobuf::Message *proto);
     IObject *prcsPBNewGs(ISocket *s, const das::proto::RequestNewFZUser *msg);
     IObject *prcsPostGetFZPswd(ISocket *s, const das::proto::PostGetFZPswd *msg);
-    void LoadConfig(const TiXmlElement *root);
-    bool IsHasReuest(const char *buf, int len)const;
+    void processGSMessage(const FZ2FZMessage &gsM);
 private:
     bool                    m_bInit;
     StringList              m_uavs;

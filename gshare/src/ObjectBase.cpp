@@ -2,6 +2,7 @@
 #include "socketBase.h"
 #include "Thread.h"
 #include "ObjectManagers.h"
+#include "BussinessThread.h"
 #include "Utility.h"
 #include "Lock.h"
 #include "IMessage.h"
@@ -12,239 +13,6 @@ using namespace std;
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
 #endif
-
-typedef std::map<std::string, ILink*> MapLinks;
-typedef std::queue<ILink*> LinksQue;
-typedef std::queue<ILink*> LinksQue;
-//////////////////////////////////////////////////////////////////
-//BussinessThread
-//////////////////////////////////////////////////////////////////
-class BussinessThread : public Thread
-{
-    class ProcessSend {
-    public:
-        unsigned            threadId;
-        SerierlizeDataFuc   pfSrlData;
-        ProcessDataFuc      pfRlsData;
-        std::string         linkID;
-    public:
-        virtual ~ProcessSend()
-        {
-            ProcessDataFuc();
-        }
-    };
-    typedef std::queue<ProcessSend *> ProcessSendQue;
-public:
-    BussinessThread(IObjectManager &mgr) :Thread(true), m_mgr(mgr)
-    , m_mtx(NULL), m_mtxQue(new std::mutex), m_szBuff(0), m_buff(NULL)
-    {
-    }
-    ~BussinessThread() 
-    {
-        delete m_mtx;
-        delete m_buff;
-    }
-    void InitialBuff(uint16_t sz)
-    {
-        if (sz > m_szBuff)
-        {
-            m_buff = new char[sz];
-            if(m_buff)
-                m_szBuff = sz;
-        }
-    }
-    std::mutex *GetMutex()
-    {
-        if (!m_mtx)
-            m_mtx = new std::mutex;
-
-        return m_mtx;
-    }
-    int LinkCount()const
-    {
-        Lock ll(m_mtxQue);
-        return m_linksAdd.size() + m_links.size();
-    }
-    bool PushRelaseMsg(IMessage *ms)
-    {
-        Lock l(m_mtxQue);
-        m_lsMsgRelease.push(ms);
-        return true;
-    }
-    char *AllocBuff()const
-    {
-        return m_buff;
-    }
-    int m_BuffSize()const
-    {
-        return m_szBuff;
-    }
-    bool Send2Link(const std::string &id, const SerierlizeDataFuc &pfSrlz, const ProcessDataFuc &pfPrc)
-    {
-        if (!pfSrlz || !pfPrc || id.empty())
-            return false;
-
-        auto data = new ProcessSend;
-        data->threadId = GetThreadId();
-        data->pfSrlData = pfSrlz;
-        data->pfRlsData = pfPrc;
-        data->linkID = id;
-        PushProcessSend(data);
-        return true;
-    }
-    bool AddOneLink(ILink *l)
-    {
-        Lock ll(m_mtxQue);
-        m_linksAdd.push(l);
-        return true;
-    }
-protected:
-    template<class T>
-    T PopQue(queue<T> &que)
-    {
-        T data = NULL;
-        Lock ll(m_mtxQue);
-        if (Utility::Pop(que, data))
-            return data;
-        return NULL;
-    }
-    void PushProcessSend(ProcessSend *val, bool bSnding=true)
-    {
-        Lock ll(m_mtxQue);
-        if (bSnding)
-            m_sendingDatas.push(val);
-        else
-            m_sendedDatas.push(val);
-    }
-private:
-    bool CheckLinks()
-    {
-        bool ret = false;
-        uint64_t ms = Utility::msTimeTick();
-        for (auto itr = m_links.begin(); itr != m_links.end(); )
-        {
-            ILink *l = itr->second;
-            if (l->PrcsBussiness(ms, *this))
-                ret = true;
-
-            if (l->IsRealse())
-            {
-                l->SetThread(NULL);
-                itr = m_links.erase(itr);
-                auto obj = l->GetParObject();
-                if (obj && obj->IsAllowRelease())
-                    obj->SendMsg(new ObjectSignal(obj, obj->GetObjectType()));
-            }
-            else
-            {
-                ++itr;
-            }
-        }
-        return ret;
-    }
-    void ProcessAddLinks()
-    {
-        while (ILink *l = PopQue(m_linksAdd))
-        {
-            if (!l || l->GetThread())
-                continue;
-
-            l->SetThread(this);
-            IObject *o = l ? l->GetParObject() : NULL;
-            auto id = o ? o->GetObjectID() : string();
-            if (!id.empty() && m_links.find(id) == m_links.end())
-                m_links[id] = l;
-
-            l->SetMutex(GetMutex());
-        }
-    }
-private:
-    void PrcsSend()
-    {
-        while (auto dt = PopQue(m_sendingDatas))
-        {
-            auto t = m_mgr.GetThread(dt->threadId);
-            if (!t)
-            {
-                delete dt;
-                continue;
-            }
-            if (auto link = GetLinkByName(dt->linkID))
-            {
-                int tmp = link->GetSendRemain();
-                if (tmp > m_szBuff)
-                    tmp = m_szBuff;
-
-                tmp = dt->pfSrlData(m_buff, tmp);
-                if (tmp <= 0)
-                {
-                    t->PushProcessSend(dt);
-                    continue;
-                }
-
-                link->SendData(m_buff, tmp);
-                if (this != t)
-                    t->PushProcessSend(dt, false);
-                else
-                    delete dt;
-            }
-            else
-            {
-                if (this == t)
-                    delete dt;
-                else
-                    t->PushProcessSend(dt,false);
-            }
-        }
-    }
-    void ReleasePrcsdMsg()
-    {
-        IMessage *tmp = NULL;
-        Lock l(m_mtxQue);
-        while (Utility::Pop(m_lsMsgRelease, tmp))
-        {
-            delete tmp;
-        }
-    }
-    void PrcsSended()
-    {
-        while (auto *data = PopQue(m_sendedDatas))
-        {
-            delete data;
-        }
-    }
-    ILink *GetLinkByName(const string &id)
-    {
-        auto itr = m_links.find(id);
-        if (itr != m_links.end())
-            return itr->second;
-
-        return NULL;
-    }
-    bool RunLoop()
-    {
-        ReleasePrcsdMsg();
-        ProcessAddLinks();
-        PrcsSend();
-        PrcsSended();
-        bool ret = m_mgr.ProcessBussiness(this);
-        if (m_mgr.IsReceiveData() && CheckLinks())
-            return true;
-
-        return ret;
-    }
-private:
-    IObjectManager  &m_mgr;
-    std::mutex      *m_mtx;
-    std::mutex      *m_mtxQue;
-    int             m_szBuff;
-    char            *m_buff;
-    MapLinks        m_links;
-    LinksQue        m_linksAdd;
-    MessageQue      m_lsMsgRelease;     //释放等待队列
-    ProcessSendQue  m_sendingDatas;
-    ProcessSendQue  m_sendedDatas;
-};
 ////////////////////////////////////////////////////////////////////////
 //SubcribeStruct
 ////////////////////////////////////////////////////////////////////////
@@ -265,8 +33,8 @@ public:
 ///////////////////////////////////////////////////////////////////////////////////////
 //SocketHandle
 ///////////////////////////////////////////////////////////////////////////////////////
-ILink::ILink() : m_bLogined(false), m_sock(NULL), m_recv(NULL), m_mtxS(NULL)
-, m_thread(NULL), m_bChanged(false), m_Stat(Stat_Link)
+ILink::ILink() : m_bLogined(false), m_sock(NULL), m_recv(NULL), m_szRcv(0), m_pos(0)
+, m_mtxS(NULL), m_thread(NULL), m_Stat(Stat_Link)
 {
 }
 
@@ -278,12 +46,15 @@ ILink::~ILink()
 
 void ILink::SetBuffSize(uint16_t sz)
 {
-    if (sz < 32)
-        sz = 32;
+    if (sz < 256)
+        sz = 256;
+
+    m_szRcv = sz;
+    m_pos = 0;
     if (!m_recv)
-        m_recv = new LoopQueBuff(sz);
-    else
-        m_recv->ReSize(sz);
+        delete m_recv;
+
+    m_recv = new char[sz];
 }
 
 void ILink::OnLogined(bool suc, ISocket *s)
@@ -311,15 +82,14 @@ int ILink::GetSendRemain() const
     return -1;
 }
 
-void ILink::OnSockClose(ISocket *s)
+void ILink::OnSockClose()
 {
-    Lock l(m_mtxS);
-    if (m_sock==s)
-        m_sock = NULL;
-
-    m_Stat &= ~Stat_Link;
-    m_Stat |= Stat_Close;
     OnConnected(false);
+    _cleanRcvPacks(true);
+
+    Lock l(m_mtxS);
+    m_sock = NULL;
+    m_Stat |= Stat_Close;
 }
 
 bool ILink::IsConnect() const
@@ -360,15 +130,15 @@ void ILink::SetSocket(ISocket *s)
         if (s)
             m_Stat = Stat_Link;
         m_sock = s;
-        OnConnected(s != NULL);
         if (s)
             s->SetHandleLink(this);
+        OnConnected(s != NULL);
     }
 }
 
 bool ILink::IsLinked() const
 {
-    return (m_Stat & Stat_Link) != 0;
+    return m_Stat == Stat_Link;
 }
 
 void ILink::SendData(char *buf, int len)
@@ -376,6 +146,73 @@ void ILink::SendData(char *buf, int len)
     Lock l(m_mtxS);
     if (buf && len>0 && m_sock)
         m_sock->Send(len, buf);
+}
+
+int ILink::ParsePack(const char *buf, int len)
+{
+    auto pf = GetParseRcv();
+    if (!pf)
+        return len;
+
+    int used = 0;
+    uint32_t tmp = len;
+    while (tmp > 0)
+    {
+        auto pack = pf(buf, tmp);
+        used += tmp;
+        tmp = len - used;
+        if (!pack)
+            break;
+
+        AddProcessRcv(pack, false);
+    }
+    return used;
+}
+
+ParsePackFuc ILink::GetParseRcv()const
+{
+    auto mgr = m_thread ? m_thread->GetManager() : NULL;
+    if (mgr)
+        return mgr->m_pfParsePack;
+    return NULL;
+}
+
+RelaesePackFuc ILink::GetRlsPacket() const
+{
+    auto mgr = m_thread ? m_thread->GetManager() : NULL;
+    if (mgr)
+        return mgr->m_pfRlsPack;
+    return NULL;
+}
+
+void ILink::AddProcessRcv(void *pack, bool bUsed)
+{
+    Lock l(m_mtxS);
+    if (bUsed)
+        m_packetsUsed.push(pack);
+    else
+        m_packetsRcv.push(pack);
+}
+
+void ILink::ProcessRcvPacks()
+{
+    while (auto pack = PopRcv(false))
+    {
+        ProcessRcvPack(pack);
+        AddProcessRcv(pack);
+    }
+}
+
+void *ILink::PopRcv(bool bUsed)
+{
+    void *ret = NULL;
+    Lock l(m_mtxS);
+    if (bUsed)
+        Utility::Pop(m_packetsUsed, ret);
+    else
+        Utility::Pop(m_packetsRcv, ret);
+
+    return ret;
 }
 
 void ILink::SetSocketBuffSize(uint16_t sz)
@@ -402,24 +239,15 @@ void ILink::CloseLink()
 
 bool ILink::Receive(const void *buf, int len)
 {
-    bool ret = false;
-    if (buf && len > 0)
-        ret = m_recv->Push(buf, len);
+    if (!_adjustBuff((const char*)buf, len))
+        return false;
 
-    if (ret)
-        m_bChanged = true;
+    int tmp = ParsePack(m_recv, m_pos);
+    if (tmp>0 && tmp<m_pos)
+        memcpy(m_recv, m_recv+tmp, m_pos-tmp);
+    m_pos -= (tmp<m_pos)? tmp:m_pos;
 
-    return ret;
-}
-
-bool ILink::IsChanged() const
-{
-    return m_sock && m_recv && m_bChanged;
-}
-
-int ILink::CopyData(void *data, int len) const
-{
-    return m_recv ? m_recv->CopyData(data, len):0;
+    return true;
 }
 
 void ILink::SetMutex(std::mutex *m)
@@ -457,27 +285,6 @@ void ILink::processSocket(ISocket &s, BussinessThread &t)
     }
 }
 
-void ILink::ClearRecv(int n)
-{
-    m_bChanged = false;
-    if (m_recv)
-        m_recv->Clear(n < 0 ? m_recv->Count() : n);
-}
-
-bool ILink::PrcsBussiness(uint64_t ms, BussinessThread &t)
-{
-    bool ret = false;
-    if (IsChanged())
-    {
-        int len = CopyData(t.AllocBuff(), t.m_BuffSize());
-        len = ProcessReceive(t.AllocBuff(), len, ms);
-        ClearRecv(len);
-        ret = true;
-    }
-    CheckTimer(ms);
-    return ret;
-}
-
 void ILink::Release()
 {
     CloseLink();
@@ -494,6 +301,48 @@ bool ILink::IsLinkThread() const
     return m_thread && m_thread->GetThreadId() == Utility::ThreadID();
 }
 
+bool ILink::_adjustBuff(const char *buf, int len)
+{
+    if (!buf || len <= 0 || m_szRcv < 256)
+        return false;
+
+    int tmp = m_pos + len - m_szRcv;
+    if (tmp <= 0)
+    {
+        memcpy(m_recv + m_pos, buf, len);
+        m_pos += len;
+    }
+    else if (len >= m_szRcv)
+    {
+        memcpy(m_recv, (char*)buf + len - m_szRcv, m_szRcv);
+        m_pos = m_szRcv;
+    }
+    else
+    {
+        if (tmp < m_pos)
+            memcpy(m_recv, m_recv + tmp, m_pos - tmp);
+        m_pos = m_szRcv - len;
+        memcpy(m_recv + m_pos, buf, len);
+        m_pos = m_szRcv;
+    }
+    return true;
+}
+
+void ILink::_cleanRcvPacks(bool bUnuse)
+{
+    auto pf = GetRlsPacket();
+    while (auto pack = PopRcv(false))
+    {
+        pf(pack);
+    }
+    if (bUnuse)
+    {
+        while (auto pack = PopRcv())
+        {
+            pf(pack);
+        }
+    }
+}
 /////////////////////////////////////////////////////////////////////////////////////////
 //IObject
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -567,7 +416,8 @@ IObjectManager *IObject::GetManagerByType(int tp)
 //IObjectManager
 ///////////////////////////////////////////////////////////////////////////
 IObjectManager::IObjectManager() : m_log(NULL), m_mtxLogin(new std::mutex)
-, m_mtxMsgs(new std::mutex)
+, m_mtxMsgs(new std::mutex), m_pfSrlzPack(NULL), m_pfParsePack(NULL)
+, m_pfRlsPack(NULL)
 {
 }
 
@@ -619,6 +469,19 @@ bool IObjectManager::Exist(IObject *obj) const
         return false;
 
     return m_objects.find(obj->GetObjectID()) != m_objects.end();
+}
+
+void IObjectManager::InitPackPrcs(SerierlizePackFuc srlz, ParsePackFuc prs, RelaesePackFuc rls)
+{
+    m_pfSrlzPack = srlz;
+    m_pfParsePack = prs;
+    m_pfRlsPack = rls;
+}
+
+
+void IObjectManager::InitPrcsLogin(const PrcsLoginHandle &hd)
+{
+    m_pfPrcsLogin = hd;
 }
 
 void IObjectManager::Log(int err, const std::string &obj, int evT, const char *fmt, ...)
@@ -678,32 +541,24 @@ void IObjectManager::ProcessMessage()
 
 bool IObjectManager::ProcessLogins(BussinessThread *t)
 {
-    Lock l(m_mtxLogin);
-    if (!t || m_loginSockets.empty())
-        return false;
-
     bool ret = false;
-    for (auto itr = m_loginSockets.begin(); itr!= m_loginSockets.end();)
+    if (!t || NULL==m_pfPrcsLogin)
+        return ret;
+
+    Lock l(m_mtxLogin);
+    for (auto itr = m_loginSockets.begin(); itr!= m_loginSockets.end(); ++itr)
     {
         ISocket *s = itr->first;
-        LoginBuff &buf = itr->second;
-        IObject *o = PrcsNotObjectReceive(s, buf.buff, buf.pos);
+        if (s->GetHandleLink())
+            continue;
+
+        IObject *o = m_pfPrcsLogin(s, itr->second);
         if (o)
         {
             AddObject(o);
             if (auto link = o->GetLink())
                 link->processSocket(*s, *GetPropertyThread());
-            itr = m_loginSockets.erase(itr);
             ret = true;
-        }
-        else if (buf.pos >= sizeof(buf.buff))
-        {
-            itr = m_loginSockets.erase(itr);
-            s->Close();
-        }
-        else
-        {
-            ++itr;
         }
     }
     return ret;
@@ -769,10 +624,12 @@ bool IObjectManager::SendMsg(IMessage *msg)
 }
 
 
-bool IObjectManager::SendData2Link(const std::string &id, const SerierlizeDataFuc &pfSrlz, const ProcessDataFuc &pfPrc)
+bool IObjectManager::SendData2Link(const std::string &id, void *data)
 {
+    if (!m_pfSrlzPack || !m_pfRlsPack)
+        return false;
     if (auto t = CurThread())
-        return t->Send2Link(id, pfSrlz, pfPrc);
+        return t->Send2Link(id, data);
 
     return false;
 }
@@ -836,38 +693,44 @@ BussinessThread *IObjectManager::GetThread(int id) const
 
 void IObjectManager::OnSocketClose(ISocket *s)
 {
-    if (!IsReceiveData())
-        return;
-
     if (s)
     {
         Lock l(m_mtxLogin);
-        m_loginSockets.erase(s);
+        auto itr = m_loginSockets.find(s);
+        if (itr != m_loginSockets.end())
+        {
+            m_pfRlsPack(itr->second);
+            m_loginSockets.erase(itr);
+        }
     }
 }
 
-void IObjectManager::AddLoginData(ISocket *s, const void *buf, int len)
+int IObjectManager::AddLoginData(ISocket *s, const char *buf, uint32_t len)
 {
-    if (!s || !buf)
-        return;
+    if (!s || !m_pfParsePack || !m_pfRlsPack)
+        return -1;
 
     Lock l(m_mtxLogin);
-    if (auto lk = s->GetHandleLink())
-    { 
-        lk->Receive(buf, len);
-        return;
+    auto itr = m_loginSockets.find(s);
+    if (len <= 0)
+    {
+        s->SetLogin(NULL);
+        if (itr != m_loginSockets.end())
+        {
+            m_pfRlsPack(itr->second);
+            m_loginSockets.erase(itr);
+        }
+        return 0;
     }
 
-    bool bInitial = m_loginSockets.find(s) == m_loginSockets.end();
-    LoginBuff &tmp = m_loginSockets[s];
-    if (bInitial)
-        tmp.initial();
-    int cp = sizeof(tmp.buff) - tmp.pos;
-    if (len < cp)
-        cp = len;
+    if (auto pack = m_pfParsePack(buf, len))
+    {
+        if (itr != m_loginSockets.end())
+            m_pfRlsPack(itr->second);
+        m_loginSockets[s] = pack;
+    }
 
-    memcpy(tmp.buff + tmp.pos, buf, cp);
-    tmp.pos = cp;
+    return len;
 }
 
 IObjectManager *IObjectManager::MangerOfType(int type)

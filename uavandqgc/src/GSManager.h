@@ -38,7 +38,7 @@ public:
     static std::string CatString(const std::string &s1, const std::string &s2);
 protected:
     int GetObjectType()const;
-    IObject *PrcsProtoBuff(ISocket *s);
+    IObject *PrcsProtoBuff(ISocket *s, const google::protobuf::Message *proto);
 
     bool PrcsPublicMsg(const IMessage &msg);
     void processDeviceLogin(int tp, const std::string &dev, bool bLogin);

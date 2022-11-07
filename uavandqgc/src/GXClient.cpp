@@ -83,8 +83,8 @@ int GXClient::GXClientType()
 /////////////////////////////////////////////////////////////////////////////////////////////
 //GXManager
 /////////////////////////////////////////////////////////////////////////////////////////////
-GXManager::GXManager() :IObjectManager(), m_sockMgr(GSocketManager::CreateManager(0,10000))
-, m_parse(new ProtoMsg), m_tmCheck(0), m_mtx(new mutex)
+GXManager::GXManager() : IObjectManager(), m_sockMgr(GSocketManager::CreateManager(0,10000))
+, m_tmCheck(0), m_mtx(new mutex)
 {
     if (m_sockMgr)
         m_thread = new GXLinkThread(m_sockMgr);
@@ -121,11 +121,12 @@ void GXManager::OnRead(GXClientSocket &s)
     int len = s.CopyRcv(m_bufPublic, sizeof(m_bufPublic));
     int pos = 0;
     uint32_t tmp = len;
-    while (m_parse && len > 18 && m_parse->Parse(m_bufPublic + pos, tmp))
+    while (auto proto = ProtobufParse::Parse(m_bufPublic + pos, tmp))
     {
         pos += tmp;
         tmp = len - pos;
-        PrcsProtoBuff();
+        PrcsProtoBuff(proto);
+        delete proto;
     }
     pos += tmp;
     s.ClearRcv(pos);
@@ -162,16 +163,16 @@ IObject *GXManager::PrcsNotObjectReceive(ISocket *, const char *, int)
     return NULL;
 }
 
-void GXManager::PrcsProtoBuff()
+void GXManager::PrcsProtoBuff(const google::protobuf::Message *proto)
 {
-    if (!m_parse)
+    if (!proto)
         return;
 
-    string strMsg = m_parse->GetMsgName();
+    const string &strMsg = proto->GetDescriptor()->full_name();
     if (strMsg == d_p_ClassName(AckUavIdentityAuthentication))
-        _prcsLoginAck((AckUavIdentityAuthentication*)m_parse->GetProtoMessage());
+        _prcsLoginAck((AckUavIdentityAuthentication*)proto);
     else if (strMsg == d_p_ClassName(AckOperationInformation))
-        _prcsInformationAck((AckOperationInformation*)m_parse->GetProtoMessage());
+        _prcsInformationAck((AckOperationInformation*)proto);
 }
 
 void GXManager::LoadConfig(const TiXmlElement *)
