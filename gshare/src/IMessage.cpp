@@ -11,7 +11,7 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////////////
 //MessageData
 ////////////////////////////////////////////////////////////////////////////////////////
-MessageData::MessageData(IObject *sender, int16_t tpMs)
+MessageData::MessageData(const IObject *sender, int16_t tpMs)
 : m_threadID(Utility::ThreadID()), m_tpMsg(tpMs)
 , m_tpSender(IObject::UnKnow)
 {
@@ -22,7 +22,7 @@ MessageData::MessageData(IObject *sender, int16_t tpMs)
     }
 }
 
-MessageData::MessageData(IObjectManager *sender, int16_t tpMs)
+MessageData::MessageData(const IObjectManager *sender, int16_t tpMs)
 : m_threadID(Utility::ThreadID()), m_tpMsg(tpMs)
 , m_tpSender(IObject::UnKnow)
 {
@@ -107,7 +107,7 @@ int IMessage::CreateThreadID() const
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////////////////////////////////
-ObjectSignal::ObjectSignal(IObject *sender, int32_t rcvTp, int e, const string &rcv)
+ObjectSignal::ObjectSignal(const IObject *sender, int32_t rcvTp, int e, const string &rcv)
 :IMessage(new MessageData(sender, e), rcv, rcvTp)
 {
 }

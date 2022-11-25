@@ -6,6 +6,7 @@
 #include "Lock.h"
 #include "ObjectBase.h"
 #include "socket_include.h"
+#include "Varient.h"
 #include <stdio.h>
 #if !defined _WIN32 && !defined _WIN64
 #include <sys/epoll.h>
@@ -13,7 +14,7 @@
 #endif
 
 #define MAX_EVENT 20
-#define SocketTimeOut 20
+#define SocketTimeOut 5000///5秒连接超时
 using namespace std;
 
 class WSAInitializer // Winsock Initializer
@@ -45,31 +46,44 @@ using namespace SOCKETS_NAMESPACE
 class ThreadMgr : public Thread
 {
 public:
-    ThreadMgr(ISocketManager *sm) : Thread(), m_mgr(sm) {}
-    ~ThreadMgr()
-    {
-        delete m_mgr;
-    }
+    ThreadMgr(GSocketManager &sm) : Thread(), m_mgr(sm)
+	{
+		SetEnableTimer(true);
+	}
+	~ThreadMgr()
+	{
+		if (IsRunning())
+		{
+			SetRunning(false);
+			Utility::Sleep(50);
+		}
+	}
 protected:
     bool RunLoop()
     {
-        if (!m_mgr->IsRun())
+        if (!m_mgr.IsRun())
             return false;
 
-        return m_mgr->Poll(50);
+        return m_mgr.Poll(50);
     }
+	bool OnTimerTriggle(const Variant &v, int64_t us)
+	{
+		m_mgr._checkSocketTimeout((int)v.ToInt64(), us);
+		return false;
+	}
 private:
-    ISocketManager *m_mgr;
+	GSocketManager &m_mgr;
 };
 ////////////////////////////////////////////////////////////////////////////
 //GSocketManager
 ////////////////////////////////////////////////////////////////////////////
 bool GSocketManager::s_bRun = true;
-GSocketManager::GSocketManager(int nThread, int maxSock) : m_openMax(maxSock)
-,m_mtx(new std::mutex) , m_thread(nullptr)
+GSocketManager::GSocketManager(GSocketManager *parent, int nThread, int maxSock)
+: m_parent(parent), m_openMax(maxSock),m_mtx(new std::mutex) , m_thread(NULL)
 {
     InitEpoll();
-    InitThread(nThread);
+	if (nThread > 0)
+		InitThread(nThread);
 }
 
 GSocketManager::~GSocketManager()
@@ -80,18 +94,16 @@ GSocketManager::~GSocketManager()
         close(m_ep_fd);       /* 创建epoll模型,ep_fd指向红黑树根节点 */
 #endif
     }
-
-    for (GSocketManager *m : m_othManagers)
+    for (auto m : m_othManagers)
     {
-        m->CloseThread();
+		delete m;
     }
-    Utility::Sleep(100);
     delete m_thread;
 }
 
 ISocketManager *GSocketManager::CreateManager(int nThread, int maxSock)
 {
-    return  new GSocketManager(nThread, maxSock);
+    return  new GSocketManager(NULL, nThread, maxSock);
 }
 
 bool GSocketManager::AddSocket(ISocket *s)
@@ -122,15 +134,14 @@ bool GSocketManager::Poll(unsigned ms)
     PrcsAddSockets(sec);
     PrcsDestroySockets();
     bool ret = PrcsSockets();
-    _checkSocketTimeout(sec);
     ret = SokectPoll(ms) ? true : ret;
     return ret;
 }
 
 void GSocketManager::AddProcessThread()
 {
-    GSocketManager *m = new GSocketManager(0, m_openMax);
-    ThreadMgr *t = new ThreadMgr(m);
+    GSocketManager *m = new GSocketManager(this, 0, m_openMax);
+    ThreadMgr *t = new ThreadMgr(*m);
     if (m &&t)
     {
         m->m_thread = t;
@@ -165,7 +176,7 @@ void GSocketManager::PrcsAddSockets(int64_t sec)
 {
     ISocket *s = NULL;
     Lock l(m_mtx);
-    while (Utility::Pop(m_socketsAdd, s))
+    while (Utility::PullQue(m_socketsAdd, s))
     {
         int handle = s->GetSocketHandle();
         ISocket::SocketStat st = s->GetSocketStat();
@@ -195,7 +206,7 @@ void GSocketManager::PrcsDestroySockets()
 {
     ISocket *s;
     Lock l(m_mtx);
-    while (Utility::Pop(m_socketsRemove, s))
+    while (Utility::PullQue(m_socketsRemove, s))
     {
         delete s;
     }
@@ -211,16 +222,15 @@ bool GSocketManager::PrcsSockets()
         if (NULL == s)
             continue;
 
-        ISocket::SocketStat st = s->GetSocketStat();
-        if (ISocket::Closing == st || ISocket::CloseLater == st)
-            s->SetHandleLink(NULL);
+		ISocket::SocketStat st = s->GetSocketStat();
 
         if (ISocket::Closing == st)
             _close(s);
         else if (ISocket::CloseLater == st)
             _closeAfterSend(s);
         else if (ISocket::Connected==st && !s->IsListenSocket())
-            _send(s);
+			_send(s);
+
         ret = true;
     }
     return ret;
@@ -237,8 +247,7 @@ ISocket *GSocketManager::GetSockByHandle(int handle) const
 
 void GSocketManager::CloseThread()
 {
-    if (m_thread)
-        m_thread->SetRunning(false);
+	delete m_thread;
 }
 
 GSocketManager *GSocketManager::GetManagerOfLeastSocket() const
@@ -387,7 +396,7 @@ int GSocketManager::PopWaitSock()
 {
     int ret = 0;
     Lock l(m_mtx);
-    Utility::Pop(m_socketsPrcs, ret);
+    Utility::PullQue(m_socketsPrcs, ret);
     return ret;
 }
 
@@ -440,12 +449,14 @@ int GSocketManager::_createSocket(int tp)
     return socket(AF_INET, tp, IPPROTO_TCP);
 }
 
-void GSocketManager::_close(ISocket *sock, bool prcs)
+void GSocketManager::_close(ISocket *sock)
 {
     _remove(sock->GetSocketHandle());
-    if (prcs)
-        _earseListen(*sock);
     sock->OnClose();
+    if (m_parent)
+        m_parent->ReleaseSocket(sock);
+    else
+        delete sock;
 }
 
 void GSocketManager::_closeAfterSend(ISocket *sock)
@@ -459,30 +470,19 @@ void GSocketManager::_addAcceptSocket(ISocket *sock, int64_t sec)
     if (!sock || !sock->IsAccetSock())
         return;
 
-    sock->SetCheckTime(sec);
-    auto itr = m_socketsAccept.find(sec);
-    if (itr == m_socketsAccept.end())
-        m_socketsAccept[sec].push_back(sock);
-    else
-        itr->second.push_back(sock);
+	if (m_thread)
+		m_thread->AddTimer(sock->GetSocketHandle(), SocketTimeOut, false);
 }
 
-void GSocketManager::_checkSocketTimeout(int64_t sec)
+void GSocketManager::_checkSocketTimeout(int fd, int64_t us)
 {
-    if (m_socketsAccept.empty())
-        return;
+	auto itr = m_sockets.find(fd);
+	if (itr == m_sockets.end())
+		return;
 
-    auto itr = m_socketsAccept.begin();
-    if (sec - itr->first > SocketTimeOut)
-    {
-        for (auto sock : itr->second)
-        {
-            if (!sock->GetHandleLink())
-                _close(sock, false);
-        }
-        itr->second.clear();
-        m_socketsAccept.erase(itr);
-    }
+	auto sock = itr->second;
+	if (!sock->GetHandleLink())
+		_close(sock);
 }
 
 #if defined _WIN32 || defined _WIN64 
@@ -559,17 +559,20 @@ void GSocketManager::_accept(int listenfd)
     if (-1 == connfd)
         return;
 
-    if (ISocket *s = new GSocket(this))
+    if (ISocket *s = new GSocket())
     {
         Ipv4Address *ad = new Ipv4Address(addr);
         s->SetAddress(ad);
-        s->SetSocketHandle(connfd);
-        s->OnConnect(true);
+		s->SetSocketHandle(connfd);
+		s->OnConnect(true);
         GSocketManager *m = GetManagerOfLeastSocket();
         if (!m)
             m = this;
-        if (!m->AddSocket(s))
-            _close(s);
+		if (!m->AddSocket(s))
+		{
+			closesocket(connfd);
+			delete s;
+		}
     }
 }
 
@@ -619,16 +622,4 @@ void GSocketManager::_send(ISocket *sock)
     }
     if (sended < 0)
         _close(sock);
-}
-
-void GSocketManager::_earseListen(ISocket &sock)
-{
-    int64_t t = sock.GetCheckTime();
-    auto itr = t > 0 ? m_socketsAccept.find(t) : m_socketsAccept.end();
-    if (itr != m_socketsAccept.end())
-    {
-        itr->second.remove(&sock);
-        if (itr->second.empty())
-            m_socketsAccept.erase(itr);
-    }
 }

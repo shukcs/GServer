@@ -65,9 +65,9 @@ protected:
     void CheckTimer(uint64_t ms)override;
     void OnConnected(bool bConnected)override;
     void InitObject()override;
-    void OnLogined(bool suc, ISocket *s=NULL)override;
-    void FreshLogin(uint64_t ms)override;
-    void ProcessRcvPack(const void *pack)override;
+    void SetLogined(bool suc, ISocket *s=NULL)override;
+    void RefreshRcv(int64_t ms)override;
+    bool ProcessRcvPack(const void *pack)override;
 
     void _respondLogin(int seq, int res);
 protected:

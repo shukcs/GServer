@@ -20,10 +20,7 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 GVManager::GVManager() : AbsPBManager()
 {
-    typedef IObject *(GVManager::*PrcsLoginFunc)(ISocket *, const void *);
-    InitPrcsLogin(
-        std::bind((PrcsLoginFunc)&GVManager::PrcsProtoBuff
-            , this, std::placeholders::_1, std::placeholders::_2));
+    InitPrcsLogin((PrcsLoginHandle)&GVManager::PrcsProtoBuff);
 }
 
 GVManager::~GVManager()
@@ -86,14 +83,14 @@ IObject *GVManager::prcsPBLogin(ISocket *s, const RequestIVIdentityAuthenticatio
     {
         bool bLogin = !o->IsConnect() && o->m_pswd == pswd;
         if (bLogin)
-            o->OnLogined(true, s);
+            o->SetLogined(true, s);
         else
             Log(0, IObjectManager::GetObjectFlagID(o), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
 
         AckIVIdentityAuthentication ack;
         ack.set_seqno(rgi->seqno());
         ack.set_result(bLogin ? 1 : 0);
-        ObjectAbsPB::SendProtoBuffTo(s, ack);
+        o->SendData2Link(&ack, s);
     }
 
     return o;
@@ -115,7 +112,7 @@ void GVManager::LoadConfig(const TiXmlElement *root)
         const TiXmlElement *dbNode = cfg->FirstChildElement("Object");
         while (dbNode)
         {
-            if (ObjectGV *gv = ObjectGV::ParseObjecy(*dbNode))
+            if (ObjectGV *gv = ObjectGV::ParseObject(*dbNode))
                 AddObject(gv);
 
             dbNode = dbNode->NextSiblingElement("Object");

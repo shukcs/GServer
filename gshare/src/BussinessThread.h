@@ -12,22 +12,19 @@ using namespace std;
 using namespace SOCKETS_NAMESPACE;
 #endif
 
-namespace std {
-    class mutex;
-}
-
 class IMessage;
 class IObjectManager;
 class ILink;
+class SendStruct;
 
-typedef struct _ProcessSend ProcessSend;
 class BussinessThread : public Thread
 {
+private:
     typedef std::queue<IMessage*> MessageQue;
     typedef std::map<std::string, ILink*> MapLinks;
     typedef std::queue<ILink*> LinksQue;
-    typedef std::queue<ProcessSend *>ProcessSendQue;
-    typedef std::queue<std::string> ProcessRcvQue;
+    typedef std::queue<SendStruct *>ProcessSendQue;
+    typedef std::queue<std::string> WaitPrcsQue;
 public:
     BussinessThread(IObjectManager &mgr);
     ~BussinessThread();
@@ -41,42 +38,47 @@ public:
     bool Send2Link(const std::string &id, void *data);
     bool AddOneLink(ILink *l);
     IObjectManager *GetManager();
-    void OnRcvPacket(const std::string &idLink);
+    void AddWaiPrcs(const std::string &idLink);
 
     template<class T>
     T PopQue(queue<T> &que)
     {
         T data = NULL;
         Lock ll(m_mtxQue);
-        if (Utility::Pop(que, data))
+        if (Utility::PullQue(que, data))
             return data;
         return data;
     }
-    std::string PopRcv();
 protected:
-    void PushProcessSnd(ProcessSend *val, bool bSnding = true);
-    void ReleaseSndData(ProcessSend *v);
-private:
-    bool CheckLinks();
+    bool RunLoop()override;
+    bool OnTimerTriggle(const Variant &v, int64_t ms)override;
+protected:
     void ProcessAddLinks();
     void PrcsSend();
-    void PrcsRcvPacks();
-    void ReleasePrcsdMsgs();
     void PrcsSended();
-    ILink *GetLinkByName(const string &id);
-    bool RunLoop();
+    bool PrcsWaitBsns();
+    void PushSnd(SendStruct *val, bool bSnding = true);
+    void ReleaseSndData(SendStruct *v);
 private:
+    std::string PopWaiPrcs();
+    void ReleasePrcsdMsgs();
+    ILink *GetLinkByName(const string &id);
+private:
+    bool _prcsSnd(SendStruct *v, ILink *l);
+private:
+    int64_t         m_tmCheckLink;
     IObjectManager  &m_mgr;
     std::mutex      *m_mtx;
     std::mutex      *m_mtxQue;
     int             m_szBuff;
     char            *m_buff;
     MapLinks        m_links;
-    LinksQue        m_linksAdd;
-    MessageQue      m_lsMsgRelease;     ///释放等待队列
     ProcessSendQue  m_sendingDatas;     ///发送数据队列
     ProcessSendQue  m_sendedDatas;      ///发送完的数据队列
-    ProcessRcvQue   m_rcvQue;           ///接收解析数据队列
+    WaitPrcsQue     m_queAddWaiPrcs;    ///等待要处理的包队列
+private:
+    LinksQue        m_linksAdd;         ///添加新网络连接
+    MessageQue      m_msgRelease;       ///消息释放等待队列
 };
 
 #ifdef SOCKETS_NAMESPACE

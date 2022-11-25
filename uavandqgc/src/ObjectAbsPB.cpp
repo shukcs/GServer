@@ -23,36 +23,13 @@ ObjectAbsPB::~ObjectAbsPB()
 {
 }
 
-bool ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
+void ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
 {
-    if (s)
-    {
-        char buf[256] = { 0 };
-        int sz = ProtobufParse::serialize(&msg, buf, 256);
-        if (sz > 0)
-            return sz == s->Send(sz, buf);
-    }
-
-    return false;
+    if (!SendData2Link(msg))
+        delete msg;
 }
 
-bool ObjectAbsPB::WaitSend(google::protobuf::Message *msg)
-{
-    auto mgr = GetManager();
-    if (!mgr)
-    {
-        delete msg;
-        return false;
-    }
-    auto ret = mgr->SendData2Link(GetObjectID(), msg);
-
-    if (!ret)
-        delete msg;
-
-    return ret;
-}
-
-IObject *ObjectAbsPB::GetParObject()
+const IObject *ObjectAbsPB::GetParObject()const
 {
     return this;
 }
@@ -64,7 +41,7 @@ ILink *ObjectAbsPB::GetLink()
 
 void ObjectAbsPB::CopyAndSend(const Message &msg)
 {
-    if (!IsConnect())
+    if (!IsLinked())
         return;
 
     if (Message *ms = msg.New())

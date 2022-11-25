@@ -22,14 +22,11 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 VgFZManager::VgFZManager() : IObjectManager()
 {
-    typedef IObject *(VgFZManager::*PrcsLoginFunc)(ISocket *, const void *);
     InitPackPrcs((SerierlizePackFuc)&ProtobufParse::serialize
         , (ParsePackFuc)&ProtobufParse::Parse
         , (RelaesePackFuc)&ProtobufParse::releaseProtobuf);
 
-    InitPrcsLogin(
-        std::bind((PrcsLoginFunc)&VgFZManager::PrcsProtoBuff
-            , this, std::placeholders::_1, std::placeholders::_2));
+    InitPrcsLogin((PrcsLoginHandle)&VgFZManager::PrcsProtoBuff);
 }
 
 VgFZManager::~VgFZManager()
@@ -145,7 +142,7 @@ IObject *VgFZManager::prcsPBLogin(ISocket *s, const RequestFZUserIdentity *rgi)
     {
         bool bLogin = !o->IsConnect() && o->IsInitaled() && o->m_pswd==pswd;
         if (bLogin)
-            o->OnLogined(true, s);
+            o->SetLogined(true, s);
         else
             Log(0, IObjectManager::GetObjectFlagID(o), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
 
@@ -156,7 +153,7 @@ IObject *VgFZManager::prcsPBLogin(ISocket *s, const RequestFZUserIdentity *rgi)
             ack.set_seqno(rgi->seqno());
             ack.set_result(rslt);
             ack.set_ver(o->GetCurVer(rgi->pcsn()));
-            ObjectAbsPB::SendProtoBuffTo(s, ack);
+            o->SendData2Link(&ack, s);
         }
 
         o->SetPcsn(rgi->pcsn());
@@ -180,12 +177,12 @@ IObject *VgFZManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewFZUser
 
     string userId = Utility::Lower(msg->user());
     ObjectVgFZ *o = dynamic_cast<ObjectVgFZ *>(GetObjectByID(userId));
-    if (o && (o->GetSocket() || !o->IsAllowRelease()))
+    if (o && (o->IsConnect() || !o->IsAllowRelease()))
     {
         AckNewFZUser ack;
         ack.set_seqno(msg->seqno());
         ack.set_result(0);
-        ObjectAbsPB::SendProtoBuffTo(s, ack);
+        o->SendData2Link(&ack, s);
         return NULL;
     }
     if (!o)
@@ -207,12 +204,12 @@ IObject * VgFZManager::prcsPostGetFZPswd(ISocket *s, const PostGetFZPswd *msg)
 
     string userId = Utility::Lower(msg->user());
     ObjectVgFZ *o = dynamic_cast<ObjectVgFZ *>(GetObjectByID(userId));
-    if (o && (o->GetSocket() || !o->IsAllowRelease()))
+    if (o && (o->IsConnect() || !o->IsAllowRelease()))
     {
         AckGetFZPswd ack;
         ack.set_seqno(msg->seqno());
         ack.set_rslt(-2);
-        ObjectAbsPB::SendProtoBuffTo(s, ack);
+        o->SendData2Link(&ack, s);
         return NULL;
     }
 
@@ -252,7 +249,6 @@ void VgFZManager::LoadConfig(const TiXmlElement *root)
                 obj->SetPswd(pswd);
                 const char *auth = e->Attribute("auth");
                 obj->m_auth = auth ? int(Utility::str2int(auth)) : 3;
-                obj->m_stInit = IObject::Initialed;
                 AddObject(obj);
                 m_mgrs.push_back(obj);
             }
@@ -269,7 +265,8 @@ bool VgFZManager::IsHasReuest(const char *buf, int len) const
         || Utility::FindString(buf, len, d_p_ClassName(PostGetFZPswd)) >= 8;
 }
 
-DECLARE_MANAGER_ITEM(VgFZManager)DeclareRcvPB(PostHeartBeat);
+DECLARE_MANAGER_ITEM(VgFZManager)
+DeclareRcvPB(PostHeartBeat);
 DeclareRcvPB(AckHeartBeat);
 DeclareRcvPB(RequestFZUserIdentity);
 DeclareRcvPB(RequestNewFZUser);

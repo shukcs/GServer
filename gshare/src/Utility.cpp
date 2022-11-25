@@ -626,7 +626,7 @@ void Utility::SetEnv(const string& var,const string& value)
 #endif
 }
 
-unsigned long Utility::ThreadID()
+int Utility::ThreadID()
 {
 #ifdef _WIN32
 	return GetCurrentThreadId();

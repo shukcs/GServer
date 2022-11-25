@@ -21,7 +21,7 @@ public:
 GSocket(handle)
 handle:是创建他的线程，如果handle不为空，GSocket调用Close才能安全删除
 ************************************************************************/
-    SHARED_DECL GSocket(ISocketManager *parent);
+    SHARED_DECL GSocket();
     SHARED_DECL ~GSocket();
 
     //无限制调用函数
@@ -36,7 +36,7 @@ public:
 protected:
     //事务处理调用函数
     ILink *GetHandleLink()const;
-    void SetHandleLink(ILink *o);
+    void SetHandleLink(ILink *l);
     int Send(int len, const void *buff); 
     void ClearBuff()const;
 
@@ -50,7 +50,6 @@ protected:
     void SetAddress(SocketAddress *);
     int GetSocketHandle()const;
     void SetSocketHandle(int fd);
-    ISocketManager *GetParent()const override;
     bool IsReconnectable()const;
     bool IsWriteEnabled()const;
     void EnableWrite(bool);
@@ -72,11 +71,8 @@ protected:
     bool ResizeBuff(int sz);
     bool IsNoWriteData()const;
     void SetLogin(IObjectManager *mgr);
-    void SetCheckTime(int64_t);
-    int64_t GetCheckTime()const;
 protected:
     friend class GSocketManager;
-    ISocketManager  *m_parent;
     ISocketManager  *m_mgrPrcs;
     ILink           *m_link;
     int             m_fd;
@@ -86,7 +82,6 @@ protected:
     SocketAddress   *m_address;
     LoopQueBuff     *m_buffSocket;
     IObjectManager  *m_mgrLogin;
-    int64_t         m_checkTm;
 };
 
 #ifdef SOCKETS_NAMESPACE

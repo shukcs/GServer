@@ -43,20 +43,19 @@ public:
     void SetSeq(int seq);
 public:
     static int GVType();
-    static ObjectGV *ParseObjecy(const TiXmlElement &);
+    static ObjectGV *ParseObject(const TiXmlElement &);
 protected:
     void process2GsMsg(const google::protobuf::Message *msg);
     void ackSyncDeviceis();
     void processEvent(const IMessage &msg, int tp);
 
-    void ProcessRcvPack(const void *pack)override;
+    bool ProcessRcvPack(const void *pack)override;
     void OnConnected(bool bConnected)override;
     int GetObjectType()const override;
     void ProcessMessage(const IMessage *msg)override;
-    void InitObject() override;
     void CheckTimer(uint64_t ms)override;
     bool IsAllowRelease()const override;
-    void FreshLogin(uint64_t ms)override;
+    void RefreshRcv(int64_t ms)override;
 private:
     void _prcsLogin(das::proto::RequestGVIdentityAuthentication *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);

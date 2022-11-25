@@ -88,6 +88,8 @@ private:
     void sendPositionInfo();
     bool sendUavLogin(const std::string &i);
     void checkSocket(uint64_t ms);
+
+    static bool SendProtoBuffTo(ISocket *s, const google::protobuf::Message &msg);
 private:
     ISocketManager              *m_sockMgr;
     GXLinkThread                *m_thread;

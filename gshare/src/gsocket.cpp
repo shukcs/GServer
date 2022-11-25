@@ -12,11 +12,8 @@
 using namespace SOCKETS_NAMESPACE
 #endif
 
-GSocket::GSocket(ISocketManager *parent): m_parent(parent)
-,m_mgrPrcs(NULL), m_link(NULL), m_fd(-1), m_bListen(false)
-, m_bAccept(false), m_stat(UnConnected), m_address(NULL)
-, m_buffSocket(new LoopQueBuff(1024)), m_mgrLogin(NULL)
-, m_checkTm(-1)
+GSocket::GSocket() : m_mgrPrcs(NULL), m_link(NULL), m_fd(-1), m_bListen(false), m_bAccept(false)
+, m_stat(UnConnected), m_address(NULL), m_buffSocket(new LoopQueBuff(1024)), m_mgrLogin(NULL)
 {
 }
 
@@ -33,6 +30,9 @@ ILink *GSocket::GetHandleLink() const
 
 void GSocket::SetHandleLink(ILink *l)
 {
+	if (l && l != m_link)
+		m_buffSocket->Clear();
+
     m_link = l;
 }
 
@@ -153,11 +153,6 @@ void GSocket::SetSocketHandle(int fd)
     m_fd = fd;
 }
 
-ISocketManager *GSocket::GetParent() const
-{
-    return m_parent;
-}
-
 bool GSocket::IsReconnectable() const
 {
     return false;
@@ -186,6 +181,8 @@ void GSocket::OnWrite(int len)
             len -= nTmp;
         }
     }
+    if (m_link && m_mgrLogin)
+        m_mgrLogin->AddLoginData(this);
 }
 
 void GSocket::OnRead(const void *buf, int len)
@@ -195,14 +192,14 @@ void GSocket::OnRead(const void *buf, int len)
 
     if (m_link)
     {
-        m_link->Receive(buf, len);
+        m_link->OnReceive(*this, buf, len);
         if (m_mgrLogin)
             m_mgrLogin->AddLoginData(this);
     }
     else
     {
         m_buffSocket->Push(buf, len, true);
-        auto used = ObjectManagers::Instance().ProcessReceive(this, buf, len, m_mgrLogin);
+        auto used = ObjectManagers::Instance().ProcessReceive(this, m_mgrLogin);
         if (used > 0)
             m_buffSocket->Clear(used);
     }
@@ -212,12 +209,11 @@ void GSocket::OnClose()
 {
     m_stat = ISocket::Closed;
     if (m_link)
-        m_link->OnSockClose();
-    else if (m_mgrLogin)
+        m_link->OnSockClose(this);
+
+    if (m_mgrLogin)
         m_mgrLogin->OnSocketClose(this);
 
-    if (m_parent)
-        m_parent->ReleaseSocket(this);
     m_mgrLogin = NULL;
     m_link = NULL;
 }
@@ -293,14 +289,4 @@ bool GSocket::IsNoWriteData() const
 void GSocket::SetLogin(IObjectManager *mgr)
 {
     m_mgrLogin = mgr;
-}
-
-void GSocket::SetCheckTime(int64_t tm)
-{
-    m_checkTm = tm;
-}
-
-int64_t GSocket::GetCheckTime() const
-{
-    return m_checkTm;
 }

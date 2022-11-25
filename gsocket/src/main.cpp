@@ -63,7 +63,7 @@ bool LoadConfig(const std::string &file, std::list<GLibrary*> &lsLib)
         {
             for (const std::string &itr : Utility::SplitString(tmp, ";"))
             {
-                if (ISocket *sock = new GSocket(sSockMgr))
+                if (ISocket *sock = new GSocket())
                 {
                     sock->Bind(int(Utility::str2int(itr)), "");
                     sSockMgr->AddSocket(sock);

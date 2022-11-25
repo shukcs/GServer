@@ -103,8 +103,8 @@ void ObjectVgFZ::OnConnected(bool bConnected)
 {
     if (bConnected)
         SetSocketBuffSize(WRITE_BUFFLEN);
-    else if (!m_check.empty())
-        Release();
+	else if (GetAuth(IObject::Type_ReqNewUser))
+		ReleaseObject();
 }
 
 void ObjectVgFZ::SetPswd(const std::string &pswd)
@@ -177,7 +177,7 @@ void ObjectVgFZ::_prcsLogin(RequestFZUserIdentity *msg)
     if (msg)
     {
         bool bSuc = m_pswd == msg->pswd();
-        OnLogined(bSuc);
+        SetLogined(bSuc);
         if (bSuc)
         {
             SetPcsn(msg->pcsn());
@@ -251,7 +251,7 @@ void ObjectVgFZ::ProcessMessage(const IMessage *msg)
     }
 }
 
-void ObjectVgFZ::ProcessRcvPack(const void *pack)
+bool ObjectVgFZ::ProcessRcvPack(const void *pack)
 {
     auto proto = (Message*)pack;
     const string &strMsg = proto->GetDescriptor()->full_name();
@@ -287,8 +287,7 @@ void ObjectVgFZ::ProcessRcvPack(const void *pack)
     else if (strMsg == d_p_ClassName(PostChangeFZPswd))
         _prcsPostChangeFZPswd(*(PostChangeFZPswd *)proto);
 
-    if (m_stInit == IObject::Initialed)
-        m_tmLastInfo = Utility::msTimeTick();
+    return IsInitaled();
 }
 
 void ObjectVgFZ::processFZ2FZ(const Message &msg, int tp)
@@ -335,7 +334,7 @@ void ObjectVgFZ::processFZInfo(const DBMessage &msg)
 
     m_seq = 0;
     m_tmLastInfo = Utility::msTimeTick();
-    if (m_stInit == Initialed && !GetAuth(IObject::Type_GetPswd))
+    if (!m_pswd.empty() && !GetAuth(IObject::Type_GetPswd))
         initFriend();
 }
 
@@ -349,9 +348,15 @@ void ObjectVgFZ::processFZInsert(const DBMessage &msg)
         WaitSend(ack);
     }
 
+	GetManager()->Log(0, GetObjectID(), 0, "(user: %s) register %s!"
+		, GetObjectID().c_str(), bSuc?"success":"fail");
+
+	SetAuth(Type_Common);
     m_check = string();
-    m_stInit = ReleaseLater;
     m_tmLastInfo = Utility::msTimeTick();
+	CloseLink();
+	if(!bSuc)
+		ReleaseObject();
 }
 
 void ObjectVgFZ::processFriends(const DBMessage &msg)
@@ -549,64 +554,61 @@ void ObjectVgFZ::processMailRslt(const MailRsltMessage &msg)
         ack->set_rslt(msg.GetErrCode().empty() ? 1 : 0);
         WaitSend(ack);
     }
-    m_stInit = ReleaseLater;
-    m_tmLastInfo = Utility::msTimeTick();
+    ReleaseObject();
 }
 
 bool ObjectVgFZ::ackLogin(const DBMessage &msg)
 {
     bool bLogin = true;
-    int idx = msg.IndexofSql("queryFZInfo");
-    if (idx >= 0)
+    if (msg.IndexofSql("queryFZInfo") >= 0)
     {
-        m_stInit = Initialed;
-        string pswd = msg.GetRead("pswd").ToString();
-        bLogin = pswd == m_pswd && !pswd.empty();
+        auto pswd = msg.GetRead("pswd").ToString();
+        bLogin = pswd==m_pswd && !pswd.empty();
 
         m_pswd = pswd;
         m_email = msg.GetRead("email").ToString();
         m_info = msg.GetRead("info").ToString();
     }
-    else if (Initialed != m_stInit)
+    else
     {
         bLogin = false;
         m_pswd = string();
     }
-    if (Initialed == m_stInit)
-        OnLogined(bLogin);
-    if (!bLogin)
-        m_stInit = ReleaseLater;
-
-    AckFZUserIdentity ack;
-    ack.set_seqno(m_seq);
-    ack.set_result(bLogin ? 1 : -1);
-    ack.set_ver(m_ver);
-    ObjectAbsPB::SendProtoBuffTo(GetSocket(), ack);
+    SetLogined(bLogin);
+    if (auto ack = new AckFZUserIdentity)
+    {
+        ack->set_seqno(m_seq);
+        ack->set_result(bLogin ? 1 : -1);
+        ack->set_ver(m_ver);
+        WaitSend(ack);
+    }
+	if (m_pswd.empty()) ///不存在的FZ
+		ReleaseObject();
 
     return bLogin;
 }
 
 void ObjectVgFZ::forGetPswd(const DBMessage &msg)
 {
-    int idx = msg.IndexofSql("queryFZInfo");
     string email = m_email;
-    if (idx >= 0)
+	bool bOk = false;
+    if (msg.IndexofSql("queryFZInfo") >= 0)
     {
         m_email = msg.GetRead("email").ToString();
         m_pswd = msg.GetRead("pswd").ToString();
         m_info = msg.GetRead("info").ToString();
-        m_stInit = Initialed;
-
-        m_bLogined = CheckMail(email);
+		bOk = CheckMail(email);
     }
     
-    if (!m_bLogined)
+    if (!bOk)
     {
-        AckGetFZPswd ack;
-        ack.set_seqno(m_seq);
-        ack.set_rslt(-1);
-        ObjectAbsPB::SendProtoBuffTo(GetSocket(), ack);
-        m_stInit = ReleaseLater;
+        if (auto ack = new AckGetFZPswd)
+        {
+            ack->set_seqno(m_seq);
+            ack->set_rslt(-1);
+            WaitSend(ack);
+        }
+        ReleaseObject();
     }
 }
 
@@ -621,46 +623,46 @@ void ObjectVgFZ::processCheckUser(const DBMessage &msg)
         ack->set_result(bExist ? 0 : 1);
         WaitSend(ack);
     }
-    if (bExist)
-        m_stInit = ReleaseLater;
+
+	if (bExist)
+	{
+		GetManager()->Log(0, GetObjectID(), 0, "Exit (user: %s), register fail!"
+			, GetObjectID().c_str());
+		ReleaseObject();
+	}
 }
 
 void ObjectVgFZ::InitObject()
 {
-    if (IObject::Uninitial == m_stInit)
+    if (!IsInitaled())
     {
-        if (GetAuth(Type_ReqNewUser))
-        {
-            m_stInit = IObject::Initialed;
-            return;
-        }
-
-        DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
-        if (!msg)
-            return;
-
-        msg->SetSql("queryFZInfo");
-        msg->SetCondition("user", m_id);
-        if (!m_pcsn.empty() || m_pcsn == "O.E.M")
-        {
-            msg->AddSql("queryFZPCReg");
-            msg->SetCondition("pcsn", m_pcsn, 1);
-        }
-        SendMsg(msg);
-        m_stInit = IObject::Initialing;
+        if (!GetAuth(Type_ReqNewUser) && !GetAuth(Type_Manager))
+		{
+			if (DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt))
+			{
+				msg->SetSql("queryFZInfo");
+				msg->SetCondition("user", m_id);
+				if (!GetAuth(Type_GetPswd) && (!m_pcsn.empty() || m_pcsn == "O.E.M"))
+				{
+					msg->AddSql("queryFZPCReg");
+					msg->SetCondition("pcsn", m_pcsn, 1);
+				}
+				SendMsg(msg);
+			}
+        }   
+		IObject::InitObject();
+		StartTimer(500);
     }
 }
 
 void ObjectVgFZ::CheckTimer(uint64_t ms)
 {
-    ObjectAbsPB::CheckTimer(ms);
     ms -= m_tmLastInfo;
-    if (ReleaseLater == m_stInit && ms > 100)
-        Release();
-    else if (!GetAuth(Type_Manager) && ms>AutoReleaseMs)
-        Release();
-    else if (GetAuth(Type_Common) && ms > 15000)//超时关闭
-        IsInitaled() ? CloseLink() : Release();
+
+    if (!GetAuth(Type_Manager) && ms>AutoReleaseMs)
+        ReleaseObject();
+    else if (ms>15000 && IsLinked())//超时关闭
+        CloseLink();
 }
 
 bool ObjectVgFZ::IsAllowRelease() const
@@ -668,14 +670,14 @@ bool ObjectVgFZ::IsAllowRelease() const
     return !GetAuth(Type_Manager);
 }
 
-void ObjectVgFZ::FreshLogin(uint64_t ms)
+void ObjectVgFZ::RefreshRcv(int64_t ms)
 {
     m_tmLastInfo = ms;
 }
 
 bool ObjectVgFZ::CheckMail(const std::string &str)
 {
-    if (Uninitial==m_stInit)
+    if (!IsInitaled())
     {
         m_email = str;
         return false;
@@ -707,17 +709,14 @@ void ObjectVgFZ::SetPcsn(const std::string &str)
         if (!GetAuth(Type_Manager))
         {
             m_pcsn = str;// Utility::FindString(str, "O.E.M") >= 0 ? "O.E.M" : str;
-            if (Initialed == m_stInit)
-            {
-                m_ver = 0;
-                DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
-                if (!msg)
-                    return;
+            m_ver = 0;
+            DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
+            if (!msg)
+                return;
 
-                msg->SetSql("queryFZPCReg");
-                msg->SetCondition("pcsn", m_pcsn);
-                SendMsg(msg);
-            }
+            msg->SetSql("queryFZPCReg");
+            msg->SetCondition("pcsn", m_pcsn);
+            SendMsg(msg);
         }
     }
 }

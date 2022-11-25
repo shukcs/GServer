@@ -43,7 +43,7 @@ void ObjectGS::OnConnected(bool bConnected)
     if (bConnected)
         SetSocketBuffSize(WRITE_BUFFLEN);
     else if (!m_check.empty())
-        Release();
+        ReleaseObject();
 }
 
 void ObjectGS::SetPswd(const std::string &pswd)
@@ -86,7 +86,6 @@ void ObjectGS::_prcsLogin(RequestGSIdentityAuthentication *msg)
     if (msg)
     {
         bool bSuc = m_pswd == msg->password();
-        OnLogined(bSuc);
         if (auto ack = new AckGSIdentityAuthentication)
         {
             ack->set_seqno(msg->seqno());
@@ -218,62 +217,16 @@ void ObjectGS::ProcessMessage(const IMessage *msg)
     }
 }
 
-void ObjectGS::ProcessRcvPack(const void *pack)
+bool ObjectGS::ProcessRcvPack(const void *pack)
 {
     auto proto = (Message*)pack;
+	if (auto pf = getProtobufPrcsFunc(proto->GetDescriptor()->full_name()))
+	{
+		(this->*pf)(proto);
+		return true;
+	}
 
-    const string &strMsg = proto->GetDescriptor()->full_name();
-    if (strMsg == d_p_ClassName(RequestGSIdentityAuthentication))
-        _prcsLogin((RequestGSIdentityAuthentication*)proto);
-    else if (strMsg == d_p_ClassName(RequestNewGS))
-        _prcsReqNewGs((RequestNewGS*)proto);
-    else if (strMsg == d_p_ClassName(PostHeartBeat))
-        _prcsHeartBeat((PostHeartBeat *)proto);
-    else if (strMsg == d_p_ClassName(PostProgram))
-        _prcsProgram((PostProgram *)proto);
-    else if (strMsg == d_p_ClassName(SyncDeviceList))
-        _prcsSyncDeviceList((SyncDeviceList *)proto);
-    else if (strMsg == d_p_ClassName(RequestBindUav))
-        _prcsReqBind(*(RequestBindUav *)proto);
-    else if (strMsg == d_p_ClassName(PostControl2Uav))
-        _prcsControl2Uav((PostControl2Uav*)proto);
-    else if (strMsg == d_p_ClassName(RequestIdentityAllocation))
-        _prcsUavIDAllication((RequestIdentityAllocation *)proto);
-    else if (strMsg == d_p_ClassName(RequestUavStatus))
-        _prcsReqUavs((RequestUavStatus *)proto);
-    else if (strMsg == d_p_ClassName(PostParcelDescription))
-        _prcsPostLand((PostParcelDescription *)proto);
-    else if (strMsg == d_p_ClassName(RequestParcelDescriptions))
-        _prcsReqLand((RequestParcelDescriptions *)proto);
-    else if (strMsg == d_p_ClassName(DeleteParcelDescription))
-        _prcsDeleteLand((DeleteParcelDescription *)proto);
-    else if (strMsg == d_p_ClassName(PostOperationDescription))
-        _prcsPostPlan((PostOperationDescription *)proto);
-    else if (strMsg == d_p_ClassName(RequestOperationDescriptions))
-        _prcsReqPlan((RequestOperationDescriptions *)proto);
-    else if (strMsg == d_p_ClassName(DeleteOperationDescription))
-        _prcsDeletePlan((DeleteOperationDescription*)proto);
-    else if (strMsg == d_p_ClassName(PostOperationRoute))
-        _prcsPostMission((PostOperationRoute*)proto);
-    else if (strMsg == d_p_ClassName(GroundStationsMessage))
-        _prcsGsMessage((GroundStationsMessage*)proto);
-    else if (strMsg == d_p_ClassName(RequestFriends))
-        _prcsReqFriends((RequestFriends*)proto);
-    else if (strMsg == d_p_ClassName(RequestUavMission))
-        _prcsReqMissons(*(RequestUavMission*)proto);
-    else if (strMsg == d_p_ClassName(RequestUavMissionAcreage))
-        _prcsReqMissonsAcreage(*(RequestUavMissionAcreage*)proto);
-    else if (strMsg == d_p_ClassName(RequestMissionSuspend))
-        _prcsReqSuspend(*(RequestMissionSuspend*)proto);
-    else if (strMsg == d_p_ClassName(RequestOperationAssist))
-        _prcsReqAssists((RequestOperationAssist*)proto);
-    else if (strMsg == d_p_ClassName(RequestABPoint))
-        _prcsReqABPoint((RequestABPoint*)proto);
-    else if (strMsg == d_p_ClassName(RequestOperationReturn))
-        _prcsReqReturn((RequestOperationReturn*)proto);
-
-    if (m_stInit == IObject::Initialed)
-        m_tmLastInfo = Utility::msTimeTick();
+    return false;
 }
 
 void ObjectGS::processGs2Gs(const Message &msg, int tp)
@@ -448,36 +401,24 @@ void ObjectGS::processSuspend(const DBMessage &msg)
 
 void ObjectGS::processGSInfo(const DBMessage &msg)
 {
-    m_stInit = msg.GetRead(EXECRSLT).ToBool() ? Initialed : ReleaseLater;
     string pswd = msg.GetRead("pswd").ToString();
     m_auth = msg.GetRead("auth").ToInt32();
-    bool bLogin = pswd == m_pswd && !pswd.empty();
-    if (m_stInit == Initialed)
-        OnLogined(bLogin);
+    bool bLogin = (pswd==m_pswd && !pswd.empty());
+    SetLogined(bLogin);
 
-    AckGSIdentityAuthentication ack;
-    ack.set_seqno(m_seq);
-    ack.set_result(bLogin ? 1 : -1);
-    ack.set_auth(m_auth);
-    ObjectAbsPB::SendProtoBuffTo(GetSocket(), ack);
+    if (auto ack = new AckGSIdentityAuthentication)
+    {
+        ack->set_seqno(m_seq);
+        ack->set_result(bLogin ? 1 : -1);
+        ack->set_auth(m_auth);
+        WaitSend(ack);
+    }
     m_seq = -1;
     m_pswd = pswd;
-    if (Initialed == m_stInit)
-    {
-        initFriend();
-        if (DBMessage *msg = new DBMessage(this, IMessage::CountLandRslt))
-        {
-            msg->SetSql("countLand");
-            msg->SetCondition("gsuser", m_id);
-            SendMsg(msg);
-        }
-        if (DBMessage *msg = new DBMessage(this, IMessage::CountPlanRslt))
-        {
-            msg->SetSql("countPlan");
-            msg->SetCondition("planuser", m_id);
-            SendMsg(msg);
-        }
-    }
+	if (pswd.empty()) ///不存在的GS
+		ReleaseObject();
+	else if (bLogin)
+		_queryGSData();
 }
 
 void ObjectGS::processCheckGS(const DBMessage &msg)
@@ -493,8 +434,13 @@ void ObjectGS::processCheckGS(const DBMessage &msg)
         }
         ack->set_result(bExist ? 0 : 1);
         WaitSend(ack);
+
         if (bExist)
-            m_stInit = ReleaseLater;
+		{
+			GetManager()->Log(0, GetObjectID(), 0, "Exit (user: %s), register fail!"
+				, GetObjectID().c_str());
+			ReleaseObject();
+		}
     }
 }
 
@@ -664,11 +610,9 @@ void ObjectGS::processGSInsert(const DBMessage &msg)
         ack->set_result(bSuc ? 1 : -1);
         WaitSend(ack);
     }
-    if (!bSuc)
-        m_stInit = IObject::Uninitial;
-
-    m_auth = 0x100;
-    m_tmLastInfo = Utility::msTimeTick();
+	GetManager()->Log(0, GetObjectID(), 0, "(user: %s) register %s!"
+		, GetObjectID().c_str(), bSuc?"success":"fail");
+    ReleaseObject();
 }
 
 void ObjectGS::processMissions(const DBMessage &msg)
@@ -904,35 +848,31 @@ void ObjectGS::processQueryPlans(const DBMessage &msg)
 
 void ObjectGS::InitObject()
 {
-    if (IObject::Uninitial == m_stInit)
-    {
-        if (m_check.empty())
+	if (!IsInitaled())
+	{
+		IObject::InitObject();
+		StartTimer(500);
+        if (m_check.empty() && !GetAuth(IObject::Type_Manager))
         {
-            DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
-            if (!msg)
-                return;
-            msg->SetSql("queryGSInfo");
-            msg->SetCondition("user", m_id);
-            SendMsg(msg);
-            m_stInit = IObject::Initialing;
-            return;
+            if (DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt))
+			{
+				msg->SetSql("queryGSInfo");
+				msg->SetCondition("user", m_id);
+				SendMsg(msg);
+			}
         }
-        m_stInit = IObject::Initialed;
-    }
+	}
 }
 
 void ObjectGS::CheckTimer(uint64_t ms)
 {
     ObjectAbsPB::CheckTimer(ms);
-    ms -= m_tmLastInfo;
-    if(m_auth > Type_ALL && ms>50)
-        Release();
-    if(ReleaseLater == m_stInit && ms>100)
-        Release();
-    else if (ms > 600000 || (!m_check.empty() && ms > 60000))
-        Release();
-    else if (m_check.empty() && ms > 10000)//超时关闭
-        CloseLink();   
+	ms -= m_tmLastInfo;
+
+    if (ms>600000 || (GetAuth(Type_ReqNewUser) && ms>60000))
+        ReleaseObject();
+    else if (ms>10000 && IsLinked())//超时关闭
+        CloseLink();
 }
 
 bool ObjectGS::IsAllowRelease() const
@@ -940,7 +880,7 @@ bool ObjectGS::IsAllowRelease() const
     return !GetAuth(Type_Manager);
 }
 
-void ObjectGS::FreshLogin(uint64_t ms)
+void ObjectGS::RefreshRcv(int64_t ms)
 {
     m_tmLastInfo = ms;
 }
@@ -1589,4 +1529,60 @@ void ObjectGS::_checkGS(const string &user, int ack)
     msgDb->SetSql("checkGS");
     msgDb->SetCondition("user", user);
     SendMsg(msgDb);
+}
+
+void ObjectGS::_queryGSData()
+{
+	initFriend();
+	if (DBMessage *msg = new DBMessage(this, IMessage::CountLandRslt))
+	{
+		msg->SetSql("countLand");
+		msg->SetCondition("gsuser", m_id);
+		SendMsg(msg);
+	}
+	if (DBMessage *msg = new DBMessage(this, IMessage::CountPlanRslt))
+	{
+		msg->SetSql("countPlan");
+		msg->SetCondition("planuser", m_id);
+		SendMsg(msg);
+	}
+}
+
+ObjectGS::ProtobufPrcsF ObjectGS::getProtobufPrcsFunc(const string &name)
+{
+	static map<string, ProtobufPrcsF> sProtobufPrcsMap;
+	if (sProtobufPrcsMap.empty())
+	{
+		sProtobufPrcsMap[d_p_ClassName(RequestGSIdentityAuthentication)] = (ProtobufPrcsF)&ObjectGS::_prcsLogin;
+		sProtobufPrcsMap[d_p_ClassName(RequestNewGS)] = (ProtobufPrcsF)&ObjectGS::_prcsReqNewGs;
+		sProtobufPrcsMap[d_p_ClassName(PostHeartBeat)] = (ProtobufPrcsF)&ObjectGS::_prcsHeartBeat;
+		sProtobufPrcsMap[d_p_ClassName(PostProgram)] = (ProtobufPrcsF)&ObjectGS::_prcsProgram;
+		sProtobufPrcsMap[d_p_ClassName(SyncDeviceList)] = (ProtobufPrcsF)&ObjectGS::_prcsSyncDeviceList;
+		sProtobufPrcsMap[d_p_ClassName(RequestBindUav)] = (ProtobufPrcsF)&ObjectGS::_prcsReqBind;
+
+		sProtobufPrcsMap[d_p_ClassName(PostControl2Uav)] = (ProtobufPrcsF)&ObjectGS::_prcsControl2Uav;
+		sProtobufPrcsMap[d_p_ClassName(RequestIdentityAllocation)] = (ProtobufPrcsF)&ObjectGS::_prcsUavIDAllication;
+		sProtobufPrcsMap[d_p_ClassName(RequestUavStatus)] = (ProtobufPrcsF)&ObjectGS::_prcsReqUavs;
+		sProtobufPrcsMap[d_p_ClassName(RequestParcelDescriptions)] = (ProtobufPrcsF)&ObjectGS::_prcsReqLand;
+		sProtobufPrcsMap[d_p_ClassName(DeleteParcelDescription)] = (ProtobufPrcsF)&ObjectGS::_prcsDeleteLand;
+		sProtobufPrcsMap[d_p_ClassName(PostOperationDescription)] = (ProtobufPrcsF)&ObjectGS::_prcsPostPlan;
+
+		sProtobufPrcsMap[d_p_ClassName(RequestOperationDescriptions)] = (ProtobufPrcsF)&ObjectGS::_prcsReqPlan;
+		sProtobufPrcsMap[d_p_ClassName(DeleteOperationDescription)] = (ProtobufPrcsF)&ObjectGS::_prcsDeletePlan;
+		sProtobufPrcsMap[d_p_ClassName(PostOperationRoute)] = (ProtobufPrcsF)&ObjectGS::_prcsPostMission;
+		sProtobufPrcsMap[d_p_ClassName(GroundStationsMessage)] = (ProtobufPrcsF)&ObjectGS::_prcsGsMessage;
+		sProtobufPrcsMap[d_p_ClassName(RequestFriends)] = (ProtobufPrcsF)&ObjectGS::_prcsReqFriends;
+		sProtobufPrcsMap[d_p_ClassName(RequestUavMission)] = (ProtobufPrcsF)&ObjectGS::_prcsReqMissons;
+
+		sProtobufPrcsMap[d_p_ClassName(RequestUavMissionAcreage)] = (ProtobufPrcsF)&ObjectGS::_prcsReqMissonsAcreage;
+		sProtobufPrcsMap[d_p_ClassName(RequestMissionSuspend)] = (ProtobufPrcsF)&ObjectGS::_prcsReqSuspend;
+		sProtobufPrcsMap[d_p_ClassName(RequestOperationAssist)] = (ProtobufPrcsF)&ObjectGS::_prcsReqAssists;
+		sProtobufPrcsMap[d_p_ClassName(RequestABPoint)] = (ProtobufPrcsF)&ObjectGS::_prcsReqABPoint;
+		sProtobufPrcsMap[d_p_ClassName(RequestOperationReturn)] = (ProtobufPrcsF)&ObjectGS::_prcsReqReturn;
+	}
+	auto itr = sProtobufPrcsMap.find(name);
+	if (itr != sProtobufPrcsMap.end())
+		return itr->second;
+
+	return NULL;
 }

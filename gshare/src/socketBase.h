@@ -35,7 +35,6 @@ public:
     //ISocketManager调用函数
     virtual SocketAddress *GetAddress()const = 0;
     virtual void SetAddress(SocketAddress *) = 0;
-    virtual ISocketManager *GetParent()const = 0;
     virtual int GetSocketHandle()const = 0;
     virtual void SetSocketHandle(int fd) = 0;
     virtual bool IsWriteEnabled()const = 0;
@@ -55,8 +54,6 @@ public:
     virtual void SetPrcsManager(ISocketManager *) = 0;
     virtual ISocketManager *GetPrcsManager()const = 0;
     virtual void SetLogin(IObjectManager *) = 0;
-    virtual void SetCheckTime(int64_t) = 0;
-    virtual int64_t GetCheckTime()const = 0;
     //事务处理调用函数
     virtual ILink *GetHandleLink()const = 0;
     virtual void SetHandleLink(ILink *o) = 0;

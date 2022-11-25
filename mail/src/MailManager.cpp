@@ -126,17 +126,9 @@ int ObjectMail::GetObjectType() const
     return MailType();
 }
 
-void ObjectMail::InitObject()
-{
-    if (m_stInit != Uninitial)
-        return;
-
-    m_stInit = IObject::Initialed;
-}
-
 void ObjectMail::ProcessMessage(const IMessage *msg)
 {
-    if (m_stInit == Uninitial)
+    if (!IsInitaled())
         InitObject();
 
     auto mailMsg = dynamic_cast<const MailMessage *>(msg);

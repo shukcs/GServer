@@ -303,7 +303,7 @@ void GXManager::sendPositionInfo()
         {
             while (itr != m_protoSnds.end())
             {
-                if (ObjectAbsPB::SendProtoBuffTo(sock, **itr))
+                if (SendProtoBuffTo(sock, **itr))
                     itr = m_protoSnds.erase(itr);
                 else
                     break;
@@ -324,7 +324,7 @@ bool GXManager::sendUavLogin(const std::string &id)
     {
         if (sock->IsConnect())
         {
-            if (ObjectAbsPB::SendProtoBuffTo(sock, req))
+            if (SendProtoBuffTo(sock, req))
                 return true;
         }
     }
@@ -342,6 +342,19 @@ void GXManager::checkSocket(uint64_t ms)
         if (!sock->IsConnect())
             sock->Reconnect();
     }
+}
+
+bool GXManager::SendProtoBuffTo(ISocket *s, const google::protobuf::Message &msg)
+{
+    if (s)
+    {
+        char buf[256] = { 0 };
+        int sz = ProtobufParse::serialize(&msg, buf, 256);
+        if (sz > 0)
+            return sz == s->Send(sz, buf);
+    }
+
+    return false;
 }
 
 DECLARE_MANAGER_ITEM(GXManager)

@@ -71,7 +71,7 @@ int ObjectGV::GVType()
     return IObject::GVMgr;
 }
 
-ObjectGV *ObjectGV::ParseObjecy(const TiXmlElement &e)
+ObjectGV *ObjectGV::ParseObject(const TiXmlElement &e)
 {
     const char *id = e.Attribute("id");
     const char *pswd = e.Attribute("pswd");
@@ -83,7 +83,6 @@ ObjectGV *ObjectGV::ParseObjecy(const TiXmlElement &e)
         obj->SetPswd(pswd);
         const char *auth = e.Attribute("auth");
         obj->m_auth = auth ? int(Utility::str2int(auth)) : 3;
-        obj->InitObject();
         return obj;
     }
     return NULL;
@@ -96,10 +95,10 @@ int ObjectGV::GetObjectType() const
 
 void ObjectGV::_prcsLogin(RequestGVIdentityAuthentication *msg)
 {
-    if (msg && m_p)
+    if (msg)
     {
         bool bSuc = m_pswd == msg->password();
-        OnLogined(bSuc);
+        SetLogined(bSuc);
         if (auto ack = new AckGVIdentityAuthentication)
         {
             ack->set_seqno(msg->seqno());
@@ -166,10 +165,10 @@ void ObjectGV::ProcessMessage(const IMessage *msg)
     }
 }
 
-void ObjectGV::ProcessRcvPack(const void *pack)
+bool ObjectGV::ProcessRcvPack(const void *pack)
 {
     if (!pack)
-        return;
+        return false;
     auto proto = (const Message *)pack;
 
     const string &strMsg = proto->GetDescriptor()->full_name();
@@ -184,7 +183,7 @@ void ObjectGV::ProcessRcvPack(const void *pack)
     else if (strMsg == d_p_ClassName(ConfigureParameters))
         _prcsConfigureParameters((ConfigureParameters *)proto);
 
-    m_tmLastInfo = Utility::usTimeTick();
+    return IsInitaled();
 }
 
 void ObjectGV::process2GsMsg(const google::protobuf::Message *msg)
@@ -240,18 +239,12 @@ void ObjectGV::processEvent(const IMessage &msg, int tp)
     }
 }
 
-void ObjectGV::InitObject()
-{
-    if (IObject::Uninitial == m_stInit)
-        m_stInit = IObject::Initialed;
-}
-
 void ObjectGV::CheckTimer(uint64_t ms)
 {
     ObjectAbsPB::CheckTimer(ms);
     ms -= m_tmLastInfo;
     if (ms > 60000)
-        Release();
+        ReleaseObject();
     else if (ms > 30000)//³¬Ê±¹Ø±Õ
         CloseLink();
 }
@@ -261,7 +254,7 @@ bool ObjectGV::IsAllowRelease() const
     return false;
 }
 
-void ObjectGV::FreshLogin(uint64_t ms)
+void ObjectGV::RefreshRcv(int64_t ms)
 {
     m_tmLastInfo = ms;
 }

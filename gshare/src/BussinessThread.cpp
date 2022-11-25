@@ -7,6 +7,7 @@
 #include "Lock.h"
 #include "IMessage.h"
 #include "ILog.h"
+#include "Varient.h"
 #include <stdarg.h>
 
 using namespace std;
@@ -20,17 +21,26 @@ enum RcvDataStat {
     Stat_Release,
 };
 
-typedef struct _ProcessSend {
-    unsigned            threadId;
-    std::string         linkID;
-    void                *data;
-} ProcessSend;
+class SendStruct
+{
+public:
+    int             threadId;
+    void            *data;
+    bool            bSending;
+    std::string     linkID;
+public:
+    SendStruct(int t, void *dt, const std::string &id)
+    : threadId(t), data(dt), bSending(true), linkID(id)
+    {}
+};
+using namespace std;
 ////////////////////////////////////////////////////////////////////////////////////////
 //BussinessThread
 ////////////////////////////////////////////////////////////////////////////////////////
-BussinessThread::BussinessThread(IObjectManager &mgr) :Thread(true), m_mgr(mgr)
-, m_mtx(NULL), m_mtxQue(new std::mutex), m_szBuff(0), m_buff(NULL)
+BussinessThread::BussinessThread(IObjectManager &mgr) :Thread(true), m_tmCheckLink(0)
+, m_mgr(mgr), m_mtx(NULL), m_mtxQue(new std::mutex), m_szBuff(0), m_buff(NULL)
 {
+    SetEnableTimer(true);
 }
 
 BussinessThread::~BussinessThread()
@@ -66,7 +76,7 @@ int BussinessThread::LinkCount() const
 bool BussinessThread::PushRelaseMsg(IMessage *ms)
 {
     Lock l(m_mtxQue);
-    m_lsMsgRelease.push(ms);
+    m_msgRelease.push(ms);
     return true;
 }
 
@@ -85,11 +95,7 @@ bool BussinessThread::Send2Link(const std::string &id, void *data)
     if (!data || id.empty())
         return false;
 
-    auto dataSnd = new ProcessSend;
-    dataSnd->threadId = GetThreadId();
-    dataSnd->data = data;
-    dataSnd->linkID = id;
-    PushProcessSnd(dataSnd);
+    PushSnd(new SendStruct(Utility::ThreadID(), data, id));
     return true;
 }
 
@@ -105,21 +111,21 @@ IObjectManager *BussinessThread::GetManager()
     return &m_mgr;
 }
 
-void BussinessThread::OnRcvPacket(const std::string &idLink)
+void BussinessThread::AddWaiPrcs(const std::string &idLink)
 {
     Lock ll(m_mtxQue);
-    m_rcvQue.push(idLink);
+    m_queAddWaiPrcs.push(idLink);
 }
 
-string BussinessThread::PopRcv()
+string BussinessThread::PopWaiPrcs()
 {
     string data;
     Lock ll(m_mtxQue);
-    Utility::Pop(m_rcvQue, data);
+    Utility::PullQue(m_queAddWaiPrcs, data);
     return data;
 }
 
-void BussinessThread::PushProcessSnd(ProcessSend *val, bool bSnding)
+void BussinessThread::PushSnd(SendStruct *val, bool bSnding)
 {
     Lock ll(m_mtxQue);
     if (bSnding)
@@ -128,35 +134,10 @@ void BussinessThread::PushProcessSnd(ProcessSend *val, bool bSnding)
         m_sendedDatas.push(val);
 }
 
-void BussinessThread::ReleaseSndData(ProcessSend *v)
+void BussinessThread::ReleaseSndData(SendStruct *v)
 {
     m_mgr.m_pfRlsPack(v->data);
     delete v;
-}
-
-bool BussinessThread::CheckLinks()
-{
-    bool ret = false;
-    uint64_t ms = Utility::msTimeTick();
-    for (auto itr = m_links.begin(); itr != m_links.end(); )
-    {
-        ILink *l = itr->second;
-        l->CheckTimer(ms);
-        if (l->IsRealse())
-        {
-            l->SetThread(NULL);
-            itr = m_links.erase(itr);
-            auto obj = l->GetParObject();
-            if (obj && obj->IsAllowRelease())
-                obj->SendMsg(new ObjectSignal(obj, obj->GetObjectType()));
-            ret = true;
-        }
-        else
-        {
-            ++itr;
-        }
-    }
-    return ret;
 }
 
 void BussinessThread::ProcessAddLinks()
@@ -167,7 +148,7 @@ void BussinessThread::ProcessAddLinks()
             continue;
 
         l->SetThread(this);
-        IObject *o = l ? l->GetParObject() : NULL;
+        auto  o = l ? l->GetParObject() : NULL;
         auto id = o ? o->GetObjectID() : string();
         if (!id.empty() && m_links.find(id) == m_links.end())
             m_links[id] = l;
@@ -176,8 +157,34 @@ void BussinessThread::ProcessAddLinks()
     }
 }
 
+bool BussinessThread::_prcsSnd(SendStruct *v, ILink *l)
+{
+    if (!v || !l)
+        return false;
+
+    auto link = GetLinkByName(v->linkID);
+    if (!link || !link->IsLinked())
+    {
+        if (!v->bSending)
+            return true;
+        v->bSending = false;
+    }
+
+    int tmp = link->GetSendRemain();
+    if (tmp > m_szBuff)
+        tmp = m_szBuff;
+    tmp = m_mgr.m_pfSrlzPack(v->data, m_buff, tmp);
+    if (tmp > 0)
+    {
+        link->SendData(m_buff, tmp);
+        return true;
+    }
+    return false;
+}
+
 void BussinessThread::PrcsSend()
 {
+	SendStruct *lastUnsnd = NULL;
     while (auto dt = PopQue(m_sendingDatas))
     {
         auto t = m_mgr.GetThread(dt->threadId);
@@ -185,51 +192,52 @@ void BussinessThread::PrcsSend()
         {
             delete dt;
             continue;
-        }
-        if (auto link = GetLinkByName(dt->linkID))
-        {
-            int tmp = link->GetSendRemain();
-            if (tmp > m_szBuff)
-                tmp = m_szBuff;
+		}
 
-            tmp = m_mgr.m_pfSrlzPack(dt->data, m_buff, tmp);
-            if (tmp <= 0)
-            {
-                t->PushProcessSnd(dt);
-                continue;
-            }
-
-            link->SendData(m_buff, tmp);
-            if (this != t)
-                t->PushProcessSnd(dt, false);
-            else
-                ReleaseSndData(dt);
-        }
-        else
-        {
-            if (this == t)
-                ReleaseSndData(dt);
-            else
-                t->PushProcessSnd(dt, false);
-        }
+		if (dt && lastUnsnd==dt) ///防止死循环
+		{
+			t->PushSnd(dt, true);
+			break;
+		}
+		auto suc = _prcsSnd(dt, GetLinkByName(dt->linkID));
+		if (!suc && NULL==lastUnsnd)
+			lastUnsnd = dt;
+		t->PushSnd(dt, !suc);
     }
 }
 
-void BussinessThread::PrcsRcvPacks()
+bool BussinessThread::PrcsWaitBsns()
 {
     string id;
-    while (!(id = PopRcv()).empty())
+    bool ret = false;
+    while (!(id = PopWaiPrcs()).empty())
     {
-        if (auto link = GetLinkByName(id))
-            link->ProcessRcvPacks();
+        auto itr = m_links.find(id);
+        if (itr == m_links.end())
+            continue;
+
+        auto link = itr->second;
+        if (!link->IsLinked())
+		{
+			link->_disconnect();
+			link->OnConnected(false);
+			link->SetThread(NULL);
+			m_links.erase(itr);
+        }
+        else
+        {
+            itr->second->ProcessRcvPacks(Utility::msTimeTick());
+            ret = true;
+        }
     }
+    return ret;
 }
 
 void BussinessThread::ReleasePrcsdMsgs()
 {
     IMessage *tmp = NULL;
     Lock l(m_mtxQue);
-    while (Utility::Pop(m_lsMsgRelease, tmp))
+    while (Utility::PullQue(m_msgRelease, tmp))
     {
         delete tmp;
     }
@@ -255,15 +263,23 @@ ILink *BussinessThread::GetLinkByName(const string &id)
 bool BussinessThread::RunLoop()
 {
     ReleasePrcsdMsgs();
-    bool ret = m_mgr.ProcessBussiness(this);
+    bool ret = false;
+    if (m_mgr.m_thread == this)
+        ret = m_mgr.ProcessBussiness();
+
     if (m_mgr.IsReceiveData())
     {
         ProcessAddLinks();
         PrcsSend();
         PrcsSended();
-        PrcsRcvPacks();
-        if (CheckLinks())
-            return true;
+        if (PrcsWaitBsns())
+            ret = true;
     }
     return ret;
+}
+
+bool BussinessThread::OnTimerTriggle(const Variant &v, int64_t ms)
+{
+    const string &id = v.ToString();
+    return m_mgr.OnTimerTrigger(id, ms);
 }

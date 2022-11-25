@@ -33,22 +33,6 @@ MK_FUNDA_TYPE(double, 10)
 MK_FUNDA_TYPE(float, 11)
 MK_FUNDA_TYPE(bool, 12)
 
-template <typename T>
-class TypeInfo
-{
-public:
-    enum {
-        isSpecialized = std::is_enum<T>::value, // don't require every enum to be marked manually
-        isPointer = std::is_pointer<T>::value,
-        isIntegral = std::is_integral<T>::value,
-        isComplex = !isIntegral && !std::is_enum<T>::value,
-        isStatic = true,
-        isRelocatable = std::is_enum<T>::value,
-        isLarge = (sizeof(T) > sizeof(void*)),
-        sizeOf = sizeof(T)
-    };
-};
-
 class Variant;
 typedef std::list<Variant> VariantList;
 class SHARED_DECL Variant
@@ -139,7 +123,7 @@ public:
         return (VariantType)VarTypeDef<T>::eType;
     }
 private:
-    void ensureConstruction(VariantType tp);
+    void ensureConstruct(VariantType tp);
     void ensureDestruct();
     bool isBasicalType()const;
     VariantType elementListType()const;

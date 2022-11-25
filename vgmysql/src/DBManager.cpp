@@ -41,10 +41,10 @@ int ObjectDB::GetObjectType() const
 
 void ObjectDB::InitObject()
 {
-    if (m_stInit != Uninitial)
+    if (IsInitaled())
         return;
 
-    m_stInit = IObject::Initialed;
+    IObject::InitObject();
     m_sqlEngine->ConnectMySql(GetDBHost(), GetDBPort(), GetDBUser(), GetDBPswd());
     m_sqlEngine->EnterDatabase(GetDBName());
     for (VGTable *tb : m_tables)
@@ -59,7 +59,7 @@ void ObjectDB::InitObject()
 
 void ObjectDB::ProcessMessage(const IMessage *msg)
 {
-    if (m_stInit == Uninitial)
+    if (!IsInitaled())
         InitObject();
 
     auto db = dynamic_cast<const DBMessage *>(msg);

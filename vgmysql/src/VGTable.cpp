@@ -235,7 +235,7 @@ int VGTableField::_parseBits(const string &n)
     if (n.length() < 3 || n.at(0) != '(' || *(--n.end()) != ')')
         return 0;
 
-    int nTmp = Utility::str2int(n.substr(1, n.length() - 2));
+    int nTmp = (int)Utility::str2int(n.substr(1, n.length() - 2));
     if (nTmp > 0 && nTmp < 256)
         return (nTmp << 16) | MYSQL_TYPE_BIT;
 

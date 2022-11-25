@@ -22,8 +22,8 @@ class IObjectManager;
 class MessageData
 {
 public:
-    SHARED_DECL MessageData(IObject *sender, int16_t tpMs);
-    SHARED_DECL MessageData(IObjectManager *sender, int16_t tpMs);
+    SHARED_DECL MessageData(const IObject *sender, int16_t tpMs);
+    SHARED_DECL MessageData(const IObjectManager *sender, int16_t tpMs);
     SHARED_DECL MessageData(const std::string &sender, int tpSnd, int16_t tpMs);
     SHARED_DECL virtual ~MessageData();
 
@@ -153,7 +153,7 @@ public:
         S_Logout,
     };
 public:
-    SHARED_DECL ObjectSignal(IObject *sender, int32_t rcvTp, int e = S_Release, const std::string &rcv=std::string());
+    SHARED_DECL ObjectSignal(const IObject *sender, int32_t rcvTp, int e = S_Release, const std::string &rcv=std::string());
 protected:
     void *GetContent()const;
     int GetContentLength()const;

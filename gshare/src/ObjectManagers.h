@@ -65,7 +65,7 @@ public:
     void RemoveManager(int type);
     IObjectManager *GetManagerByType(int tp)const;
 
-    int ProcessReceive(ISocket *sock, void const *buf, int len, IObjectManager *m=NULL);
+    int ProcessReceive(ISocket *sock, IObjectManager *m=NULL);
 private:
     ObjectManagers();
     ~ObjectManagers();

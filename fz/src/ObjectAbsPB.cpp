@@ -24,36 +24,16 @@ ObjectAbsPB::~ObjectAbsPB()
 {
 }
 
-bool ObjectAbsPB::SendProtoBuffTo(ISocket *s, const Message &msg)
-{
-    if (s)
-    {
-        char buf[256] = { 0 };
-        int sz = ProtobufParse::serialize(&msg, buf, 256);
-        if (sz > 0)
-            return sz == s->Send(sz, buf);
-    }
-
-    return false;
-}
-
 bool ObjectAbsPB::WaitSend(Message *msg)
 {
-    auto mgr = GetManager();
-    if (!mgr)
-    {
-        delete msg;
-        return false;
-    }
-    auto ret = mgr->SendData2Link(GetObjectID(), msg);
-
+    auto ret = SendData2Link(msg);
     if (!ret)
         delete msg;
 
     return ret;
 }
 
-IObject *ObjectAbsPB::GetParObject()
+const IObject *ObjectAbsPB::GetParObject()const
 {
     return this;
 }

@@ -165,7 +165,7 @@ string MysqlDB::parseDatabase(const TiXmlElement *e)
     m_ip = tmp ? tmp : "127.0.0.1";
 
     tmp = e->Attribute("port");
-    m_port = tmp ? Utility::str2int(tmp):3306;
+    m_port = tmp ? (int)Utility::str2int(tmp):3306;
 
     if (const char *tmpS = e->Attribute("charSet"))
         m_charSet = tmpS;

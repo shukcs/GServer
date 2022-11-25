@@ -19,10 +19,7 @@ using namespace das::proto;
 ////////////////////////////////////////////////////////////////////////////////
 TrackerManager::TrackerManager() : AbsPBManager()
 {
-    typedef IObject *(TrackerManager::*PrcsLoginFunc)(ISocket *, const void *);
-    InitPrcsLogin(
-        std::bind((PrcsLoginFunc)&TrackerManager::PrcsProtoBuff
-            , this, std::placeholders::_1, std::placeholders::_2));
+    InitPrcsLogin((PrcsLoginHandle)&TrackerManager::PrcsProtoBuff);
 }
 
 TrackerManager::~TrackerManager()
@@ -116,15 +113,12 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
     Log(0, "Tracker:" + uavid, 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestTrackerIdentityAuthentication!");
     if (ret)
     {
-        if (ret->GetSocket() == s)
-            return ret;
-
         AckTrackerIdentityAuthentication ack;
         ack.set_seqno(uia.seqno());
-        if (!ret->GetSocket())
+        if (!ret->IsConnect())
         {
             ack.set_result(1);
-            ret->OnLogined(true, s);
+            ret->SetLogined(true, s);
             ret->SetSimId(sim);
         }
         else
@@ -133,7 +127,7 @@ IObject *TrackerManager::_checkLogin(ISocket *s, const RequestTrackerIdentityAut
             Log(0, IObjectManager::GetObjectFlagID(ret), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
         }
 
-        ObjectAbsPB::SendProtoBuffTo(s, ack);
+        ret->SendData2Link(&ack, s);
     }
     else
     {
@@ -152,15 +146,12 @@ IObject *TrackerManager::_check3rdLogin(ISocket *s, const Request3rdIdentityAuth
     ObjectTracker *ret = (ObjectTracker *)GetObjectByID(uavid);
     if (ret)
     {
-        if (ret->GetSocket() == s)
-            return ret;
-
         Ack3rdIdentityAuthentication ack;
         ack.set_seqno(uia.seqno());
-        if (!ret->GetSocket())
+        if (!ret->IsConnect())
         {
             ack.set_result(1);
-            ret->OnLogined(true, s);
+            ret->SetLogined(true, s);
             ret->SetSimId(sim);
         }
         else
@@ -169,7 +160,7 @@ IObject *TrackerManager::_check3rdLogin(ISocket *s, const Request3rdIdentityAuth
             Log(0, IObjectManager::GetObjectFlagID(ret), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
         }
 
-        ObjectAbsPB::SendProtoBuffTo(s, ack);
+        ret->SendData2Link(&ack, s);
     }
     else
     {
@@ -183,15 +174,20 @@ IObject *TrackerManager::_checkProgram(ISocket *s, const RequestProgramUpgrade &
     string uavid = Utility::Upper(rpu.has_extradata() ? rpu.extradata() : string());
     Log(0, "Tracker:" + uavid, 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "RequestProgramUpgrade!");
 
-    AckProgramUpgrade ack;
-    ack.set_seqno(rpu.seqno());
-    ack.set_result(1);
-    ack.set_software(rpu.software());
-    ack.set_length(0);
-    ack.set_forced(false);
-    ObjectAbsPB::SendProtoBuffTo(s, ack);
+    auto ret = (ObjectTracker *)GetObjectByID("VIGAT:00000000");
 
-    return GetObjectByID("VIGAT:00000000");
+    if (ret)
+    {
+        AckProgramUpgrade ack;
+        ack.set_seqno(rpu.seqno());
+        ack.set_result(1);
+        ack.set_software(rpu.software());
+        ack.set_length(0);
+        ack.set_forced(false);
+        ret->SendData2Link(&ack, s);
+    }
+
+    return ret;
 }
 
 

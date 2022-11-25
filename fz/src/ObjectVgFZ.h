@@ -74,8 +74,8 @@ protected:
     void InitObject()override;
     void CheckTimer(uint64_t ms)override;
     bool IsAllowRelease()const override;
-    void FreshLogin(uint64_t ms) override;
-    void ProcessRcvPack(const void *pack)override;
+    void RefreshRcv(int64_t ms) override;
+    bool ProcessRcvPack(const void *pack)override;
 private:
     void _prcsLogin(das::proto::RequestFZUserIdentity *msg);
     void _prcsHeartBeat(das::proto::PostHeartBeat *msg);

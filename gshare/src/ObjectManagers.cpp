@@ -123,29 +123,25 @@ IObjectManager *ObjectManagers::GetManagerByType(int tp) const
     return NULL;
 }
 
-int ObjectManagers::ProcessReceive(ISocket *sock, void const *buf, int len, IObjectManager *mgr)
+int ObjectManagers::ProcessReceive(ISocket *sock, IObjectManager *mgr)
 {
     if (!sock)
         return 0;
 
     int ret = 0;
     Lock l(m_mutex);
-    len = sock->CopyData(m_buff, sizeof(m_buff));
+    auto len = sock->CopyData(m_buff, sizeof(m_buff));
     if (mgr)
+        return mgr->AddLoginData(sock, (const char *)m_buff, len);
+
+    for (const pair<int, IObjectManager*> &m : m_managersMap)
     {
-        ret = mgr->AddLoginData(sock, (const char *)m_buff, len);
-    }
-    else
-    {
-        for (const pair<int, IObjectManager*> &m : m_managersMap)
+        if (m.second->IsHasReuest(m_buff, len))
         {
-            if (m.second->IsHasReuest(m_buff, len))
-            {
-                mgr = m.second;
-                sock->SetLogin(mgr);
-                ret = mgr->AddLoginData(sock, (const char *)m_buff, len);
-                break;
-            }
+            mgr = m.second;
+            sock->SetLogin(mgr);
+            ret = mgr->AddLoginData(sock, (const char *)m_buff, len);
+            break;
         }
     }
     if (mgr==NULL && len==sizeof(m_buff))

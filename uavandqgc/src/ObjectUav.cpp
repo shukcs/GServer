@@ -74,27 +74,20 @@ void ObjectUav::_respondLogin(int seq, int res)
         ack->set_result(res);
         WaitSend(ack);
     }
-    OnLogined(true);
+    SetLogined(true);
 }
 
-void ObjectUav::OnLogined(bool suc, ISocket *s)
+void ObjectUav::SetLogined(bool suc, ISocket *s)
 {
-    if (IsConnect() != suc)
+    if (IsConnect()!=suc && suc)
     {
-        if (suc)
-        {
-            SendMsg(new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Login));
-            SendMsg(new ObjectSignal(this, GXClient::GXClientType(), ObjectSignal::S_Login));
-        }
-        else
-        {
-            savePos();
-        }
+		SendMsg(new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Login));
+		SendMsg(new ObjectSignal(this, GXClient::GXClientType(), ObjectSignal::S_Login));
     }
-    ObjectAbsPB::OnLogined(suc, s);
+    ObjectAbsPB::SetLogined(suc, s);
 }
 
-void ObjectUav::FreshLogin(uint64_t ms)
+void ObjectUav::RefreshRcv(int64_t ms)
 {
     m_tmLastPos = ms;
 }
@@ -210,7 +203,7 @@ void ObjectUav::ProcessMessage(const IMessage *msg)
     }
 }
 
-void ObjectUav::ProcessRcvPack(const void *pack)
+bool ObjectUav::ProcessRcvPack(const void *pack)
 {
     auto proto = (Message*)pack;
     const string &name = proto->GetDescriptor()->full_name();
@@ -234,36 +227,24 @@ void ObjectUav::ProcessRcvPack(const void *pack)
         _prcsPostBlocks((PostBlocks *)proto);
     else if (name == d_p_ClassName(PostABOperation))
         _prcsABOperation((PostABOperation *)proto);
+
+    return IsInitaled();
 }
 
 void ObjectUav::CheckTimer(uint64_t ms)
 {
-    if (!GetSocket() && IsConnect())
-    {
-        SendMsg(new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Logout));
-        SendMsg(new ObjectSignal(this, GXClient::GXClientType(), ObjectSignal::S_Logout));
-    }
-
-    ObjectAbsPB::CheckTimer(ms);
     auto msDiff = ms - m_tmLastPos;
-    if (ReleaseLater == m_stInit && ms > 100)
-    {
-        Release();
-    }
     if (msDiff > NODATARELEASETM)
     {
-        Release();
-        if (m_mission)
-            m_mission->Clear();
+        ReleaseObject();
     }
-    else if (msDiff > 6000)//超时关闭
+    else if (msDiff>6000 && IsLinked())//超时关闭
     {
         CloseLink();
     }
-    else if (GetSocket())
+    else if (IsLinked() && m_mission)
     {
-        auto nor = m_mission ? m_mission->GetNotifyUavUOR(uint32_t(ms)) : NULL;
-        if (nor)
+        if (auto nor = m_mission->GetNotifyUavUOR(uint32_t(ms)))
             WaitSend(nor);
     }
 }
@@ -271,21 +252,33 @@ void ObjectUav::CheckTimer(uint64_t ms)
 void ObjectUav::OnConnected(bool bConnected)
 {
     if (bConnected)
-        SetSocketBuffSize(WRITE_BUFFLEN);
+	{
+		SetSocketBuffSize(WRITE_BUFFLEN);
+	}
+	else
+	{
+		if (m_mission)
+			m_mission->Clear();
+
+		SendMsg(new ObjectSignal(this, ObjectGS::GSType(), ObjectSignal::S_Logout));
+		SendMsg(new ObjectSignal(this, GXClient::GXClientType(), ObjectSignal::S_Logout));
+		savePos();
+	}
 }
 
 void ObjectUav::InitObject()
 {
-    if (m_stInit == IObject::Uninitial)
+    if (!IsInitaled())
     {
-        m_stInit = IObject::Initialing;
+		IObject::InitObject();
         if (DBMessage *msg = new DBMessage(this, IMessage::DeviceQueryRslt))
         {
             msg->SetSql("queryUavInfo");
             msg->SetCondition("id", m_id);
             SendMsg(msg);
         }
-    }
+		StartTimer(500);
+	}
 }
 
 void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg)
@@ -294,7 +287,7 @@ void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg)
         return;
 
     auto tm = Utility::msTimeTick();
-    if (m_stInit == IObject::Initialed)
+    if (IsLinked())
         m_tmLastPos = tm;
 
     if (auto ms = new Uav2GSMessage(this, m_bBind?m_lastBinder:string()))
@@ -522,12 +515,12 @@ void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)
 void ObjectUav::processBaseInfo(const DBMessage &rslt)
 {
     bool suc = rslt.GetRead(EXECRSLT).ToBool();
-    m_stInit = suc ? Initialed : ReleaseLater;
-    if (suc)
-        InitialUAV(rslt, *this);
+	if (suc)
+		InitialUAV(rslt, *this);
+	else ///不存在的UAV
+		ReleaseObject();
 
-    if (Initialed == m_stInit)
-        OnLogined(suc);
+    SetLogined(suc);
     if (auto ack = new AckUavIdentityAuthentication)
     {
         ack->set_seqno(1);

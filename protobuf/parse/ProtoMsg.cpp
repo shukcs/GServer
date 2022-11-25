@@ -38,7 +38,7 @@ google::protobuf::Message *PBAbSFactoryItem::createMessage(const string &name)
 static google::protobuf::Message *parseProtobuf(const std::string &name, const char *buff, int len)
 {
     if (!buff || len < 0)
-        return false;
+        return NULL;
 
     auto msg = PBAbSFactoryItem::createMessage(name);
     if (!msg)

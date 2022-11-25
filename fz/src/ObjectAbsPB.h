@@ -21,13 +21,12 @@ class ObjectAbsPB : public IObject, public ILink
 public:
     ObjectAbsPB(const std::string &id);
     ~ObjectAbsPB();
-public:
-    static bool SendProtoBuffTo(ISocket *s, const google::protobuf::Message &ms);
+
 protected:
     bool WaitSend(google::protobuf::Message *msg);
     void CopyAndSend(const google::protobuf::Message &msg);
 
-    IObject *GetParObject()override;
+    const IObject *GetParObject()const override;
     ILink *GetLink()override;
 protected:
 };

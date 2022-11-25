@@ -44,6 +44,7 @@ class Gs2GsMessage;
 class DBMessage;
 class ObjectGS : public ObjectAbsPB
 {
+	typedef void (ObjectGS::*ProtobufPrcsF)(const google::protobuf::Message *);
 public:
     ObjectGS(const std::string &id, int seq=-1);
     ~ObjectGS();
@@ -63,8 +64,8 @@ protected:
     void InitObject()override;
     void CheckTimer(uint64_t ms)override;
     bool IsAllowRelease()const override;
-    void FreshLogin(uint64_t ms)override;
-    void ProcessRcvPack(const void *pack);
+    void RefreshRcv(int64_t ms)override;
+    bool ProcessRcvPack(const void *pack)override;
 
     void processGs2Gs(const google::protobuf::Message &msg, int tp);
     void processControlUser(const google::protobuf::Message &msg);
@@ -112,12 +113,14 @@ private:
     void _prcsReqReturn(das::proto::RequestOperationReturn *msg);
 private:
     void _checkGS(const std::string &user, int ack);
+	void _queryGSData();
     void initFriend();
     void addDBFriend(const std::string &user1, const std::string &user2);
     int _addDatabaseUser(const std::string &user, const std::string &pswd, int seq);
     void notifyUavNewFw(const std::string &fw, int seq);
     void ackSyncDeviceis();
     void saveBind(const std::string &uav, bool bBind);
+	static ProtobufPrcsF getProtobufPrcsFunc(const std::string &name);
 private:
     friend class GSManager;
     int             m_auth;
@@ -125,7 +128,7 @@ private:
     int             m_countLand;
     int             m_countPlan;
     int             m_seq;
-    uint64_t        m_tmLastInfo;
+	int64_t			m_tmLastInfo;
     std::string     m_pswd;
     std::string     m_check;
     std::list<std::string> m_friends;

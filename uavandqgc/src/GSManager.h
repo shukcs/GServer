@@ -51,7 +51,7 @@ protected:
 private:
     bool                    m_bInit;
     StringList              m_uavs;
-    std::list<ObjectGS *>   m_mgrs;
+    std::list<ObjectGS *>   m_objs;
 };
 
 #endif // __OBJECT_UAV_H__

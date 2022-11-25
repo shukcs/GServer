@@ -20,8 +20,6 @@ public:
     static TypeObject MailType();
 protected:
     int GetObjectType()const;
-    void InitObject();
-
     void ProcessMessage(const IMessage *msg);
 private:
     int            m_port;

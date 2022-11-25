@@ -26,10 +26,7 @@ using namespace SOCKETS_NAMESPACE;
 UavManager::UavManager() : AbsPBManager()
 , m_lastId(0)
 {
-    typedef IObject *(UavManager::*PrcsLoginFunc)(ISocket *, const void *);
-    InitPrcsLogin(
-        std::bind((PrcsLoginFunc)&UavManager::PrcsProtoBuff
-            , this, std::placeholders::_1, std::placeholders::_2));
+    InitPrcsLogin((PrcsLoginHandle)&UavManager::PrcsProtoBuff);
 }
 
 UavManager::~UavManager()
@@ -157,21 +154,15 @@ IObject *UavManager::_checkLogin(ISocket *s, const RequestUavIdentityAuthenticat
     string sim = uia.has_extradata() ? uia.extradata() : "";
     if (ret)
     {
-        bool bLogin = !ret->IsConnect() && ret->IsInitaled();
+        bool bLogin = !ret->IsConnect();
         if (bLogin)
-        {
             ret->SetSimId(sim);
-            ret->OnLogined(true, s);
-        }
-        else
-        {
-            Log(0, IObjectManager::GetObjectFlagID(ret), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
-        }
 
+		ret->SetLogined(true, s);
         AckUavIdentityAuthentication ack;
         ack.set_seqno(uia.seqno());
         ack.set_result(bLogin ? 1 : 0);
-        ObjectAbsPB::SendProtoBuffTo(s, ack);
+        ret->SendData2Link(&ack, s);
     }
     else
     {

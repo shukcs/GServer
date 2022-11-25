@@ -44,14 +44,14 @@ public:
 protected:
     virtual int GetObjectType()const override;
     virtual void ProcessMessage(const IMessage *msg)override;
-    void ProcessRcvPack(const void *pack)override;
-    void OnLogined(bool suc, ISocket *s = NULL)override;
+    bool ProcessRcvPack(const void *pack)override;
+    void SetLogined(bool suc, ISocket *s = NULL)override;
     void CheckTimer(uint64_t ms)override;
     void OnConnected(bool bConnected)override;
     void InitObject()override;
     bool IsAllowRelease()const override;
     ILink *GetLink()override;
-    void FreshLogin(uint64_t ms)override;
+    void RefreshRcv(int64_t ms)override;
 private:
     void _prcsPosAuth(das::proto::RequestPositionAuthentication *msg);
     void _prcsOperationInformation(das::proto::PostOperationInformation *msg);

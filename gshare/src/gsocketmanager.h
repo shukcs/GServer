@@ -21,8 +21,6 @@ class GSocketManager : public ISocketManager
     typedef std::queue<ILink *> SocketHandleQue;
     typedef std::queue<int> SocketPrcsQue;
     typedef std::map<ISocket *, FuncOnBinded> SocketBindedCallbacks;
-    typedef std::list<ISocket *> SocketList;
-    typedef std::map<int64_t, SocketList> SecSocketMap;
 public:
     SHARED_DECL static ISocketManager *CreateManager(int nThread = 0, int maxSock = 100000);
 protected:
@@ -32,7 +30,7 @@ GSocketManager是个线程池，管理secket整个生存周期
 nThread:创建子线程个数,0将不创建新线程，一般当客户端使用
 maxSock:支持最大连接数
 ************************************************************************/
-    GSocketManager(int nThread, int maxSock);
+    GSocketManager(GSocketManager *parent, int nThread, int maxSock);
     ~GSocketManager();
 
     bool AddSocket(ISocket *);
@@ -69,16 +67,17 @@ private:
     void _remove(int h);
     void _addSocketHandle(int h, bool bListen=false);
     int _createSocket(int tp=SOCK_STREAM);
-    void _close(ISocket *sock, bool prcs = true);
+    void _close(ISocket *sock);
     void _closeAfterSend(ISocket *sock);
     void _addAcceptSocket(ISocket *sock, int64_t sec);
-    void _checkSocketTimeout(int64_t sec);
+    void _checkSocketTimeout(int fd, int64_t us);
 #if !defined _WIN32 && !defined _WIN64
     bool _isCloseEvent(uint32_t e)const;
 #endif
-    void _earseListen(ISocket &sock);
 private:
+	friend class ThreadMgr;
     int                         m_openMax;
+    ISocketManager              *m_parent;
     std::mutex                  *m_mtx;
     Thread                      *m_thread;
     std::map<int, ISocket*>     m_sockets;
@@ -89,7 +88,6 @@ private:
     char                        m_buff[1024];
     static bool                 s_bRun;
     SocketBindedCallbacks       m_bindedCBs;
-    SecSocketMap                m_socketsAccept;
 #if defined _WIN32 || defined _WIN64 //Windows与epoll对应的是IOCP，但不好做成epoll一样操作
     void _checkMaxSock();
     SOCKET                      m_maxsock;

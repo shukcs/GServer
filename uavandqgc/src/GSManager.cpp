@@ -24,10 +24,7 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////
 GSManager::GSManager() : AbsPBManager()
 {
-    typedef IObject *(GSManager::*PrcsLoginFunc)(ISocket *, const void *);
-    InitPrcsLogin(
-        std::bind((PrcsLoginFunc)&GSManager::PrcsProtoBuff
-            , this, std::placeholders::_1, std::placeholders::_2));
+    InitPrcsLogin((PrcsLoginHandle)&GSManager::PrcsProtoBuff);
 }
 
 GSManager::~GSManager()
@@ -124,9 +121,9 @@ void GSManager::processDeviceLogin(int tp, const std::string &dev, bool bLogin)
     udl.set_operation(bLogin ? 1 : 0);
     udl.add_id(dev);
 
-    for (auto itr : m_mgrs)
+    for (auto itr : m_objs)
     {
-        if (itr->IsConnect())
+        if (itr->IsLinked())
             itr->CopyAndSend(udl);
     }
 }
@@ -152,28 +149,27 @@ IObject *GSManager::prcsPBLogin(ISocket *s, const RequestGSIdentityAuthenticatio
 
     string usr = Utility::Lower(rgi->userid());
     string pswd = rgi->password();
-    ObjectGS *o = (ObjectGS*)GetObjectByID(usr);
-    if (o && o->IsInitaled())
+    auto ret = (ObjectGS*)GetObjectByID(usr);
+    if (ret)
     {
-        bool bLogin = !o->IsConnect() && o->GetPswd() == pswd;
-        if (bLogin)
-            o->OnLogined(true, s);
-        else
-            Log(0, IObjectManager::GetObjectFlagID(o), 0, "[%s:%d]%s", s->GetHost().c_str(), s->GetPort(), "login fail");
+        s->SetHandleLink(ret);
+        bool bLogin = !ret->IsConnect() && ret->GetPswd() == pswd;
+		ret->SetLogined(bLogin, s);
 
         AckGSIdentityAuthentication ack;
         ack.set_seqno(rgi->seqno());
         ack.set_result(bLogin ? 1 : 0);
-        ack.set_auth(o->Authorize());
-        ObjectAbsPB::SendProtoBuffTo(s, ack);
+        ack.set_auth(ret->Authorize());
+
+        ret->SendData2Link(&ack, s);
     }
-    else if(o==NULL)
+    else if(ret ==NULL)
     {
-        o = new ObjectGS(usr, rgi->seqno());
-        o->SetPswd(pswd);
+		ret = new ObjectGS(usr, rgi->seqno());
+		ret->SetPswd(pswd);
     }
 
-    return o;
+    return ret;
 }
 
 IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
@@ -183,16 +179,19 @@ IObject *GSManager::prcsPBNewGs(ISocket *s, const das::proto::RequestNewGS *msg)
 
     string userId = Utility::Lower(msg->userid());
     ObjectGS *o = (ObjectGS *)GetObjectByID(userId);
-    if (o && (o->GetSocket() || !o->IsAllowRelease()))
+    if (o && (o->IsLinked() || !o->IsAllowRelease()))
     {
         AckNewGS ack;
         ack.set_seqno(msg->seqno());
         ack.set_result(0);
-        ObjectAbsPB::SendProtoBuffTo(s, ack);
+        o->SendData2Link(&ack, s);
         return NULL;
     }
     if (!o)
-        o = new ObjectGS(userId);
+	{
+		o = new ObjectGS(userId);
+		o->SetAuth(IObject::Type_ReqNewUser);
+	}
 
     if (o)
     {
@@ -226,9 +225,8 @@ void GSManager::LoadConfig(const TiXmlElement *root)
                 obj->SetPswd(pswd);
                 const char *auth = e->Attribute("auth");
                 obj->m_auth = auth ? int(Utility::str2int(auth)) : 3;
-                obj->m_stInit = IObject::Initialed;
                 AddObject(obj);
-                m_mgrs.push_back(obj);
+                m_objs.push_back(obj);
             }
 
             e = e->NextSiblingElement("Object");

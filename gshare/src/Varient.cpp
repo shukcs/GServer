@@ -8,7 +8,7 @@ const static StringList sEmptyStrLs;
 ////////////////////////////////////////////////////////////////////////////////
 Variant::Variant(VariantType tp) : m_tp(tp), m_bValid(false), m_nU64(0)
 {
-    ensureConstruction(tp);
+    ensureConstruct(tp);
 }
 
 Variant::Variant(const Variant &oth) : m_tp(Type_Unknow)
@@ -79,11 +79,12 @@ Variant::~Variant()
 
 bool Variant::Add(const Variant&v)
 {
-    if (!v.isBasicalType() || (Type_Unknow!=m_tp && m_tp!=v.elementListType()))
+    if (m_tp == Type_Unknow)
+        ensureConstruct(v.elementListType());
+
+    if (!v.isBasicalType() || m_tp!=v.elementListType())
         return false;
 
-    if (m_tp == Type_Unknow)
-        ensureConstruction(v.elementListType());
 
     switch (v.GetType())
     {
@@ -168,15 +169,21 @@ uint8_t Variant::ToUint8() const
 
 int64_t Variant::ToInt64() const
 {
-    if (Type_int64 == m_tp || Type_uint64 == m_tp)
-        return m_nS64;
+	if (Type_int64 == m_tp || Type_uint64 == m_tp)
+		return m_nS64;
+	else if (Type_int32 == m_tp || Type_uint32 == m_tp)
+		return m_nS;
+
     return 0;
 }
 
 uint64_t Variant::ToUint64() const
 {
     if (Type_int64 == m_tp || Type_uint64 == m_tp)
-        return m_nU64;
+		return m_nU64;
+	else if (Type_int32 == m_tp || Type_uint32 == m_tp)
+		return m_nU;
+
     return 0;
 }
 
@@ -306,9 +313,9 @@ Variant &Variant::operator=(const Variant &oth)
     if (m_tp != oth.m_tp)
     {
         ensureDestruct();
-        ensureConstruction(oth.m_tp);
+        ensureConstruct(oth.m_tp);
     }
-    m_bValid = oth.m_bValid;
+
     switch (m_tp)
     {
     case Type_string:
@@ -355,7 +362,7 @@ Variant &Variant::operator=(const Variant &oth)
     return *this;
 }
 
-void Variant::ensureConstruction(VariantType tp)
+void Variant::ensureConstruct(VariantType tp)
 {
     switch (tp)
     {
@@ -379,6 +386,8 @@ void Variant::ensureConstruction(VariantType tp)
         break;
     }
     m_tp = tp;
+    if (Type_Unknow != m_tp)
+        m_bValid = true;
 }
 
 void Variant::ensureDestruct()

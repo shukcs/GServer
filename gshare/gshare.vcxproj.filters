@@ -40,9 +40,9 @@
     <ClInclude Include="src\SocketAddress.h" />
     <ClInclude Include="src\socketBase.h" />
     <ClInclude Include="src\socket_include.h" />
-    <ClInclude Include="src\Thread.h" />
     <ClInclude Include="src\Utility.h" />
     <ClInclude Include="src\Varient.h" />
     <ClInclude Include="src\BussinessThread.h" />
+    <ClInclude Include="src\Thread.h" />
   </ItemGroup>
 </Project>

@@ -62,7 +62,7 @@ namespace Utility
 	/** Convert sockaddr struct to human readable string.
 		\param sa Ptr to sockaddr struct */
 
-    SHARED_DECL unsigned long ThreadID();
+    SHARED_DECL int ThreadID();
     SHARED_DECL std::string ToString(double d);
     /** File system stuff */
     SHARED_DECL std::string ModulePath();
@@ -87,7 +87,7 @@ namespace Utility
         return false;
     }
     template<typename T, typename Contianer = std::queue<T> >
-    static bool Pop(Contianer &q, T &e)
+    static bool PullQue(Contianer &q, T &e)
     {
         if (q.empty())
             return false;

@@ -9,13 +9,10 @@ namespace google {
     }
 }
 
-class ExecutItem;
-class VGMySql;
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;
 #endif
 
-class ProtoMsg;
 class ObjectAbsPB : public IObject, public ILink
 {
     typedef std::map<google::protobuf::Message*, bool> MapMessage;
@@ -23,11 +20,9 @@ class ObjectAbsPB : public IObject, public ILink
 public:
     ObjectAbsPB(const std::string &id);
     ~ObjectAbsPB();
-public:
-    static bool SendProtoBuffTo(ISocket *s, const google::protobuf::Message &ms);
 protected:
-    bool WaitSend(google::protobuf::Message *msg);
-    IObject *GetParObject()override;
+    void WaitSend(google::protobuf::Message *msg);
+    const IObject *GetParObject()const override;
     ILink *GetLink()override;
     void CopyAndSend(const google::protobuf::Message &msg);
 protected:

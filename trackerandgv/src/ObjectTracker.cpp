@@ -42,9 +42,9 @@ int ObjectTracker::GetObjectType() const
 
 void ObjectTracker::_respondLogin(const RequestTrackerIdentityAuthentication &ra)
 {
-    if(GetSocket())
+    if(IsLinked())
     {
-        OnLogined(true);
+        SetLogined(true);
         auto id = Utility::Upper(ra.trackerid());
         if (auto ack = new AckTrackerIdentityAuthentication)
         {
@@ -57,9 +57,9 @@ void ObjectTracker::_respondLogin(const RequestTrackerIdentityAuthentication &ra
 
 void ObjectTracker::_respond3rdLogin(const Request3rdIdentityAuthentication &ra)
 {
-    if (GetSocket())
+    if (IsConnect())
     {
-        OnLogined(true);
+        SetLogined(true);
         auto uav = Utility::Upper(ra.identification());
         if (auto ack = new Ack3rdIdentityAuthentication)
         {
@@ -70,7 +70,7 @@ void ObjectTracker::_respond3rdLogin(const Request3rdIdentityAuthentication &ra)
     }
 }
 
-void ObjectTracker::OnLogined(bool suc, ISocket *s)
+void ObjectTracker::SetLogined(bool suc, ISocket *s)
 {
     if (IsConnect() != suc && suc)
     {
@@ -79,7 +79,7 @@ void ObjectTracker::OnLogined(bool suc, ISocket *s)
         if (auto ms = new ObjectSignal(this, GXClient::GXClientType(), ObjectSignal::S_Login))
             SendMsg(ms);
     }
-    ObjectAbsPB::OnLogined(suc, s);
+    ObjectAbsPB::SetLogined(suc, s);
 }
 
 bool ObjectTracker::IsAllowRelease() const
@@ -95,7 +95,7 @@ ILink *ObjectTracker::GetLink()
     return NULL;
 }
 
-void ObjectTracker::FreshLogin(uint64_t ms)
+void ObjectTracker::RefreshRcv(int64_t ms)
 {
     m_tmPos = ms;
 }
@@ -128,12 +128,9 @@ void ObjectTracker::ProcessMessage(const IMessage *msg)
     }
 }
 
-void ObjectTracker::ProcessRcvPack(const void *pack)
+bool ObjectTracker::ProcessRcvPack(const void *pack)
 {
-    if (!m_p)
-        return;
     auto ptoto = (const Message*)pack;
-
     const string &name = ptoto->GetDescriptor()->full_name();
     if (name == d_p_ClassName(RequestTrackerIdentityAuthentication))
         _respondLogin(*(RequestTrackerIdentityAuthentication*)ptoto);
@@ -151,6 +148,8 @@ void ObjectTracker::ProcessRcvPack(const void *pack)
         _prcsProgramUpgrade((RequestProgramUpgrade *)ptoto);
     else if (name == d_p_ClassName(PostHeartBeat))
         _prcsHeartBeat(*(PostHeartBeat *)ptoto);
+
+    return IsInitaled();
 }
 
 int ObjectTracker::_checkPos(double lat, double lon, double alt)
@@ -217,7 +216,7 @@ void ObjectTracker::CheckTimer(uint64_t ms)
     ObjectAbsPB::CheckTimer(ms);
     ms -= m_tmPos;
     if (ms > 600000)
-        Release();
+        ReleaseObject();
     else if (ms>10000)//³¬Ê±¹Ø±Õ
         CloseLink();
 }
@@ -236,15 +235,15 @@ void ObjectTracker::OnConnected(bool bConnected)
 
 void ObjectTracker::InitObject()
 {
-    if (m_stInit == IObject::Uninitial)
+    if (!IsInitaled())
     {
+        IObject::InitObject();
         if (auto ack = new AckTrackerIdentityAuthentication)
         {
             ack->set_seqno(1);
             ack->set_result(1);
             WaitSend(ack);
         }
-        m_stInit = IObject::Initialed;
     }
 }
 
