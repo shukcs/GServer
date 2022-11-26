@@ -569,11 +569,7 @@ bool ObjectVgFZ::ackLogin(const DBMessage &msg)
         m_email = msg.GetRead("email").ToString();
         m_info = msg.GetRead("info").ToString();
     }
-    else
-    {
-        bLogin = false;
-        m_pswd = string();
-    }
+
     SetLogined(bLogin);
     if (auto ack = new AckFZUserIdentity)
     {
