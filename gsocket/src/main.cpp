@@ -1,8 +1,8 @@
-#include "gsocketmanager.h"
-#include "gsocket.h"
+#include "net/gsocketmanager.h"
+#include "net/gsocket.h"
 #include "ObjectManagers.h"
-#include "Utility.h"
-#include "GLibrary.h"
+#include "common/Utility.h"
+#include "common/GLibrary.h"
 #if defined _WIN32 || defined _WIN64
 #include <conio.h>
 #else

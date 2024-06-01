@@ -1,13 +1,13 @@
 #include "ObjectAbsPB.h"
-#include "socketBase.h"
+#include "net/socketBase.h"
 #include "das.pb.h"
 #include "ProtoMsg.h"
 #include "Messages.h"
-#include "Utility.h"
+#include "common/Utility.h"
 #include "VGMysql.h"
 #include "DBExecItem.h"
 #include "DBMessages.h"
-#include "Lock.h"
+#include "common/Lock.h"
 
 using namespace das::proto;
 using namespace google::protobuf;

@@ -4,7 +4,7 @@
 #include "ProtoMsg.h"
 #include "Messages.h"
 #include "common/Utility.h"
-#include "MD5lib.h"
+#include "common/MD5lib.h"
 #include "IMessage.h"
 #include "DBMessages.h"
 #include "VgFZManager.h"
