@@ -21,7 +21,7 @@ class GXClient;
 class GSOrUavMessage : public IMessage
 {
 public:
-    GSOrUavMessage(IObject *sender, const std::string &idRcv, int rcv);
+    GSOrUavMessage(const IObject &sender, const std::string &idRcv, int rcv);
     GSOrUavMessage(IObjectManager *sender, const std::string &idRcv, int rcv);
     ~GSOrUavMessage();
 
@@ -42,7 +42,7 @@ class Uav2GSMessage : public GSOrUavMessage
 {
     CLASS_INFO(Uav2GSMessage)
 public:
-    Uav2GSMessage(ObjectUav *sender, const std::string &idRcv);
+    Uav2GSMessage(const ObjectUav &sender, const std::string &idRcv);
     Uav2GSMessage(IObjectManager *sender, const std::string &idRcv);
 private:
 };
@@ -51,7 +51,7 @@ class GS2UavMessage : public GSOrUavMessage
 {
     CLASS_INFO(GS2UavMessage)
 public:
-    GS2UavMessage(ObjectGS *sender, const std::string &idRcv);
+    GS2UavMessage(const ObjectGS &sender, const std::string &idRcv);
     GS2UavMessage(IObjectManager *sender, const std::string &idRcv);
 
     int GetAuth()const;
@@ -63,7 +63,7 @@ class Gs2GsMessage : public GSOrUavMessage
 {
     CLASS_INFO(Gs2GsMessage)
 public:
-    Gs2GsMessage(ObjectGS *sender, const std::string &idRcv);
+    Gs2GsMessage(const ObjectGS &sender, const std::string &idRcv);
     Gs2GsMessage(IObjectManager *sender, const std::string &idRcv);
 private:
 };
@@ -72,7 +72,7 @@ class Uav2GXMessage : public GSOrUavMessage
 {
     CLASS_INFO(Uav2GXMessage)
 public:
-    Uav2GXMessage(ObjectUav *sender);
+    Uav2GXMessage(const ObjectUav &sender);
 private:
 };
 

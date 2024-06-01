@@ -1,6 +1,6 @@
 #include "DBMessages.h"
 #include "ObjectBase.h"
-#include "Utility.h"
+#include "common/Utility.h"
 #include "DBManager.h"
 
 using namespace std;
@@ -15,7 +15,7 @@ static const char *rcvId(DBMessage::OBjectFlag f, int objTp)
     {
         switch (objTp)
         {
-        case IObject::Plant:
+        case IObject::Uav:
             f = DBMessage::DB_Uav; break;
         case IObject::GroundStation:
             f = DBMessage::DB_GS; break;
@@ -43,8 +43,8 @@ static const char *rcvId(DBMessage::OBjectFlag f, int objTp)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //DBMessage
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-DBMessage::DBMessage(IObject *sender, MessageType ack, OBjectFlag rcv)
-: IMessage(new MessageData(sender, DBExec), rcvId(rcv, sender->GetObjectType()), IObject::DBMySql)
+DBMessage::DBMessage(const IObject &sender, MessageType ack, OBjectFlag rcv)
+: IMessage(new MessageData(sender, DBExec), rcvId(rcv, sender.GetObjectType()), IObject::DBMySql)
 , m_seq(0), m_ackTp(ack), m_bQueryList(false), m_limit(200),m_begLimit(0)
 {
 }
@@ -55,7 +55,7 @@ DBMessage::DBMessage(IObjectManager *sender, MessageType ack, OBjectFlag rcv)
 {
 }
 
-DBMessage::DBMessage(ObjectDB *sender, int tpMsg, int tpRcv, const std::string &idRcv)
+DBMessage::DBMessage(const ObjectDB &sender, int tpMsg, int tpRcv, const std::string &idRcv)
 : IMessage(new MessageData(sender, tpMsg), idRcv, tpRcv), m_seq(0), m_ackTp(Unknown)
 , m_bQueryList(false), m_limit(200), m_begLimit(0)
 {
@@ -229,7 +229,7 @@ DBMessage *DBMessage::GenerateAck(ObjectDB *db) const
 {
     if (db && m_ackTp >= DBAckBeging && m_ackTp < DBAckEnd)
     {
-        DBMessage *ret = new DBMessage(db, m_ackTp, GetSenderType(), GetSenderID());
+        DBMessage *ret = new DBMessage(*db, m_ackTp, GetSenderType(), GetSenderID());
         if (!ret)
             return NULL;
         ret->SetSeqNomb(m_seq);

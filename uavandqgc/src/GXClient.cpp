@@ -1,14 +1,14 @@
 #include "GXClient.h"
 #include "das.pb.h"
-#include "Utility.h"
+#include "common/Utility.h"
 #include "ObjectManagers.h"
 #include "GXLink.h"
 #include "ObjectUav.h"
 #include "Messages.h"
-#include "Thread.h"
-#include "gsocketmanager.h"
+#include "common/Thread.h"
+#include "net/gsocketmanager.h"
 #include "ObjectAbsPB.h"
-#include "Lock.h"
+#include "common/Lock.h"
 #include "ProtoMsg.h"
 
 #define GXHost "101.201.234.242"
@@ -86,8 +86,6 @@ int GXClient::GXClientType()
 GXManager::GXManager() : IObjectManager(), m_sockMgr(GSocketManager::CreateManager(0,10000))
 , m_tmCheck(0), m_mtx(new mutex)
 {
-    if (m_sockMgr)
-        m_thread = new GXLinkThread(m_sockMgr);
 }
 
 GXManager::~GXManager()
@@ -177,6 +175,9 @@ void GXManager::PrcsProtoBuff(const google::protobuf::Message *proto)
 
 void GXManager::LoadConfig(const TiXmlElement *)
 {
+    if (m_sockMgr)
+        m_thread = new GXLinkThread(m_sockMgr);
+
     InitThread(1, 0);
 }
 

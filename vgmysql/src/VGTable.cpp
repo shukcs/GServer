@@ -10,7 +10,7 @@
 #include "MysqlDB.h"
 #include "VGMysql.h"
 #include "tinyxml.h"
-#include "Utility.h"
+#include "common/Utility.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 //VGConstraint

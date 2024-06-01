@@ -47,11 +47,12 @@ static const uint8_t rstr[] = {
     41,   42,   43,   44,   45,   46,   47,   48,   49,   50,   51,   0xff, 0xff, 0xff, 0xff, 0xff
 };
 
-std::string Base64::encode(const unsigned char *cnt, size_t l)
+std::string Base64::encode(const void *data, size_t l)
 {
     size_t len = encode_length(l);
     std::string strRet(len+1, 0);
 
+    uint8_t *cnt = (uint8_t *)data;
     char *base64 = &strRet.at(0);
     for (size_t i = 0, pos=0; i < l; i += 3)
 	{

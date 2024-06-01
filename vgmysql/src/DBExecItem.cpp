@@ -11,7 +11,7 @@
 #include <tinyxml.h>
 #include <string.h>
 #include <chrono>
-#include "Utility.h"
+#include "common/Utility.h"
 
 #define LeftBraceCount(f) ((f&NumbLeftMask))
 #define RightBraceCount(f) ((f&NumbRightMask)>>8)

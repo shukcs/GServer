@@ -6,32 +6,31 @@
 #include <string>
 #include <queue>
 
-#define DoubleEqual(a, b) (0 == (int)(((a)-(b))*0x100000))
+#define DoubleEqual(a, b) (0 == (int)(((a)-(b))*1000000))
 typedef std::list<std::string> StringList;
 namespace Utility
 {
     SHARED_DECL std::string RandString(int len = 6, bool skipLow=false);
     SHARED_DECL const std::string &EmptyStr();
-    SHARED_DECL int FindString(const char *src, int len, const char *cnt, int cntLen = -1);
-    SHARED_DECL int FindString(const char *src, int len, const std::string &str);
-    SHARED_DECL int FindString(const std::string &src, const std::string &str);
+    SHARED_DECL int FindString(const char *src, int len, const char *cnt, int cntLen = -1, bool bCase=true);
+    SHARED_DECL int FindString(const char *src, int len, const std::string &str, bool bCase = true);
+    SHARED_DECL int FindString(const std::string &src, const std::string &str, bool bCase = true);
     SHARED_DECL StringList SplitString(const std::string &str, const std::string &sp, bool bSkipEmpty = true); 
     SHARED_DECL std::string Trim(const std::string& str);
     SHARED_DECL void ReplacePart(std::string &str, char part, char rpc);
-    SHARED_DECL uint32_t Crc32(const char *src, int len);
-    SHARED_DECL std::string base64(const char *str_in, int len);
-    SHARED_DECL size_t base64d(const std::string &str_in, char *buf, size_t len);
     SHARED_DECL std::string l2string(long l);
     SHARED_DECL std::string bigint2string(int64_t l);
     SHARED_DECL std::string bigint2string(uint64_t l);
     SHARED_DECL int64_t str2int(const std::string &str, unsigned radix=10, bool *suc = NULL);
-    SHARED_DECL uint64_t atoi64(const std::string& str);
+    SHARED_DECL int64_t atoi64(const std::string& str, bool *bSuc=NULL);
+    SHARED_DECL double atodouble(const std::string& str, bool *bSuc=NULL);
     SHARED_DECL unsigned int hex2unsigned(const std::string& str);
     SHARED_DECL std::string rfc1738_encode(const std::string& src);
     SHARED_DECL std::string rfc1738_decode(const std::string& src);
-    SHARED_DECL bool IsBigEndian(void);
+    SHARED_DECL bool IsLittleEndian(void);
     SHARED_DECL void toBigendian(uint32_t s, void *buff);
     SHARED_DECL uint32_t fromBigendian(const void *buff);
+    SHARED_DECL uint16_t u16fromBigendian(const void *buff);
     SHARED_DECL int64_t usTimeTick();
     SHARED_DECL int64_t msTimeTick();
     SHARED_DECL long secTimeCount();
@@ -75,6 +74,8 @@ namespace Utility
     SHARED_DECL void Sleep(int ms);
     SHARED_DECL bool PipeCmd(char* buff, int len, const char *cmd);
     SHARED_DECL void Dump(const std::string &file, int sig);
+    ///转为周期值，比如角度361°=>(-180,180]为1°
+    SHARED_DECL double ToCycleValue(double val, double lowBound, double upBound);
 
     template<typename T, typename Contianer = std::list<T> >
     static bool IsContainsInList(const Contianer &ls, const T &e)

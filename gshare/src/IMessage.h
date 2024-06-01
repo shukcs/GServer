@@ -22,7 +22,7 @@ class IObjectManager;
 class MessageData
 {
 public:
-    SHARED_DECL MessageData(const IObject *sender, int16_t tpMs);
+    SHARED_DECL MessageData(const IObject &sender, int16_t tpMs);
     SHARED_DECL MessageData(const IObjectManager *sender, int16_t tpMs);
     SHARED_DECL MessageData(const std::string &sender, int tpSnd, int16_t tpMs);
     SHARED_DECL virtual ~MessageData();
@@ -61,6 +61,7 @@ public:
         NotifyFWUpdate,
         SyncDeviceis,
         UserMessageEnd,
+        ReqService,
 
         BindUavRslt,
         ControlDeviceRslt,
@@ -71,6 +72,8 @@ public:
         QueryDeviceRslt,
         SyncDeviceisRslt,
         DeviceAllocationRslt,
+        ReqServiceRslt,
+        ServiceData,
 
         DeviceMessageEnd,
         User2User = DeviceMessageEnd,

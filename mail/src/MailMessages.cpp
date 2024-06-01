@@ -10,7 +10,7 @@ static const string sStrEmpty;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //MailMessage
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-MailMessage::MailMessage(IObject *sender, const std::string &rcv)
+MailMessage::MailMessage(const IObject &sender, const std::string &rcv)
 : IMessage(new MessageData(sender, SendMail), rcv, IObject::Mail), m_seq(-1)
 {
 }
@@ -78,7 +78,7 @@ int MailMessage::GetContentLength() const
 
 MailRsltMessage *MailMessage::GenerateAck(IObject *db) const
 {
-    if (auto msg = db ? new MailRsltMessage(db, GetSenderType(), GetSenderID()) : NULL)
+    if (auto msg = db ? new MailRsltMessage(*db, GetSenderType(), GetSenderID()) : NULL)
     {
         msg->SetSeq(m_seq); 
         return msg;
@@ -89,7 +89,7 @@ MailRsltMessage *MailMessage::GenerateAck(IObject *db) const
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //MailRsltMessage
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-MailRsltMessage::MailRsltMessage(IObject *sender, int tp, const std::string &rcv)
+MailRsltMessage::MailRsltMessage(const IObject &sender, int tp, const std::string &rcv)
     : IMessage(new MessageData(sender, MailRslt), rcv, tp), m_seq(-1)
 {
 }

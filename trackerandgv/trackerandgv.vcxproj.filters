@@ -7,7 +7,7 @@
     <Filter Include="src\proto">
       <UniqueIdentifier>{ee09e184-0dfb-4f6e-b060-17cb460f5146}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\parse">
+    <Filter Include="parse">
       <UniqueIdentifier>{ed975b1a-196e-47f4-a9af-928c51dd18e0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -40,7 +40,7 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\protobuf\parse\ProtoMsg.cpp">
-      <Filter>src\parse</Filter>
+      <Filter>parse</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -72,7 +72,7 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\protobuf\parse\ProtoMsg.h">
-      <Filter>src\parse</Filter>
+      <Filter>parse</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

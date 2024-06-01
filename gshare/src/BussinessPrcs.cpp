@@ -1,14 +1,16 @@
-﻿#include "BussinessThread.h"
+﻿#include "BussinessPrcs.h"
 #include "ObjectBase.h"
-#include "socketBase.h"
-#include "Thread.h"
+#include "net/socketBase.h"
+#include "common/Thread.h"
 #include "ObjectManagers.h"
-#include "Utility.h"
-#include "Lock.h"
+#include "common/Utility.h"
+#include "common/Lock.h"
 #include "IMessage.h"
 #include "ILog.h"
-#include "Varient.h"
+#include "common/Varient.h"
 #include <stdarg.h>
+#include "common/Thread.h"
+#include "common/GLoop.h"
 
 using namespace std;
 #ifdef SOCKETS_NAMESPACE
@@ -35,21 +37,32 @@ public:
 };
 using namespace std;
 ////////////////////////////////////////////////////////////////////////////////////////
-//BussinessThread
+//BussinessPrcs
 ////////////////////////////////////////////////////////////////////////////////////////
-BussinessThread::BussinessThread(IObjectManager &mgr) :Thread(true), m_tmCheckLink(0)
+BussinessPrcs::BussinessPrcs(IObjectManager &mgr, bool bEnableTimer) : m_tmCheckLink(0)
 , m_mgr(mgr), m_mtx(NULL), m_mtxQue(new std::mutex), m_szBuff(0), m_buff(NULL)
+, m_thread(NULL), m_bEnableTimer(bEnableTimer)
 {
-    SetEnableTimer(true);
 }
 
-BussinessThread::~BussinessThread()
+BussinessPrcs::~BussinessPrcs()
 {
     delete m_mtx;
     delete m_buff;
+    delete m_thread;
 }
 
-void BussinessThread::InitialBuff(uint16_t sz)
+
+void BussinessPrcs::SetRunning(bool b /*= true*/)
+{
+    if (!m_thread && b)
+        _bindhread(new Thread());
+
+    if (m_thread)
+        m_thread->SetRunning(b);
+}
+
+void BussinessPrcs::InitialBuff(uint16_t sz)
 {
     if (sz > m_szBuff)
     {
@@ -59,7 +72,7 @@ void BussinessThread::InitialBuff(uint16_t sz)
     }
 }
 
-std::mutex * BussinessThread::GetMutex()
+std::mutex * BussinessPrcs::GetMutex()
 {
     if (!m_mtx)
         m_mtx = new std::mutex;
@@ -67,30 +80,30 @@ std::mutex * BussinessThread::GetMutex()
     return m_mtx;
 }
 
-int BussinessThread::LinkCount() const
+int BussinessPrcs::LinkCount() const
 {
     Lock ll(m_mtxQue);
     return m_linksAdd.size() + m_links.size();
 }
 
-bool BussinessThread::PushRelaseMsg(IMessage *ms)
+bool BussinessPrcs::PushRelaseMsg(IMessage *ms)
 {
     Lock l(m_mtxQue);
     m_msgRelease.push(ms);
     return true;
 }
 
-char * BussinessThread::AllocBuff() const
+char * BussinessPrcs::AllocBuff() const
 {
     return m_buff;
 }
 
-int BussinessThread::m_BuffSize() const
+int BussinessPrcs::m_BuffSize() const
 {
     return m_szBuff;
 }
 
-bool BussinessThread::Send2Link(const std::string &id, void *data)
+bool BussinessPrcs::Send2Link(const std::string &id, void *data)
 {
     if (!data || id.empty())
         return false;
@@ -99,25 +112,55 @@ bool BussinessThread::Send2Link(const std::string &id, void *data)
     return true;
 }
 
-bool BussinessThread::AddOneLink(ILink *l)
+bool BussinessPrcs::AddOneLink(ILink *l)
 {
     Lock ll(m_mtxQue);
     m_linksAdd.push(l);
     return true;
 }
 
-IObjectManager *BussinessThread::GetManager()
+IObjectManager *BussinessPrcs::GetManager()
 {
     return &m_mgr;
 }
 
-void BussinessThread::AddWaiPrcs(const std::string &idLink)
+void BussinessPrcs::AddWaiPrcs(const std::string &idLink)
 {
     Lock ll(m_mtxQue);
     m_queAddWaiPrcs.push(idLink);
 }
 
-string BussinessThread::PopWaiPrcs()
+int BussinessPrcs::GetThreadId() const
+{
+    return m_thread ? m_thread->GetThreadId() : -1;
+}
+
+void BussinessPrcs::SetEnableTimer(bool b)
+{
+    if (m_thread)
+        m_thread->SetEnableTimer(b);
+}
+
+bool BussinessPrcs::IsEnableTimer() const
+{
+    return m_thread && m_thread->IsEnableTimer();
+}
+
+Timer * BussinessPrcs::AddTimer(const Variant &id, uint32_t tmTriggle, bool repeat)
+{
+    if (m_thread)
+        return m_thread->AddTimer(id, tmTriggle, repeat);
+
+    return NULL;
+}
+
+void BussinessPrcs::KillTimer(Timer *&timer)
+{
+    if (m_thread)
+        m_thread->KillTimer(timer);
+}
+
+string BussinessPrcs::PopWaiPrcs()
 {
     string data;
     Lock ll(m_mtxQue);
@@ -125,7 +168,7 @@ string BussinessThread::PopWaiPrcs()
     return data;
 }
 
-void BussinessThread::PushSnd(SendStruct *val, bool bSnding)
+void BussinessPrcs::PushSnd(SendStruct *val, bool bSnding)
 {
     Lock ll(m_mtxQue);
     if (bSnding)
@@ -134,13 +177,13 @@ void BussinessThread::PushSnd(SendStruct *val, bool bSnding)
         m_sendedDatas.push(val);
 }
 
-void BussinessThread::ReleaseSndData(SendStruct *v)
+void BussinessPrcs::ReleaseSndData(SendStruct *v)
 {
     m_mgr.m_pfRlsPack(v->data);
     delete v;
 }
 
-void BussinessThread::ProcessAddLinks()
+void BussinessPrcs::ProcessAddLinks()
 {
     while (ILink *l = PopQue(m_linksAdd))
     {
@@ -153,11 +196,12 @@ void BussinessThread::ProcessAddLinks()
         if (!id.empty() && m_links.find(id) == m_links.end())
             m_links[id] = l;
 
+        l->OnConnected(true);
         l->SetMutex(GetMutex());
     }
 }
 
-bool BussinessThread::_prcsSnd(SendStruct *v, ILink *l)
+bool BussinessPrcs::_prcsSnd(SendStruct *v, ILink *l)
 {
     if (!v || !l)
         return false;
@@ -182,7 +226,7 @@ bool BussinessThread::_prcsSnd(SendStruct *v, ILink *l)
     return false;
 }
 
-void BussinessThread::PrcsSend()
+void BussinessPrcs::PrcsSend()
 {
 	SendStruct *lastUnsnd = NULL;
     while (auto dt = PopQue(m_sendingDatas))
@@ -206,7 +250,7 @@ void BussinessThread::PrcsSend()
     }
 }
 
-bool BussinessThread::PrcsWaitBsns()
+bool BussinessPrcs::PrcsWaitBsns()
 {
     string id;
     bool ret = false;
@@ -233,7 +277,7 @@ bool BussinessThread::PrcsWaitBsns()
     return ret;
 }
 
-void BussinessThread::ReleasePrcsdMsgs()
+void BussinessPrcs::ReleasePrcsdMsgs()
 {
     IMessage *tmp = NULL;
     Lock l(m_mtxQue);
@@ -243,7 +287,7 @@ void BussinessThread::ReleasePrcsdMsgs()
     }
 }
 
-void BussinessThread::PrcsSended()
+void BussinessPrcs::PrcsSended()
 {
     while (auto *data = PopQue(m_sendedDatas))
     {
@@ -251,7 +295,7 @@ void BussinessThread::PrcsSended()
     }
 }
 
-ILink *BussinessThread::GetLinkByName(const string &id)
+ILink *BussinessPrcs::GetLinkByName(const string &id)
 {
     auto itr = m_links.find(id);
     if (itr != m_links.end())
@@ -260,7 +304,7 @@ ILink *BussinessThread::GetLinkByName(const string &id)
     return NULL;
 }
 
-bool BussinessThread::RunLoop()
+bool BussinessPrcs::RunLoop()
 {
     ReleasePrcsdMsgs();
     bool ret = false;
@@ -278,8 +322,24 @@ bool BussinessThread::RunLoop()
     return ret;
 }
 
-bool BussinessThread::OnTimerTriggle(const Variant &v, int64_t ms)
+bool BussinessPrcs::OnTimerTriggle(const Variant &v, int64_t ms)
 {
-    const string &id = v.ToString();
-    return m_mgr.OnTimerTrigger(id, ms);
+    return m_mgr.OnTimerTrigger(v.ToString(), ms);
+}
+
+void BussinessPrcs::_bindhread(Thread *t)
+{
+    if (t && !m_thread)
+    {
+        m_thread = t;
+        if (m_bEnableTimer)
+        {
+            auto f = std::bind(&BussinessPrcs::OnTimerTriggle, this, std::placeholders::_1, std::placeholders::_2);
+            m_thread->GetLoop()->SetTimerHandle(f);
+        }
+        t->AddHandle(&BussinessPrcs::RunLoop, this);
+        return;
+    }
+
+    delete t;
 }

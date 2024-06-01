@@ -1,6 +1,6 @@
 #include "GXLink.h"
-#include "gsocketmanager.h"
-#include "Ipv4Address.h"
+#include "net/gsocketmanager.h"
+#include "net/Ipv4Address.h"
 #include "GXClient.h"
 
 #ifdef SOCKETS_NAMESPACE

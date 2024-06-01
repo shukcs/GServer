@@ -5,8 +5,8 @@
 #include "Messages.h"
 #include "DBMessages.h"
 #include "VGMysql.h"
-#include "Utility.h"
-#include "socketBase.h"
+#include "common/Utility.h"
+#include "net/socketBase.h"
 #include "UavManager.h"
 #include "ObjectGS.h"
 #include "UavMission.h"
@@ -111,7 +111,7 @@ void ObjectUav::SndBinder(const google::protobuf::Message &pb)
 {
     if (m_bBind && !m_lastBinder.empty())
     {
-        if (Uav2GSMessage *ms = new Uav2GSMessage(this, m_lastBinder))
+        if (Uav2GSMessage *ms = new Uav2GSMessage(*this, m_lastBinder))
         {
             ms->SetPBContent(pb);
             SendMsg(ms);
@@ -126,7 +126,7 @@ const string &ObjectUav::GetBinder() const
 
 int ObjectUav::UAVType()
 {
-    return IObject::Plant;
+    return IObject::Uav;
 }
 
 void ObjectUav::InitialUAV(const DBMessage &rslt, ObjectUav &uav, uint32_t idx)
@@ -158,9 +158,9 @@ IMessage *ObjectUav::AckControl2Uav(const PostControl2Uav &msg, int res, ObjectU
 {
     Uav2GSMessage *ms = NULL;
     if (obj)
-        ms = new Uav2GSMessage(obj, msg.userid());
+        ms = new Uav2GSMessage(*obj, msg.userid());
     else
-        ms = new Uav2GSMessage(GetManagerByType(IObject::Plant), msg.userid());
+        ms = new Uav2GSMessage(GetManagerByType(IObject::Uav), msg.userid());
 
     if (ms)
     {
@@ -271,7 +271,7 @@ void ObjectUav::InitObject()
     if (!IsInitaled())
     {
 		IObject::InitObject();
-        if (DBMessage *msg = new DBMessage(this, IMessage::DeviceQueryRslt))
+        if (DBMessage *msg = new DBMessage(*this, IMessage::DeviceQueryRslt))
         {
             msg->SetSql("queryUavInfo");
             msg->SetCondition("id", m_id);
@@ -290,7 +290,7 @@ void ObjectUav::_prcsRcvPostOperationInfo(PostOperationInformation *msg)
     if (IsLinked())
         m_tmLastPos = tm;
 
-    if (auto ms = new Uav2GSMessage(this, m_bBind?m_lastBinder:string()))
+    if (auto ms = new Uav2GSMessage(*this, m_bBind?m_lastBinder:string()))
     {
         ms->SetPBContent(*msg);
         SendMsg(ms);
@@ -403,7 +403,7 @@ void ObjectUav::_prcsRcvReqMissions(RequestRouteMissions *msg)
             sys->set_index(off);
             sys->set_count(m_mission->CountAll());
 
-            Uav2GSMessage *gsm = new Uav2GSMessage(this, m_lastBinder);
+            Uav2GSMessage *gsm = new Uav2GSMessage(*this, m_lastBinder);
             gsm->AttachProto(sys);
             SendMsg(gsm);
         }
@@ -502,7 +502,7 @@ void ObjectUav::processPostOr(PostOperationRoute *msg, const std::string &gs)
         if (auto nor = m_mission->GetNotifyUavUOR((uint32_t)Utility::msTimeTick()))
             WaitSend(nor);
     }
-    if (Uav2GSMessage *ms = new Uav2GSMessage(this, mission.gsid()))
+    if (Uav2GSMessage *ms = new Uav2GSMessage(*this, mission.gsid()))
     {
         AckPostOperationRoute ack;
         ack.set_seqno(msg->seqno());
@@ -552,7 +552,7 @@ int ObjectUav::_checkPos(double lat, double lon, double alt)
 
 void ObjectUav::savePos()
 {
-    if (DBMessage *msg = new DBMessage(this))
+    if (DBMessage *msg = new DBMessage(*this))
     {
         msg->SetSql("updatePos");
         msg->SetCondition("id", m_id);
@@ -568,7 +568,7 @@ void ObjectUav::savePos()
 
 void ObjectUav::sendGx(const das::proto::PostOperationInformation &msg, uint64_t tm)
 {
-    auto ms = new Uav2GXMessage(this);
+    auto ms = new Uav2GXMessage(*this);
     auto poi = new PostOperationInformation();
     if (ms && poi && msg.oi_size() > 0)
     {

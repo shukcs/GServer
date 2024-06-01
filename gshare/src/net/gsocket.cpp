@@ -4,7 +4,7 @@
 #include "ObjectBase.h"
 #include "ObjectManagers.h"
 #include "ILog.h"
-#include "LoopQueue.h"
+#include "common/LoopQueue.h"
 #include <string.h>
 #include <stdarg.h>
 
@@ -13,7 +13,7 @@ using namespace SOCKETS_NAMESPACE
 #endif
 
 GSocket::GSocket() : m_mgrPrcs(NULL), m_link(NULL), m_fd(-1), m_bListen(false), m_bAccept(false)
-, m_stat(UnConnected), m_address(NULL), m_buffSocket(new LoopQueBuff(1024)), m_mgrLogin(NULL)
+, m_stat(UnConnected), m_address(NULL), m_buffSocket(new LoopQueBuff(8*1024)), m_mgrLogin(NULL)
 {
 }
 
@@ -223,9 +223,6 @@ void GSocket::OnConnect(bool b)
     m_stat = b ? Connected : Closed;
     if (!b && m_buffSocket)
         m_buffSocket->Clear();
-
-    if (m_link)
-        m_link->OnConnected(b);
 }
 
 void GSocket::OnBind(bool binded)

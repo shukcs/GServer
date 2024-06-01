@@ -1,9 +1,9 @@
 ﻿#include "ObjectManagers.h"
 #include "ObjectBase.h"
-#include "socketBase.h"
+#include "net/socketBase.h"
 #include "IMessage.h"
 #include "GOutLog.h"
-#include "Lock.h"
+#include "common/Lock.h"
 #include <mutex>
 
 using namespace std;
@@ -95,6 +95,16 @@ void ObjectManagers::SetManagersXml(TiXmlElement *msg)
     Instance().m_cfg = msg;
 }
 
+
+void ObjectManagers::Run(bool b)
+{
+    for (auto itr = Instance().m_managersMap.begin(); itr != Instance().m_managersMap.end(); ++itr)
+    {
+        itr->second->LoadConfig(Instance().m_cfg);
+        itr->second->Run(b);
+    }
+}
+
 void ObjectManagers::AddManager(IObjectManager *m)
 {
     if (m)
@@ -105,7 +115,6 @@ void ObjectManagers::AddManager(IObjectManager *m)
             delete itr->second;
 
         m_managersMap[type] = m;
-        m->LoadConfig(m_cfg);
     }
 }
 

@@ -1,48 +1,153 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\Base64.cpp" />
-    <ClCompile Include="src\GLibrary.cpp" />
-    <ClCompile Include="src\GOutLog.cpp" />
-    <ClCompile Include="src\gsocket.cpp" />
-    <ClCompile Include="src\gsocketmanager.cpp" />
-    <ClCompile Include="src\IMessage.cpp" />
-    <ClCompile Include="src\IPCommon.cpp" />
-    <ClCompile Include="src\Lock.cpp" />
-    <ClCompile Include="src\LoopQueue.cpp" />
-    <ClCompile Include="src\MD5lib.cpp" />
-    <ClCompile Include="src\ObjectBase.cpp" />
-    <ClCompile Include="src\Ipv4Address.cpp" />
-    <ClCompile Include="src\Ipv6Address.cpp" />
-    <ClCompile Include="src\ObjectManagers.cpp" />
-    <ClCompile Include="src\socket_include.cpp" />
-    <ClCompile Include="src\Thread.cpp" />
-    <ClCompile Include="src\Utility.cpp" />
-    <ClCompile Include="src\Varient.cpp" />
-    <ClCompile Include="src\BussinessThread.cpp" />
+    <Filter Include="src">
+      <UniqueIdentifier>{81fccc45-c477-44a4-990f-df0136513c64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\net">
+      <UniqueIdentifier>{973c71ba-186b-4cac-a294-eb6647bc010c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\common">
+      <UniqueIdentifier>{192a0845-4ce8-4af3-8a63-611c5022939a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Base64.h" />
-    <ClInclude Include="src\GLibrary.h" />
-    <ClInclude Include="src\GOutLog.h" />
-    <ClInclude Include="src\gsocket.h" />
-    <ClInclude Include="src\gsocketmanager.h" />
-    <ClInclude Include="src\ILog.h" />
-    <ClInclude Include="src\IMessage.h" />
-    <ClInclude Include="src\IPCommon.h" />
-    <ClInclude Include="src\Lock.h" />
-    <ClInclude Include="src\LoopQueue.h" />
-    <ClInclude Include="src\MD5lib.h" />
-    <ClInclude Include="src\ObjectBase.h" />
-    <ClInclude Include="src\Ipv4Address.h" />
-    <ClInclude Include="src\Ipv6Address.h" />
-    <ClInclude Include="src\ObjectManagers.h" />
-    <ClInclude Include="src\SocketAddress.h" />
-    <ClInclude Include="src\socketBase.h" />
-    <ClInclude Include="src\socket_include.h" />
-    <ClInclude Include="src\Utility.h" />
-    <ClInclude Include="src\Varient.h" />
-    <ClInclude Include="src\BussinessThread.h" />
-    <ClInclude Include="src\Thread.h" />
+    <ClCompile Include="src\net\gsocket.cpp">
+      <Filter>src\net</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\gsocketmanager.cpp">
+      <Filter>src\net</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\Ipv4Address.cpp">
+      <Filter>src\net</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\Ipv6Address.cpp">
+      <Filter>src\net</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\socket_include.cpp">
+      <Filter>src\net</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\Base64.cpp">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\Crc.cpp">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\GLibrary.cpp">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\GLoop.cpp">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\Lock.cpp">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\LoopQueue.cpp">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\MD5lib.cpp">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\Thread.cpp">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\Utility.cpp">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\Varient.cpp">
+      <Filter>src\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GOutLog.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IMessage.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectBase.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ObjectManagers.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\net\IPCommon.cpp">
+      <Filter>src\net</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BussinessPrcs.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\net\gsocket.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\gsocketmanager.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\Ipv4Address.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\Ipv6Address.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\socket_include.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\SocketAddress.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\socketBase.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\Base64.h">
+      <Filter>src\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\Crc.h">
+      <Filter>src\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\GLibrary.h">
+      <Filter>src\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\GLoop.h">
+      <Filter>src\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\Lock.h">
+      <Filter>src\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\LoopQueue.h">
+      <Filter>src\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\MD5lib.h">
+      <Filter>src\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\Thread.h">
+      <Filter>src\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\Utility.h">
+      <Filter>src\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\Varient.h">
+      <Filter>src\common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GOutLog.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ILog.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IMessage.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectBase.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectManagers.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\net\IPCommon.h">
+      <Filter>src\net</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BussinessPrcs.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

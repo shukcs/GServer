@@ -4,7 +4,7 @@
 #include <map>
 #include <list>
 #include <queue>
-#include "LoopQueue.h"
+#include "common/LoopQueue.h"
 
 #ifdef __GNUC__
 #define PACKEDSTRUCT( _Strc ) _Strc __attribute__((packed))
@@ -22,7 +22,7 @@ namespace SOCKETS_NAMESPACE {
 class IObject;
 class ISocket;
 class IObjectManager;
-class BussinessThread;
+class BussinessPrcs;
 class IMessage;
 class ObjectSignal;
 class ILog;
@@ -56,9 +56,9 @@ public:
     bool OnReceive(const ISocket &s, const void *buf, int len);
     void OnSockClose(ISocket *);
     void SetMutex(std::mutex *m);
-    void SetThread(BussinessThread *t);
-    BussinessThread *GetThread()const;
-    void processSocket(ISocket &s, BussinessThread &t);
+    void SetThread(BussinessPrcs *t);
+    BussinessPrcs *GetThread()const;
+    void processSocket(ISocket &s, BussinessPrcs &t);
     void SetSocket(ISocket *s);
 	bool IsRemoveThread()const;
 	ISocket *GetSocket()const;
@@ -88,7 +88,7 @@ private:
     void _cleanRcvPacks(bool bUnuse=false);
 	void _clearSocket();
 private:
-    friend class BussinessThread;
+    friend class BussinessPrcs;
     ISocket                 *m_sock;
     char                    *m_recv;
     uint16_t                m_szRcv;
@@ -96,7 +96,7 @@ private:
 	std::mutex              *m_mtxS;
 	LinkStat                m_stat;
 	bool                    m_bLogined;
-    BussinessThread         *m_thread;
+    BussinessPrcs         *m_thread;
     std::queue<void *>      m_packetsRcv;
     std::queue<void *>      m_packetsUsed;
 };
@@ -107,7 +107,7 @@ public:
     enum TypeObject
     {
         UnKnow = -1,
-        Plant,
+        Uav,
         GroundStation,
         DBMySql,
         VgFZ,
@@ -115,6 +115,8 @@ public:
         GVMgr,
         GXLink,
         Mail,
+        Ntrip,
+        Rtcm,
         User,
     };
     enum ObjectStat
@@ -200,8 +202,8 @@ public:
     SHARED_DECL void Unsubcribe(const std::string &dsub, const std::string &sender, int tpMsg);
     SHARED_DECL virtual bool IsReceiveData()const;
 
-    BussinessThread *GetThread(int id = -1)const;
-    BussinessThread *GetMainThread()const;
+    BussinessPrcs *GetThread(int id = -1)const;
+    BussinessPrcs *GetMainThread()const;
     void OnSocketClose(ISocket *s);
     int AddLoginData(ISocket *s, const char *buf = NULL, uint32_t len = 0);
     void PushReleaseMsg(IMessage *);
@@ -222,15 +224,19 @@ protected:
     SHARED_DECL virtual bool PrcsPublicMsg(const IMessage &msg);
     SHARED_DECL virtual void ToCurrntLog(int err, const std::string &obj, int evT, const std::string &dscb);
     SHARED_DECL void InitThread(uint16_t nT = 1, uint16_t bufSz = 1024);
+    SHARED_DECL void SetEnableTimer(bool);
+    SHARED_DECL bool IsEnableTimer()const;
 	virtual bool IsHasReuest(const char *, int)const { return false; }
     virtual void ProcessEvents() {};
+
+    void Run(bool b=true);
 protected:
     bool Exist(IObject *obj)const;
     const StringList &getMessageSubcribes(const IMessage *msg);
     void PrcsSubcribes();
     void SubcribesProcess(const IMessage *msg);
-    BussinessThread *GetPropertyThread()const;
-    BussinessThread *CurThread()const;
+    BussinessPrcs *GetPropertyThread()const;
+    BussinessPrcs *CurThread()const;
     void PushManagerMessage(IMessage *);
     bool ProcessBussiness();
     void ProcessMessage();
@@ -238,12 +244,13 @@ protected:
     bool OnTimerTrigger(const std::string &id, int64_t ms);
 	IMessage *_popMessage();
 	bool _prcsRelease(const ObjectSignal &evt);
-	void _prcsMessage(const IMessage &msg);
+    void _prcsMessage(const IMessage &msg);
+    SubcribeStruct *_poSubcribe();
 private:
     friend class ObjectManagers;
-    friend class BussinessThread;
+    friend class BussinessPrcs;
     friend class ILink;
-    BussinessThread                 *m_thread;
+    BussinessPrcs                 *m_thread;
     ILog                            *m_log;
     std::mutex                      *m_mtxLogin;
     std::mutex                      *m_mtxMsgs;
@@ -251,7 +258,7 @@ private:
     ParsePackFuc                    m_pfParsePack;
     RelaesePackFuc                  m_pfRlsPack;
     PrcsLoginHandle                 m_pfPrcsLogin;
-    std::list<BussinessThread*>     m_lsThread;
+    std::list<BussinessPrcs*>     m_lsThread;
     MapObjects                      m_objects;
     MessageQue                      m_messages;         //接收消息队列
     MessageSubcribes                m_subcribes;        //订阅消息

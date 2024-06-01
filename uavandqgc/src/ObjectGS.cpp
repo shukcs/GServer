@@ -1,9 +1,9 @@
 #include "ObjectGS.h"
-#include "socketBase.h"
+#include "net/socketBase.h"
 #include "das.pb.h"
 #include "ProtoMsg.h"
 #include "Messages.h"
-#include "Utility.h"
+#include "common/Utility.h"
 #include "IMessage.h"
 #include "DBMessages.h"
 #include "GSManager.h"
@@ -234,7 +234,7 @@ void ObjectGS::processGs2Gs(const Message &msg, int tp)
     if (tp == IMessage::User2User)
     {
         auto gsmsg = (const GroundStationsMessage *)&msg;
-        if (Gs2GsMessage *ms = new Gs2GsMessage(this, gsmsg->from()))
+        if (Gs2GsMessage *ms = new Gs2GsMessage(*this, gsmsg->from()))
         {
             auto ack = new AckGroundStationsMessage;
             ack->set_seqno(gsmsg->seqno());
@@ -281,7 +281,7 @@ void ObjectGS::processBind(const DBMessage &msg)
             if (proto)
                 proto->set_allocated_status(s);
 
-            if (auto gs2uav = new GS2UavMessage(this, uav.GetObjectID()))
+            if (auto gs2uav = new GS2UavMessage(*this, uav.GetObjectID()))
             {
                 gs2uav->SetPBContent(*s);
                 SendMsg(gs2uav);
@@ -854,7 +854,7 @@ void ObjectGS::InitObject()
 		StartTimer(500);
         if (m_check.empty() && !GetAuth(IObject::Type_Manager))
         {
-            if (DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt))
+            if (DBMessage *msg = new DBMessage(*this, IMessage::UserQueryRslt))
 			{
 				msg->SetSql("queryGSInfo");
 				msg->SetCondition("user", m_id);
@@ -895,7 +895,7 @@ void ObjectGS::_prcsReqUavs(RequestUavStatus *msg)
     if (!msg)
         return;
 
-    if (GS2UavMessage *ms = new GS2UavMessage(this, string()))
+    if (GS2UavMessage *ms = new GS2UavMessage(*this, string()))
     {
         ms->SetPBContent(*msg);
         SendMsg(ms);
@@ -945,7 +945,7 @@ void ObjectGS::_prcsControl2Uav(das::proto::PostControl2Uav *msg)
     if (!msg || GetAuth(Type_Manager))
         return;
 
-    if (GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid()))
+    if (GS2UavMessage *ms = new GS2UavMessage(*this, msg->uavid()))
     {
         ms->SetPBContent(*msg);
         SendMsg(ms);
@@ -967,7 +967,7 @@ void ObjectGS::_prcsPostLand(PostParcelDescription *msg)
         }
     }
 
-    DBMessage *db = new DBMessage(this, IMessage::LandInsertRslt);
+    DBMessage *db = new DBMessage(*this, IMessage::LandInsertRslt);
     if (!db)
         return;
 
@@ -1030,7 +1030,7 @@ void ObjectGS::_prcsReqLand(RequestParcelDescriptions *msg)
     if (GetAuth(Type_Manager) || !msg || (!msg->has_registerid() && !msg->has_pdid()))
         return;
 
-    DBMessage *db = new DBMessage(this, IMessage::LandQueryRslt);
+    DBMessage *db = new DBMessage(*this, IMessage::LandQueryRslt);
     if (!db)
         return;
 
@@ -1062,7 +1062,7 @@ int ObjectGS::_addDatabaseUser(const std::string &user, const std::string &pswd,
 
 void ObjectGS::notifyUavNewFw(const std::string &fw, int seq)
 {
-    if (GS2UavMessage *ms = new GS2UavMessage(this, string()))
+    if (GS2UavMessage *ms = new GS2UavMessage(*this, string()))
     {
         NotifyProgram *np = new NotifyProgram;
         np->set_seqno(seq);
@@ -1104,7 +1104,7 @@ void ObjectGS::saveBind(const std::string &uav, bool bBind)
     if (GetAuth(Type_Manager) && bBind)
         return;
 
-    if (DBMessage *msg = new DBMessage(this, IMessage::DeviceBindRslt, DBMessage::DB_Uav))
+    if (DBMessage *msg = new DBMessage(*this, IMessage::DeviceBindRslt, DBMessage::DB_Uav))
     {
         msg->SetSql("updateBinded");
         msg->SetWrite("timeBind", Utility::msTimeTick());
@@ -1129,7 +1129,7 @@ void ObjectGS::initFriend()
     if (m_bInitFriends)
         return;
 
-    DBMessage *msg = new DBMessage(this, IMessage::FriendQueryRslt);
+    DBMessage *msg = new DBMessage(*this, IMessage::FriendQueryRslt);
     if (!msg)
         return;
     m_bInitFriends = true;
@@ -1141,7 +1141,7 @@ void ObjectGS::initFriend()
 
 void ObjectGS::addDBFriend(const string &user1, const string &user2)
 {
-    if (DBMessage *msg = new DBMessage(this))
+    if (DBMessage *msg = new DBMessage(*this))
     {
         msg->SetSql("insertGSFriends");
         msg->SetWrite("id", GSManager::CatString(user1, user2));
@@ -1157,7 +1157,7 @@ void ObjectGS::_prcsDeleteLand(DeleteParcelDescription *msg)
         return;
 
     const std::string &id = msg->pdid();
-    DBMessage *msgDb = new DBMessage(this, IMessage::DeleteLandRslt);
+    DBMessage *msgDb = new DBMessage(*this, IMessage::DeleteLandRslt);
     if (!msgDb || id.empty())
         return;
 
@@ -1186,7 +1186,7 @@ void ObjectGS::_prcsUavIDAllication(das::proto::RequestIdentityAllocation *msg)
 
     if (GetAuth(Type_Manager))
     {
-        if (GS2UavMessage *ms = new GS2UavMessage(this, string()))
+        if (GS2UavMessage *ms = new GS2UavMessage(*this, string()))
         {
             ms->SetPBContent(*msg);
             SendMsg(ms);
@@ -1217,7 +1217,7 @@ void ObjectGS::_prcsPostPlan(PostOperationDescription *msg)
         }
         return;
     }
-    DBMessage *msgDb = new DBMessage(this, IMessage::PlanInsertRslt);
+    DBMessage *msgDb = new DBMessage(*this, IMessage::PlanInsertRslt);
     if (!msgDb)
         return;
 
@@ -1256,7 +1256,7 @@ void ObjectGS::_prcsReqPlan(RequestOperationDescriptions *msg)
     if (!msg || (!msg->has_odid() && !msg->has_pdid() && !msg->has_registerid()))
         return;
 
-    DBMessage *msgDb = new DBMessage(this, IMessage::PlanQueryRslt);
+    DBMessage *msgDb = new DBMessage(*this, IMessage::PlanQueryRslt);
     if (!msgDb)
         return;
     msgDb->SetSql("queryPlan", true);
@@ -1290,7 +1290,7 @@ void ObjectGS::_prcsDeletePlan(das::proto::DeleteOperationDescription *msg)
         return;
 
     const std::string &id = msg->odid();
-    DBMessage *msgDb = new DBMessage(this, IMessage::DeletePlanRslt);
+    DBMessage *msgDb = new DBMessage(*this, IMessage::DeletePlanRslt);
     if (!msgDb || id.empty())
         return;
 
@@ -1313,7 +1313,7 @@ void ObjectGS::_prcsPostMission(PostOperationRoute *msg)
     if (!msg)
         return;
     const OperationRoute &ort = msg->or_();
-    if (GS2UavMessage *ms = new GS2UavMessage(this, ort.uavid()))
+    if (GS2UavMessage *ms = new GS2UavMessage(*this, ort.uavid()))
     {
         ms->SetPBContent(*msg);
         SendMsg(ms);
@@ -1382,7 +1382,7 @@ void ObjectGS::_prcsGsMessage(GroundStationsMessage *msg)
     else if (msg->type() == DeleteFriend)
     {
         m_friends.remove(msg->to());
-        if (DBMessage *db = new DBMessage(this))
+        if (DBMessage *db = new DBMessage(*this))
         {
             db->SetSql("deleteGSFriends");
             db->SetCondition("id", GSManager::CatString(m_id, msg->to()));
@@ -1390,7 +1390,7 @@ void ObjectGS::_prcsGsMessage(GroundStationsMessage *msg)
         }
     }
 
-    if (Gs2GsMessage *ms = new Gs2GsMessage(this, msg->to()))
+    if (Gs2GsMessage *ms = new Gs2GsMessage(*this, msg->to()))
     {
         ms->SetPBContent(*msg);
         SendMsg(ms);
@@ -1415,7 +1415,7 @@ void ObjectGS::_prcsReqFriends(das::proto::RequestFriends *msg)
 
 void ObjectGS::_prcsReqMissons(das::proto::RequestUavMission &msg)
 {
-    DBMessage *msgDb = new DBMessage(this, IMessage::QueryMissionsRslt);
+    DBMessage *msgDb = new DBMessage(*this, IMessage::QueryMissionsRslt);
 
     if (!msgDb)
         return;
@@ -1438,7 +1438,7 @@ void ObjectGS::_prcsReqMissons(das::proto::RequestUavMission &msg)
 
 void ObjectGS::_prcsReqMissonsAcreage(das::proto::RequestUavMissionAcreage &msg)
 {
-    DBMessage *msgDb = new DBMessage(this, IMessage::QueryMissionsAcreageRslt);
+    DBMessage *msgDb = new DBMessage(*this, IMessage::QueryMissionsAcreageRslt);
     if (!msgDb)
         return;
 
@@ -1463,7 +1463,7 @@ void ObjectGS::_prcsReqMissonsAcreage(das::proto::RequestUavMissionAcreage &msg)
 
 void ObjectGS::_prcsReqSuspend(das::proto::RequestMissionSuspend &msg)
 {
-    DBMessage *msgDb = new DBMessage(this, IMessage::SuspendRslt);
+    DBMessage *msgDb = new DBMessage(*this, IMessage::SuspendRslt);
     if (!msgDb)
         return;
 
@@ -1479,7 +1479,7 @@ void ObjectGS::_prcsReqAssists(RequestOperationAssist *msg)
     if (!msg)
         return;
 
-    GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid());
+    GS2UavMessage *ms = new GS2UavMessage(*this, msg->uavid());
     if (!ms)
     {
         delete msg;
@@ -1494,7 +1494,7 @@ void ObjectGS::_prcsReqABPoint(RequestABPoint *msg)
     if (!msg)
         return;
 
-    GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid());
+    GS2UavMessage *ms = new GS2UavMessage(*this, msg->uavid());
     if (!ms)
     {
         delete msg;
@@ -1509,7 +1509,7 @@ void ObjectGS::_prcsReqReturn(RequestOperationReturn *msg)
     if (!msg)
         return;
 
-    GS2UavMessage *ms = new GS2UavMessage(this, msg->uavid());
+    GS2UavMessage *ms = new GS2UavMessage(*this, msg->uavid());
     if (!ms)
     {
         delete msg;
@@ -1521,7 +1521,7 @@ void ObjectGS::_prcsReqReturn(RequestOperationReturn *msg)
 
 void ObjectGS::_checkGS(const string &user, int ack)
 {
-    DBMessage *msgDb = new DBMessage(this, IMessage::UserCheckRslt);
+    DBMessage *msgDb = new DBMessage(*this, IMessage::UserCheckRslt);
     if (!msgDb)
         return;
 
@@ -1534,13 +1534,13 @@ void ObjectGS::_checkGS(const string &user, int ack)
 void ObjectGS::_queryGSData()
 {
 	initFriend();
-	if (DBMessage *msg = new DBMessage(this, IMessage::CountLandRslt))
+	if (DBMessage *msg = new DBMessage(*this, IMessage::CountLandRslt))
 	{
 		msg->SetSql("countLand");
 		msg->SetCondition("gsuser", m_id);
 		SendMsg(msg);
 	}
-	if (DBMessage *msg = new DBMessage(this, IMessage::CountPlanRslt))
+	if (DBMessage *msg = new DBMessage(*this, IMessage::CountPlanRslt))
 	{
 		msg->SetSql("countPlan");
 		msg->SetCondition("planuser", m_id);

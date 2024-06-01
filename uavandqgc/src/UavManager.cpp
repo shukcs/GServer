@@ -2,9 +2,9 @@
 #include "ObjectManagers.h"
 #include "das.pb.h"
 #include "ProtoMsg.h"
-#include "Utility.h"
-#include "Varient.h"
-#include "socketBase.h"
+#include "common/Utility.h"
+#include "common/Varient.h"
+#include "net/socketBase.h"
 #include "tinyxml.h"
 #include "ObjectUav.h"
 #include "Messages.h"
@@ -51,7 +51,7 @@ uint32_t UavManager::toIntID(const std::string &uavid)
 
 int UavManager::GetObjectType() const
 {
-    return IObject::Plant;
+    return IObject::Uav;
 }
 
 IObject *UavManager::PrcsProtoBuff(ISocket *s, const Message *proto)

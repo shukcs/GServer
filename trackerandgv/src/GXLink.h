@@ -1,7 +1,7 @@
 #ifndef __GX_LINK_H__
 #define __GX_LINK_H__
 
-#include "socketBase.h"
+#include "net/socketBase.h"
 
 class LoopQueBuff;
 #ifdef SOCKETS_NAMESPACE

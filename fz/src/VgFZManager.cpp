@@ -1,10 +1,10 @@
 #include "VgFZManager.h"
-#include "socketBase.h"
+#include "net/socketBase.h"
 #include "das.pb.h"
 #include "ProtoMsg.h"
 #include "Messages.h"
 #include "DBMessages.h"
-#include "Utility.h"
+#include "common/Utility.h"
 #include "tinyxml.h"
 #include "ObjectVgFZ.h"
 #include "ObjectManagers.h"
@@ -40,7 +40,7 @@ int VgFZManager::AddDatabaseUser(const string &user, const string &pswd, ObjectV
 
     DBMessage *msg = NULL;
     if (gs)
-        msg = new DBMessage(gs, IMessage::UserInsertRslt);
+        msg = new DBMessage(*gs, IMessage::UserInsertRslt);
     else
         msg = new DBMessage(this);
 

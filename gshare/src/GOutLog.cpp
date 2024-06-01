@@ -4,7 +4,7 @@
 #endif
 #include "GOutLog.h"
 #include <stdio.h>
-#include "socket_include.h"
+#include "net/socket_include.h"
 
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE;

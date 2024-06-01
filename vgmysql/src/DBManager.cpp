@@ -3,7 +3,7 @@
 #include "DBExecItem.h"
 #include "DBMessages.h"
 #include "tinyxml.h"
-#include "Utility.h"
+#include "common/Utility.h"
 #include "ObjectManagers.h"
 
 
@@ -259,6 +259,7 @@ void DBManager::LoadConfig(const TiXmlElement *root)
         return;
 
     InitThread(1, 0);
+    SetEnableTimer(false);
     const TiXmlElement *dbNode = cfg->FirstChildElement("Object");
     while (dbNode)
     {

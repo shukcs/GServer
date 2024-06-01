@@ -1,7 +1,8 @@
 #include "ProtoMsg.h"
 #include "das.pb.h"
-#include "Utility.h"
-#include "socketBase.h"
+#include "common/Utility.h"
+#include "common/Crc.h"
+#include "net/socketBase.h"
 #include <string.h>
 
 #ifdef SOCKETS_NAMESPACE
@@ -83,7 +84,7 @@ google::protobuf::Message *ProtobufParse::Parse(const char *buff, uint32_t &len)
 
         if (szMsg+4 <= len-pos)
         {
-            uint32_t crc = Utility::Crc32(buff+pos+4, szMsg-4);
+            uint32_t crc = Crc::Crc32(buff+pos+4, szMsg-4);
             if (crc != (uint32_t)Utility::fromBigendian(buff+pos+szMsg))
             {
                 pos += 18;
@@ -124,7 +125,7 @@ uint32_t ProtobufParse::serialize(const google::protobuf::Message *msg, char*buf
     Utility::toBigendian(nameLen, buf + 4);
     strcpy(buf + 8, name.c_str());
     msg->SerializeToArray(buf + nameLen + 8, proroLen);
-    int crc = Utility::Crc32(buf + 4, len - 4);
+    int crc = Crc::Crc32(buf + 4, len - 4);
     Utility::toBigendian(crc, buf + len);
     return len + 4;
 }

@@ -3,8 +3,8 @@
 #include "das.pb.h"
 #include "ProtoMsg.h"
 #include "Messages.h"
-#include "Utility.h"
-#include "socketBase.h"
+#include "common/Utility.h"
+#include "net/socketBase.h"
 #include "TrackerManager.h"
 #include "ObjectGV.h"
 #include "GXClient.h"
@@ -186,7 +186,7 @@ void ObjectTracker::_ackPartParameters(const std::string &gv, const das::proto::
     acp->set_seqno(qp.seqno());
     acp->set_id(m_id);
     acp->set_result(1);
-    if (auto ms = new Tracker2GVMessage(this, gv))
+    if (auto ms = new Tracker2GVMessage(*this, gv))
     {
         if (auto pd = acp->add_pd())
         {
@@ -290,7 +290,7 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg)
     if (GXClient::St_Authed == m_statGX)
     {
         auto poi = new PostOperationInformation(*msg);
-        if (auto *msGx = new Tracker2GXMessage(this))
+        if (auto *msGx = new Tracker2GXMessage(*this))
         {
             msGx->AttachProto(poi);
             SendMsg(msGx);
@@ -301,7 +301,7 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg)
         }
     }
 
-    if (Tracker2GVMessage *msGV = new Tracker2GVMessage(this, string()))
+    if (Tracker2GVMessage *msGV = new Tracker2GVMessage(*this, string()))
     {
         msGV->AttachProto(msg);
         SendMsg(msGV);
@@ -321,7 +321,7 @@ void ObjectTracker::_prcsOperationInformation(PostOperationInformation *msg)
 
 void ObjectTracker::_prcsAckQueryParameters(das::proto::AckQueryParameters *msg)
 {
-    if (auto ack = new Tracker2GVMessage(this, string()))
+    if (auto ack = new Tracker2GVMessage(*this, string()))
     {
         if (auto pd = msg->add_pd())
         {
@@ -341,7 +341,7 @@ void ObjectTracker::_prcsAckQueryParameters(das::proto::AckQueryParameters *msg)
 
 void ObjectTracker::_prcsAckConfigurParameters(das::proto::AckConfigurParameters *msg)
 {
-    if (auto ack = new Tracker2GVMessage(this, string()))
+    if (auto ack = new Tracker2GVMessage(*this, string()))
     {
         ack->AttachProto(msg);
         SendMsg(ack);

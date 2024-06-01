@@ -1,9 +1,9 @@
 ﻿#include "ObjectVgFZ.h"
-#include "socketBase.h"
+#include "net/socketBase.h"
 #include "das.pb.h"
 #include "ProtoMsg.h"
 #include "Messages.h"
-#include "Utility.h"
+#include "common/Utility.h"
 #include "MD5lib.h"
 #include "IMessage.h"
 #include "DBMessages.h"
@@ -295,7 +295,7 @@ void ObjectVgFZ::processFZ2FZ(const Message &msg, int tp)
     if (tp == IMessage::User2User)
     {
         auto gsmsg = (const FZUserMessage *)&msg;
-        if (FZ2FZMessage *ms = new FZ2FZMessage(this, gsmsg->from()))
+        if (FZ2FZMessage *ms = new FZ2FZMessage(*this, gsmsg->from()))
         {
             auto ack = new AckFZUserMessage;
             ack->set_seqno(gsmsg->seqno());
@@ -634,7 +634,7 @@ void ObjectVgFZ::InitObject()
     {
         if (!GetAuth(Type_ReqNewUser) && !GetAuth(Type_Manager))
 		{
-			if (DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt))
+			if (DBMessage *msg = new DBMessage(*this, IMessage::UserQueryRslt))
 			{
 				msg->SetSql("queryFZInfo");
 				msg->SetCondition("user", m_id);
@@ -682,7 +682,7 @@ bool ObjectVgFZ::CheckMail(const std::string &str)
     if (str != m_email || str.empty())
         return false;
 
-    if (auto mailMsg = new MailMessage(this, "hsj8262@163.com"))
+    if (auto mailMsg = new MailMessage(*this, "hsj8262@163.com"))
     {
         mailMsg->SetSeq(m_seq);
         mailMsg->SetMailTo(m_email);
@@ -706,7 +706,7 @@ void ObjectVgFZ::SetPcsn(const std::string &str)
         {
             m_pcsn = str;// Utility::FindString(str, "O.E.M") >= 0 ? "O.E.M" : str;
             m_ver = 0;
-            DBMessage *msg = new DBMessage(this, IMessage::UserQueryRslt);
+            DBMessage *msg = new DBMessage(*this, IMessage::UserQueryRslt);
             if (!msg)
                 return;
 
@@ -783,7 +783,7 @@ void ObjectVgFZ::initFriend()
     if (m_bInitFriends)
         return;
 
-    DBMessage *msg = new DBMessage(this, IMessage::FriendQueryRslt);
+    DBMessage *msg = new DBMessage(*this, IMessage::FriendQueryRslt);
     if (!msg)
         return;
     m_bInitFriends = true;
@@ -795,7 +795,7 @@ void ObjectVgFZ::initFriend()
 
 void ObjectVgFZ::addDBFriend(const string &user1, const string &user2)
 {
-    if (DBMessage *msg = new DBMessage(this, IMessage::Unknown))
+    if (DBMessage *msg = new DBMessage(*this, IMessage::Unknown))
     {
         msg->SetSql("insertFZFriends");
         msg->SetWrite("id", VgFZManager::CatString(user1, user2));
@@ -862,7 +862,7 @@ void ObjectVgFZ::_prcsFzMessage(FZUserMessage *msg)
     else if (msg->type() == DeleteFriend)
     {
         m_friends.remove(msg->to());
-        if (DBMessage *db = new DBMessage(this))
+        if (DBMessage *db = new DBMessage(*this))
         {
             db->SetSql("deleteFZFriends");
             db->SetCondition("id", VgFZManager::CatString(m_id, msg->to()));
@@ -870,7 +870,7 @@ void ObjectVgFZ::_prcsFzMessage(FZUserMessage *msg)
         }
     }
 
-    if (FZ2FZMessage *ms = new FZ2FZMessage(this, msg->to()))
+    if (FZ2FZMessage *ms = new FZ2FZMessage(*this, msg->to()))
     {
         ms->AttachProto(msg);
         SendMsg(ms);
@@ -911,7 +911,7 @@ void ObjectVgFZ::_prcsUpdateSWKey(UpdateSWKey *pb)
         return;
     }
 
-    DBMessage *msg = new DBMessage(this, IMessage::UpdateSWKeysRslt);
+    DBMessage *msg = new DBMessage(*this, IMessage::UpdateSWKeysRslt);
     msg->SetSeqNomb(pb->seqno());
     int op = pb->has_change() ? pb->change() : 0;
     msg->SetSql(op == 0 ? "insertFZKey" : "updateFZPCReg");
@@ -956,7 +956,7 @@ void ObjectVgFZ::_prcsReqSWKeyInfo(das::proto::ReqSWKeyInfo *msg)
         }
         return;
     }
-    DBMessage *msgDB = new DBMessage(this, IMessage::QuerySWKeyInfoRslt);
+    DBMessage *msgDB = new DBMessage(*this, IMessage::QuerySWKeyInfoRslt);
     if (!msgDB)
         return;
 
@@ -990,7 +990,7 @@ void ObjectVgFZ::_prcsSWRegist(SWRegist *pb)
         return;
     }
 
-    DBMessage *msg = new DBMessage(this, IMessage::SWRegistRslt);
+    DBMessage *msg = new DBMessage(*this, IMessage::SWRegistRslt);
     if (!msg)
         return;
 
@@ -1013,7 +1013,7 @@ void ObjectVgFZ::_prcsPostFZResult(PostFZResult *rslt)
         return;
 
     const FZResult &fzRslt = rslt->rslt();
-    DBMessage *msg = new DBMessage(this, IMessage::InserFZRslt);
+    DBMessage *msg = new DBMessage(*this, IMessage::InserFZRslt);
     if (!msg)
         return;
 
@@ -1040,7 +1040,7 @@ void ObjectVgFZ::_prcsPostFZResult(PostFZResult *rslt)
 
 void ObjectVgFZ::_prcsRequestFZResults(const RequestFZResults &req)
 {
-    DBMessage *msg = new DBMessage(this, IMessage::QueryFZRslt);
+    DBMessage *msg = new DBMessage(*this, IMessage::QueryFZRslt);
     if (!msg)
         return;
 
@@ -1111,7 +1111,7 @@ void ObjectVgFZ::_prcsPostChangeFZPswd(const das::proto::PostChangeFZPswd &msg)
     else if (msg.has_old() && msg.has_pswd() && msg.old() == m_pswd)
         rslt = 1;
 
-    auto *msgDB = rslt == 1 ? new DBMessage(this) : NULL;
+    auto *msgDB = rslt == 1 ? new DBMessage(*this) : NULL;
     if (msgDB)
     {
         m_pswd = msg.pswd();
@@ -1146,7 +1146,7 @@ bool ObjectVgFZ::_saveInfo(const FZInfo &info)
     if (m_info == str && m_email==info.email())
         return !m_email.empty();
 
-    if (auto *msgDB = new DBMessage(this))
+    if (auto *msgDB = new DBMessage(*this))
     {
         msgDB->SetSql("changeUser");
         msgDB->SetCondition("user", GetObjectID());
@@ -1168,7 +1168,7 @@ bool ObjectVgFZ::_saveInfo(const FZInfo &info)
 
 void ObjectVgFZ::_checkFZ(const string &user, int ack)
 {
-    DBMessage *msgDb = new DBMessage(this, IMessage::UserCheckRslt);
+    DBMessage *msgDb = new DBMessage(*this, IMessage::UserCheckRslt);
     if (!msgDb)
         return;
 

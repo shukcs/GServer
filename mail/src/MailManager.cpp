@@ -1,6 +1,6 @@
 ﻿#include "MailManager.h"
 #include "MailMessages.h"
-#include "Utility.h"
+#include "common/Utility.h"
 #include "tinyxml.h"
 #include "ObjectManagers.h"
 #include "mailSmtp/quickmail.h"
@@ -184,6 +184,7 @@ void MailManager::LoadConfig(const TiXmlElement *root)
         return;
 
     InitThread(1, 0);
+    SetEnableTimer(false);
     const TiXmlNode *dbNode = cfg->FirstChildElement("Object");
     while (dbNode)
     {

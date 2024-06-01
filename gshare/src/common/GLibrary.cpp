@@ -1,5 +1,5 @@
 ﻿#include "GLibrary.h"
-#include "socket_include.h"
+#include "net/socket_include.h"
 #include "Utility.h"
 #if !defined _WIN32 && !defined _WIN64
 #include <dlfcn.h>

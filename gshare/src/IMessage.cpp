@@ -1,7 +1,7 @@
 ﻿#include "IMessage.h"
 #include "ObjectBase.h"
 #include "ObjectManagers.h"
-#include "Utility.h"
+#include "common/Utility.h"
 
 using namespace std;
 #ifdef SOCKETS_NAMESPACE
@@ -11,15 +11,12 @@ using namespace SOCKETS_NAMESPACE;
 ////////////////////////////////////////////////////////////////////////////////////////
 //MessageData
 ////////////////////////////////////////////////////////////////////////////////////////
-MessageData::MessageData(const IObject *sender, int16_t tpMs)
+MessageData::MessageData(const IObject &sender, int16_t tpMs)
 : m_threadID(Utility::ThreadID()), m_tpMsg(tpMs)
 , m_tpSender(IObject::UnKnow)
 {
-    if (sender)
-    {
-        m_tpSender = sender->GetObjectType();
-        m_idSnd = sender->GetObjectID();
-    }
+    m_tpSender = sender.GetObjectType();
+    m_idSnd = sender.GetObjectID();
 }
 
 MessageData::MessageData(const IObjectManager *sender, int16_t tpMs)
@@ -108,7 +105,7 @@ int IMessage::CreateThreadID() const
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 ObjectSignal::ObjectSignal(const IObject *sender, int32_t rcvTp, int e, const string &rcv)
-:IMessage(new MessageData(sender, e), rcv, rcvTp)
+:IMessage(new MessageData(*sender, e), rcv, rcvTp)
 {
 }
 

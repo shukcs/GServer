@@ -5,7 +5,7 @@
 #include "tinyxml.h"
 #include <stdio.h>
 #include <string.h>
-#include "Utility.h"
+#include "common/Utility.h"
 
 using namespace std;
 static const char *sTriggerFmt = "CREATE TRIGGER %s %s %s ON %s FOR EACH ROW";

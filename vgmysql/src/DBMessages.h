@@ -2,7 +2,7 @@
 #define __DB_MESSGES_H__
 
 #include "IMessage.h"
-#include "Varient.h"
+#include "common/Varient.h"
 #include <string>
 #include <map>
 #include "sqlconfig.h"
@@ -32,10 +32,10 @@ public:
         DB_FZ,
     };
 public:
-    SHARED_SQL DBMessage(IObject *sender, MessageType ack=IMessage::Unknown, OBjectFlag rcv = DB_Unknow);
+    SHARED_SQL DBMessage(const IObject &sender, MessageType ack=IMessage::Unknown, OBjectFlag rcv = DB_Unknow);
     SHARED_SQL DBMessage(IObjectManager *sender, MessageType ack=IMessage::Unknown, OBjectFlag rcv = DB_Unknow);
     SHARED_SQL DBMessage(const std::string &sender, int tpSend, MessageType ack=IMessage::Unknown, OBjectFlag rcv= DB_Unknow);
-    SHARED_SQL DBMessage(ObjectDB *senderv, int tpMsg, int tpRcv, const std::string &idRc);
+    SHARED_SQL DBMessage(const ObjectDB &sender, int tpMsg, int tpRcv, const std::string &idRc);
     SHARED_SQL DBMessage(IObjectManager *mgr, const std::string &rcvDB);
     SHARED_SQL void SetWrite(const std::string &key, const Variant &v, int idx=0);
     SHARED_SQL const Variant &GetWrite(const std::string &key, uint32_t idx = 0)const;

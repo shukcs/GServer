@@ -21,7 +21,7 @@ class TrackerMessage : public IMessage
 {
     CLASS_INFO(TrackerMessage)
 public:
-    TrackerMessage(IObject *sender, const std::string &idRcv, int rcv);
+    TrackerMessage(const IObject &sender, const std::string &idRcv, int rcv);
     TrackerMessage(IObjectManager *sender, const std::string &idRcv, int rcv);
     ~TrackerMessage();
 
@@ -42,7 +42,7 @@ class Tracker2GVMessage : public TrackerMessage
 {
     CLASS_INFO(Tracker2GVMessage)
 public:
-    Tracker2GVMessage(ObjectTracker *sender, const std::string &idRcv);
+    Tracker2GVMessage(const ObjectTracker &sender, const std::string &idRcv);
     Tracker2GVMessage(IObjectManager *sender, const std::string &idRcv);
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);
@@ -53,7 +53,7 @@ class GV2TrackerMessage : public TrackerMessage
 {
     CLASS_INFO(GV2TrackerMessage)
 public:
-    GV2TrackerMessage(ObjectGV *sender, const std::string &idRcv);
+    GV2TrackerMessage(const ObjectGV &sender, const std::string &idRcv);
     GV2TrackerMessage(IObjectManager *sender, const std::string &idRcv);
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);
@@ -64,7 +64,7 @@ class Tracker2GXMessage : public TrackerMessage
 {
     CLASS_INFO(Tracker2GXMessage)
 public:
-    Tracker2GXMessage(ObjectTracker *sender);
+    Tracker2GXMessage(const ObjectTracker &sender);
     Tracker2GXMessage(IObjectManager *sender);
 protected:
     MessageType getMessageType(const google::protobuf::Message &msg);

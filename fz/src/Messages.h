@@ -21,7 +21,7 @@ class GXClient;
 class GSOrUavMessage : public IMessage
 {
 public:
-    GSOrUavMessage(IObject *sender, const std::string &idRcv, int rcv);
+    GSOrUavMessage(const IObject &sender, const std::string &idRcv, int rcv);
     GSOrUavMessage(IObjectManager *sender, const std::string &idRcv, int rcv);
     ~GSOrUavMessage();
 
@@ -43,7 +43,7 @@ class FZ2FZMessage : public GSOrUavMessage
 {
     CLASS_INFO(FZ2FZMessage)
 public:
-    FZ2FZMessage(ObjectVgFZ *sender, const std::string &idRcv);
+    FZ2FZMessage(const ObjectVgFZ &sender, const std::string &idRcv);
     FZ2FZMessage(IObjectManager *sender, const std::string &idRcv);
 private:
 };

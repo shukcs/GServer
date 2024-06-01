@@ -1,9 +1,9 @@
 #include "ObjectGV.h"
-#include "socketBase.h"
+#include "net/socketBase.h"
 #include "das.pb.h"
 #include "ProtoMsg.h"
 #include "Messages.h"
-#include "Utility.h"
+#include "common/Utility.h"
 #include "IMessage.h"
 #include "GVManager.h"
 #include "ObjectTracker.h"
@@ -125,7 +125,7 @@ void ObjectGV::_prcsSyncDevice(SyncDeviceList *)
 
 void ObjectGV::_prcsQueryParameters(das::proto::QueryParameters *pb)
 {
-    if (auto msg = new GV2TrackerMessage(this, pb->id()))
+    if (auto msg = new GV2TrackerMessage(*this, pb->id()))
     {
         msg->AttachProto(pb);
         SendMsg(msg);
@@ -134,7 +134,7 @@ void ObjectGV::_prcsQueryParameters(das::proto::QueryParameters *pb)
 
 void ObjectGV::_prcsConfigureParameters(das::proto::ConfigureParameters *pb)
 {
-    if (auto msg = new GV2TrackerMessage(this, pb->id()))
+    if (auto msg = new GV2TrackerMessage(*this, pb->id()))
     {
         msg->AttachProto(pb);
         SendMsg(msg);

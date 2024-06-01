@@ -1,13 +1,13 @@
 ﻿#include "ObjectBase.h"
-#include "socketBase.h"
-#include "Thread.h"
+#include "net/socketBase.h"
+#include "common/Thread.h"
 #include "ObjectManagers.h"
-#include "BussinessThread.h"
-#include "Utility.h"
-#include "Lock.h"
+#include "BussinessPrcs.h"
+#include "common/Utility.h"
+#include "common/Lock.h"
 #include "IMessage.h"
 #include "ILog.h"
-#include "Varient.h"
+#include "common/Varient.h"
 #include <stdarg.h>
 
 using namespace std;
@@ -87,7 +87,6 @@ void ILink::SetSocket(ISocket *s)
 		m_stat = Stat_Link;
         m_sock = s;
         s->SetHandleLink(this);
-        OnConnected(true);
     }
 }
 
@@ -238,7 +237,7 @@ void ILink::SetMutex(std::mutex *m)
     m_mtxS = m;
 }
 
-void ILink::SetThread(BussinessThread *t)
+void ILink::SetThread(BussinessPrcs *t)
 {
 	if (NULL == t)
 		m_stat = ILink::Stat_Remove;
@@ -248,12 +247,12 @@ void ILink::SetThread(BussinessThread *t)
         m_mtxS = NULL;
 }
 
-BussinessThread *ILink::GetThread() const
+BussinessPrcs *ILink::GetThread() const
 {
     return m_thread;
 }
 
-void ILink::processSocket(ISocket &s, BussinessThread &t)
+void ILink::processSocket(ISocket &s, BussinessPrcs &t)
 {
 	if (!m_thread)
 		t.AddOneLink(this);
@@ -481,7 +480,7 @@ IObjectManager::IObjectManager() : m_thread(NULL), m_log(NULL), m_mtxLogin(new s
 IObjectManager::~IObjectManager()
 {
     delete m_thread;
-    for (BussinessThread *t : m_lsThread)
+    for (BussinessPrcs *t : m_lsThread)
     {
         t->SetRunning(false);
     }
@@ -491,7 +490,7 @@ IObjectManager::~IObjectManager()
 
 void IObjectManager::PushReleaseMsg(IMessage *msg)
 {
-    BussinessThread *t = msg ? GetThread(msg->CreateThreadID()) : NULL;
+    BussinessPrcs *t = msg ? GetThread(msg->CreateThreadID()) : NULL;
     if (t==NULL || !t->PushRelaseMsg(msg))
         delete msg;
 }
@@ -527,6 +526,17 @@ bool IObjectManager::ProcessBussiness()
     return false;
 }
 
+void IObjectManager::Run(bool b)
+{
+    if (m_thread)
+        m_thread->SetRunning(b);
+
+    for (auto t : m_lsThread)
+    {
+        t->SetRunning(b);
+    }
+}
+
 bool IObjectManager::Exist(IObject *obj) const
 {
     if (!obj)
@@ -541,7 +551,6 @@ void IObjectManager::InitPackPrcs(SerierlizePackFuc srlz, ParsePackFuc prs, Rela
     m_pfParsePack = prs;
     m_pfRlsPack = rls;
 }
-
 
 void IObjectManager::InitPrcsLogin(PrcsLoginHandle hd)
 {
@@ -671,6 +680,14 @@ void IObjectManager::_prcsMessage(const IMessage &msg)
 	}
 }
 
+SubcribeStruct *IObjectManager::_poSubcribe()
+{
+    Lock l(m_mtxMsgs);
+    SubcribeStruct *ret = NULL;
+    Utility::PullQue(m_subcribeQue, ret);
+    return ret;
+}
+
 bool IObjectManager::IsReceiveData() const
 {
     return true;
@@ -729,7 +746,7 @@ string IObjectManager::GetObjectFlagID(const IObject *o)
 
     switch (o->GetObjectType())
     {
-    case IObject::Plant:
+    case IObject::Uav:
         ret = "UAV:"; break;
     case IObject::GroundStation:
         ret = "GS:"; break;
@@ -756,10 +773,10 @@ void IObjectManager::InitThread(uint16_t nThread, uint16_t bufSz)
 
     if (nThread > 255 || m_lsThread.size()>0)
         return;
-    m_thread = new BussinessThread(*this);
+    m_thread = new BussinessPrcs(*this, true);
     for (int i=1; i<nThread; ++i)
     {
-        BussinessThread *t = new BussinessThread(*this);
+        BussinessPrcs *t = new BussinessPrcs(*this);
         if(t)
         {
             t->InitialBuff(bufSz);
@@ -768,7 +785,18 @@ void IObjectManager::InitThread(uint16_t nThread, uint16_t bufSz)
     }
 }
 
-BussinessThread *IObjectManager::GetThread(int id) const
+void IObjectManager::SetEnableTimer(bool b)
+{
+    if (m_thread)
+        m_thread->SetEnableTimer(b);
+}
+
+bool IObjectManager::IsEnableTimer() const
+{
+    return m_thread && m_thread->IsEnableTimer();
+}
+
+BussinessPrcs *IObjectManager::GetThread(int id) const
 {
     if (m_thread && m_thread->GetThreadId())
         return m_thread;
@@ -781,7 +809,7 @@ BussinessThread *IObjectManager::GetThread(int id) const
     return NULL;
 }
 
-BussinessThread *IObjectManager::GetMainThread() const
+BussinessPrcs *IObjectManager::GetMainThread() const
 {
     return m_thread;
 }
@@ -835,9 +863,7 @@ IObjectManager *IObjectManager::MangerOfType(int type)
 
 void IObjectManager::PrcsSubcribes()
 {
-    SubcribeStruct *sub = NULL;
-    Lock l(m_mtxMsgs);
-    while (Utility::PullQue(m_subcribeQue, sub))
+    while (auto sub = _poSubcribe())
     {
         if (sub->m_bSubcribe)
         {
@@ -919,14 +945,14 @@ void IObjectManager::Unsubcribe(const string &dsub, const std::string &sender, i
     }
 }
 
-BussinessThread *IObjectManager::GetPropertyThread() const
+BussinessPrcs *IObjectManager::GetPropertyThread() const
 {
     if (m_lsThread.empty())
         return NULL;
 
-    BussinessThread *ret = m_thread;
+    BussinessPrcs *ret = m_thread;
     int minLink = -1;
-    for (BussinessThread *t : m_lsThread)
+    for (BussinessPrcs *t : m_lsThread)
     {
         int tmp = t->LinkCount();
         if (minLink == -1 || tmp < minLink)
@@ -939,7 +965,7 @@ BussinessThread *IObjectManager::GetPropertyThread() const
     return ret;
 }
 
-BussinessThread *IObjectManager::CurThread() const
+BussinessPrcs *IObjectManager::CurThread() const
 {
     auto id = Utility::ThreadID();
     for (auto itr: m_lsThread)

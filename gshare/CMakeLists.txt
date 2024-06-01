@@ -11,10 +11,26 @@ INCLUDE_DIRECTORIES(
 	../zlib-1.2.11
 )
 set(SRC_LIST
-	src/Base64.cpp
-	src/Base64.h
-	src/GLibrary.cpp
-	src/GLibrary.h
+	src/common/LoopQueue.cpp
+	src/common/LoopQueue.h
+	src/common/Lock.cpp
+	src/common/Lock.h
+	src/common/Thread.cpp
+	src/common/Thread.h
+	src/common/GLoop.cpp
+	src/common/GLoop.h
+	src/common/Utility.cpp
+	src/common/Utility.h
+	src/common/Varient.cpp
+	src/common/Varient.h
+	src/common/Base64.cpp
+	src/common/Base64.h
+	src/common/MD5lib.cpp
+	src/common/MD5lib.h
+	src/common/Crc.cpp
+	src/common/Crc.h
+	src/common/GLibrary.cpp
+	src/common/GLibrary.h
 	src/GOutLog.cpp
 	src/GOutLog.h
 	src/gsocket.cpp
@@ -29,10 +45,6 @@ set(SRC_LIST
 	src/Ipv6Address.h
 	src/IPCommon.cpp
 	src/IPCommon.h
-	src/Lock.cpp
-	src/Lock.h
-	src/LoopQueue.cpp
-	src/LoopQueue.h
 	src/IMessage.cpp
 	src/IMessage.h
 	src/ObjectBase.cpp
@@ -43,14 +55,6 @@ set(SRC_LIST
 	src/BussinessThread.h
 	src/socket_include.cpp
 	src/socket_include.h
-	src/Thread.cpp
-	src/Thread.h
-	src/Utility.cpp
-	src/Utility.h
-	src/Varient.cpp
-	src/Varient.h
-	src/MD5lib.cpp
-	src/MD5lib.h
 )
 
 add_library(${PACKAGE_NAME} STATIC ${SRC_LIST})

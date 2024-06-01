@@ -32,7 +32,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 #include "Ipv4Address.h"
 #include "IPCommon.h"
-#include "Utility.h"
+#include "common/Utility.h"
 #ifndef _WIN32
 #include <netdb.h>
 #endif

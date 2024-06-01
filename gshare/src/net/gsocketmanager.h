@@ -1,8 +1,8 @@
 ﻿#ifndef __GSOCKET_MANAGER_H__
 #define __GSOCKET_MANAGER_H__
 
-#include "LoopQueue.h"
-#include "socket_include.h"
+#include "stdconfig.h"
+#include "common/LoopQueue.h"
 #include "socketBase.h"
 #include <map>
 #include <list>
@@ -14,6 +14,8 @@ namespace SOCKETS_NAMESPACE {
 class Thread;
 class ILog;
 class ILink;
+class Variant;
+typedef struct fd_set fd_set;
 
 class GSocketManager : public ISocketManager
 {
@@ -66,16 +68,15 @@ private:
     void _send(ISocket *sock);
     void _remove(int h);
     void _addSocketHandle(int h, bool bListen=false);
-    int _createSocket(int tp=SOCK_STREAM);
+    int _createSocket(int tp=1);
     void _close(ISocket *sock);
     void _closeAfterSend(ISocket *sock);
     void _addAcceptSocket(ISocket *sock, int64_t sec);
-    void _checkSocketTimeout(int fd, int64_t us);
+    bool _checkSocketTimeout(const Variant &id, int64_t us);
 #if !defined _WIN32 && !defined _WIN64
     bool _isCloseEvent(uint32_t e)const;
 #endif
 private:
-	friend class ThreadMgr;
     int                         m_openMax;
     ISocketManager              *m_parent;
     std::mutex                  *m_mtx;
@@ -90,8 +91,8 @@ private:
     SocketBindedCallbacks       m_bindedCBs;
 #if defined _WIN32 || defined _WIN64 //Windows与epoll对应的是IOCP，但不好做成epoll一样操作
     void _checkMaxSock();
-    SOCKET                      m_maxsock;
-    fd_set                      m_ep_fd;
+    int                         m_maxsock;
+    fd_set                      *m_ep_fd;
 #else
     int                         m_ep_fd;
 #endif

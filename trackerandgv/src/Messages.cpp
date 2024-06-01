@@ -6,7 +6,7 @@
 #include "ObjectGV.h"
 #include "GXClient.h"
 #include "ObjectTracker.h"
-#include "Utility.h"
+#include "common/Utility.h"
 
 using namespace google::protobuf;
 using namespace das::proto;
@@ -27,7 +27,7 @@ enum
 class GSOrUav : public MessageData
 {
 public:
-    GSOrUav(IObject *sender, int tpMs)
+    GSOrUav(const IObject &sender, int tpMs)
         : MessageData(sender, tpMs), m_msg(NULL)
     {
     }
@@ -54,7 +54,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////////
 //TrackerMessage
 ////////////////////////////////////////////////////////////////////////////////////////
-TrackerMessage::TrackerMessage(IObject *sender, const std::string &idRcv, int rcv)
+TrackerMessage::TrackerMessage(const IObject &sender, const std::string &idRcv, int rcv)
     :IMessage(new GSOrUav(sender, Unknown), idRcv, rcv)
 {
 }
@@ -137,7 +137,7 @@ void TrackerMessage::_copyMsg(Message *c, const Message &msg)
 ////////////////////////////////////////////////////////////////////////////////////
 //Tracker2GVMessage
 ////////////////////////////////////////////////////////////////////////////////////
-Tracker2GVMessage::Tracker2GVMessage(ObjectTracker *sender, const std::string &idRcv)
+Tracker2GVMessage::Tracker2GVMessage(const ObjectTracker &sender, const std::string &idRcv)
     :TrackerMessage(sender, idRcv, ObjectGV::GVType())
 {
 }
@@ -165,7 +165,7 @@ IMessage::MessageType Tracker2GVMessage::getMessageType(const Message &msg)
 /////////////////////////////////////////////////////////////////////////////
 //GV2TrackerMessage
 /////////////////////////////////////////////////////////////////////////////
-GV2TrackerMessage::GV2TrackerMessage(ObjectGV *sender, const std::string &idRcv)
+GV2TrackerMessage::GV2TrackerMessage(const ObjectGV &sender, const std::string &idRcv)
     :TrackerMessage(sender, idRcv, ObjectTracker::TrackerType())
 {
 }
@@ -193,7 +193,7 @@ IMessage::MessageType GV2TrackerMessage::getMessageType(const google::protobuf::
 /////////////////////////////////////////////////////////////////////////////////////////////
 //Tracker2GXMessage
 /////////////////////////////////////////////////////////////////////////////////////////////
-Tracker2GXMessage::Tracker2GXMessage(ObjectTracker *sender)
+Tracker2GXMessage::Tracker2GXMessage(const ObjectTracker &sender)
 : TrackerMessage(sender, string(), GXClient::GXClientType())
 {
 }

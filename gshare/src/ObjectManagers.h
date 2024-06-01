@@ -2,7 +2,7 @@
 #define __OBJECT_MANAGERS_H__
 
 #include <map>
-#include "LoopQueue.h"
+#include "common/LoopQueue.h"
 
 namespace std {
     class mutex;
@@ -60,6 +60,7 @@ public:
     static bool SndMessage(IMessage *msg);
     static bool RlsMessage(IMessage *msg);
     static SHARED_DECL void SetManagersXml(TiXmlElement *msg);
+    static SHARED_DECL void Run(bool b=true);
 public:
     void AddManager(IObjectManager *m);
     void RemoveManager(int type);

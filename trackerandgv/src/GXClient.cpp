@@ -1,16 +1,16 @@
 #include "GXClient.h"
 #include "das.pb.h"
-#include "Utility.h"
+#include "common/Utility.h"
 #include "ObjectManagers.h"
 #include "GXLink.h"
 #include "ObjectTracker.h"
 #include "Messages.h"
-#include "Thread.h"
-#include "gsocketmanager.h"
+#include "common/Thread.h"
 #include "ObjectAbsPB.h"
-#include "Lock.h"
+#include "common/Lock.h"
 #include "ProtoMsg.h"
 #include "TrackerManager.h"
+#include "net/gsocketmanager.h"
 
 using namespace std;
 using namespace das::proto;
@@ -40,6 +40,8 @@ public:
     GXThread(ISocketManager *mgr)
         :Thread(true), m_mgr(mgr)
     {
+        AddHandle(&GXThread::RunLoop, this);
+        SetRunning(true);
     }
 protected:
     bool RunLoop()
@@ -97,10 +99,8 @@ int GXClient::GXClientType()
 //GXManager
 ///////////////////////////////////////////////////////////////////////////////////////////
 GXManager::GXManager() :IObjectManager(), m_sockMgr(GSocketManager::CreateManager(0,10000))
-, m_tmCheck(0), m_seq(1), m_mtx(new std::mutex())
+, m_thread(NULL), m_tmCheck(0), m_seq(1), m_mtx(new std::mutex())
 {
-    if (m_sockMgr)
-        m_thread = new GXThread(m_sockMgr);
 }
 
 GXManager::~GXManager()
@@ -190,6 +190,9 @@ void GXManager::PrcsProtoBuff(const google::protobuf::Message *proto)
 
 void GXManager::LoadConfig(const TiXmlElement *)
 {
+    if (m_sockMgr)
+        m_thread = new GXThread(m_sockMgr);
+
     InitThread(1, 0);
 }
 

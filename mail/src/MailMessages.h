@@ -16,7 +16,7 @@ class MailMessage : public IMessage
 {
     CLASS_INFO(MailMessage)
 public:
-    SHARED_MAIL MailMessage(IObject *sender,  const std::string &rcv="");
+    SHARED_MAIL MailMessage(const IObject &sender,  const std::string &rcv="");
     SHARED_MAIL MailMessage(IObjectManager *sender, const std::string &rcv="");
     SHARED_MAIL MailMessage(const std::string &sender, int tpSend, const std::string &rcv="");
 
@@ -44,7 +44,7 @@ class MailRsltMessage : public IMessage
 {
     CLASS_INFO(MailRsltMessage)
 public:
-    MailRsltMessage(IObject *sender, int tp, const std::string &rcv);
+    MailRsltMessage(const IObject &sender, int tp, const std::string &rcv);
     
     SHARED_MAIL const std::string&GetErrCode()const;
     SHARED_MAIL int GetSeq()const;

@@ -32,15 +32,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #ifndef _SOCKETS_Base64_H
 #define _SOCKETS_Base64_H
 
+#include "stdconfig.h"
 #include <string>
 
 namespace Base64
 {
-	std::string encode(const unsigned char *, size_t);
-    size_t decode(const std::string&, unsigned char *, size_t);
+	std::string SHARED_DECL encode(const void *, size_t);
+    size_t SHARED_DECL decode(const std::string&, unsigned char *, size_t);
 
-    size_t decode_length(const std::string &);
-    size_t encode_length(size_t sz);
+    size_t SHARED_DECL decode_length(const std::string &);
+    size_t SHARED_DECL encode_length(size_t sz);
 };
 
 #endif // _SOCKETS_Base64_H

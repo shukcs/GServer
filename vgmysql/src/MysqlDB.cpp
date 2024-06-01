@@ -3,7 +3,7 @@
 #include "VGMysql.h"
 #include "tinyxml.h"
 #include "VGTrigger.h"
-#include "Utility.h"
+#include "common/Utility.h"
 
 //////////////////////////////////////////////////////////////////////
 //MysqlDB

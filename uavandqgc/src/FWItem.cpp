@@ -1,5 +1,6 @@
 ﻿#include "FWItem.h"
-#include "Utility.h"
+#include "common/Utility.h"
+#include "common/Crc.h"
 
 #include "GSManager.h"
 #include "VGMysql.h"
@@ -56,7 +57,7 @@ int FWItem::CheckUploaded()
 {
     if (m_fillFw == m_lenFw)
     {
-        uint32_t crc = Utility::Crc32(m_dataFw, m_lenFw);
+        uint32_t crc = Crc::Crc32(m_dataFw, m_lenFw);
         int ret = crc == m_crc32 ? FWAssist::Stat_Uploaded : FWAssist::Stat_UploadError;
         if (FWAssist::Stat_Uploaded == ret)
         {

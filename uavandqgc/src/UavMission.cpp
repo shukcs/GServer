@@ -1,6 +1,6 @@
 ﻿#include "UavMission.h"
 #include "das.pb.h"
-#include "Utility.h"
+#include "common/Utility.h"
 #include "DBMessages.h"
 #include "ProtoMsg.h"
 #include "common/mavlink.h"
@@ -608,7 +608,7 @@ void UavMission::_saveMission(bool bSuspend, float acrage, int finshed, bool bMi
     if (!m_parent || !m_mission)
         return;
 
-    if (DBMessage *msg = new DBMessage(m_parent, IMessage::Unknown, DBMessage::DB_GS))
+    if (DBMessage *msg = new DBMessage(*m_parent, IMessage::Unknown, DBMessage::DB_GS))
     {
         msg->SetSql("insertMissions");
         msg->SetWrite("userID", bMission ? m_mission->GetGs() : m_parent->GetBinder());

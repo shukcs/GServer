@@ -4,7 +4,7 @@
 #include "ProtoMsg.h"
 #include "ObjectBase.h"
 #include "ObjectVgFZ.h"
-#include "Utility.h"
+#include "common/Utility.h"
 
 using namespace google::protobuf;
 using namespace das::proto;
@@ -40,7 +40,7 @@ const map<string, int> &getProtoTypes(const string &className)
 class GSOrUav : public MessageData
 {
 public:
-    GSOrUav(IObject *sender, int tpMs)
+    GSOrUav(const IObject &sender, int tpMs)
         : MessageData(sender, tpMs), m_msg(NULL)
     {
     }
@@ -67,7 +67,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////////
 //GSOrUavMessage
 ////////////////////////////////////////////////////////////////////////////////////////
-GSOrUavMessage::GSOrUavMessage(IObject *sender, const std::string &idRcv, int rcv)
+GSOrUavMessage::GSOrUavMessage(const IObject &sender, const std::string &idRcv, int rcv)
     :IMessage(new GSOrUav(sender, Unknown), idRcv, rcv)
 {
 }
@@ -161,7 +161,7 @@ void GSOrUavMessage::_copyMsg(Message *c, const Message &msg)
 /////////////////////////////////////////////////////////////////////////////
 //GS2UavMessage
 /////////////////////////////////////////////////////////////////////////////
-FZ2FZMessage::FZ2FZMessage(ObjectVgFZ *sender, const std::string &idRcv)
+FZ2FZMessage::FZ2FZMessage(const ObjectVgFZ &sender, const std::string &idRcv)
 : GSOrUavMessage(sender, idRcv, IObject::VgFZ)
 {
 }

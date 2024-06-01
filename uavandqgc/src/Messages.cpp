@@ -6,7 +6,7 @@
 #include "ObjectGS.h"
 #include "ObjectUav.h"
 #include "GXClient.h"
-#include "Utility.h"
+#include "common/Utility.h"
 
 using namespace google::protobuf;
 using namespace das::proto;
@@ -73,7 +73,7 @@ const map<string, int> &getProtoTypes(const string &className)
 class GSOrUav : public MessageData
 {
 public:
-    GSOrUav(IObject *sender, int tpMs)
+    GSOrUav(const IObject &sender, int tpMs)
         : MessageData(sender, tpMs), m_msg(NULL)
     {
     }
@@ -100,7 +100,7 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////////
 //GSOrUavMessage
 ////////////////////////////////////////////////////////////////////////////////////////
-GSOrUavMessage::GSOrUavMessage(IObject *sender, const std::string &idRcv, int rcv)
+GSOrUavMessage::GSOrUavMessage(const IObject &sender, const std::string &idRcv, int rcv)
     :IMessage(new GSOrUav(sender, Unknown), idRcv, rcv)
 {
 }
@@ -193,7 +193,7 @@ void GSOrUavMessage::_copyMsg(Message *c, const Message &msg)
 /////////////////////////////////////////////////////////////////////////////
 //Uav2GSMessage
 /////////////////////////////////////////////////////////////////////////////
-Uav2GSMessage::Uav2GSMessage(ObjectUav *sender, const std::string &idRcv)
+Uav2GSMessage::Uav2GSMessage(const ObjectUav &sender, const std::string &idRcv)
     :GSOrUavMessage(sender, idRcv, IObject::GroundStation)
 {
 }
@@ -205,15 +205,14 @@ Uav2GSMessage::Uav2GSMessage(IObjectManager *sender, const std::string &idRcv)
 /////////////////////////////////////////////////////////////////////////////
 //GS2UavMessage
 /////////////////////////////////////////////////////////////////////////////
-GS2UavMessage::GS2UavMessage(ObjectGS *sender, const std::string &idRcv)
-    :GSOrUavMessage(sender, idRcv, IObject::Plant), m_auth(0)
+GS2UavMessage::GS2UavMessage(const ObjectGS &sender, const std::string &idRcv)
+    :GSOrUavMessage(sender, idRcv, IObject::Uav), m_auth(0)
 {
-    if (sender)
-        m_auth = sender->Authorize();
+    m_auth = sender.Authorize();
 }
 
 GS2UavMessage::GS2UavMessage(IObjectManager *sender, const std::string &idRcv)
-    : GSOrUavMessage(sender, idRcv, IObject::Plant), m_auth(0)
+    : GSOrUavMessage(sender, idRcv, IObject::Uav), m_auth(0)
 {
 }
 
@@ -224,7 +223,7 @@ int GS2UavMessage::GetAuth() const
 /////////////////////////////////////////////////////////////////////////////
 //GS2UavMessage
 /////////////////////////////////////////////////////////////////////////////
-Gs2GsMessage::Gs2GsMessage(ObjectGS *sender, const std::string &idRcv)
+Gs2GsMessage::Gs2GsMessage(const ObjectGS &sender, const std::string &idRcv)
 : GSOrUavMessage(sender, idRcv, IObject::GroundStation)
 {
 }
@@ -236,13 +235,13 @@ Gs2GsMessage::Gs2GsMessage(IObjectManager *sender, const std::string &idRcv)
 /////////////////////////////////////////////////////////////////////////
 //Uav2GXMessage
 /////////////////////////////////////////////////////////////////////////
-Uav2GXMessage::Uav2GXMessage(ObjectUav *sender)
+Uav2GXMessage::Uav2GXMessage(const ObjectUav &sender)
 : GSOrUavMessage(sender, string(), GXClient::GXClientType())
 {
 }
-/////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 //GX2UavMessage
-/////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 GX2UavMessage::GX2UavMessage(const std::string &sender, int st)
 :IMessage(new MessageData(sender, GXClient::GXClientType(), GXClinetStat), sender, ObjectUav::UAVType())
 , m_stat(st)

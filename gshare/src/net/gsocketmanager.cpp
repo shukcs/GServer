@@ -1,12 +1,13 @@
 ﻿#include "gsocketmanager.h"
+#include "socket_include.h"
 #include "gsocket.h"
-#include "Thread.h"
-#include "Utility.h"
+#include "common/Thread.h"
+#include "common/Utility.h"
 #include "Ipv4Address.h"
-#include "Lock.h"
+#include "common/Lock.h"
 #include "ObjectBase.h"
 #include "socket_include.h"
-#include "Varient.h"
+#include "common/Varient.h"
 #include <stdio.h>
 #if !defined _WIN32 && !defined _WIN64
 #include <sys/epoll.h>
@@ -42,44 +43,13 @@ private:
 #ifdef SOCKETS_NAMESPACE
 using namespace SOCKETS_NAMESPACE
 #endif
-
-class ThreadMgr : public Thread
-{
-public:
-    ThreadMgr(GSocketManager &sm) : Thread(), m_mgr(sm)
-	{
-		SetEnableTimer(true);
-	}
-	~ThreadMgr()
-	{
-		if (IsRunning())
-		{
-			SetRunning(false);
-			Utility::Sleep(50);
-		}
-	}
-protected:
-    bool RunLoop()
-    {
-        if (!m_mgr.IsRun())
-            return false;
-
-        return m_mgr.Poll(50);
-    }
-	bool OnTimerTriggle(const Variant &v, int64_t us)
-	{
-		m_mgr._checkSocketTimeout((int)v.ToInt64(), us);
-		return false;
-	}
-private:
-	GSocketManager &m_mgr;
-};
 ////////////////////////////////////////////////////////////////////////////
 //GSocketManager
 ////////////////////////////////////////////////////////////////////////////
 bool GSocketManager::s_bRun = true;
 GSocketManager::GSocketManager(GSocketManager *parent, int nThread, int maxSock)
-: m_parent(parent), m_openMax(maxSock),m_mtx(new std::mutex) , m_thread(NULL)
+: m_parent(parent), m_openMax(maxSock), m_mtx(new std::mutex), m_thread(NULL)
+, m_ep_fd(new fd_set)
 {
     InitEpoll();
 	if (nThread > 0)
@@ -141,13 +111,19 @@ bool GSocketManager::Poll(unsigned ms)
 void GSocketManager::AddProcessThread()
 {
     GSocketManager *m = new GSocketManager(this, 0, m_openMax);
-    ThreadMgr *t = new ThreadMgr(*m);
+    auto t = new Thread();
     if (m &&t)
     {
+        t->AddHandle(&GSocketManager::Poll, m, 50);
+        t->SetEnableTimer(true);
+        t->SetTimerHandle(std::bind(&GSocketManager::_checkSocketTimeout, m, std::placeholders::_1, std::placeholders::_2));
         m->m_thread = t;
         m_othManagers.push_back(m);
         t->SetRunning();
+        return;
     }
+    delete m;
+    delete t;
 }
 
 bool GSocketManager::AddWaitPrcsSocket(ISocket *s)
@@ -273,7 +249,7 @@ bool GSocketManager::SokectPoll(unsigned ms)
 #if defined _WIN32 || defined _WIN64
     if (m_maxsock <= 0)
         return ret;
-    fd_set rfds = m_ep_fd;
+    fd_set rfds = *m_ep_fd;
     struct timeval tv = {0};    //windows select不会挂起线程的
     int n = select((int)(m_maxsock + 1), &rfds, nullptr, nullptr, &tv);
     for (int i=0; i<n; ++i)
@@ -344,7 +320,7 @@ void GSocketManager::InitEpoll()
 {
     static WSAInitializer s;
 #if defined _WIN32 || defined _WIN64
-    FD_ZERO(&m_ep_fd);
+    FD_ZERO(m_ep_fd);
     if (m_openMax > FD_SETSIZE)
         m_openMax = FD_SETSIZE;
     m_maxsock = 0;
@@ -371,8 +347,8 @@ void GSocketManager::CloseServer()
         int h = itr.first;
         closesocket(h);
 #if defined _WIN32 || defined _WIN64
-        if (FD_ISSET(h, &m_ep_fd))
-            FD_CLR(h, &m_ep_fd);
+        if (FD_ISSET(h, m_ep_fd))
+            FD_CLR(h, m_ep_fd);
         if (h >= (int)m_maxsock)
             _checkMaxSock();
 #else
@@ -418,8 +394,8 @@ void GSocketManager::_remove(int h)
     m_sockets.erase(h);
     closesocket(h);
 #if defined _WIN32 || defined _WIN64
-    if (FD_ISSET(h, &m_ep_fd))
-        FD_CLR(h, &m_ep_fd);
+    if (FD_ISSET(h, m_ep_fd))
+        FD_CLR(h, m_ep_fd);
     if (h >= (int)m_maxsock)
         _checkMaxSock();
 #else
@@ -430,8 +406,8 @@ void GSocketManager::_remove(int h)
 void GSocketManager::_addSocketHandle(int h, bool bListen)
 {
 #if defined _WIN32 || defined _WIN64
-    if (!FD_ISSET(h, &m_ep_fd))
-        FD_SET(h, &m_ep_fd);
+    if (!FD_ISSET(h, m_ep_fd))
+        FD_SET(h, m_ep_fd);
     if (h > (int)m_maxsock)
         m_maxsock = h;
 #else
@@ -474,15 +450,17 @@ void GSocketManager::_addAcceptSocket(ISocket *sock, int64_t sec)
 		m_thread->AddTimer(sock->GetSocketHandle(), SocketTimeOut, false);
 }
 
-void GSocketManager::_checkSocketTimeout(int fd, int64_t us)
+bool GSocketManager::_checkSocketTimeout(const Variant &id, int64_t us)
 {
-	auto itr = m_sockets.find(fd);
-	if (itr == m_sockets.end())
-		return;
+	auto itr = m_sockets.find(id.ToInt64());
+	if (itr != m_sockets.end())
+    {
+        auto sock = itr->second;
+        if (!sock->GetHandleLink())
+            _close(sock);
+    }
 
-	auto sock = itr->second;
-	if (!sock->GetHandleLink())
-		_close(sock);
+    return false;
 }
 
 #if defined _WIN32 || defined _WIN64 
