@@ -69,16 +69,16 @@ class Timer
 {
 public:
     Timer(const Variant &v, uint32_t ms, bool repeat = true) : m_usStart(Utility::usTimeTick())
-	, m_id(v), m_threadID(Utility::ThreadID()), m_usSpace(ms*1000), m_count(1), m_offSet(0)
-    , m_repeat(repeat), m_release(false)
+        , m_id(v), m_threadID(Utility::ThreadID()), m_usSpace(ms * 1000), m_offSet(0)
+        , m_repeat(repeat), m_release(false)
     {
-		m_usStart = Utility::usTimeTick();
+        m_usStart = Utility::usTimeTick();
         if (m_usSpace == 0)
-			m_usSpace = 1000;
+            m_usSpace = 1000;
     }
-	~Timer()
-	{
-	}
+    ~Timer()
+    {
+    }
     int GetThreadID()const
     {
         return m_threadID;
@@ -101,12 +101,12 @@ public:
     }
     int64_t TriggerTime()const
     {
-        return m_usStart+ m_usSpace*m_count+m_offSet;
+        return m_usStart + m_offSet;
     }
     void Trigger(int64_t curUs)
     {
-		m_count = uint32_t((curUs - m_usStart) / m_usSpace + 1);
-		m_offSet = 0;
+        m_usStart += ((curUs - m_usStart) / m_usSpace + 1)*m_usSpace;
+        m_offSet = 0;
     }
     const Variant &GetIdentify()const
     {
@@ -116,11 +116,10 @@ private:
     int64_t     m_usStart;
     Variant     m_id;
     int         m_threadID;
-	uint32_t    m_usSpace;
-	uint32_t    m_count;
-	uint32_t    m_offSet;
-	bool        m_release;
-	bool        m_repeat;
+    uint32_t    m_usSpace;
+    uint32_t    m_offSet;
+    bool        m_release;
+    bool        m_repeat;
 };
 //////////////////////////////////////////////////////////////////////////////////////
 ///GLoop
